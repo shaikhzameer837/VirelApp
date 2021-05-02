@@ -2,6 +2,8 @@ package com.intelj.yral_gaming.Utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
+import android.provider.Settings;
 
 import java.text.SimpleDateFormat;
 
@@ -42,7 +44,13 @@ public class AppConstant {
     public void setSharedPref() {
         sharedPreferences = _context.getSharedPreferences(AppName, Context.MODE_PRIVATE);
     }
-
+    public static boolean isTimeAutomatic(Context c) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            return Settings.Global.getInt(c.getContentResolver(), Settings.Global.AUTO_TIME, 0) == 1;
+        } else {
+            return android.provider.Settings.System.getInt(c.getContentResolver(), android.provider.Settings.System.AUTO_TIME, 0) == 1;
+        }
+    }
     public void saveLogin(String user_id, String _phoneNumber) {
         setSharedPref();
         sharedPreferences.edit().putBoolean(login, true).apply();
