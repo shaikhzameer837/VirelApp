@@ -1,0 +1,74 @@
+package com.intelj.yral_gaming.Utils;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+
+import java.text.SimpleDateFormat;
+
+public class AppConstant {
+    private Context _context;
+    private SharedPreferences sharedPreferences;
+    public static String AppName = "dumniGaming",
+            login = "login",
+            phoneNumber = "phoneNumber",
+            userId = "userId",
+            deviceId = "deviceId",
+            uniqueId = "uniqueId",
+            live_stream = "live_stream",
+            friends = "friends",
+            member = "member",
+            mobile_info = "mobile_info",
+            youtubeId="youtubeId",
+            saveYTid="saveYTid",
+            stopTime="stopTime",
+            backgroundData ="backgroundData",
+            search = "search",
+            myTeam = "myTeam",
+            token = "token",
+            myPicUrl = "myPicUrl",
+            users = "users",
+            count_win = "winner",
+            pinfo = "pinfo",
+            paymentHistory = "phist",
+            gameBio = "gbio",
+            youtubeApiKey = "AIzaSyBQiqtYCe51DtHvGhJOjO20Vv9Y_uzRyks",
+            userName = "userName";
+    public static SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss aa");
+
+    public AppConstant(Context _context) {
+        this._context = _context;
+    }
+
+    public void setSharedPref() {
+        sharedPreferences = _context.getSharedPreferences(AppName, Context.MODE_PRIVATE);
+    }
+
+    public void saveLogin(String user_id, String _phoneNumber) {
+        setSharedPref();
+        sharedPreferences.edit().putBoolean(login, true).apply();
+        sharedPreferences.edit().putString(userId, user_id).apply();
+        sharedPreferences.edit().putString(phoneNumber, _phoneNumber).apply();
+    }
+    public void saveSlot(String _uniqueId) {
+        setSharedPref();
+        sharedPreferences.edit().putString(saveYTid, _uniqueId).apply();
+    }
+    public String getDataFromShared(String param){
+        setSharedPref();
+        return sharedPreferences.getString(param, "");
+    }
+    public boolean checkLogin() {
+        setSharedPref();
+        return sharedPreferences.getBoolean(login, false);
+    }
+
+    public String getUserId() {
+        setSharedPref();
+        return sharedPreferences.getString(userId, "");
+    }
+
+    public String getPhoneNumber() {
+        setSharedPref();
+        return sharedPreferences.getString(phoneNumber, "");
+    }
+}

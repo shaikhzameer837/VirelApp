@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AndroidLayouts">
+    <shared>
+      <config />
+    </shared>
+  </component>
+  <component name="AndroidLogFilters">
+    <option name="TOOL_WINDOW_CUSTOM_FILTER" value="profile_photo" />
+    <option name="TOOL_WINDOW_LOG_LEVEL" value="error" />
+    <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="50b0d249-d427-4b7e-b296-93ef488232da" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <projects_view>
+          <tree_state>
+            <expand />
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="resourceFile" />
+        <option value="Class" />
+        <option value="layoutResourceFile" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectId" id="1g8F07uJdRUHoVsI3t7VKNpO9su" />
+  <component name="ProjectViewState">
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="DEBUGGABLE_DEVICE" value="xiaomi-redmi_y2-6b47901d" />
+    <property name="DEBUGGABLE_PROCESS" value="com.intelj.DumniGaming" />
+    <property name="DEBUGGER_ID" value="Auto" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHOW_ALL_PROCESSES" value="false" />
+    <property name="last_directory_selection" value="$PROJECT_DIR$/app/src/main/res/drawable" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="com.intelj.yral_gaming.Activity" />
+      <recent name="com.intelj.DumniGaming.Activity" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Desktop\Yral Gaming\app\src\main\res\drawable" />
+      <recent name="D:\Desktop\DuminGaming\app\src\main\res\drawable" />
+      <recent name="D:\Desktop\DuminGaming\app\src\main\res\layout" />
+      <recent name="D:\Desktop\DuminGaming\app\src\main\assets" />
+      <recent name="D:\Desktop\DuminGaming\app" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.intelj.DuminiGaming" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Light Lawliet\AndroidStudioProjects\DuminGaming\app\src\main\res\mipmap-anydpi-v26" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="AndroidJUnit" factoryName="Android JUnit">
+      <option name="TEST_OBJECT" value="class" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <method v="2">
+        <option name="Android.Gradle.BeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false">
+      <module name="app" />
+      <option name="DEPLOY" value="true" />
+      <option name="DEPLOY_APK_FROM_BUNDLE" value="false" />
+      <option name="DEPLOY_AS_INSTANT" value="false" />
+      <option name="ARTIFACT_NAME" value="" />
+      <option name="PM_INSTALL_OPTIONS" value="" />
+      <option name="DYNAMIC_FEATURES_DISABLED_LIST" value="" />
+      <option name="ACTIVITY_EXTRA_FLAGS" value="" />
+      <option name="MODE" value="default_activity" />
+      <option name="CLEAR_LOGCAT" value="false" />
+      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="false" />
+      <option name="SKIP_NOOP_APK_INSTALLATIONS" value="true" />
+      <option name="FORCE_STOP_RUNNING_APP" value="true" />
+      <option name="TARGET_SELECTION_MODE" value="DEVICE_AND_SNAPSHOT_COMBO_BOX" />
+      <option name="SELECTED_CLOUD_MATRIX_CONFIGURATION_ID" value="-1" />
+      <option name="SELECTED_CLOUD_MATRIX_PROJECT_ID" value="" />
+      <option name="DEBUGGER_TYPE" value="Auto" />
+      <Auto>
+        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
+        <option name="SHOW_STATIC_VARS" value="true" />
+        <option name="WORKING_DIR" value="" />
+        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
+        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
+      </Auto>
+      <Hybrid>
+        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
+        <option name="SHOW_STATIC_VARS" value="true" />
+        <option name="WORKING_DIR" value="" />
+        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
+        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
+      </Hybrid>
+      <Java />
+      <Native>
+        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
+        <option name="SHOW_STATIC_VARS" value="true" />
+        <option name="WORKING_DIR" value="" />
+        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
+        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
+      </Native>
+      <Profilers>
+        <option name="ADVANCED_PROFILING_ENABLED" value="false" />
+        <option name="STARTUP_CPU_PROFILING_ENABLED" value="false" />
+        <option name="STARTUP_CPU_PROFILING_CONFIGURATION_NAME" value="Sample Java Methods" />
+      </Profilers>
+      <option name="DEEP_LINK" value="" />
+      <option name="ACTIVITY_CLASS" value="" />
+      <method v="2">
+        <option name="Android.Gradle.BeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="50b0d249-d427-4b7e-b296-93ef488232da" name="Default Changelist" comment="" />
+      <created>1597488086052</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1597488086052</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="445" y="64" key="#com.intellij.ide.util.MemberChooser" timestamp="1598119618019">
+      <screen x="0" y="0" width="1280" height="760" />
+    </state>
+    <state x="445" y="64" key="#com.intellij.ide.util.MemberChooser/0.0.1280.760@0.0.1280.760" timestamp="1598119618019" />
+    <state x="391" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1597747585434">
+      <screen x="0" y="0" width="1280" height="760" />
+    </state>
+    <state x="391" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1280.760@0.0.1280.760" timestamp="1597747585434" />
+    <state x="370" y="127" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1601324901577">
+      <screen x="0" y="0" width="1280" height="760" />
+    </state>
+    <state x="370" y="127" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1280.760@0.0.1280.760" timestamp="1601324901577" />
+    <state x="220" y="135" width="840" height="486" key="AndroidCreateResourceFileDialog" timestamp="1601397189797">
+      <screen x="0" y="0" width="1280" height="760" />
+    </state>
+    <state x="220" y="135" width="840" height="486" key="AndroidCreateResourceFileDialog/0.0.1280.760@0.0.1280.760" timestamp="1601397189797" />
+    <state x="495" y="145" key="AndroidProcessChooserDialog" timestamp="1600480239030">
+      <screen x="0" y="0" width="1280" height="760" />
+    </state>
+    <state x="495" y="145" key="AndroidProcessChooserDialog/0.0.1280.760@0.0.1280.760" timestamp="1600480239030" />
+    <state x="420" y="135" key="FileChooserDialogImpl" timestamp="1601506177786">
+      <screen x="0" y="0" width="1280" height="760" />
+    </state>
+    <state x="420" y="135" key="FileChooserDialogImpl/0.0.1280.760@0.0.1280.760" timestamp="1601506177786" />
+    <state width="1237" height="187" key="GridCell.Tab.0.bottom" timestamp="1601398085974">
+      <screen x="0" y="0" width="1280" height="760" />
+    </state>
+    <state width="1237" height="187" key="GridCell.Tab.0.bottom/0.0.1280.760@0.0.1280.760" timestamp="1601398085974" />
+    <state width="1237" height="187" key="GridCell.Tab.0.center" timestamp="1601398085974">
+      <screen x="0" y="0" width="1280" height="760" />
+    </state>
+    <state width="1237" height="187" key="GridCell.Tab.0.center/0.0.1280.760@0.0.1280.760" timestamp="1601398085974" />
+    <state width="1237" height="187" key="GridCell.Tab.0.left" timestamp="1601398085974">
+      <screen x="0" y="0" width="1280" height="760" />
+    </state>
+    <state width="1237" height="187" key="GridCell.Tab.0.left/0.0.1280.760@0.0.1280.760" timestamp="1601398085974" />
+    <state width="1237" height="187" key="GridCell.Tab.0.right" timestamp="1601398085974">
+      <screen x="0" y="0" width="1280" height="760" />
+    </state>
+    <state width="1237" height="187" key="GridCell.Tab.0.right/0.0.1280.760@0.0.1280.760" timestamp="1601398085974" />
+    <state width="1237" height="234" key="GridCell.Tab.1.bottom" timestamp="1600538535784">
+      <screen x="0" y="0" width="1280" height="760" />
+    </state>
+    <state width="1237" height="234" key="GridCell.Tab.1.bottom/0.0.1280.760@0.0.1280.760" timestamp="1600538535784" />
+    <state width="1237" height="234" key="GridCell.Tab.1.center" timestamp="1600538535784">
+      <screen x="0" y="0" width="1280" height="760" />
+    </state>
+    <state width="1237" height="234" key="GridCell.Tab.1.center/0.0.1280.760@0.0.1280.760" timestamp="1600538535784" />
+    <state width="1237" height="234" key="GridCell.Tab.1.left" timestamp="1600538535784">
+      <screen x="0" y="0" width="1280" height="760" />
+    </state>
+    <state width="1237" height="234" key="GridCell.Tab.1.left/0.0.1280.760@0.0.1280.760" timestamp="1600538535784" />
+    <state width="1237" height="234" key="GridCell.Tab.1.right" timestamp="1600538535784">
+      <screen x="0" y="0" width="1280" height="760" />
+    </state>
+    <state width="1237" height="234" key="GridCell.Tab.1.right/0.0.1280.760@0.0.1280.760" timestamp="1600538535784" />
+    <state x="371" y="256" key="ScreenshotRecorder.Options.Dimensions" timestamp="1599546507671">
+      <screen x="0" y="0" width="1280" height="760" />
+    </state>
+    <state x="371" y="256" key="ScreenshotRecorder.Options.Dimensions/0.0.1280.760@0.0.1280.760" timestamp="1599546507671" />
+    <state x="456" y="158" key="chooseDestDirectoryDialog" timestamp="1601346674253">
+      <screen x="0" y="0" width="1280" height="760" />
+    </state>
+    <state x="456" y="158" key="chooseDestDirectoryDialog/0.0.1280.760@0.0.1280.760" timestamp="1601346674253" />
+    <state x="92" y="92" width="1096" height="576" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1598014373559">
+      <screen x="0" y="0" width="1280" height="760" />
+    </state>
+    <state x="92" y="92" width="1096" height="576" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.0.1280.760@0.0.1280.760" timestamp="1598014373559" />
+    <state x="355" y="196" key="com.intellij.ide.util.TipDialog" timestamp="1601577665078">
+      <screen x="0" y="0" width="1280" height="760" />
+    </state>
+    <state x="355" y="196" key="com.intellij.ide.util.TipDialog/0.0.1280.760@0.0.1280.760" timestamp="1601577665078" />
+    <state x="379" y="188" key="com.intellij.ide.util.TipDialog/0.0.1366.728@0.0.1366.728" timestamp="1600933288930" />
+    <state x="336" y="0" width="607" height="760" key="find.popup" timestamp="1601398488612">
+      <screen x="0" y="0" width="1280" height="760" />
+    </state>
+    <state x="336" y="0" width="607" height="760" key="find.popup/0.0.1280.760@0.0.1280.760" timestamp="1601398488612" />
+    <state x="303" y="81" width="672" height="678" key="search.everywhere.popup" timestamp="1601399395749">
+      <screen x="0" y="0" width="1280" height="760" />
+    </state>
+    <state x="303" y="81" width="672" height="678" key="search.everywhere.popup/0.0.1280.760@0.0.1280.760" timestamp="1601399395749" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="java-line">
+          <url>file://$PROJECT_DIR$/app/src/main/java/com/intelj/yral_gaming/Fragment/OneFragment.java</url>
+          <line>77</line>
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="java-line">
+          <url>file://$PROJECT_DIR$/app/src/main/java/com/intelj/yral_gaming/Fragment/OneFragment.java</url>
+          <line>78</line>
+          <option name="timeStamp" value="7" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="java-line">
+          <url>file://$PROJECT_DIR$/app/src/main/java/com/intelj/yral_gaming/Fragment/OneFragment.java</url>
+          <line>74</line>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="java-line">
+          <url>file://$PROJECT_DIR$/app/src/main/java/com/intelj/yral_gaming/Fragment/OneFragment.java</url>
+          <line>73</line>
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+    <watches-manager>
+      <configuration name="app">
+        <watch expression="System.currentTimeMillis() - miliSec)" />
+        <watch expression="(System.currentTimeMillis() - miliSec)+&quot;&quot;" />
+        <watch expression="miliSec" />
+        <watch expression=" dataSnapshot.child(s).child(AppController.getInstance().userId).exists()" />
+        <watch expression="s" />
+        <watch expression="AppController.getInstance().userId" />
+        <watch expression="date" />
+      </configuration>
+      <configuration name="Remote">
+        <watch expression="_phoneNumber" />
+        <watch expression="dataSnapshot" />
+        <watch expression="dataSnapshot.exists()" />
+        <watch expression="AppController.getInstance().userId " />
+        <watch expression="postSnapshot.getKey()" />
+        <watch expression="moviesList.size()" />
+        <watch expression="                        allData.add(new UserModel(postSnapshot.getKey(),postSnapshot.child(&quot;10pm&quot;).child(AppController.getInstance().userId).exists()" />
+        <watch expression="AppController.getInstance().userId).exists()" />
+        <watch expression="AppController.getInstance().userId)" />
+        <watch expression="AppController.getInstance().userId" />
+        <watch expression="postSnapshot.child(&quot;10pm&quot;).child(AppController.getInstance().userId).exists()" />
+      </configuration>
+    </watches-manager>
+  </component>
+</project>

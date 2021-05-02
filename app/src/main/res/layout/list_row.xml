@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+      android:clickable="true"
+    android:background="@color/colorPrimary"
+    android:padding="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginTop="5dp"
+    android:focusable="true"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:text="Game starts at 8am"
+        android:textSize="16dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="56/100 member booked the slot"
+        android:layout_below="@id/title" />
+    <ImageView
+        android:layout_width="wrap_content"
+        android:textColor="@color/textcolor"
+        android:background="@drawable/round_drawable"
+        android:id="@+id/reg"
+        android:src="@drawable/arrow"
+         android:layout_alignParentRight="true"
+        android:layout_height="wrap_content"/>
+</RelativeLayout>

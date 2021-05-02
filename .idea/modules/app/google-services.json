@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "625714359836",
+    "firebase_url": "https://y-ral-gaming.firebaseio.com",
+    "project_id": "y-ral-gaming",
+    "storage_bucket": "y-ral-gaming.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:625714359836:android:8c7fd6d3d2e610ba8c39d9",
+        "android_client_info": {
+          "package_name": "com.intelj.yral_gaming"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "625714359836-5esacfgfhv2grs9ebaoo7h7mpu9n2ntq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.intelj.yral_gaming",
+            "certificate_hash": "57ac1c56f95e6f3ebe2dfccf9c2e077c3cc5d083"
+          }
+        },
+        {
+          "client_id": "625714359836-pj9ke086jpo6gmndcbhdavt95j9b6ff9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC3jubavelC1WjCU7--UNGKcBwAizjslNQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "625714359836-pj9ke086jpo6gmndcbhdavt95j9b6ff9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

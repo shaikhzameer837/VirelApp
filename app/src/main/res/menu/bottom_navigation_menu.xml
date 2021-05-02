@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/my_team"
+        android:icon="@drawable/home"
+        android:title="Home" />
+    <item
+        android:id="@+id/rank"
+        android:icon="@drawable/rank"
+        android:title="Rank" />
+    <item
+        android:id="@+id/showNotification"
+        android:icon="@drawable/bell_outline"
+        android:title="Notification" />
+    <item
+        android:id="@+id/history"
+        android:icon="@drawable/history"
+        android:title="history" />
+    <item
+        android:id="@+id/profile"
+        android:icon="@drawable/cog"
+        android:title="setting" />
+</menu>

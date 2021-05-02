@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#fff</color>
+    <color name="colorPrimaryDark">#7e241c</color>
+    <color name="colorAccent">#cb7069</color>
+    <color name="appColor">#810d0e</color>
+    <color name="black">#000000</color>
+    <color name="grey">#ebecef</color>
+    <color name="textcolor">#333333</color>
+    <color name="darkgrey">#9f9f9f</color>
+    <color name="gray_scale">#8affffff</color>
+    <color name="progress_primary">#ffffff</color>
+    <color name="progress_secondary">@color/gray_scale</color>
+    <color name="progress_max_active">#ffffff</color>
+
+
+</resources>

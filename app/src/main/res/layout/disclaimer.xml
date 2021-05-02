@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:padding="20dp"
+    android:background="@drawable/curved_white"
+    android:layout_height="match_parent">
+<TextView android:text="Allow permission for reading background data as our part of "
+    android:textColor="@color/colorPrimaryDark"
+    android:textStyle="bold"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"/>
+    <Button android:text="Allow Permssion"
+        android:id="@+id/allow"
+        android:background="@drawable/border_white_curved"
+        android:layout_width="match_parent"
+        android:layout_marginTop="20dp"
+        android:padding="10dp"
+        android:layout_height="wrap_content"/>
+</LinearLayout>

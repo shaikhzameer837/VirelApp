@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorAccent">
+    <ImageView
+        android:layout_width="wrap_content"
+        android:src="@mipmap/app_logo"
+        android:scaleType="centerCrop"
+        android:layout_centerInParent="true"
+        android:layout_height="350dp"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:layout_centerInParent="true"
+        android:background="#80000000"
+        android:gravity="center"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:textColor="@color/colorPrimary"
+            android:padding="10dp"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:text="Enter your pubg id (Entering wrong pubg id may permenently banned you)"
+            android:layout_height="wrap_content"/>
+        <EditText
+            android:layout_width="match_parent"
+            android:hint="Pubg userName"
+            android:padding="10dp"
+            android:id="@+id/pgUsername"
+             android:layout_margin="20dp"
+            android:background="@drawable/edit_stroke"
+            android:textColor="@color/colorPrimary"
+            android:textColorHint="@color/colorPrimary"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+
+</RelativeLayout>
