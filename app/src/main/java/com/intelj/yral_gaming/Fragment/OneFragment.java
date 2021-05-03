@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
@@ -13,12 +14,14 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.intelj.yral_gaming.Activity.MainActivity;
 import com.intelj.yral_gaming.Adapter.TimeSlotAdapter;
 import com.intelj.yral_gaming.AppController;
 import com.intelj.yral_gaming.R;
@@ -34,6 +37,7 @@ import java.util.Locale;
 public class OneFragment extends Fragment {
     private RecyclerView recyclerView;
     private TextView tv_coming_soon;
+    private ImageView imageView;
     View rootView;
     private TimeSlotAdapter mAdapter;
     ArrayList<UserModel> allData = new ArrayList<>();
@@ -78,11 +82,22 @@ public class OneFragment extends Fragment {
         rootView = inflater.inflate(R.layout.fragment_one, container, false);
         recyclerView = rootView.findViewById(R.id.recycler_view);
         tv_coming_soon = rootView.findViewById(R.id.tv_coming_soon);
+        imageView = rootView.findViewById(R.id.imageview);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new TimeSlotAdapter(getActivity(), allData,title);
 
+        Glide.with(this).load(R.drawable.coming_soon).centerCrop().into(imageView);
         if (show_listview) {
+            recyclerView.setVisibility(View.VISIBLE);
+            tv_coming_soon.setVisibility(View.GONE);
+            imageView.setVisibility(View.GONE);
+        }
+        else {
+            recyclerView.setVisibility(View.GONE);
+            tv_coming_soon.setVisibility(View.VISIBLE);
+            imageView.setVisibility(View.VISIBLE);
+        }
             recyclerView.setAdapter(mAdapter);
             mDatabase = FirebaseDatabase.getInstance().getReference(AppConstant.live_stream);
             mDatabase.child(AppController.getInstance().channelId).child(date).child(title).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -112,7 +127,6 @@ public class OneFragment extends Fragment {
                                     .setTotalCount(dataSnapshot.child(s).child(AppConstant.member).getChildrenCount())
                                     .setTime(s).setuniqueDate(date + "/" + title + "/" + s).userModelBuilder();
                             allData.add(userModel);
-                            tv_coming_soon.setVisibility(View.GONE);
                         }
                     }
                     mAdapter.notifyDataSetChanged();
@@ -124,11 +138,7 @@ public class OneFragment extends Fragment {
 
                 }
             });
-        }
-        else {
-            recyclerView.setVisibility(View.GONE);
-            tv_coming_soon.setVisibility(View.VISIBLE);
-        }
+
         return rootView;
     }
 

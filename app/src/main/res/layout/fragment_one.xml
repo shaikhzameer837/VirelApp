@@ -5,12 +5,19 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <ImageView
+        android:id="@+id/imageview"
+        android:layout_gravity="center"
+        android:layout_width="120dp"
+        android:layout_height="120dp"/>
+
     <TextView
         android:id="@+id/tv_coming_soon"
-        android:text="coming soon"
-        android:textSize="25sp"
-        android:textColor="@color/colorAccent"
-        android:layout_width="match_parent"
+        android:text="Coming Soon"
+        android:textStyle="bold"
+        android:layout_gravity="center"
+        android:textColor="@color/colorPrimaryDark"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content">
     </TextView>
     <androidx.recyclerview.widget.RecyclerView
