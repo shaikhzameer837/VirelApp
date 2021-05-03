@@ -41,7 +41,6 @@ public class SplashScreenStory extends AppCompatActivity implements StoriesProgr
     private StoriesProgressView storiesProgressView;
     private ImageView image;
     private TextView priceMoney;
-
     private int counter = 0;
     private final String[] resources = new String[]{
             "https://cdnb.artstation.com/p/assets/images/images/025/525/671/large/as-editor-pubg-poster.jpg?1586085669",

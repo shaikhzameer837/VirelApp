@@ -32,8 +32,7 @@ import com.intelj.yral_gaming.DemoDelete;
 import com.intelj.yral_gaming.R;
 import com.intelj.yral_gaming.SigninActivity;
 import com.intelj.yral_gaming.Utils.AppConstant;
-import com.sdsmdg.harjot.rotatingtext.RotatingTextWrapper;
-import com.sdsmdg.harjot.rotatingtext.models.Rotatable;
+
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -58,12 +57,12 @@ public class SplashScreen extends AppCompatActivity {
 
         showRateApp();
 
-        RotatingTextWrapper rotatingTextWrapper = findViewById(R.id.custom_switcher);
-        rotatingTextWrapper.setSize(18);
-        Rotatable rotatable = new Rotatable(Color.parseColor("#ffffff"), 1300, "If you good at Gaming", "Why not play and earn", "Get 500rs on every chicken dinner");
-        rotatable.setSize(18);
-        rotatable.setAnimationDuration(500);
-        rotatingTextWrapper.setContent("This is ?", rotatable);
+//        RotatingTextWrapper rotatingTextWrapper = findViewById(R.id.custom_switcher);
+//        rotatingTextWrapper.setSize(18);
+//        Rotatable rotatable = new Rotatable(Color.parseColor("#ffffff"), 1300, "If you good at Gaming", "Why not play and earn", "Get 500rs on every chicken dinner");
+//        rotatable.setSize(18);
+//        rotatable.setAnimationDuration(500);
+//        rotatingTextWrapper.setContent("This is ?", rotatable);
 
     }
 
