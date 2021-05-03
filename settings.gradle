@@ -1,2 +1,2 @@
-include ':app', ':rotatingtext'
+include ':app'
 rootProject.name = "DuminGaming"

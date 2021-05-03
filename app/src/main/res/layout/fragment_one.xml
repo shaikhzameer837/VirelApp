@@ -8,9 +8,8 @@
     <ImageView
         android:id="@+id/imageview"
         android:layout_gravity="center"
-        android:layout_width="120dp"
-        android:layout_height="120dp"/>
-
+        android:layout_width="175dp"
+        android:layout_height="175dp"/>
     <TextView
         android:id="@+id/tv_coming_soon"
         android:text="Coming Soon"
@@ -18,12 +17,12 @@
         android:layout_gravity="center"
         android:textColor="@color/colorPrimaryDark"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-    </TextView>
+        android:layout_height="wrap_content"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:scrollbars="vertical"
         android:layout_width="match_parent"
-        android:layout_above="@+id/runPubg"
-        android:layout_height="match_parent"/>
+        android:layout_weight="1"
+        android:layout_height="0dp"/>
 </LinearLayout>

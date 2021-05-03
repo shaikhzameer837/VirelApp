@@ -1,32 +1,22 @@
 package com.intelj.yral_gaming;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Application;
 import android.app.ProgressDialog;
-import android.content.ActivityNotFoundException;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.play.core.review.ReviewInfo;
-import com.google.android.play.core.review.ReviewManager;
-import com.google.android.play.core.review.ReviewManagerFactory;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -34,10 +24,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.intelj.yral_gaming.Activity.MainActivity;
 import com.intelj.yral_gaming.Activity.PreRegistartionActivity;
-import com.intelj.yral_gaming.Activity.SplashScreen;
 import com.intelj.yral_gaming.Fragment.OneFragment;
 import com.intelj.yral_gaming.Utils.AppConstant;
 
@@ -49,7 +37,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Executor;
 
 public class AppController extends Application implements Application.ActivityLifecycleCallbacks{
     public static AppController instance;
@@ -76,33 +63,10 @@ public class AppController extends Application implements Application.ActivityLi
     public void onCreate() {
         super.onCreate();
         instance = this;
-        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
-        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
-                .setMinimumFetchIntervalInSeconds(0)
-                .build();
-        mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
-        mFirebaseRemoteConfig.setDefaultsAsync(R.xml.remote_config);
-//        mFirebaseRemoteConfig.fetchAndActivate()
-//                .addOnCompleteListener(this, new OnCompleteListener<Boolean>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<Boolean> task) {
-//                        if (task.isSuccessful()) {
-//                            boolean updated = task.getResult();
-//                            Log.d( "Config params updated: " , updated + "");
-//                            /*Toast.makeText(SplashScreen.this, "Fetch and activate succeeded",
-//                                    Toast.LENGTH_SHORT).show();*/
-//
-//                        } else {
-//                            Log.d( "Config params updated: " , "FAiled");
-//                            /*Toast.makeText(SplashScreen.this, "Fetch failed",
-//                                    Toast.LENGTH_SHORT).show();*/
-//                        }
-//                       // Pre_registartion_activity = mFirebaseRemoteConfig.getString("Pre_registration");
-//                    }
-//                });
-
+        remoteConfig = FirebaseRemoteConfig.getInstance();
+        remoteConfig.fetchAndActivate();
         getReadyForCheckin();
-//        getGameName();
+        getGameName();
         getTournamentTime();
     }
 
@@ -124,13 +88,7 @@ public class AppController extends Application implements Application.ActivityLi
                 if (progressDialog != null) {
                     progressDialog.cancel();
                     progressDialog = null;
-                    Intent intent = null;
-                    if (SplashScreen.Pre_registartion_activity.equalsIgnoreCase("yes")) {
-                        intent = new Intent(AppController.this, PreRegistartionActivity.class);
-                    } else
-                        intent = new Intent(AppController.this, MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
+                   startToRunActivity();
                 }
 //                for (DataSnapshot postSnapshot : dataSnapshot.child(AppConstant.myTeam).getChildren()) {
 //                    FirebaseDatabase.getInstance().getReference(AppConstant.users).child(postSnapshot.getKey() + "")
@@ -155,10 +113,18 @@ public class AppController extends Application implements Application.ActivityLi
         });
     }
 
+    public void startToRunActivity() {
+        Intent intent = new Intent(this, MainActivity.class);
+        if (remoteConfig.getString(AppConstant.pre_registration).equalsIgnoreCase("yes")) {
+            intent = new Intent(this, PreRegistartionActivity.class);
+        }
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
+    }
+
     public void getGameName() {
         gameNameHashmap.clear();
-        remoteConfig = FirebaseRemoteConfig.getInstance();
-        remoteConfig.fetchAndActivate();
+
         String game_name = remoteConfig.getString("gameStreaming");
         Log.e("game_name_cont", game_name);
         try {
@@ -295,8 +261,6 @@ public class AppController extends Application implements Application.ActivityLi
 
     public void getTournamentTime() {
         timeArray.clear();
-        remoteConfig = FirebaseRemoteConfig.getInstance();
-        remoteConfig.fetchAndActivate();
         String game_name = remoteConfig.getString("game_slot");
         Log.e("game_name_cont", game_name);
         try {

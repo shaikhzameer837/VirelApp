@@ -72,49 +72,50 @@ public class HelloService extends Service {
 
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
-        Log.e("dataSnapshot", "i m running long----");
-        backgroundDB = new DatabaseHelper(this, "backgroundApps_db");
-        if (intent != null) {
-            String action = intent.getAction();
-            stopTiming = intent.getStringExtra("stopTiming");
-            if (action != null)
-
-                switch (action) {
-                    case ACTION_START_FOREGROUND_SERVICE:
-                        startForegroundService();
-
-                        TimerTask doAsynchronousTask = new TimerTask() {
-                            @Override
-                            public void run() {
-                                handler.post(new Runnable() {
-                                    public void run() {
-                                        // if (Long.parseLong(stopTiming) < System.currentTimeMillis()) {
-
-                                        //  }
-                                        roomPlan = intent.getStringExtra("roomPlan");
-                                        getProcessName();
-                                    }
-                                });
-                            }
-                        };
-                        timer.schedule(doAsynchronousTask, 0, 10000);
-                        break;
-                    case ACTION_STOP_FOREGROUND_SERVICE:
-                        timer.cancel();
-                        timer.purge();
-                        stopTiming = intent.getStringExtra("stopTiming");
-                        if (stopTiming.equals(AppController.getInstance().userId))
-                            showNotification("Congratulation you won the match open chicken dinner page and click on verify", "Winner Winner chicken dinner");
-                       else
-                            showNotification("You can try next match coming soon and win 500 Rs", "Winner Winner chicken dinner");
-                        stopForegroundService();
-                        break;
-                    case ACTION_PLAY:
-                        break;
-                    case ACTION_PAUSE:
-                        break;
-                }
-        }
+        stopSelf();
+//        Log.e("dataSnapshot", "i m running long----");
+//        backgroundDB = new DatabaseHelper(this, "backgroundApps_db");
+//        if (intent != null) {
+//            String action = intent.getAction();
+//            stopTiming = intent.getStringExtra("stopTiming");
+//            if (action != null)
+//
+//                switch (action) {
+//                    case ACTION_START_FOREGROUND_SERVICE:
+//                        startForegroundService();
+//
+//                        TimerTask doAsynchronousTask = new TimerTask() {
+//                            @Override
+//                            public void run() {
+//                                handler.post(new Runnable() {
+//                                    public void run() {
+//                                        // if (Long.parseLong(stopTiming) < System.currentTimeMillis()) {
+//
+//                                        //  }
+//                                        roomPlan = intent.getStringExtra("roomPlan");
+//                                        getProcessName();
+//                                    }
+//                                });
+//                            }
+//                        };
+//                        timer.schedule(doAsynchronousTask, 0, 10000);
+//                        break;
+//                    case ACTION_STOP_FOREGROUND_SERVICE:
+//                        timer.cancel();
+//                        timer.purge();
+//                        stopTiming = intent.getStringExtra("stopTiming");
+//                        if (stopTiming.equals(AppController.getInstance().userId))
+//                            showNotification("Congratulation you won the match open chicken dinner page and click on verify", "Winner Winner chicken dinner");
+//                       else
+//                            showNotification("You can try next match coming soon and win 500 Rs", "Winner Winner chicken dinner");
+//                        stopForegroundService();
+//                        break;
+//                    case ACTION_PLAY:
+//                        break;
+//                    case ACTION_PAUSE:
+//                        break;
+//                }
+//        }
         return super.onStartCommand(intent, flags, startId);
     }
 

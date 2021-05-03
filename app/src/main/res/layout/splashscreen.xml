@@ -17,11 +17,11 @@
         android:src="@mipmap/app_logo"
         android:layout_height="250dp"/>
     </com.facebook.shimmer.ShimmerFrameLayout>
-    <com.sdsmdg.harjot.rotatingtext.RotatingTextWrapper
-        android:id="@+id/custom_switcher"
-        android:layout_marginTop="30dp"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/shimmer_view_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+<!--    <com.sdsmdg.harjot.rotatingtext.RotatingTextWrapper-->
+<!--        android:id="@+id/custom_switcher"-->
+<!--        android:layout_marginTop="30dp"-->
+<!--        android:layout_centerHorizontal="true"-->
+<!--        android:layout_below="@+id/shimmer_view_container"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content" />-->
 </RelativeLayout>

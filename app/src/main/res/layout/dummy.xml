@@ -46,43 +46,51 @@
                 android:drawableLeft="@drawable/online"
                 android:layout_height="wrap_content"/>
             <RelativeLayout
-                android:layout_width="wrap_content"
-                android:background="@drawable/border_round"
-                android:layout_margin="5dp"
-                android:padding="10dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-
                 <TextView android:id="@+id/timeLeft"
                     android:layout_width="match_parent"
-                    android:textColor="@color/colorPrimaryDark"
+                    android:padding="10dp"
+                    android:gravity="center"
+                    android:layout_marginLeft="5dp"
+                    android:textColor="@color/appColor"
                     android:textStyle="bold"
+                    android:background="@android:color/transparent"
                     android:text="Play game for free and earn 500Rs real cash"
                     android:layout_height="wrap_content"/>
-                <TextView android:id="@+id/roomId"
+                <TextView android:id="@+id/coin"
                     android:layout_width="wrap_content"
-                    android:text="Room id:-"
-                    android:layout_marginTop="5dp"
+                    android:padding="10dp"
+                    android:gravity="center"
+                    android:drawableStart="@drawable/ic_coin"
+                    android:layout_alignParentLeft="true"
                     android:layout_below="@+id/timeLeft"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:layout_marginLeft="5dp"
+                    android:background="@android:color/transparent"
+                    android:text="coins"
                     android:layout_height="wrap_content"/>
-                <TextView android:id="@+id/roomPassword"
+
+                <Button android:id="@+id/subscription"
                     android:layout_width="wrap_content"
-                    android:text="Password:-"
-                    android:gravity="center"
-                    android:layout_marginTop="5dp"
-                    android:layout_below="@+id/roomId"
-                    android:layout_height="wrap_content"/>
-                <TextView android:id="@+id/gameName"
-                    android:layout_width="wrap_content"
-                    android:text="Game:- pubg"
-                    android:gravity="center"
-                    android:layout_marginTop="5dp"
-                    android:layout_below="@+id/roomPassword"
-                    android:layout_height="match_parent"/>
+                    android:padding="5dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@+id/timeLeft"
+                    android:layout_gravity="center"
+                    android:background="@drawable/round_red"
+                    android:drawableStart="@drawable/ic_subscribe"
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="bold"
+                    android:text="Subscribe"
+                    android:layout_height="40dp"/>
             </RelativeLayout>
         </LinearLayout>
         <include layout="@layout/bottom_sheet"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="320dp"
+            android:layout_marginBottom="-10dp"
             android:background="@color/black"
             />
         <com.google.android.material.bottomnavigation.BottomNavigationView

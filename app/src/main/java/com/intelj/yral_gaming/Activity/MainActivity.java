@@ -104,7 +104,6 @@ import java.util.List;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
-    Button btn;
     AppConstant appConstant;
     private ViewPager viewPager;
     private MyViewPagerAdapter myViewPagerAdapter;
@@ -136,7 +135,6 @@ private  FirebaseRemoteConfig remoteConfig;
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.dummy);
-        btn = findViewById(R.id.runPubg);
 //        ScreenshotManager.INSTANCE.requestScreenshotPermission(MainActivity.this, REQUEST_ID);
 //        final Handler handler = new Handler(Looper.getMainLooper());
 //        handler.postDelayed(new Runnable() {
@@ -165,23 +163,24 @@ private  FirebaseRemoteConfig remoteConfig;
 //        getGameName();
 //        openTopSheetDialog(roomPassword);
 
-//        YouTubePlayerFragment youtubeFragment = (YouTubePlayerFragment)
-//                getFragmentManager().findFragmentById(R.id.youtubeFragment);
-//        youtubeFragment.initialize(AppConstant.youtubeApiKey,
-//                new YouTubePlayer.OnInitializedListener() {
-//                    @Override
-//                    public void onInitializationSuccess(YouTubePlayer.Provider provider,
-//                                                        YouTubePlayer youTubePlayer, boolean b) {
-//                        // do any work here to cue video, play video, etc.
-//                        youTubePlayer.cueVideo("X27uOV7pa-I",1);
-//                    }
-//
-//                    @Override
-//                    public void onInitializationFailure(YouTubePlayer.Provider provider,
-//                                                        YouTubeInitializationResult youTubeInitializationResult) {
-//                        Log.d( "onInitianFailure: ",youTubeInitializationResult.toString());
-//                    }
-//                });
+        YouTubePlayerFragment youtubeFragment = (YouTubePlayerFragment)
+                getFragmentManager().findFragmentById(R.id.youtubeFragment);
+        youtubeFragment.initialize(AppConstant.youtubeApiKey,
+                new YouTubePlayer.OnInitializedListener() {
+                    @Override
+                    public void onInitializationSuccess(YouTubePlayer.Provider provider,
+                                                        YouTubePlayer youTubePlayer, boolean b) {
+                        if (!b) {
+                            youTubePlayer.loadVideo( "j7pF6ufhd4g");
+                        }
+                    }
+
+                    @Override
+                    public void onInitializationFailure(YouTubePlayer.Provider provider,
+                                                        YouTubeInitializationResult youTubeInitializationResult) {
+                        Log.d( "onInitianFailure: ",youTubeInitializationResult.toString());
+                    }
+                });
         setFirstView();
         SharedPreferences shd = getSharedPreferences(AppConstant.saveYTid, 0);
         String saveYTid = shd.getString(AppConstant.saveYTid, "");
@@ -274,19 +273,19 @@ private  FirebaseRemoteConfig remoteConfig;
     protected void onResume() {
         super.onResume();
 
-        boolean granted;
-        AppOpsManager appOps = (AppOpsManager) getSystemService(Context.APP_OPS_SERVICE);
-        int mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
-                android.os.Process.myUid(), getPackageName());
-        if (mode == AppOpsManager.MODE_DEFAULT) {
-            granted = (checkCallingOrSelfPermission(android.Manifest.permission.PACKAGE_USAGE_STATS) == PackageManager.PERMISSION_GRANTED);
-        } else {
-            granted = (mode == AppOpsManager.MODE_ALLOWED);
-        }
-        if (!granted) {
-            MyBottomSheetDialog bottomSheetFragment = new MyBottomSheetDialog();
-            bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
-        }
+//        boolean granted;
+//        AppOpsManager appOps = (AppOpsManager) getSystemService(Context.APP_OPS_SERVICE);
+//        int mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
+//                android.os.Process.myUid(), getPackageName());
+//        if (mode == AppOpsManager.MODE_DEFAULT) {
+//            granted = (checkCallingOrSelfPermission(android.Manifest.permission.PACKAGE_USAGE_STATS) == PackageManager.PERMISSION_GRANTED);
+//        } else {
+//            granted = (mode == AppOpsManager.MODE_ALLOWED);
+//        }
+//        if (!granted) {
+//            MyBottomSheetDialog bottomSheetFragment = new MyBottomSheetDialog();
+//            bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
+//        }
     }
 
     private void showNotification() {
@@ -634,26 +633,26 @@ private  FirebaseRemoteConfig remoteConfig;
                 return;
             }
             final String roomPlan = intent.getStringExtra("roomPlan");
-            new CountDownTimer(Long.parseLong(message), 1000) {
-                @Override
-                public void onTick(long millisUntilFinished) {
-                    int seconds = (int) (millisUntilFinished / 1000) % 60;
-                    int minutes = (int) ((millisUntilFinished / (1000 * 60)) % 60);
-                    int hours = (int) ((millisUntilFinished / (1000 * 60 * 60)) % 24);
-                    timeLeft.setText("Your next Game starts in " + hours + ":" + minutes + ":" + seconds);
-                    timeLeft.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            startService(new Intent(MainActivity.this, MyService.class));
-                        }
-                    });
-                }
-
-                @Override
-                public void onFinish() {
-                    timeLeft.setText("Finished");
-                }
-            }.start();
+//            new CountDownTimer(Long.parseLong(message), 1000) {
+//                @Override
+//                public void onTick(long millisUntilFinished) {
+//                    int seconds = (int) (millisUntilFinished / 1000) % 60;
+//                    int minutes = (int) ((millisUntilFinished / (1000 * 60)) % 60);
+//                    int hours = (int) ((millisUntilFinished / (1000 * 60 * 60)) % 24);
+//                    timeLeft.setText("Your next Game starts in " + hours + ":" + minutes + ":" + seconds);
+//                    timeLeft.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View view) {
+//                           // startService(new Intent(MainActivity.this, MyService.class));
+//                        }
+//                    });
+//                }
+//
+//                @Override
+//                public void onFinish() {
+//                    timeLeft.setText("Finished");
+//                }
+//            }.start();
             setRoomVideo(roomPlan);
         }
     };

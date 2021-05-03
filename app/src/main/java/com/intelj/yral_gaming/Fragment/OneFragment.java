@@ -44,7 +44,7 @@ public class OneFragment extends Fragment {
     DatabaseReference mDatabase;
     long miliSec = 0;
     String title;
-    Boolean show_listview;
+    boolean show_listview = true;
     String date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
      Date resultDate;
     public OneFragment() {

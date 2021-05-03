@@ -20,10 +20,10 @@ public class AppConstant {
             friends = "friends",
             member = "member",
             mobile_info = "mobile_info",
-            youtubeId="youtubeId",
-            saveYTid="saveYTid",
-            stopTime="stopTime",
-            backgroundData ="backgroundData",
+            youtubeId = "youtubeId",
+            saveYTid = "saveYTid",
+            stopTime = "stopTime",
+            backgroundData = "backgroundData",
             search = "search",
             myTeam = "myTeam",
             token = "token",
@@ -34,6 +34,7 @@ public class AppConstant {
             paymentHistory = "phist",
             gameBio = "gbio",
             youtubeApiKey = "AIzaSyBQiqtYCe51DtHvGhJOjO20Vv9Y_uzRyks",
+            pre_registration = "Pre_registration",
             userName = "userName",
             bookingid = "bookingid";
     public static SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss aa");
@@ -45,6 +46,7 @@ public class AppConstant {
     public void setSharedPref() {
         sharedPreferences = _context.getSharedPreferences(AppName, Context.MODE_PRIVATE);
     }
+
     public static boolean isTimeAutomatic(Context c) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             return Settings.Global.getInt(c.getContentResolver(), Settings.Global.AUTO_TIME, 0) == 1;
@@ -52,12 +54,14 @@ public class AppConstant {
             return android.provider.Settings.System.getInt(c.getContentResolver(), android.provider.Settings.System.AUTO_TIME, 0) == 1;
         }
     }
+
     public void saveLogin(String user_id, String _phoneNumber) {
         setSharedPref();
         sharedPreferences.edit().putBoolean(login, true).apply();
         sharedPreferences.edit().putString(userId, user_id).apply();
         sharedPreferences.edit().putString(phoneNumber, _phoneNumber).apply();
     }
+
     public void saveSlot(String _uniqueId) {
         setSharedPref();
         sharedPreferences.edit().putString(saveYTid, _uniqueId).apply();
@@ -73,10 +77,12 @@ public class AppConstant {
         return sharedPreferences.getLong(bookingid,0);
     }
 
-    public String getDataFromShared(String param){
+
+    public String getDataFromShared(String param) {
         setSharedPref();
         return sharedPreferences.getString(param, "");
     }
+
     public boolean checkLogin() {
         setSharedPref();
         return sharedPreferences.getBoolean(login, false);
