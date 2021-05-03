@@ -34,6 +34,7 @@ public class AppConstant {
             paymentHistory = "phist",
             gameBio = "gbio",
             youtubeApiKey = "AIzaSyBQiqtYCe51DtHvGhJOjO20Vv9Y_uzRyks",
+            pre_registration = "Pre_registration",
             userName = "userName";
     public static SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss aa");
 

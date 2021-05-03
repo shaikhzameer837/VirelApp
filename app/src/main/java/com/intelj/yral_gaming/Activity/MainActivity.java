@@ -165,23 +165,24 @@ private  FirebaseRemoteConfig remoteConfig;
 //        getGameName();
 //        openTopSheetDialog(roomPassword);
 
-//        YouTubePlayerFragment youtubeFragment = (YouTubePlayerFragment)
-//                getFragmentManager().findFragmentById(R.id.youtubeFragment);
-//        youtubeFragment.initialize(AppConstant.youtubeApiKey,
-//                new YouTubePlayer.OnInitializedListener() {
-//                    @Override
-//                    public void onInitializationSuccess(YouTubePlayer.Provider provider,
-//                                                        YouTubePlayer youTubePlayer, boolean b) {
-//                        // do any work here to cue video, play video, etc.
-//                        youTubePlayer.cueVideo("X27uOV7pa-I",1);
-//                    }
-//
-//                    @Override
-//                    public void onInitializationFailure(YouTubePlayer.Provider provider,
-//                                                        YouTubeInitializationResult youTubeInitializationResult) {
-//                        Log.d( "onInitianFailure: ",youTubeInitializationResult.toString());
-//                    }
-//                });
+        YouTubePlayerFragment youtubeFragment = (YouTubePlayerFragment)
+                getFragmentManager().findFragmentById(R.id.youtubeFragment);
+        youtubeFragment.initialize(AppConstant.youtubeApiKey,
+                new YouTubePlayer.OnInitializedListener() {
+                    @Override
+                    public void onInitializationSuccess(YouTubePlayer.Provider provider,
+                                                        YouTubePlayer youTubePlayer, boolean b) {
+                        if (!b) {
+                            youTubePlayer.loadVideo( "BL4dnvBytLA");
+                        }
+                    }
+
+                    @Override
+                    public void onInitializationFailure(YouTubePlayer.Provider provider,
+                                                        YouTubeInitializationResult youTubeInitializationResult) {
+                        Log.d( "onInitianFailure: ",youTubeInitializationResult.toString());
+                    }
+                });
         setFirstView();
         SharedPreferences shd = getSharedPreferences(AppConstant.saveYTid, 0);
         String saveYTid = shd.getString(AppConstant.saveYTid, "");
@@ -274,19 +275,19 @@ private  FirebaseRemoteConfig remoteConfig;
     protected void onResume() {
         super.onResume();
 
-        boolean granted;
-        AppOpsManager appOps = (AppOpsManager) getSystemService(Context.APP_OPS_SERVICE);
-        int mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
-                android.os.Process.myUid(), getPackageName());
-        if (mode == AppOpsManager.MODE_DEFAULT) {
-            granted = (checkCallingOrSelfPermission(android.Manifest.permission.PACKAGE_USAGE_STATS) == PackageManager.PERMISSION_GRANTED);
-        } else {
-            granted = (mode == AppOpsManager.MODE_ALLOWED);
-        }
-        if (!granted) {
-            MyBottomSheetDialog bottomSheetFragment = new MyBottomSheetDialog();
-            bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
-        }
+//        boolean granted;
+//        AppOpsManager appOps = (AppOpsManager) getSystemService(Context.APP_OPS_SERVICE);
+//        int mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
+//                android.os.Process.myUid(), getPackageName());
+//        if (mode == AppOpsManager.MODE_DEFAULT) {
+//            granted = (checkCallingOrSelfPermission(android.Manifest.permission.PACKAGE_USAGE_STATS) == PackageManager.PERMISSION_GRANTED);
+//        } else {
+//            granted = (mode == AppOpsManager.MODE_ALLOWED);
+//        }
+//        if (!granted) {
+//            MyBottomSheetDialog bottomSheetFragment = new MyBottomSheetDialog();
+//            bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
+//        }
     }
 
     private void showNotification() {
@@ -644,7 +645,7 @@ private  FirebaseRemoteConfig remoteConfig;
                     timeLeft.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            startService(new Intent(MainActivity.this, MyService.class));
+                           // startService(new Intent(MainActivity.this, MyService.class));
                         }
                     });
                 }

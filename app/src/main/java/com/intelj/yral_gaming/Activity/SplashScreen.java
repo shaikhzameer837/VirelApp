@@ -44,8 +44,7 @@ import static com.google.android.play.core.install.model.UpdateAvailability.*;
 
 public class SplashScreen extends AppCompatActivity {
     private static final int IMMEDIATE_APP_UPDATE_REQ_CODE = 222222;
-    private FirebaseRemoteConfig mFirebaseRemoteConfig;
-    public static String Pre_registartion_activity;
+
     private AppUpdateManager appUpdateManager;
     private ReviewManager reviewManager;
 
@@ -56,12 +55,7 @@ public class SplashScreen extends AppCompatActivity {
         appUpdateManager = AppUpdateManagerFactory.create(getApplicationContext());
         reviewManager = ReviewManagerFactory.create(this);
 
-        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
-        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
-                .setMinimumFetchIntervalInSeconds(0)
-                .build();
-        mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
-        mFirebaseRemoteConfig.setDefaultsAsync(R.xml.remote_config);
+
         showRateApp();
 
         RotatingTextWrapper rotatingTextWrapper = findViewById(R.id.custom_switcher);
@@ -70,50 +64,13 @@ public class SplashScreen extends AppCompatActivity {
         rotatable.setSize(18);
         rotatable.setAnimationDuration(500);
         rotatingTextWrapper.setContent("This is ?", rotatable);
-        mFirebaseRemoteConfig.fetchAndActivate()
-                .addOnCompleteListener(this, new OnCompleteListener<Boolean>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Boolean> task) {
-                        if (task.isSuccessful()) {
-                            boolean updated = task.getResult();
-                            Log.d( "Config params updated: " , updated + "");
-                            /*Toast.makeText(SplashScreen.this, "Fetch and activate succeeded",
-                                    Toast.LENGTH_SHORT).show();*/
 
-                        } else {
-                            Log.d( "Config params updated: " , "FAiled");
-                            /*Toast.makeText(SplashScreen.this, "Fetch failed",
-                                    Toast.LENGTH_SHORT).show();*/
-                        }
-                        Pre_registartion_activity = mFirebaseRemoteConfig.getString("Pre_registration");
-                    }
-                });
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        final ScheduledExecutorService worker = Executors.newSingleThreadScheduledExecutor();
 
-        Runnable runnable = new Runnable() {
-            public void run() {
-                if (mFirebaseRemoteConfig.getString("Pre_registration").equalsIgnoreCase("yes")) {
-                    Intent intent = null;
-                    if (!new AppConstant(SplashScreen.this).checkLogin()) {
-                         intent = new Intent(SplashScreen.this, SigninActivity.class);
-                    }
-                    else intent = new Intent(SplashScreen.this, PreRegistartionActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-                }
-                else {
-                    Intent intent = new Intent(SplashScreen.this, MainActivity.class);
-                    startActivity(intent);
-                }
-                AppController.getInstance().getGameName();
-            }
-        };
-        worker.schedule(runnable, 4, TimeUnit.SECONDS);
     }
 
     private void checkUpdate() {

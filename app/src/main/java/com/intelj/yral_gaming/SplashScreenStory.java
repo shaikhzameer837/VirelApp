@@ -18,6 +18,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.intelj.yral_gaming.Activity.MainActivity;
 import com.intelj.yral_gaming.Activity.PreRegistartionActivity;
 import com.intelj.yral_gaming.Activity.SplashScreen;
@@ -36,7 +38,6 @@ import java.util.concurrent.TimeUnit;
 public class SplashScreenStory extends AppCompatActivity implements StoriesProgressView.StoriesListener {
 
     private static final int PROGRESS_COUNT = 3;
-
     private StoriesProgressView storiesProgressView;
     private ImageView image;
     private TextView priceMoney;
@@ -79,17 +80,13 @@ public class SplashScreenStory extends AppCompatActivity implements StoriesProgr
         StrictMode.setThreadPolicy(policy);
         priceMoney = findViewById(R.id.priceMoney);
         priceMoney.setText("collect 200 coins");
-        storiesProgressView =  findViewById(R.id.stories);
+        storiesProgressView = findViewById(R.id.stories);
         storiesProgressView.setStoriesCount(PROGRESS_COUNT);
         storiesProgressView.setStoryDuration(3000L);
-        // or
-        // storiesProgressView.setStoriesCountWithDurations(durations);
         storiesProgressView.setStoriesListener(this);
-//        storiesProgressView.startStories();
-        // counter = 1;
-          storiesProgressView.startStories(counter);
+        storiesProgressView.startStories(counter);
 
-        image =  findViewById(R.id.image);
+        image = findViewById(R.id.image);
         Glide.with(SplashScreenStory.this).load(resources[0]).fitCenter().into(image);
         // bind reverse view
         View reverse = findViewById(R.id.reverse);
@@ -110,68 +107,17 @@ public class SplashScreenStory extends AppCompatActivity implements StoriesProgr
             }
         });
         skip.setOnTouchListener(onTouchListener);
-       /* try {
-            TimeTCPClient client = new TimeTCPClient();
-            try {
-                // Set timeout of 60 seconds
-                client.setDefaultTimeout(1000000);
-                client.connect("time.nist.gov");
-                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-                String dateString = formatter.format(client.getDate());
-                try {
-                    Date date = formatter.parse(dateString);
-                    long timeInMillis = date.getTime();
-                    Log.e("ServerValue", timeInMillis+"");
-                    SharedPreferences sharedpreferences = getSharedPreferences("MyPREFERENCES", Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedpreferences.edit();
-                    editor.putLong("lastkey", timeInMillis);
-                    editor.apply();
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-
-            } finally {
-                client.disconnect();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
         findViewById(R.id.skipScreen).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final ScheduledExecutorService worker = Executors.newSingleThreadScheduledExecutor();
-
-                Runnable runnable = new Runnable() {
-                    public void run() {
-                        AppController.getInstance().mFirebaseRemoteConfig.fetchAndActivate();
-                        if (AppController.getInstance().mFirebaseRemoteConfig.getString("Pre_registration").equalsIgnoreCase("yes")) {
-                            Intent intent = null;
-                            if (!new AppConstant(SplashScreenStory.this).checkLogin()) {
-                                intent = new Intent(SplashScreenStory.this, SigninActivity.class);
-                            }
-                            else intent = new Intent(SplashScreenStory.this, PreRegistartionActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);
-                        }
-                        else {
-                            Intent intent = new Intent(SplashScreenStory.this, MainActivity.class);
-                            startActivity(intent);
-                        }
-                        AppController.getInstance().getGameName();
-                    }
-                };
-                worker.schedule(runnable, 4, TimeUnit.SECONDS);
+                AppController.getInstance().startToRunActivity();
             }
         });
     }
 
     @Override
     public void onNext() {
-        if(counter == resources.length){
-            Intent intent = new Intent(SplashScreenStory.this, MainActivity.class);
-            startActivity(intent);
-        }
-            Glide.with(SplashScreenStory.this).load(resources[++counter]).into(image);
+        Glide.with(SplashScreenStory.this).load(resources[++counter]).into(image);
     }
 
     @Override
@@ -182,6 +128,7 @@ public class SplashScreenStory extends AppCompatActivity implements StoriesProgr
 
     @Override
     public void onComplete() {
+        AppController.getInstance().startToRunActivity();
     }
 
     @Override
@@ -190,4 +137,5 @@ public class SplashScreenStory extends AppCompatActivity implements StoriesProgr
         storiesProgressView.destroy();
         super.onDestroy();
     }
+
 }
