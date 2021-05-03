@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -71,17 +72,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
         holder.title.setText(allData.get(position).getTime());
-        String strDate = date + " " + allData.get(position).getTime().replace("pm", ":00:00 pm")
-                .replace("am", ":00:00 am");
-        try {
-            Date resultDate = AppConstant.dateFormat.parse(strDate);
-            miliSec = resultDate.getTime();
-            Log.e("miliSec", miliSec + "");
-            Log.e("miliSec", System.currentTimeMillis() + "");
-        } catch (ParseException e) {
-            e.printStackTrace();
-            FirebaseCrashlytics.getInstance().recordException(e);
-        }
+
         holder.reg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -118,6 +109,26 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
         myView.findViewById(R.id.books).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                if (appConstant.getbooking() == 0 || appConstant.getbooking() < System.currentTimeMillis()) {
+                    String strDate = date + " " + allData.get(position).getTime().replace("pm", ":00:00 pm")
+                            .replace("am", ":00:00 am");
+                    try {
+                        Date resultDate = AppConstant.dateFormat.parse(strDate);
+                        miliSec = resultDate.getTime() + 3600000;
+                        appConstant.savebooking(miliSec);
+                        Log.e("miliSec", miliSec + "");
+                        Log.e("miliSec", System.currentTimeMillis() + "");
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                        FirebaseCrashlytics.getInstance().recordException(e);
+                    }
+                }
+                else
+                {
+                    Toast.makeText(mContext,"First play the game in first slot",Toast.LENGTH_LONG).show();
+                    return;
+                }
 
                 if (!gameId.getText().toString().equals("")) {
                     FirebaseDatabase.getInstance().getReference(AppConstant.users)

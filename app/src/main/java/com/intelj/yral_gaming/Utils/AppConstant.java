@@ -34,7 +34,8 @@ public class AppConstant {
             paymentHistory = "phist",
             gameBio = "gbio",
             youtubeApiKey = "AIzaSyBQiqtYCe51DtHvGhJOjO20Vv9Y_uzRyks",
-            userName = "userName";
+            userName = "userName",
+            bookingid = "bookingid";
     public static SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss aa");
 
     public AppConstant(Context _context) {
@@ -61,6 +62,17 @@ public class AppConstant {
         setSharedPref();
         sharedPreferences.edit().putString(saveYTid, _uniqueId).apply();
     }
+
+    public void savebooking(long booking) {
+        setSharedPref();
+        sharedPreferences.edit().putLong(bookingid,booking).apply();
+    }
+
+    public Long getbooking() {
+        setSharedPref();
+        return sharedPreferences.getLong(bookingid,0);
+    }
+
     public String getDataFromShared(String param){
         setSharedPref();
         return sharedPreferences.getString(param, "");
