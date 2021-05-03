@@ -5,12 +5,17 @@ import android.app.Application;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -46,7 +51,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;
 
-public class AppController extends Application {
+public class AppController extends Application implements Application.ActivityLifecycleCallbacks{
     public static AppController instance;
     public String userId = "";
     public String channelId = "O-1601351657084";
@@ -65,6 +70,7 @@ public class AppController extends Application {
     public String uploadUrl;
     public FirebaseRemoteConfig remoteConfig;
     public FirebaseRemoteConfig mFirebaseRemoteConfig;
+    AlertDialog.Builder builder;
 
     @Override
     public void onCreate() {
@@ -220,6 +226,44 @@ public class AppController extends Application {
         }*/
     }
 
+    @Override
+    public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState) {
+
+    }
+
+    @Override
+    public void onActivityStarted(@NonNull Activity activity) {
+
+    }
+
+    @Override
+    public void onActivityResumed(@NonNull Activity activity) {
+
+        if (!AppConstant.isTimeAutomatic(getApplicationContext())) {
+            dialogforautomatictime();
+        }
+    }
+
+    @Override
+    public void onActivityPaused(@NonNull Activity activity) {
+
+    }
+
+    @Override
+    public void onActivityStopped(@NonNull Activity activity) {
+
+    }
+
+    @Override
+    public void onActivitySaveInstanceState(@NonNull Activity activity, @NonNull Bundle outState) {
+
+    }
+
+    @Override
+    public void onActivityDestroyed(@NonNull Activity activity) {
+
+    }
+
     class ViewPagerAdapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();
         private final List<String> mFragmentTitleList = new ArrayList<>();
@@ -291,5 +335,34 @@ public class AppController extends Application {
 
     public static AppController getInstance() {
         return instance;
+    }
+
+    public void dialogforautomatictime() {
+        builder = new AlertDialog.Builder(this);
+        builder.setMessage("Please turn on the automatic time from setting") .setTitle("Automatic time");
+
+        //Setting message manually and performing action on button click
+        builder.setMessage("Do you want to close this application ?")
+                .setCancelable(false)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                        Toast.makeText(getApplicationContext(),"you choose yes action for alertbox",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        //  Action for 'NO' Button
+                        dialog.cancel();
+                        Toast.makeText(getApplicationContext(),"you choose no action for alertbox",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+        //Creating dialog box
+        AlertDialog alert = builder.create();
+        //Setting the title manually
+        alert.setTitle("AlertDialogExample");
+        alert.show();
     }
 }
