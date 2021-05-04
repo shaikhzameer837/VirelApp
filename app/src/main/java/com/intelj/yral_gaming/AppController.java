@@ -56,7 +56,6 @@ public class AppController extends Application implements Application.ActivityLi
     public Intent mIntent;
     public String uploadUrl;
     public FirebaseRemoteConfig remoteConfig;
-    public FirebaseRemoteConfig mFirebaseRemoteConfig;
     AlertDialog.Builder builder;
 
     @Override
@@ -145,10 +144,6 @@ public class AppController extends Application implements Application.ActivityLi
             e.printStackTrace();
             FirebaseCrashlytics.getInstance().recordException(e);
         }
-
-
-
-
 
         /*mDatabase = FirebaseDatabase.getInstance().getReference("gameStreaming");
         mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {

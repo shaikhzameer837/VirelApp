@@ -79,6 +79,7 @@ import com.google.firebase.storage.UploadTask;
 import com.intelj.yral_gaming.Adapter.PayMentAdapter;
 import com.intelj.yral_gaming.Adapter.RankAdapter;
 import com.intelj.yral_gaming.AppController;
+import com.intelj.yral_gaming.ComingSoon;
 import com.intelj.yral_gaming.DatabaseHelper;
 import com.intelj.yral_gaming.DemoDelete;
 import com.intelj.yral_gaming.HelloService;
@@ -112,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     ViewPager gameViewpager;
     TextView timeLeft;
-    TextView roomId, roomPassword;
+    TextView coin;
     private RecyclerView recyclerView;
     TeamAdapter mAdapter;
     View inflated;
@@ -127,14 +128,13 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseHelper backgroundDB;
     private static final int REQUEST_ID = 1;
     AlertDialog dialog;
-private  FirebaseRemoteConfig remoteConfig;
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.dummy);
+        setContentView(R.layout.activity_main);
 //        ScreenshotManager.INSTANCE.requestScreenshotPermission(MainActivity.this, REQUEST_ID);
 //        final Handler handler = new Handler(Looper.getMainLooper());
 //        handler.postDelayed(new Runnable() {
@@ -158,8 +158,14 @@ private  FirebaseRemoteConfig remoteConfig;
         db = new DatabaseHelper(this, "notifications");
         backgroundDB = new DatabaseHelper(this, "background_db");
         inflated = stub.inflate();
-        roomId = findViewById(R.id.roomId);
-        roomPassword = findViewById(R.id.roomPassword);
+        coin = findViewById(R.id.coin);
+        coin.setText(new AppConstant(this).getCoins()+"");
+        findViewById(R.id.subscription).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openSubscribe();
+            }
+        });
 //        getGameName();
 //        openTopSheetDialog(roomPassword);
 
@@ -171,7 +177,7 @@ private  FirebaseRemoteConfig remoteConfig;
                     public void onInitializationSuccess(YouTubePlayer.Provider provider,
                                                         YouTubePlayer youTubePlayer, boolean b) {
                         if (!b) {
-                            youTubePlayer.loadVideo( "j7pF6ufhd4g");
+                            youTubePlayer.loadVideo( "");
                         }
                     }
 
@@ -566,6 +572,11 @@ private  FirebaseRemoteConfig remoteConfig;
         ((View) myView.getParent()).setBackgroundColor(Color.TRANSPARENT);
     }
 
+    public void openSubscribe() {
+        Intent intent = new Intent(this, ComingSoon.class);
+        startActivity(intent);
+    }
+
     public class MyViewPagerAdapter extends PagerAdapter {
         private LayoutInflater layoutInflater;
 
@@ -695,38 +706,38 @@ private  FirebaseRemoteConfig remoteConfig;
                             mDatabase.child("backgroundData").child(AppController.getInstance().userId).setValue(allBackground);
                         }
                     }
-                    roomId.setText("Room Id:- " + dataSnapshot.child("roomId").getValue() + "");
-                    roomPassword.setText("Password:- " + dataSnapshot.child("password").getValue() + "");
-                    roomId.setVisibility(View.VISIBLE);
-                    roomPassword.setVisibility(View.VISIBLE);
-                    roomId.setOnTouchListener(new View.OnTouchListener() {
-                        @Override
-                        public boolean onTouch(View v, MotionEvent event) {
-                            final int DRAWABLE_LEFT = 0;
-                            if (event.getAction() == MotionEvent.ACTION_UP) {
-                                Log.e("copyClip", roomId.getText().toString());
-                                if (event.getRawX() >= (roomId.getLeft() - roomId.getCompoundDrawables()[DRAWABLE_LEFT].getBounds().width())) {
-                                    setClipboard(roomId.getText().toString());
-                                    return true;
-                                }
-                            }
-                            return false;
-                        }
-                    });
-                    roomPassword.setOnTouchListener(new View.OnTouchListener() {
-                        @Override
-                        public boolean onTouch(View v, MotionEvent event) {
-                            final int DRAWABLE_LEFT = 0;
-                            if (event.getAction() == MotionEvent.ACTION_UP) {
-                                Log.e("copyClip", roomPassword.getText().toString());
-                                if (event.getRawX() >= (roomId.getLeft() - roomId.getCompoundDrawables()[DRAWABLE_LEFT].getBounds().width())) {
-                                    setClipboard(roomPassword.getText().toString());
-                                    return true;
-                                }
-                            }
-                            return false;
-                        }
-                    });
+//                    roomId.setText("Room Id:- " + dataSnapshot.child("roomId").getValue() + "");
+//                    roomPassword.setText("Password:- " + dataSnapshot.child("password").getValue() + "");
+//                    roomId.setVisibility(View.VISIBLE);
+//                    roomPassword.setVisibility(View.VISIBLE);
+//                    roomId.setOnTouchListener(new View.OnTouchListener() {
+//                        @Override
+//                        public boolean onTouch(View v, MotionEvent event) {
+//                            final int DRAWABLE_LEFT = 0;
+//                            if (event.getAction() == MotionEvent.ACTION_UP) {
+//                                Log.e("copyClip", roomId.getText().toString());
+//                                if (event.getRawX() >= (roomId.getLeft() - roomId.getCompoundDrawables()[DRAWABLE_LEFT].getBounds().width())) {
+//                                    setClipboard(roomId.getText().toString());
+//                                    return true;
+//                                }
+//                            }
+//                            return false;
+//                        }
+//                    });
+//                    roomPassword.setOnTouchListener(new View.OnTouchListener() {
+//                        @Override
+//                        public boolean onTouch(View v, MotionEvent event) {
+//                            final int DRAWABLE_LEFT = 0;
+//                            if (event.getAction() == MotionEvent.ACTION_UP) {
+//                                Log.e("copyClip", roomPassword.getText().toString());
+//                                if (event.getRawX() >= (roomId.getLeft() - roomId.getCompoundDrawables()[DRAWABLE_LEFT].getBounds().width())) {
+//                                    setClipboard(roomPassword.getText().toString());
+//                                    return true;
+//                                }
+//                            }
+//                            return false;
+//                        }
+//                    });
                     YouTubePlayerFragment youtubeFragment = (YouTubePlayerFragment)
                             getFragmentManager().findFragmentById(R.id.youtubeFragment);
                     youtubeFragment.initialize(AppConstant.youtubeApiKey,
@@ -794,7 +805,7 @@ private  FirebaseRemoteConfig remoteConfig;
         dialogBottom.setContentView(view);
         dialogBottom.show();
         Button btn_ok = view.findViewById(R.id.ok);
-        Button btn_cancel = view.findViewById(R.id.cancel);
+//        Button btn_cancel = view.findViewById(R.id.cancel);
         ImageView imageView = view.findViewById(R.id.imageview);
         Glide.with(MainActivity.this).load(R.drawable.login).into(imageView);
         btn_ok.setOnClickListener(new View.OnClickListener() {
@@ -843,13 +854,13 @@ private  FirebaseRemoteConfig remoteConfig;
             }
         });
 
-        btn_cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                context.startActivity(new Intent(context, MainActivity.class));
-                bottomNavigation.getMenu().getItem(0).setChecked(true);
-                dialogBottom.dismiss();
-            }
-        });
+//        btn_cancel.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+////                context.startActivity(new Intent(context, MainActivity.class));
+//                bottomNavigation.getMenu().getItem(0).setChecked(true);
+//                dialogBottom.dismiss();
+//            }
+//        });
     }
 }

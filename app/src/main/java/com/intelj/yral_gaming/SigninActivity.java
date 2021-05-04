@@ -475,7 +475,7 @@ public class SigninActivity extends AppCompatActivity {
         //signing the user
         signInWithPhoneAuthCredential(credential);
     }
-
+    int coin = 0;
     private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(SigninActivity.this, new OnCompleteListener<AuthResult>() {
@@ -493,23 +493,28 @@ public class SigninActivity extends AppCompatActivity {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     HashMap<String, Object> login = new HashMap<>();
-                                    login.put("model", Build.MODEL);
-                                    login.put("brand", Build.BRAND);
-                                    login.put("type", Build.TYPE);
-                                    login.put("version", Build.VERSION.RELEASE);
+                                    HashMap<String, Object> realTime = new HashMap<>();
+//                                    login.put("model", Build.MODEL);
+//                                    login.put("brand", Build.BRAND);
+//                                    login.put("type", Build.TYPE);
+//                                    login.put("version", Build.VERSION.RELEASE);
                                     if (dataSnapshot.exists()) {
                                         for (DataSnapshot postSnapshot : dataSnapshot.getChildren())
                                             AppController.getInstance().userId = postSnapshot.getKey();
+                                        if(dataSnapshot.child(AppConstant.coin).exists())
+                                             coin = dataSnapshot.child(AppConstant.coin).getValue(Integer.class);
                                     } else
                                         login.put(appConstant.myPicUrl, "");
                                     login.put(appConstant.userName, _userName);
                                     login.put(appConstant.token, token);
-                                    login.put(appConstant.deviceId, Settings.Secure.getString(getContentResolver(),
+                                    realTime.put(appConstant.deviceId, Settings.Secure.getString(getContentResolver(),
                                             Settings.Secure.ANDROID_ID));
                                     mDatabase.child(AppController.getInstance().userId).child(AppConstant.pinfo).
                                             updateChildren(login);
+                                    mDatabase.child(AppController.getInstance().userId).child(AppConstant.realTime).
+                                            updateChildren(realTime);
                                     mDatabase.child(AppController.getInstance().userId).child(appConstant.phoneNumber).setValue(_phoneNumber);
-                                    appConstant.saveLogin(AppController.getInstance().userId, _phoneNumber);
+                                    appConstant.saveLogin(AppController.getInstance().userId, _phoneNumber,coin);
                                     AppController.getInstance().getReadyForCheckin();
                                 }
 

@@ -1,8 +1,5 @@
 package com.intelj.yral_gaming;
 
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
@@ -12,46 +9,30 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
-import com.intelj.yral_gaming.Activity.MainActivity;
-import com.intelj.yral_gaming.Activity.PreRegistartionActivity;
-import com.intelj.yral_gaming.Activity.SplashScreen;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.intelj.yral_gaming.Utils.AppConstant;
 
-import org.apache.commons.net.time.TimeTCPClient;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.ArrayList;
 
 public class SplashScreenStory extends AppCompatActivity implements StoriesProgressView.StoriesListener {
 
     private static final int PROGRESS_COUNT = 3;
     private StoriesProgressView storiesProgressView;
     private ImageView image;
+    TextView desc;
     private TextView priceMoney;
     private int counter = 0;
-    private final String[] resources = new String[]{
-            "https://cdnb.artstation.com/p/assets/images/images/025/525/671/large/as-editor-pubg-poster.jpg?1586085669",
-            "https://www.thehindu.com/sci-tech/technology/w0t8kp/article33084076.ece/alternates/FREE_615/pubg-indiaJPG",
-            "https://static.displate.com/857x1200/displate/2020-07-23/9deff3383d395493cdd7ea395cc7800b_ca0037f2de2d6f9aff59a7bd843df0b5.jpg",
-    };
-
-
+    ArrayList<String> posterImage = new ArrayList<>();
+    ArrayList<String> imageText = new ArrayList<>();
     long pressTime = 0L;
     long limit = 500L;
-
     private View.OnTouchListener onTouchListener = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View v, MotionEvent event) {
@@ -78,7 +59,29 @@ public class SplashScreenStory extends AppCompatActivity implements StoriesProgr
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         priceMoney = findViewById(R.id.priceMoney);
-        priceMoney.setText("collect 200 coins");
+        priceMoney.setText("collect 25 coins");
+        priceMoney.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AppConstant(SplashScreenStory.this).setCoins(new AppConstant(SplashScreenStory.this).getCoins() + 25);
+            }
+        });
+        String splashscreen = AppController.getInstance().remoteConfig.getString(AppConstant.splashscreen);
+        try {
+            JSONObject jsonObject = new JSONObject(splashscreen);
+            JSONArray keys = jsonObject.names();
+            for (int i = 0; i < keys.length(); i++) {
+                String key = keys.getString(i); // Here's your key
+                String value = jsonObject.getString(key);
+                posterImage.add(key);
+                imageText.add(value);
+            }
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            FirebaseCrashlytics.getInstance().recordException(e);
+        }
         storiesProgressView = findViewById(R.id.stories);
         storiesProgressView.setStoriesCount(PROGRESS_COUNT);
         storiesProgressView.setStoryDuration(3000L);
@@ -86,7 +89,9 @@ public class SplashScreenStory extends AppCompatActivity implements StoriesProgr
         storiesProgressView.startStories(counter);
 
         image = findViewById(R.id.image);
-        Glide.with(SplashScreenStory.this).load(resources[0]).fitCenter().into(image);
+        desc = findViewById(R.id.desc);
+        Glide.with(SplashScreenStory.this).load(posterImage.get(0)).fitCenter().into(image);
+        desc.setText(imageText.get(0));
         // bind reverse view
         View reverse = findViewById(R.id.reverse);
         reverse.setOnClickListener(new View.OnClickListener() {
@@ -116,13 +121,20 @@ public class SplashScreenStory extends AppCompatActivity implements StoriesProgr
 
     @Override
     public void onNext() {
-        Glide.with(SplashScreenStory.this).load(resources[++counter]).into(image);
+        Glide.with(SplashScreenStory.this).load(posterImage.get(++counter)).into(image);
+        desc.setText(imageText.get(counter));
+        if(counter == 1)
+            priceMoney.setVisibility(View.VISIBLE);
+        else
+            priceMoney.setVisibility(View.GONE);
     }
 
     @Override
     public void onPrev() {
         if ((counter - 1) < 0) return;
-        Glide.with(SplashScreenStory.this).load(resources[--counter]).into(image);
+        Glide.with(SplashScreenStory.this).load(posterImage.get(--counter)).into(image);
+        desc.setText(imageText.get(counter));
+
     }
 
     @Override

@@ -27,14 +27,17 @@ public class AppConstant {
             search = "search",
             myTeam = "myTeam",
             token = "token",
+            coin = "coin",
             myPicUrl = "myPicUrl",
             users = "users",
             count_win = "winner",
             pinfo = "pinfo",
+            realTime = "realTime",
             paymentHistory = "phist",
             gameBio = "gbio",
             youtubeApiKey = "AIzaSyBQiqtYCe51DtHvGhJOjO20Vv9Y_uzRyks",
             pre_registration = "Pre_registration",
+            splashscreen = "splashscreen",
             userName = "userName";
     public static SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss aa");
 
@@ -52,10 +55,11 @@ public class AppConstant {
             return android.provider.Settings.System.getInt(c.getContentResolver(), android.provider.Settings.System.AUTO_TIME, 0) == 1;
         }
     }
-    public void saveLogin(String user_id, String _phoneNumber) {
+    public void saveLogin(String user_id, String _phoneNumber,int _coin) {
         setSharedPref();
         sharedPreferences.edit().putBoolean(login, true).apply();
         sharedPreferences.edit().putString(userId, user_id).apply();
+        sharedPreferences.edit().putInt(coin,_coin).apply();
         sharedPreferences.edit().putString(phoneNumber, _phoneNumber).apply();
     }
     public void saveSlot(String _uniqueId) {
@@ -70,7 +74,14 @@ public class AppConstant {
         setSharedPref();
         return sharedPreferences.getBoolean(login, false);
     }
-
+    public int getCoins() {
+        setSharedPref();
+        return sharedPreferences.getInt(coin, 0);
+    }
+    public void setCoins(int _coin) {
+        setSharedPref();
+        sharedPreferences.edit().putInt(coin, _coin).apply();
+    }
     public String getUserId() {
         setSharedPref();
         return sharedPreferences.getString(userId, "");
