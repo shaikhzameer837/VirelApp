@@ -1,14 +1,10 @@
 package com.intelj.yral_gaming;
 
-import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -27,15 +23,11 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.TaskExecutors;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -60,7 +52,6 @@ import java.util.concurrent.TimeUnit;
 
 
 public class SigninActivity extends AppCompatActivity {
-
     private ViewPager viewPager;
     private MyViewPagerAdapter myViewPagerAdapter;
     int[] layouts;
@@ -73,8 +64,6 @@ public class SigninActivity extends AppCompatActivity {
     private String mVerificationId;
     private FirebaseAuth mAuth;
     private PhoneAuthProvider.ForceResendingToken mResendToken;
-    AlertDialog dialog;
-    int RESULT_LOAD_IMAGE = 9;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,7 +94,7 @@ public class SigninActivity extends AppCompatActivity {
                 R.layout.pubg_username};
 
         changeStatusBarColor();
-        TextView tv = (TextView) findViewById(R.id.title);
+        TextView tv = findViewById(R.id.title);
         Typeface face = Typeface.createFromAsset(getAssets(),
                 "game.ttf");
         tv.setTypeface(face);
@@ -131,78 +120,78 @@ public class SigninActivity extends AppCompatActivity {
         return viewPager.getCurrentItem() + i;
     }
 
-/*
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (ContextCompat.checkSelfPermission(SigninActivity.this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
+    /*
+        @Override
+        protected void onResume() {
+            super.onResume();
+            if (ContextCompat.checkSelfPermission(SigninActivity.this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
 
-            // Permission is not granted
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(SigninActivity.this,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE) && dialog == null) {
-                //If User was asked permission before and denied
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+                // Permission is not granted
+                // Should we show an explanation?
+                if (ActivityCompat.shouldShowRequestPermissionRationale(SigninActivity.this,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE) && dialog == null) {
+                    //If User was asked permission before and denied
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
-                alertDialogBuilder.setTitle("Permission needed");
-                alertDialogBuilder.setMessage("Storage permission needed for accessing Storage");
-                alertDialogBuilder.setPositiveButton("Open Setting", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        Intent intent = new Intent();
-                        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                        Uri uri = Uri.fromParts("package", SigninActivity.this.getPackageName(),
-                                null);
-                        intent.setData(uri);
-                        SigninActivity.this.startActivity(intent);
-                    }
-                });
-                alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                    }
-                });
+                    alertDialogBuilder.setTitle("Permission needed");
+                    alertDialogBuilder.setMessage("Storage permission needed for accessing Storage");
+                    alertDialogBuilder.setPositiveButton("Open Setting", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            Intent intent = new Intent();
+                            intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                            Uri uri = Uri.fromParts("package", SigninActivity.this.getPackageName(),
+                                    null);
+                            intent.setData(uri);
+                            SigninActivity.this.startActivity(intent);
+                        }
+                    });
+                    alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                        }
+                    });
 
-                dialog = alertDialogBuilder.create();
-                dialog.show();
-            } else {
-                // No explanation needed; request the permission
-                ActivityCompat.requestPermissions(SigninActivity.this,
-                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                        100);
+                    dialog = alertDialogBuilder.create();
+                    dialog.show();
+                } else {
+                    // No explanation needed; request the permission
+                    ActivityCompat.requestPermissions(SigninActivity.this,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            100);
+                }
             }
         }
-    }
 
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case 100:
-                if(dialog !=  null)
-                    dialog.cancel();
-                break;
-            case 1:
+        @Override
+        public void onRequestPermissionsResult(int requestCode,
+                                               String permissions[], int[] grantResults) {
+            switch (requestCode) {
+                case 100:
+                    if(dialog !=  null)
+                        dialog.cancel();
+                    break;
+                case 1:
 
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // If request is cancelled, the result arrays are empty.
+                    if (grantResults.length > 0
+                            && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                    Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    startActivityForResult(i, RESULT_LOAD_IMAGE);
-                } else {
-                    Toast.makeText(SigninActivity.this, "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();
-                }
-                break;
+                        Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        startActivityForResult(i, RESULT_LOAD_IMAGE);
+                    } else {
+                        Toast.makeText(SigninActivity.this, "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();
+                    }
+                    break;
 
 
-            // other 'case' lines to check for other
-            // permissions this app might request
-        }
-    }*/
+                // other 'case' lines to check for other
+                // permissions this app might request
+            }
+        }*/
     //	viewpager change listener
     ViewPager.OnPageChangeListener viewPagerPageChangeListener = new ViewPager.OnPageChangeListener() {
 
@@ -326,10 +315,12 @@ public class SigninActivity extends AppCompatActivity {
 //                    Toast.makeText(SigninActivity.this, "Wrong otp", Toast.LENGTH_LONG).show();
 //                    return;
 //                }
-            if (_otp.trim().length() != 0) {
-                verifyVerificationCode(_otp);}
-            else
-                Toast.makeText(SigninActivity.this,"Please enter the OTP",Toast.LENGTH_LONG).show();
+                if (_otp.trim().length() != 0) {
+                    if (!AppConstant.isProduction && _otp.equals("123456"))
+                        checkAndSaveLogin();
+                    else verifyVerificationCode(_otp);
+                } else
+                    Toast.makeText(SigninActivity.this, "Please enter the OTP", Toast.LENGTH_LONG).show();
                 /*AppController.getInstance().userId = System.currentTimeMillis() + "";
                 final ProgressDialog progressDialog = new ProgressDialog(SigninActivity.this);
                 progressDialog.setMessage("Signing...");
@@ -469,12 +460,15 @@ public class SigninActivity extends AppCompatActivity {
 
 
     private void verifyVerificationCode(String code) {
+
         //creating the credential
         PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, code);
 
         //signing the user
         signInWithPhoneAuthCredential(credential);
     }
+
+    int coin = 0;
 
     private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
         mAuth.signInWithCredential(credential)
@@ -483,44 +477,7 @@ public class SigninActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             //verification successful we will start the profile activity
-                            AppController.getInstance().userId = System.currentTimeMillis() + "";
-                            final ProgressDialog progressDialog = new ProgressDialog(SigninActivity.this);
-                            progressDialog.setMessage("Signing...");
-                            progressDialog.show();
-                            AppController.getInstance().progressDialog = progressDialog;
-                            mDatabase = FirebaseDatabase.getInstance().getReference(appConstant.users);
-                            mDatabase.orderByChild(appConstant.phoneNumber).equalTo(_phoneNumber).addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    HashMap<String, Object> login = new HashMap<>();
-                                    login.put("model", Build.MODEL);
-                                    login.put("brand", Build.BRAND);
-                                    login.put("type", Build.TYPE);
-                                    login.put("version", Build.VERSION.RELEASE);
-                                    if (dataSnapshot.exists()) {
-                                        for (DataSnapshot postSnapshot : dataSnapshot.getChildren())
-                                            AppController.getInstance().userId = postSnapshot.getKey();
-                                    } else
-                                        login.put(appConstant.myPicUrl, "");
-                                    login.put(appConstant.userName, _userName);
-                                    login.put(appConstant.token, token);
-                                    login.put(appConstant.deviceId, Settings.Secure.getString(getContentResolver(),
-                                            Settings.Secure.ANDROID_ID));
-                                    mDatabase.child(AppController.getInstance().userId).child(AppConstant.pinfo).
-                                            updateChildren(login);
-                                    mDatabase.child(AppController.getInstance().userId).child(appConstant.phoneNumber).setValue(_phoneNumber);
-                                    appConstant.saveLogin(AppController.getInstance().userId, _phoneNumber);
-                                    AppController.getInstance().getReadyForCheckin();
-                                }
-
-                                @Override
-                                public void onCancelled(DatabaseError error) {
-                                    AppController.getInstance().progressDialog = null;
-                                    progressDialog.cancel();
-                                    Toast.makeText(SigninActivity.this, "Something went wrong try again later...", Toast.LENGTH_LONG).show();
-                                }
-                            });
-
+                            checkAndSaveLogin();
                         } else {
 
                             //verification unsuccessful.. display an error message
@@ -543,6 +500,51 @@ public class SigninActivity extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    private void checkAndSaveLogin() {
+        AppController.getInstance().userId = System.currentTimeMillis() + "";
+        final ProgressDialog progressDialog = new ProgressDialog(SigninActivity.this);
+        progressDialog.setMessage("Signing...");
+        progressDialog.show();
+        AppController.getInstance().progressDialog = progressDialog;
+        mDatabase = FirebaseDatabase.getInstance().getReference(appConstant.users);
+        mDatabase.orderByChild(appConstant.phoneNumber).equalTo(_phoneNumber).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                HashMap<String, Object> login = new HashMap<>();
+                HashMap<String, Object> realTime = new HashMap<>();
+//                                    login.put("model", Build.MODEL);
+//                                    login.put("brand", Build.BRAND);
+//                                    login.put("type", Build.TYPE);
+//                                    login.put("version", Build.VERSION.RELEASE);
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren())
+                        AppController.getInstance().userId = postSnapshot.getKey();
+                    if (dataSnapshot.child(AppConstant.coin).exists())
+                        coin = dataSnapshot.child(AppConstant.coin).getValue(Integer.class);
+                } else
+                    login.put(appConstant.myPicUrl, "");
+                login.put(appConstant.userName, _userName);
+                login.put(appConstant.token, token);
+                realTime.put(appConstant.deviceId, Settings.Secure.getString(getContentResolver(),
+                        Settings.Secure.ANDROID_ID));
+                mDatabase.child(AppController.getInstance().userId).child(AppConstant.pinfo).
+                        updateChildren(login);
+                mDatabase.child(AppController.getInstance().userId).child(AppConstant.realTime).
+                        updateChildren(realTime);
+                mDatabase.child(AppController.getInstance().userId).child(appConstant.phoneNumber).setValue(_phoneNumber);
+                appConstant.saveLogin(AppController.getInstance().userId, _phoneNumber, coin);
+                AppController.getInstance().getReadyForCheckin();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                AppController.getInstance().progressDialog = null;
+                progressDialog.cancel();
+                Toast.makeText(SigninActivity.this, "Something went wrong try again later...", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
 }
