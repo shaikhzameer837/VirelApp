@@ -28,6 +28,7 @@ public class AppConstant {
             myTeam = "myTeam",
             token = "token",
             coin = "coin",
+            nextCoinTime = "nextCoinTime",
             myPicUrl = "myPicUrl",
             users = "users",
             count_win = "winner",
@@ -39,10 +40,12 @@ public class AppConstant {
             pre_registration = "Pre_registration",
             splashscreen = "splashscreen",
             userName = "userName";
+    public static boolean isProduction = false;
     public static SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss aa");
 
     public AppConstant(Context _context) {
         this._context = _context;
+        setSharedPref();
     }
 
     public void setSharedPref() {
@@ -75,12 +78,14 @@ public class AppConstant {
         return sharedPreferences.getBoolean(login, false);
     }
     public int getCoins() {
-        setSharedPref();
         return sharedPreferences.getInt(coin, 0);
     }
-    public void setCoins(int _coin) {
-        setSharedPref();
+    public void setCoins(int _coin,long _nextCoinTime) {
         sharedPreferences.edit().putInt(coin, _coin).apply();
+        sharedPreferences.edit().putLong(nextCoinTime, _nextCoinTime).apply();
+    }
+    public long getNextCoinTime(){
+        return sharedPreferences.getLong(nextCoinTime, 0);
     }
     public String getUserId() {
         setSharedPref();
