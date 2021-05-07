@@ -40,7 +40,7 @@ public class OneFragment extends Fragment {
     private ImageView imageView;
     View rootView;
     private TimeSlotAdapter mAdapter;
-    ArrayList<UserModel> allData = new ArrayList<>();
+    ArrayList<UserModel> allData;
     DatabaseReference mDatabase;
     long miliSec = 0;
     String title;
@@ -79,6 +79,7 @@ public class OneFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+       allData = new ArrayList<>();
         rootView = inflater.inflate(R.layout.fragment_one, container, false);
         recyclerView = rootView.findViewById(R.id.recycler_view);
         tv_coming_soon = rootView.findViewById(R.id.tv_coming_soon);

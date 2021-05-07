@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,9 +26,11 @@ import com.intelj.yral_gaming.R;
 import com.intelj.yral_gaming.Utils.AppConstant;
 import com.intelj.yral_gaming.model.UserModel;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -39,6 +42,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
     long miliSec = 0;
     String title = "";
     String date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
+    long endslot = 0 ;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView title, info;
@@ -81,8 +85,40 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
                     Intent intent = new Intent("custom-event-name");
                     intent.putExtra("message", "bottom_sheet_broadcast");
                     LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);
-                } else if (!allData.get(position).getRegisterd())
+                } else if (!allData.get(position).getRegisterd()) {
+                        try {
+                            String strDate = date + " " + allData.get(position).getTime().replace("pm", ":00:00 pm")
+                                    .replace("am", ":00:00 am");
+                            Date resultDate = AppConstant.dateFormat.parse(strDate);
+                            miliSec = resultDate.getTime();
+                            endslot = miliSec + 3600000;
+                            Log.e("miliSec", miliSec + "");
+                            Log.e("miliSec", System.currentTimeMillis() + "");
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                            FirebaseCrashlytics.getInstance().recordException(e);
+                        }
+                    if (miliSec < System.currentTimeMillis()) {
+                       /* Calendar calendar = Calendar.getInstance();
+                        calendar.add(Calendar.DAY_OF_YEAR, 1);
+                        Date tomorrow = calendar.getTime();
+                        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                        date = dateFormat.format(tomorrow);*/
+                        Toast.makeText(mContext, "Time is up .Slot is not avialable.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+//                    if (appConstant.getbooking() == 0 || appConstant.getbooking() < System.currentTimeMillis()) {
+//                            showBottomSheet(position);
+//                    }
+//                    else
+//                    {
+//                        Toast.makeText(mContext,"First play the game in first slot",Toast.LENGTH_LONG).show();
+//                        return;
+//                    }
+
                     showBottomSheet(position);
+                }
                 // }else
                 //    Toast.makeText(mContext,"sorry",Toast.LENGTH_LONG).show();
             }
@@ -109,27 +145,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
         myView.findViewById(R.id.books).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                if (appConstant.getbooking() == 0 || appConstant.getbooking() < System.currentTimeMillis()) {
-                    String strDate = date + " " + allData.get(position).getTime().replace("pm", ":00:00 pm")
-                            .replace("am", ":00:00 am");
-                    try {
-                        Date resultDate = AppConstant.dateFormat.parse(strDate);
-                        miliSec = resultDate.getTime() + 3600000;
-                        appConstant.savebooking(miliSec);
-                        Log.e("miliSec", miliSec + "");
-                        Log.e("miliSec", System.currentTimeMillis() + "");
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                        FirebaseCrashlytics.getInstance().recordException(e);
-                    }
-                }
-                else
-                {
-                    Toast.makeText(mContext,"First play the game in first slot",Toast.LENGTH_LONG).show();
-                    return;
-                }
-
+                appConstant.savebooking(endslot);
                 if (!gameId.getText().toString().equals("")) {
                     FirebaseDatabase.getInstance().getReference(AppConstant.users)
                             .child(AppController.getInstance().userId).child(AppConstant.pinfo).child(title).setValue(gameId.getText().toString());
