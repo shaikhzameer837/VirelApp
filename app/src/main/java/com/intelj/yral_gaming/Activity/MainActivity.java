@@ -128,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseHelper backgroundDB;
     private static final int REQUEST_ID = 1;
     AlertDialog dialog;
+
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,6 +136,9 @@ public class MainActivity extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
+        AppController.getInstance().getGameName();
+        AppController.getInstance().getTournamentTime();
+
 
 //        ScreenshotManager.INSTANCE.requestScreenshotPermission(MainActivity.this, REQUEST_ID);
 //        final Handler handler = new Handler(Looper.getMainLooper());
@@ -160,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
         backgroundDB = new DatabaseHelper(this, "background_db");
         inflated = stub.inflate();
         coin = findViewById(R.id.coin);
-        coin.setText(new AppConstant(this).getCoins()+"");
+        coin.setText(new AppConstant(this).getCoins() + "");
         findViewById(R.id.subscription).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -178,14 +182,14 @@ public class MainActivity extends AppCompatActivity {
                     public void onInitializationSuccess(YouTubePlayer.Provider provider,
                                                         YouTubePlayer youTubePlayer, boolean b) {
                         if (!b) {
-                            youTubePlayer.loadVideo( "");
+                            youTubePlayer.loadVideo("");
                         }
                     }
 
                     @Override
                     public void onInitializationFailure(YouTubePlayer.Provider provider,
                                                         YouTubeInitializationResult youTubeInitializationResult) {
-                        Log.d( "onInitianFailure: ",youTubeInitializationResult.toString());
+                        Log.d("onInitianFailure: ", youTubeInitializationResult.toString());
                     }
                 });
         setFirstView();
@@ -446,7 +450,7 @@ public class MainActivity extends AppCompatActivity {
                     dialog.cancel();
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                startActivity(new Intent(MainActivity.this, SigninActivity.class));
+                    startActivity(new Intent(MainActivity.this, SigninActivity.class));
                 break;
             case 1:
 
@@ -685,7 +689,7 @@ public class MainActivity extends AppCompatActivity {
                         startService(intent);
                         try {
                             appConstant.saveSlot("XYZ");
-                        }catch (Exception e){
+                        } catch (Exception e) {
                             e.getLocalizedMessage();
                             FirebaseCrashlytics.getInstance().recordException(e);
                         }
