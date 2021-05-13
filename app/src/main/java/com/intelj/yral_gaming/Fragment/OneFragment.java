@@ -46,7 +46,8 @@ public class OneFragment extends Fragment {
     String title;
     boolean show_listview = true;
     String date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
-     Date resultDate;
+    Date resultDate;
+
     public OneFragment() {
         // Required empty public constructor
     }
@@ -55,7 +56,7 @@ public class OneFragment extends Fragment {
         this.title = title;
     }
 
-    public OneFragment(String title , Boolean show_listview) {
+    public OneFragment(String title, Boolean show_listview) {
         this.title = title;
         this.show_listview = show_listview;
     }
@@ -79,68 +80,73 @@ public class OneFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-       allData = new ArrayList<>();
+        allData = new ArrayList<>();
         rootView = inflater.inflate(R.layout.fragment_one, container, false);
         recyclerView = rootView.findViewById(R.id.recycler_view);
         tv_coming_soon = rootView.findViewById(R.id.tv_coming_soon);
         imageView = rootView.findViewById(R.id.imageview);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new TimeSlotAdapter(getActivity(), allData,title);
+
 
         Glide.with(this).load(R.drawable.coming_soon).centerCrop().into(imageView);
         if (show_listview) {
             recyclerView.setVisibility(View.VISIBLE);
             tv_coming_soon.setVisibility(View.GONE);
             imageView.setVisibility(View.GONE);
-        }
-        else {
+        } else {
             recyclerView.setVisibility(View.GONE);
             tv_coming_soon.setVisibility(View.VISIBLE);
             imageView.setVisibility(View.VISIBLE);
         }
-            recyclerView.setAdapter(mAdapter);
-            mDatabase = FirebaseDatabase.getInstance().getReference(AppConstant.live_stream);
-            mDatabase.child(AppController.getInstance().channelId).child(date).child(title).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    for (String s : AppController.getInstance().timeArray) {
-                        String strDate = date + " " + s.replace("pm", ":00:00 pm")
-                                .replace("am", ":00:00 am");
-                        if (AppController.getInstance().userId != null) {
-                            if (miliSec == 0 && dataSnapshot.child(s).child(AppConstant.member).child(AppController.getInstance().userId).exists()) {
-                                try {
-                                    resultDate = AppConstant.dateFormat.parse(strDate);
-                                    miliSec = resultDate.getTime();
-                                    Log.e("miliSeRec:-", date + "/" + title + "/" + s);
-                                    Intent intent = new Intent("custom-event-name");
-                                    intent.putExtra("message", (miliSec - System.currentTimeMillis()) + "");
-                                    intent.putExtra("roomPlan", date + "/" + title + "/" + s);
-                                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
-                                } catch (Exception e) {
-                                    Log.e("miliSeRec:-", e.getMessage() + "");
-                                    e.printStackTrace();
-                                    FirebaseCrashlytics.getInstance().recordException(e);
-                                }
+        initializedata();
+
+        mDatabase = FirebaseDatabase.getInstance().getReference(AppConstant.live_stream);
+        mDatabase.child(AppController.getInstance().channelId).child(date).child(title).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (String s : AppController.getInstance().timeArray) {
+                    String strDate = date + " " + s.replace("pm", ":00:00 pm")
+                            .replace("am", ":00:00 am");
+                    if (AppController.getInstance().userId != null) {
+                        if (miliSec == 0 && dataSnapshot.child(s).child(AppConstant.member).child(AppController.getInstance().userId).exists()) {
+                            try {
+                                resultDate = AppConstant.dateFormat.parse(strDate);
+                                miliSec = resultDate.getTime();
+                                Log.e("miliSeRec:-", date + "/" + title + "/" + s);
+                                Intent intent = new Intent("custom-event-name");
+                                intent.putExtra("message", (miliSec - System.currentTimeMillis()) + "");
+                                intent.putExtra("roomPlan", date + "/" + title + "/" + s);
+                                LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+                            } catch (Exception e) {
+                                Log.e("miliSeRec:-", e.getMessage() + "");
+                                e.printStackTrace();
+                                FirebaseCrashlytics.getInstance().recordException(e);
                             }
-                            UserModel userModel = new UserModel()
-                                    .setRegisterd(dataSnapshot.child(s).child(AppConstant.member).child(AppController.getInstance().userId).exists())
-                                    .setTotalCount(dataSnapshot.child(s).child(AppConstant.member).getChildrenCount())
-                                    .setTime(s).setuniqueDate(date + "/" + title + "/" + s).userModelBuilder();
-                            allData.add(userModel);
                         }
+                        UserModel userModel = new UserModel()
+                                .setRegisterd(dataSnapshot.child(s).child(AppConstant.member).child(AppController.getInstance().userId).exists())
+                                .setTotalCount(dataSnapshot.child(s).child(AppConstant.member).getChildrenCount())
+                                .setTime(s).setuniqueDate(date + "/" + title + "/" + s).userModelBuilder();
+                        allData.add(userModel);
                     }
-                    mAdapter.notifyDataSetChanged();
-
                 }
+//                mAdapter.notifyDataSetChanged();
+                initializedata();
+            }
 
-                @Override
-                public void onCancelled(DatabaseError error) {
+            @Override
+            public void onCancelled(DatabaseError error) {
 
-                }
-            });
+            }
+        });
 
         return rootView;
+    }
+
+    private void initializedata() {
+        mAdapter = new TimeSlotAdapter(getActivity(), allData, title);
+        recyclerView.setAdapter(mAdapter);
     }
 
 }

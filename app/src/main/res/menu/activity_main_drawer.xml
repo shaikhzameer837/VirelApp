@@ -3,24 +3,25 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_home"
-            android:title="@string/nav_home" />
+            android:id="@+id/nav_aboutus"
+            android:title="@string/nav_aboutus" />
         <item
-            android:id="@+id/nav_photos"
-            android:title="@string/nav_photos" />
+            android:id="@+id/nav_privacypolicy"
+            android:title="@string/nav_privacypolicy" />
         <item
-            android:id="@+id/nav_movies"
-            android:title="@string/nav_movies" />
+            android:id="@+id/nav_tt"
+            android:title="@string/nav_tt" />
 
-        <item
+       <!-- <item
             android:id="@+id/nav_notifications"
             android:title="@string/nav_notifications" />
 
         <item
             android:id="@+id/nav_settings"
-            android:title="@string/nav_settings" />
+            android:title="@string/nav_settings" />-->
     </group>
 
+<!--
     <item android:title="Other">
         <menu>
             <item
@@ -31,5 +32,6 @@
                 android:title="@string/privacy_policy" />
         </menu>
     </item>
+-->
 
 </menu>

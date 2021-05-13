@@ -42,10 +42,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -60,6 +62,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
@@ -128,6 +131,9 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseHelper backgroundDB;
     private static final int REQUEST_ID = 1;
     AlertDialog dialog;
+    public static int navItemIndex = 0;
+    private NavigationView navigationView;
+    private DrawerLayout drawer;
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
@@ -138,8 +144,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         AppController.getInstance().getGameName();
         AppController.getInstance().getTournamentTime();
-
-
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        navigationView = (NavigationView) findViewById(R.id.nav_view_drawer);
+        setUpNavigationView();
+        if (savedInstanceState == null) {
+            invalidateOptionsMenu();
+        }
 //        ScreenshotManager.INSTANCE.requestScreenshotPermission(MainActivity.this, REQUEST_ID);
 //        final Handler handler = new Handler(Looper.getMainLooper());
 //        handler.postDelayed(new Runnable() {
@@ -867,5 +877,89 @@ public class MainActivity extends AppCompatActivity {
 //                dialogBottom.dismiss();
 //            }
 //        });
+    }
+
+    private void setUpNavigationView() {
+        //Setting Navigation View Item Selected Listener to handle the item click of the navigation menu
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+
+            // This method will trigger on item Click of navigation menu
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+
+                //Check to see which item was being clicked and perform appropriate action
+                switch (menuItem.getItemId()) {
+                    //Replacing the main content with ContentFragment Which is our Inbox View;
+                    case R.id.nav_aboutus:
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.tcs.com/")));
+                        drawer.closeDrawers();
+                        return true;
+
+                        case R.id.nav_privacypolicy:
+                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.tcs.com/privacy-policy")));
+                            drawer.closeDrawers();
+                            return true;
+
+                    case R.id.nav_tt:
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.tcs.com/legal-disclaimer")));
+                        drawer.closeDrawers();
+                        return true;
+                    /*case R.id.nav_notifications:
+                        navItemIndex = 3;
+                        CURRENT_TAG = TAG_NOTIFICATIONS;
+                        break;
+                    case R.id.nav_settings:
+
+
+                        break;
+                    case R.id.nav_about_us:
+                        // launch new intent instead of loading fragment
+                        startActivity(new Intent(MainActivity.this, AboutUsActivity.class));
+                        drawer.closeDrawers();
+                        return true;
+                    case R.id.nav_privacy_policy:
+                        // launch new intent instead of loading fragment
+                        startActivity(new Intent(MainActivity.this, PrivacyPolicyActivity.class));
+                        drawer.closeDrawers();
+                        return true;
+                    default:
+                        navItemIndex = 0;*/
+                }
+
+                //Checking if the item is in checked state or not, if not make it in checked state
+                if (menuItem.isChecked()) {
+                    menuItem.setChecked(false);
+                } else {
+                    menuItem.setChecked(true);
+                }
+                menuItem.setChecked(true);
+
+//                loadHomeFragment();
+
+                return true;
+            }
+        });
+
+
+        /*ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.openDrawer, R.string.closeDrawer) {
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                // Code here will be triggered once the drawer closes as we dont want anything to happen so we leave this blank
+                super.onDrawerClosed(drawerView);
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                // Code here will be triggered once the drawer open as we dont want anything to happen so we leave this blank
+                super.onDrawerOpened(drawerView);
+            }
+        };
+
+        //Setting the actionbarToggle to drawer layout
+        drawer.setDrawerListener(actionBarDrawerToggle);
+
+        //calling sync state is necessary or else your hamburger icon wont show up
+        actionBarDrawerToggle.syncState();*/
     }
 }
