@@ -8,17 +8,21 @@
         <item
             android:id="@+id/nav_privacypolicy"
             android:title="@string/nav_privacypolicy" />
+
         <item
             android:id="@+id/nav_tt"
             android:title="@string/nav_tt" />
-
-       <!-- <item
-            android:id="@+id/nav_notifications"
-            android:title="@string/nav_notifications" />
+        <item
+            android:id="@+id/nav_facebook"
+            android:title="@string/nav_facebook" />
 
         <item
-            android:id="@+id/nav_settings"
-            android:title="@string/nav_settings" />-->
+            android:id="@+id/nav_discord"
+            android:title="@string/nav_discord" />
+
+        <item
+            android:id="@+id/nav_youtube"
+            android:title="@string/nav_youtube" />
     </group>
 
 <!--

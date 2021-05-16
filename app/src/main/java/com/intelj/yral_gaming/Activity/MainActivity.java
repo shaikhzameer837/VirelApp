@@ -4,12 +4,14 @@ import android.Manifest;
 import android.app.AppOpsManager;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -895,13 +897,29 @@ public class MainActivity extends AppCompatActivity {
                         drawer.closeDrawers();
                         return true;
 
-                        case R.id.nav_privacypolicy:
-                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.tcs.com/privacy-policy")));
-                            drawer.closeDrawers();
-                            return true;
+                    case R.id.nav_privacypolicy:
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.tcs.com/privacy-policy")));
+                        drawer.closeDrawers();
+                        return true;
 
                     case R.id.nav_tt:
                         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.tcs.com/legal-disclaimer")));
+                        drawer.closeDrawers();
+                        return true;
+
+                    case R.id.nav_facebook:
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/Kakelious/")));
+                        drawer.closeDrawers();
+                        return true;
+
+                    case R.id.nav_discord:
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://discord.gg/uygzekRnhE")));
+                        drawer.closeDrawers();
+                        return true;
+
+                    case R.id.nav_youtube:
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://youtube.com/channel/UCt3oqOC4xYAQBzWIhiupLBg"));
+                        startActivity(intent);
                         drawer.closeDrawers();
                         return true;
                     /*case R.id.nav_notifications:
