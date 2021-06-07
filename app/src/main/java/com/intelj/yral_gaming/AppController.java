@@ -17,12 +17,20 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.intelj.yral_gaming.Activity.MainActivity;
 import com.intelj.yral_gaming.Activity.PreRegistartionActivity;
@@ -38,7 +46,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class AppController extends Application implements Application.ActivityLifecycleCallbacks{
+public class AppController extends Application implements Application.ActivityLifecycleCallbacks {
     public static AppController instance;
     public String userId = "";
     public String channelId = "O-1601351657084";
@@ -56,6 +64,8 @@ public class AppController extends Application implements Application.ActivityLi
     public Intent mIntent;
     public String uploadUrl;
     public FirebaseRemoteConfig remoteConfig;
+    public DataSnapshot dataSnapshot;
+    public ArrayList<String> followingList = new ArrayList<>();
     AlertDialog.Builder builder;
 
     @Override
@@ -67,6 +77,7 @@ public class AppController extends Application implements Application.ActivityLi
         getReadyForCheckin();
         getGameName();
         getTournamentTime();
+
     }
 
     public void getReadyForCheckin() {
@@ -74,6 +85,7 @@ public class AppController extends Application implements Application.ActivityLi
         if (new AppConstant(this).checkLogin()) {
             userId = appConstant.getUserId();
             getUserInfo();
+            myFollowingList();
         }
     }
 
@@ -87,7 +99,7 @@ public class AppController extends Application implements Application.ActivityLi
                 if (progressDialog != null) {
                     progressDialog.cancel();
                     progressDialog = null;
-                   startToRunActivity();
+                    startToRunActivity();
                 }
 //                for (DataSnapshot postSnapshot : dataSnapshot.child(AppConstant.myTeam).getChildren()) {
 //                    FirebaseDatabase.getInstance().getReference(AppConstant.users).child(postSnapshot.getKey() + "")
@@ -110,6 +122,33 @@ public class AppController extends Application implements Application.ActivityLi
 
             }
         });
+    }
+
+    public void myFollowingList() {
+        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+
+        DocumentReference docRef = firebaseFirestore.collection(AppConstant.user).document(new AppConstant(this).getUserId()).collection(AppConstant.follow).document(AppConstant.following);
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    /*DocumentSnapshot questions = task.getResult();
+
+                    questions.*/
+                }
+            }
+        });
+        /*docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (task.getResult())
+
+                } else {
+                    Log.d("get failed with ", task.getException() + "");
+                }
+            }
+        });*/
     }
 
     public void startToRunActivity() {
@@ -298,7 +337,7 @@ public class AppController extends Application implements Application.ActivityLi
 
     public void dialogforautomatictime() {
         builder = new AlertDialog.Builder(this);
-        builder.setMessage("Please turn on the automatic time from setting") .setTitle("Automatic time");
+        builder.setMessage("Please turn on the automatic time from setting").setTitle("Automatic time");
 
         //Setting message manually and performing action on button click
         builder.setMessage("Do you want to close this application ?")
@@ -306,7 +345,7 @@ public class AppController extends Application implements Application.ActivityLi
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.dismiss();
-                        Toast.makeText(getApplicationContext(),"you choose yes action for alertbox",
+                        Toast.makeText(getApplicationContext(), "you choose yes action for alertbox",
                                 Toast.LENGTH_SHORT).show();
                     }
                 })
@@ -314,7 +353,7 @@ public class AppController extends Application implements Application.ActivityLi
                     public void onClick(DialogInterface dialog, int id) {
                         //  Action for 'NO' Button
                         dialog.cancel();
-                        Toast.makeText(getApplicationContext(),"you choose no action for alertbox",
+                        Toast.makeText(getApplicationContext(), "you choose no action for alertbox",
                                 Toast.LENGTH_SHORT).show();
                     }
                 });

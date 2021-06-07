@@ -22,7 +22,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar"
         tools:replace="android:allowBackup">
-        <activity android:name=".Activity.PreRegistartionActivity"></activity>
+        <activity android:name=".Activity.NewProfileActivity"></activity>
+        <activity android:name=".Activity.SearchFriendActivity" />
+        <activity android:name=".Activity.PreRegistartionActivity" />
 
         <service
             android:name=".Activity.MyService"

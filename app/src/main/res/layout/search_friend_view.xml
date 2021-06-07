@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:padding="5dp" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/relative_layout">
+    android:padding="5dp">
+
     <ImageView android:id="@+id/imgs"
         android:layout_width="60dp"
         android:layout_marginRight="20dp"
@@ -17,23 +17,13 @@
         android:textStyle="bold"
         android:layout_marginTop="10dp"
         android:layout_height="wrap_content"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:id="@+id/count_win"
-        android:text="asfwef"
-        android:layout_alignParentRight="true"
-        android:textStyle="bold"
-        android:drawableLeft="@drawable/trophy"
-        android:textColor="@color/colorPrimaryDark"
+    <TextView android:layout_toRightOf="@+id/imgs"
+        android:layout_width="match_parent"
+        android:layout_below="@+id/name"
+        android:text="sdgtersg"
+        android:id="@+id/desc"
         android:layout_marginTop="10dp"
         android:layout_height="wrap_content"/>
-   <TextView android:layout_toRightOf="@+id/imgs"
-        android:layout_width="match_parent"
-       android:layout_below="@+id/name"
-       android:text="sdgtersg"
-       android:id="@+id/desc"
-       android:layout_marginTop="10dp"
-       android:layout_height="wrap_content"/>
     <View
         android:layout_width="match_parent"
         android:background="#c0c0c0"
@@ -41,4 +31,5 @@
         android:layout_below="@+id/desc"
         android:layout_toRightOf="@+id/imgs"
         android:layout_height="1dp"/>
+
 </RelativeLayout>

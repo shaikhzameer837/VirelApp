@@ -524,6 +524,13 @@ public class MainActivity extends AppCompatActivity {
         AppController.getInstance().supportFragmentManager = getSupportFragmentManager();
         AppController.getInstance().gameViewpager = gameViewpager;
         AppController.getInstance().setupViewPager(gameViewpager);
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, SearchFriendActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     /*public void getGameName() {
