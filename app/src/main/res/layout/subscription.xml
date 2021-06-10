@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <TextView
+        android:id="@+id/price"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:background="@color/black"
+        android:gravity="center"
+        android:text="31er34ewt43"
+        android:textColor="@color/colorPrimary"
+        android:textSize="31sp" />
+
+    <LinearLayout android:id="@+id/linbox"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:padding="4dp"
+        android:layout_weight="1"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical">
+
+    </LinearLayout>
+    <Button android:id="@+id/subscription"
+        android:layout_width="match_parent"
+        android:background="@color/black"
+        android:textColor="@color/colorPrimary"
+        android:text="Apply Subcription"
+        android:layout_height="45dp"/>
+</LinearLayout>
+

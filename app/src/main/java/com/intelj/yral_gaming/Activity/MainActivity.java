@@ -194,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onInitializationSuccess(YouTubePlayer.Provider provider,
                                                         YouTubePlayer youTubePlayer, boolean b) {
                         if (!b) {
-                            youTubePlayer.loadVideo("");
+                            youTubePlayer.loadVideo("zBD-WH3X4nc");
                         }
                     }
 

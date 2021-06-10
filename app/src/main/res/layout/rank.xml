@@ -8,13 +8,13 @@
         android:layout_width="wrap_content"
         android:text="Top rankers in game"
         android:textStyle="bold"
-        android:textSize="19sp"
+        android:textColor="@color/black"
         android:layout_height="wrap_content"/>
     <TextView
         android:layout_width="wrap_content"
         android:text="Ranks are based on number of game won"
-        android:textStyle="bold"
         android:id="@+id/subtitle"
+        android:textSize="12sp"
         android:layout_height="wrap_content"/>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
@@ -31,7 +31,6 @@
         android:gravity="center"
         android:padding="5dp"
         android:background="@drawable/curved_drawable"
-        android:textSize="25sp"
         android:layout_marginTop="20dp"
         android:visibility="gone"
         android:layout_height="wrap_content"/>

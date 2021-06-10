@@ -52,9 +52,6 @@ public class OneFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public OneFragment(String title) {
-        this.title = title;
-    }
 
     public OneFragment(String title, Boolean show_listview) {
         this.title = title;
@@ -79,6 +76,7 @@ public class OneFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
         // Inflate the layout for this fragment
         allData = new ArrayList<>();
         rootView = inflater.inflate(R.layout.fragment_one, container, false);

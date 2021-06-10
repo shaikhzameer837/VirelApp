@@ -8,51 +8,57 @@
         android:layout_width="wrap_content"
         android:text="Profile setting"
         android:textStyle="bold"
-        android:textSize="19sp"
+        android:textColor="@color/black"
         android:layout_height="wrap_content"/>
     <TextView
         android:layout_width="wrap_content"
         android:text="Edit your profile setting"
-        android:textStyle="bold"
+        android:textSize="12sp"
+        android:layout_marginTop="5dp"
         android:layout_below="@+id/title"
         android:id="@+id/subtitle"
         android:layout_height="wrap_content"/>
 
     <ImageView
         android:id="@+id/imgs"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:layout_marginTop="15dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="30dp"
         android:layout_below="@+id/title"
         android:src="@drawable/profile_icon" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_alignParentRight="true"
-        android:text="Save"
+        android:text=" Save"
         android:id="@+id/save"
-        android:padding="10dp"
-        android:background="@drawable/curved_drawable"
-        android:textColor="@color/colorAccent"
+        android:paddingLeft="10dp"
+        android:gravity="center"
+        android:drawableLeft="@drawable/ic_check"
+        android:paddingRight="10dp"
+        android:textColor="@color/black"
         android:textStyle="bold"
-        android:layout_height="wrap_content"/>
+        android:layout_height="35dp"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:orientation="vertical"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:layout_below="@+id/imgs"
         android:layout_height="wrap_content">
     <EditText android:id="@+id/name"
         android:hint="name"
+        android:textSize="15sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <EditText android:id="@+id/gameBio"
-        android:hint="gamer Bio"
+        android:hint="Discord tag"
+        android:textSize="15sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <EditText android:id="@+id/phoneNumber"
         android:layout_width="match_parent"
         android:hint="phone number"
+        android:textSize="15sp"
         android:enabled="false"
         android:layout_height="wrap_content" />
     </LinearLayout>
