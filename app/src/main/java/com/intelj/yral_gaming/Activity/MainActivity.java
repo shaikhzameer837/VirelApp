@@ -1,6 +1,7 @@
 package com.intelj.yral_gaming.Activity;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.AppOpsManager;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -136,6 +137,7 @@ public class MainActivity extends AppCompatActivity {
     public static int navItemIndex = 0;
     private NavigationView navigationView;
     private DrawerLayout drawer;
+    public static final int PERMISSIONS_REQUEST_READ_CONTACTS = 15;
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
@@ -476,7 +478,15 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();
                 }
                 break;
-
+            case PERMISSIONS_REQUEST_READ_CONTACTS :
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Intent intent = new Intent(MainActivity.this, SearchFriendActivity.class);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(this, "You have disabled a contacts permission", Toast.LENGTH_LONG).show();
+                }
+                break;
 
             // other 'case' lines to check for other
             // permissions this app might request
@@ -527,8 +537,7 @@ public class MainActivity extends AppCompatActivity {
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, SearchFriendActivity.class);
-                startActivity(intent);
+                requestContactPermission();
             }
         });
     }
@@ -986,5 +995,39 @@ public class MainActivity extends AppCompatActivity {
 
         //calling sync state is necessary or else your hamburger icon wont show up
         actionBarDrawerToggle.syncState();*/
+    }
+    public void requestContactPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                        android.Manifest.permission.READ_CONTACTS)) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle("Read Contacts permission");
+                    builder.setPositiveButton(android.R.string.ok, null);
+                    builder.setMessage("Please enable access to contacts.");
+                    builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @TargetApi(Build.VERSION_CODES.M)
+                        @Override
+                        public void onDismiss(DialogInterface dialog) {
+                            requestPermissions(
+                                    new String[]
+                                            {android.Manifest.permission.READ_CONTACTS}
+                                    , PERMISSIONS_REQUEST_READ_CONTACTS);
+                        }
+                    });
+                    builder.show();
+                } else {
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{android.Manifest.permission.READ_CONTACTS},
+                            PERMISSIONS_REQUEST_READ_CONTACTS);
+                }
+            } else {
+                Intent intent = new Intent(MainActivity.this, SearchFriendActivity.class);
+                startActivity(intent);
+            }
+        } else {
+            Intent intent = new Intent(MainActivity.this, SearchFriendActivity.class);
+            startActivity(intent);
+        }
     }
 }

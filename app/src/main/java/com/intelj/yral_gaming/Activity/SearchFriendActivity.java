@@ -6,7 +6,10 @@ import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.ContentResolver;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
 
@@ -27,7 +30,9 @@ public class SearchFriendActivity extends AppCompatActivity {
     private SearchView searchView;
     private RecyclerView recyclerview;
     private ArrayList<DataSnapshot> dataSnapshots = new ArrayList<>();
-    ;
+    private ArrayList<String> contactList;
+    private DatabaseReference mFirebaseDatabaseReference;
+    private SearchFriendAdapter pAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,10 +40,13 @@ public class SearchFriendActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search_friend);
         searchView = findViewById(R.id.searchview);
         recyclerview = findViewById(R.id.recyclerview);
-        SearchFriendAdapter pAdapter = new SearchFriendAdapter(SearchFriendActivity.this, dataSnapshots);
+        pAdapter = new SearchFriendAdapter(SearchFriendActivity.this, dataSnapshots);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(SearchFriendActivity.this);
         recyclerview.setLayoutManager(mLayoutManager);
         recyclerview.setAdapter(pAdapter);
+        mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference(AppConstant.users);
+        getContactList();
+        startingList();
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -50,7 +58,6 @@ public class SearchFriendActivity extends AppCompatActivity {
             public boolean onQueryTextChange(String newText) {
                 dataSnapshots.clear();
                 if (newText.length() > 0) {
-                    DatabaseReference mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference(AppConstant.users);
 //                Query query = mFirebaseDatabaseReference.child(AppConstant.pinfo).child(AppConstant.userName).startAt(newText).endAt(newText+"\uf8ff");
                     Query query = mFirebaseDatabaseReference.orderByChild(AppConstant.username_search).startAt(newText).endAt(newText + "\uf8ff");
 
@@ -69,34 +76,82 @@ public class SearchFriendActivity extends AppCompatActivity {
                         }
                     });
 
+                } else {
+                    startingList();
                 }
+
                 pAdapter.notifyDataSetChanged();
-                /*FirebaseDatabase.getInstance().getReference(AppConstant.users).orderByChild("winner").addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(final DataSnapshot dataSnapshot) {
-                        ArrayList<DataSnapshot> dataSnapshots = new ArrayList<>();
-                        for (DataSnapshot child : dataSnapshot.getChildren()) {
-                           String username =  child.child(AppConstant.pinfo).child(AppConstant.userName).getValue().toString();
-                           String bio = child.child(AppConstant.pinfo).child(AppConstant.bio).getValue().toString();
-                           if (username.contains(newText) || bio.contains(newText)) {
-                               dataSnapshots.add(0, child);
-                           }
-                        }
-                        SearchFriendAdapter pAdapter = new SearchFriendAdapter(SearchFriendActivity.this, dataSnapshots);
-                        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(SearchFriendActivity.this);
-                        recyclerview.setLayoutManager(mLayoutManager);
-                        recyclerview.setAdapter(pAdapter);
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError error) {
-
-                    }
-                });*/
-
 
                 return true;
             }
         });
+    }
+
+    private void getContactList() {
+        contactList = new ArrayList<>();
+        ContentResolver cr = getContentResolver();
+        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
+                null, null, null, null);
+
+        if ((cur != null ? cur.getCount() : 0) > 0) {
+            while (cur != null && cur.moveToNext()) {
+                String id = cur.getString(
+                        cur.getColumnIndex(ContactsContract.Contacts._ID));
+                String name = cur.getString(cur.getColumnIndex(
+                        ContactsContract.Contacts.DISPLAY_NAME));
+
+                if (cur.getInt(cur.getColumnIndex(
+                        ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0) {
+                    Cursor pCur = cr.query(
+                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                            null,
+                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
+                            new String[]{id}, null);
+                    while (pCur.moveToNext()) {
+                        String phoneNo = pCur.getString(pCur.getColumnIndex(
+                                ContactsContract.CommonDataKinds.Phone.NUMBER));
+                        Log.i("Name: ", name);
+                        Log.i("Phone Number with: ", phoneNo);
+                        phoneNo = phoneNo.replace(" ", "");
+                        phoneNo = phoneNo.replace("+91", "");
+                        phoneNo = phoneNo.replace("0", "");
+                        /*if (phoneNo.contains(" "))
+                            phoneNo = phoneNo.replace(" ","");
+                        if (phoneNo.contains("+91"))
+                            phoneNo = phoneNo.replace("+91","");
+                        if (phoneNo.startsWith("0"))
+                            phoneNo = phoneNo.replace("0","");*/
+                        contactList.add(phoneNo);
+                        Log.i("Phone Number: ", phoneNo);
+                    }
+                    pCur.close();
+                }
+            }
+        }
+        if (cur != null) {
+            cur.close();
+        }
+    }
+
+    private void startingList() {
+        dataSnapshots.clear();
+        for (String s : contactList) {
+            Query query = mFirebaseDatabaseReference.orderByChild(AppConstant.phoneNumber).equalTo(s);
+
+            query.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for (DataSnapshot child : snapshot.getChildren()) {
+                        dataSnapshots.add(child);
+                    }
+                    pAdapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
     }
 }

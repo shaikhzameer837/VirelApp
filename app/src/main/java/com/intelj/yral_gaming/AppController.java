@@ -152,7 +152,7 @@ public class AppController extends Application implements Application.ActivityLi
     }
 
     public void startToRunActivity() {
-        Intent intent = new Intent(this, ComingSoon.class);
+        Intent intent = new Intent(this, MainActivity.class);
         if (remoteConfig.getString(AppConstant.pre_registration).equalsIgnoreCase("yes")) {
             intent = new Intent(this, PreRegistartionActivity.class);
         }
