@@ -98,6 +98,8 @@ import com.intelj.yral_gaming.TopSheet.TopSheetDialog;
 import com.intelj.yral_gaming.Utils.AppConstant;
 import com.intelj.yral_gaming.model.Note;
 
+import net.dv8tion.jda.api.JDABuilder;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -132,9 +134,7 @@ public class MainActivity extends AppCompatActivity {
     private Uri filePath = null;
     private DatabaseHelper db;
     private DatabaseHelper backgroundDB;
-    private static final int REQUEST_ID = 1;
     AlertDialog dialog;
-    public static int navItemIndex = 0;
     private NavigationView navigationView;
     private DrawerLayout drawer;
     public static final int PERMISSIONS_REQUEST_READ_CONTACTS = 15;
@@ -148,12 +148,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         AppController.getInstance().getGameName();
         AppController.getInstance().getTournamentTime();
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        navigationView = (NavigationView) findViewById(R.id.nav_view_drawer);
+        drawer =  findViewById(R.id.drawer_layout);
+        navigationView =  findViewById(R.id.nav_view_drawer);
         setUpNavigationView();
         if (savedInstanceState == null) {
             invalidateOptionsMenu();
         }
+        //JDABuilder
 //        ScreenshotManager.INSTANCE.requestScreenshotPermission(MainActivity.this, REQUEST_ID);
 //        final Handler handler = new Handler(Looper.getMainLooper());
 //        handler.postDelayed(new Runnable() {
@@ -337,14 +338,6 @@ public class MainActivity extends AppCompatActivity {
         db.getNote(id);
 
     }
-
-    private void updateNote(String note, int position) {
-//        Note n = notesList.get(position);
-//        n.setNote(note);
-//        db.updateNote(n);
-//         mAdapter.notifyItemChanged(position);
-    }
-
     private void showRank() {
         final RecyclerView recyclerView = inflated.findViewById(R.id.recycler_view);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);

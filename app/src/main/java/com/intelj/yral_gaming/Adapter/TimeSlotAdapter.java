@@ -3,6 +3,8 @@ package com.intelj.yral_gaming.Adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.text.format.DateUtils;
 import android.util.Log;
@@ -80,45 +82,44 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
         holder.reg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // if(System.currentTimeMillis() < miliSec) {
-                if (!new AppConstant(mContext).checkLogin()) {
-                    Intent intent = new Intent("custom-event-name");
-                    intent.putExtra("message", "bottom_sheet_broadcast");
-                    LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);
-                } else if (!allData.get(position).getRegisterd()) {
-                        try {
-                            String strDate = date + " " + allData.get(position).getTime().replace("pm", ":00:00 pm")
-                                    .replace("am", ":00:00 am");
-                            Date resultDate = AppConstant.dateFormat.parse(strDate);
-                            miliSec = resultDate.getTime();
-                            endslot = miliSec + 3600000;
-                            Log.e("miliSec", miliSec + "");
-                            Log.e("miliSec", System.currentTimeMillis() + "");
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                            FirebaseCrashlytics.getInstance().recordException(e);
-                        }
-                    if (miliSec < System.currentTimeMillis()) {
-                       /* Calendar calendar = Calendar.getInstance();
-                        calendar.add(Calendar.DAY_OF_YEAR, 1);
-                        Date tomorrow = calendar.getTime();
-                        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-                        date = dateFormat.format(tomorrow);*/
-                        Toast.makeText(mContext, "Time is up .Slot is not avialable.", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
+                    Intent waIntent = new Intent(Intent.ACTION_SEND);
+                    waIntent.setType("text/plain");
+                    String text = "YOUR TEXT HERE @zacshooter#4354";
+                    waIntent.setPackage("com.discord");
+                    waIntent.putExtra(Intent.EXTRA_TEXT, text);
+                    mContext.startActivity(Intent.createChooser(waIntent, "Share with"));
 
-//                    if (appConstant.getbooking() == 0 || appConstant.getbooking() < System.currentTimeMillis()) {
-//                            showBottomSheet(position);
-//                    }
-//                    else
-//                    {
-//                        Toast.makeText(mContext,"First play the game in first slot",Toast.LENGTH_LONG).show();
+
+
+
+                // if(System.currentTimeMillis() < miliSec) {
+//                if (!new AppConstant(mContext).checkLogin()) {
+//                    Intent intent = new Intent("custom-event-name");
+//                    intent.putExtra("message", "bottom_sheet_broadcast");
+//                    LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);
+//                } else if (!allData.get(position).getRegisterd()) {
+//                        try {
+//                            String strDate = date + " " + allData.get(position).getTime().replace("pm", ":00:00 pm")
+//                                    .replace("am", ":00:00 am");
+//                            Date resultDate = AppConstant.dateFormat.parse(strDate);
+//                            miliSec = resultDate.getTime();
+//                            endslot = miliSec + 3600000;
+//                            Log.e("miliSec", miliSec + "");
+//                            Log.e("miliSec", System.currentTimeMillis() + "");
+//                        } catch (ParseException e) {
+//                            e.printStackTrace();
+//                            FirebaseCrashlytics.getInstance().recordException(e);
+//                        }
+//                    if (miliSec < System.currentTimeMillis()) {
+//
+//                        Toast.makeText(mContext, "Time is up .Slot is not avialable.", Toast.LENGTH_SHORT).show();
 //                        return;
 //                    }
+//
+//
+//                    showBottomSheet(position);
+//                }
 
-                    showBottomSheet(position);
-                }
                 // }else
                 //    Toast.makeText(mContext,"sorry",Toast.LENGTH_LONG).show();
             }

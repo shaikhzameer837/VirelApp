@@ -1,17 +1,21 @@
 package com.intelj.yral_gaming.Activity;
 
+import android.content.ContentResolver;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.provider.ContactsContract;
+import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.content.ContentResolver;
-import android.database.Cursor;
-import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.util.Log;
-import android.view.View;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -19,20 +23,28 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.intelj.yral_gaming.Adapter.RankAdapter;
-import com.intelj.yral_gaming.Adapter.SearchFriendAdapter;
+import com.intelj.yral_gaming.Adapter.UserListAdapter;
+import com.intelj.yral_gaming.AppController;
 import com.intelj.yral_gaming.R;
 import com.intelj.yral_gaming.Utils.AppConstant;
+import com.intelj.yral_gaming.model.UserListModel;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class SearchFriendActivity extends AppCompatActivity {
     private SearchView searchView;
     private RecyclerView recyclerview;
-    private ArrayList<DataSnapshot> dataSnapshots = new ArrayList<>();
     private ArrayList<String> contactList;
+    private ArrayList<UserListModel> userListModel;
+    private ArrayList<UserListModel> userListModel2;
     private DatabaseReference mFirebaseDatabaseReference;
-    private SearchFriendAdapter pAdapter;
+    private UserListAdapter userAdapter;
+    private ProgressBar progress;
+    SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,14 +52,21 @@ public class SearchFriendActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search_friend);
         searchView = findViewById(R.id.searchview);
         recyclerview = findViewById(R.id.recyclerview);
-        pAdapter = new SearchFriendAdapter(SearchFriendActivity.this, dataSnapshots);
+        progress = findViewById(R.id.progress);
+        userListModel = new ArrayList<>();
+        userAdapter = new UserListAdapter(SearchFriendActivity.this, userListModel);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(SearchFriendActivity.this);
         recyclerview.setLayoutManager(mLayoutManager);
-        recyclerview.setAdapter(pAdapter);
+        recyclerview.setAdapter(userAdapter);
+        prefs = getSharedPreferences(AppConstant.AppName, Context.MODE_PRIVATE);
+        displayFriends();
+        findViewById(R.id.floating_action_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new LoadContact().execute();
+            }
+        });
         mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference(AppConstant.users);
-        getContactList();
-        startingList();
-
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -56,35 +75,30 @@ public class SearchFriendActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                dataSnapshots.clear();
+                userListModel.clear();
                 if (newText.length() > 0) {
-//                Query query = mFirebaseDatabaseReference.child(AppConstant.pinfo).child(AppConstant.userName).startAt(newText).endAt(newText+"\uf8ff");
-                    Query query = mFirebaseDatabaseReference.orderByChild(AppConstant.username_search).startAt(newText).endAt(newText + "\uf8ff");
-
-                    query.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            for (DataSnapshot child : snapshot.getChildren()) {
-                                dataSnapshots.add(child);
-                            }
-                            pAdapter.notifyDataSetChanged();
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
-
-                } else {
                     startingList();
+                } else {
+                  //  userModel =
+                            startingList();
                 }
 
-                pAdapter.notifyDataSetChanged();
+                userAdapter.notifyDataSetChanged();
 
                 return true;
             }
         });
+    }
+
+    private void displayFriends() {
+        Set<String> set = prefs.getStringSet(AppConstant.users, null);
+        for (String s : set) {
+            SharedPreferences sharedpreferences = getSharedPreferences(s, Context.MODE_PRIVATE);
+            userListModel.add(new UserListModel(sharedpreferences.getString(AppConstant.myPicUrl, ""),
+                    sharedpreferences.getString(AppConstant.userName, ""),
+                    sharedpreferences.getString(AppConstant.phoneNumber, ""),s));
+        }
+        userAdapter.notifyDataSetChanged();
     }
 
     private void getContactList() {
@@ -97,9 +111,6 @@ public class SearchFriendActivity extends AppCompatActivity {
             while (cur != null && cur.moveToNext()) {
                 String id = cur.getString(
                         cur.getColumnIndex(ContactsContract.Contacts._ID));
-                String name = cur.getString(cur.getColumnIndex(
-                        ContactsContract.Contacts.DISPLAY_NAME));
-
                 if (cur.getInt(cur.getColumnIndex(
                         ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0) {
                     Cursor pCur = cr.query(
@@ -110,18 +121,12 @@ public class SearchFriendActivity extends AppCompatActivity {
                     while (pCur.moveToNext()) {
                         String phoneNo = pCur.getString(pCur.getColumnIndex(
                                 ContactsContract.CommonDataKinds.Phone.NUMBER));
-                        Log.i("Name: ", name);
-                        Log.i("Phone Number with: ", phoneNo);
                         phoneNo = phoneNo.replace(" ", "");
                         phoneNo = phoneNo.replace("+91", "");
-                        phoneNo = phoneNo.replace("0", "");
-                        /*if (phoneNo.contains(" "))
-                            phoneNo = phoneNo.replace(" ","");
-                        if (phoneNo.contains("+91"))
-                            phoneNo = phoneNo.replace("+91","");
                         if (phoneNo.startsWith("0"))
-                            phoneNo = phoneNo.replace("0","");*/
-                        contactList.add(phoneNo);
+                            phoneNo = phoneNo.substring(1);
+                        if (phoneNo.length() > 7 && !phoneNo.equals(AppController.getInstance().userId.replace("+91", "")) && !contactList.contains(phoneNo))
+                            contactList.add(phoneNo);
                         Log.i("Phone Number: ", phoneNo);
                     }
                     pCur.close();
@@ -133,18 +138,56 @@ public class SearchFriendActivity extends AppCompatActivity {
         }
     }
 
-    private void startingList() {
-        dataSnapshots.clear();
-        for (String s : contactList) {
-            Query query = mFirebaseDatabaseReference.orderByChild(AppConstant.phoneNumber).equalTo(s);
+    class LoadContact extends AsyncTask<Void, Integer, String> {
 
-            query.addValueEventListener(new ValueEventListener() {
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progress.setVisibility(View.VISIBLE);
+        }
+
+        protected String doInBackground(Void... arg0) {
+            getContactList();
+            return null;
+        }
+
+
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            startingList();
+        }
+    }
+
+    int x = 0;
+
+    private void startingList() {
+        SharedPreferences.Editor editor = prefs.edit();
+        Set<String> set = new HashSet<>();
+        x = 0;
+         for (String s : contactList) {
+            Query query = mFirebaseDatabaseReference.orderByChild(AppConstant.phoneNumber).equalTo(s);
+            query.keepSynced(false);
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    for (DataSnapshot child : snapshot.getChildren()) {
-                        dataSnapshots.add(child);
+                public void onDataChange(@NotNull DataSnapshot snapshot) {
+                    x++;
+                    for (DataSnapshot childDataSnap : snapshot.getChildren()) {
+                        set.add(childDataSnap.getKey());
+                        SharedPreferences sharedpreferences = getSharedPreferences(childDataSnap.getKey(), Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editors = sharedpreferences.edit();
+                        editors.putString(AppConstant.userName, childDataSnap.child(AppConstant.pinfo).child(AppConstant.userName).getValue() + "");
+                        editors.putString(AppConstant.phoneNumber, childDataSnap.child(AppConstant.phoneNumber).getValue() + "");
+                        editors.putString(AppConstant.myPicUrl, childDataSnap.child(AppConstant.pinfo).child(AppConstant.myPicUrl).getValue() + "");
+                        editors.apply();
+                        Log.e("xyz123myPicUrl", childDataSnap.child(AppConstant.pinfo).child(AppConstant.userName).getValue() + "");
                     }
-                    pAdapter.notifyDataSetChanged();
+                    if (contactList.size() == x) {
+                        editor.putStringSet(AppConstant.users, set);
+                        editor.apply();
+                        progress.setVisibility(View.GONE);
+                        userAdapter.notifyDataSetChanged();
+                        displayFriends();
+                    }
+
                 }
 
                 @Override

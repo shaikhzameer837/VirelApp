@@ -11,7 +11,7 @@ public class AppConstant {
     public static String follow = "follow";
     private Context _context;
     private SharedPreferences sharedPreferences;
-    public static String AppName = "dumniGaming",
+    public static String AppName = "Y-Ral Gaming",
             login = "login",
             phoneNumber = "phoneNumber",
             userId = "userId",
@@ -30,6 +30,9 @@ public class AppConstant {
             backgroundData = "backgroundData",
             search = "search",
             myTeam = "myTeam",
+            teamName = "teamName",
+            teamMember = "teamMember",
+            team = "team",
             token = "token",
             coin = "coin",
             nextCoinTime = "nextCoinTime",

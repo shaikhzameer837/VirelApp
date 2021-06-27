@@ -74,6 +74,7 @@ public class AppController extends Application implements Application.ActivityLi
         instance = this;
         remoteConfig = FirebaseRemoteConfig.getInstance();
         remoteConfig.fetchAndActivate();
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         getReadyForCheckin();
         getGameName();
         getTournamentTime();
@@ -96,6 +97,9 @@ public class AppController extends Application implements Application.ActivityLi
             public void onDataChange(DataSnapshot dataSnapshot) {
                 mySnapShort = dataSnapshot;
                 userInfoList = new ArrayList<>();
+
+
+
                 if (progressDialog != null) {
                     progressDialog.cancel();
                     progressDialog = null;
