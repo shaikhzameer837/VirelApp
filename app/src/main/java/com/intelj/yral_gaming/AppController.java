@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Application;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -18,8 +20,9 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -29,7 +32,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.intelj.yral_gaming.Activity.MainActivity;
@@ -43,8 +45,10 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class AppController extends Application implements Application.ActivityLifecycleCallbacks {
     public static AppController instance;
@@ -86,7 +90,6 @@ public class AppController extends Application implements Application.ActivityLi
         if (new AppConstant(this).checkLogin()) {
             userId = appConstant.getUserId();
             getUserInfo();
-            myFollowingList();
         }
     }
 
@@ -97,9 +100,42 @@ public class AppController extends Application implements Application.ActivityLi
             public void onDataChange(DataSnapshot dataSnapshot) {
                 mySnapShort = dataSnapshot;
                 userInfoList = new ArrayList<>();
+                String TAG = "LOGGER";
+                for (DataSnapshot child : mySnapShort.child(AppConstant.team).getChildren()) {
+                    DocumentReference docRef = FirebaseFirestore.getInstance().collection(AppConstant.team)
+                            .document(child.getKey()+"");
+                    docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                DocumentSnapshot document = task.getResult();
+                                if (document.exists()) {
+                                    ArrayList<String> list = (ArrayList<String>) document.get(AppConstant.teamMember);
+                                    Log.d(TAG, list.toString());
+                                    Set<String> hashSet = new HashSet<>(list);
+                                    SharedPreferences sharedpreferences = getSharedPreferences(child.getKey(), Context.MODE_PRIVATE);
+                                    SharedPreferences.Editor editors = sharedpreferences.edit();
+                                    editors.putString(AppConstant.teamName, document.getString(AppConstant.teamName));
+                                    editors.putStringSet(AppConstant.teamMember, hashSet);
+                                    editors.putString(AppConstant.myPicUrl, document.getString(AppConstant.myPicUrl)+"");
+                                    editors.apply();
+                                }
+                            }
+                        }
+                    });
+//                            .collection(AppConstant.myTeam).document(child.getKey()+"").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                             if(task.isSuccessful()) {
+//                                DocumentSnapshot documentSnapshot = task.getResult();
+//                                //if(documentSnapshot.exists()) {
+//                                Log.i("LOGGER","First "+documentSnapshot.getString("teamName")+" ");
+//                                //}
+//                            }
+//                        }
+//                    });
 
-
-
+                }
                 if (progressDialog != null) {
                     progressDialog.cancel();
                     progressDialog = null;
@@ -128,20 +164,20 @@ public class AppController extends Application implements Application.ActivityLi
         });
     }
 
-    public void myFollowingList() {
-        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-
-        DocumentReference docRef = firebaseFirestore.collection(AppConstant.user).document(new AppConstant(this).getUserId()).collection(AppConstant.follow).document(AppConstant.following);
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    /*DocumentSnapshot questions = task.getResult();
-
-                    questions.*/
-                }
-            }
-        });
+//    public void myFollowingList() {
+//        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+//
+//        DocumentReference docRef = firebaseFirestore.collection(AppConstant.user).document(new AppConstant(this).getUserId()).collection(AppConstant.follow).document(AppConstant.following);
+//        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                if (task.isSuccessful()) {
+//                    /*DocumentSnapshot questions = task.getResult();
+//
+//                    questions.*/
+//                }
+//            }
+//        });
         /*docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -153,7 +189,7 @@ public class AppController extends Application implements Application.ActivityLi
                 }
             }
         });*/
-    }
+    //}
 
     public void startToRunActivity() {
         Intent intent = new Intent(this, MainActivity.class);

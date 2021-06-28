@@ -45,7 +45,7 @@ public class SearchFriendActivity extends AppCompatActivity {
     private UserListAdapter userAdapter;
     private ProgressBar progress;
     SharedPreferences prefs;
-
+    int x = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -156,9 +156,6 @@ public class SearchFriendActivity extends AppCompatActivity {
             startingList();
         }
     }
-
-    int x = 0;
-
     private void startingList() {
         SharedPreferences.Editor editor = prefs.edit();
         Set<String> set = new HashSet<>();

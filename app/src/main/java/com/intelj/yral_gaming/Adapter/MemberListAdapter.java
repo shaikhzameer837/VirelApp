@@ -67,10 +67,10 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.My
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         UserListModel movie = moviesList.get(position);
-        Glide.with(mContext).load(movie.getTeamUrl()).centerCrop().circleCrop().placeholder(R.drawable.game_avatar).fitCenter().into(holder.imgs);
+        Glide.with(mContext).load(movie.getTeamUrl()).centerCrop().circleCrop().placeholder(R.drawable.account_group).fitCenter().into(holder.imgs);
         holder.title.setText(movie.getTeamName());
         holder.add_user.setCompoundDrawables(null, ContextCompat.getDrawable(mContext,R.drawable.arrow), null, null);
-        holder.add_user.setText(movie.getTeamMember() == null ? "0" : movie.getTeamMember().size() +" Member");
+        holder.genre.setText(movie.getTeamMember() == null ? "0" : movie.getTeamMember().size() +" Member");
     }
 
     @Override

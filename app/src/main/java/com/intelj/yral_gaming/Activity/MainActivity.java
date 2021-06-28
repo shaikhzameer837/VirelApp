@@ -2,34 +2,24 @@ package com.intelj.yral_gaming.Activity;
 
 import android.Manifest;
 import android.annotation.TargetApi;
-import android.app.AppOpsManager;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.os.Environment;
-import android.os.Handler;
-import android.os.Looper;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -45,7 +35,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -76,38 +65,26 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.intelj.yral_gaming.Adapter.MemberListAdapter;
 import com.intelj.yral_gaming.Adapter.PayMentAdapter;
 import com.intelj.yral_gaming.Adapter.RankAdapter;
 import com.intelj.yral_gaming.AppController;
 import com.intelj.yral_gaming.ComingSoon;
 import com.intelj.yral_gaming.DatabaseHelper;
-import com.intelj.yral_gaming.DemoDelete;
 import com.intelj.yral_gaming.HelloService;
-import com.intelj.yral_gaming.MyBottomSheetDialog;
 import com.intelj.yral_gaming.NotesAdapter;
 import com.intelj.yral_gaming.R;
-import com.intelj.yral_gaming.ScreenshotManager;
 import com.intelj.yral_gaming.SigninActivity;
 import com.intelj.yral_gaming.TopSheet.TopSheetDialog;
 import com.intelj.yral_gaming.Utils.AppConstant;
 import com.intelj.yral_gaming.model.Note;
+import com.intelj.yral_gaming.model.UserListModel;
 
-import net.dv8tion.jda.api.JDABuilder;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.File;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -138,7 +115,6 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView navigationView;
     private DrawerLayout drawer;
     public static final int PERMISSIONS_REQUEST_READ_CONTACTS = 15;
-
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,8 +124,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         AppController.getInstance().getGameName();
         AppController.getInstance().getTournamentTime();
-        drawer =  findViewById(R.id.drawer_layout);
-        navigationView =  findViewById(R.id.nav_view_drawer);
+        drawer = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.nav_view_drawer);
         setUpNavigationView();
         if (savedInstanceState == null) {
             invalidateOptionsMenu();
@@ -245,6 +221,14 @@ public class MainActivity extends AppCompatActivity {
                                 inflateView(R.layout.rank);
                                 showRank();
                                 return true;
+                            case R.id.team:
+                                if (!new AppConstant(MainActivity.this).checkLogin()) {
+                                    showBottomSheetDialog();
+                                    return true;
+                                }
+                                inflateView(R.layout.bottom_sheet_dialog);
+                                showTeam();
+                                return true;
                             case R.id.history:
                                 if (!new AppConstant(MainActivity.this).checkLogin()) {
                                     showBottomSheetDialog();
@@ -295,6 +279,31 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
     }
 
+    private void showTeam() {
+        inflated.findViewById(R.id.newTeam).setVisibility(View.GONE);
+        inflated.findViewById(R.id.addTeam).setVisibility(View.GONE);
+        inflated.findViewById(R.id.create_team).setVisibility(View.VISIBLE);
+        RecyclerView recyclerview = inflated.findViewById(R.id.recyclerview);
+        ArrayList teamModel = new ArrayList<>();
+        for (DataSnapshot snapshot : AppController.getInstance().mySnapShort.child(AppConstant.team).getChildren()) {
+            SharedPreferences prefs = getSharedPreferences(snapshot.getKey(), Context.MODE_PRIVATE);
+            teamModel.add(new UserListModel(prefs.getString(AppConstant.teamName, null),
+                    prefs.getString(AppConstant.myPicUrl, null),
+                    snapshot.getKey(),
+                    prefs.getStringSet(AppConstant.teamMember, null)));
+        }
+        MemberListAdapter userAdapter = new MemberListAdapter(this, teamModel);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
+        recyclerview.setLayoutManager(mLayoutManager);
+        recyclerview.setAdapter(userAdapter);
+        inflated.findViewById(R.id.create_team).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                requestContactPermission();
+            }
+        });
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -338,6 +347,7 @@ public class MainActivity extends AppCompatActivity {
         db.getNote(id);
 
     }
+
     private void showRank() {
         final RecyclerView recyclerView = inflated.findViewById(R.id.recycler_view);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
@@ -471,7 +481,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();
                 }
                 break;
-            case PERMISSIONS_REQUEST_READ_CONTACTS :
+            case PERMISSIONS_REQUEST_READ_CONTACTS:
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Intent intent = new Intent(MainActivity.this, SearchFriendActivity.class);
@@ -530,7 +540,7 @@ public class MainActivity extends AppCompatActivity {
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                requestContactPermission();
+
             }
         });
     }
@@ -585,18 +595,18 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void showTeamBottomSheet() {
-        View myView = LayoutInflater.from(this).inflate(R.layout.my_team, null);
-        final BottomSheetDialog dialog = new BottomSheetDialog(this);
-        dialog.setContentView(myView);
-        dialog.show();
-        recyclerView = myView.findViewById(R.id.recycler_view);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new TeamAdapter(MainActivity.this, AppController.getInstance().userInfoList, AppConstant.friends);
-        recyclerView.setAdapter(mAdapter);
-        ((View) myView.getParent()).setBackgroundColor(Color.TRANSPARENT);
-    }
+//    private void showTeamBottomSheet() {
+//        View myView = LayoutInflater.from(this).inflate(R.layout.my_team, null);
+//        final BottomSheetDialog dialog = new BottomSheetDialog(this);
+//        dialog.setContentView(myView);
+//        dialog.show();
+//        recyclerView = myView.findViewById(R.id.recycler_view);
+//        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
+//        recyclerView.setLayoutManager(mLayoutManager);
+//        mAdapter = new TeamAdapter(MainActivity.this, AppController.getInstance().userInfoList, AppConstant.friends);
+//        recyclerView.setAdapter(mAdapter);
+//        ((View) myView.getParent()).setBackgroundColor(Color.TRANSPARENT);
+//    }
 
     public void openSubscribe() {
         Intent intent = new Intent(this, ComingSoon.class);
@@ -989,6 +999,7 @@ public class MainActivity extends AppCompatActivity {
         //calling sync state is necessary or else your hamburger icon wont show up
         actionBarDrawerToggle.syncState();*/
     }
+
     public void requestContactPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
