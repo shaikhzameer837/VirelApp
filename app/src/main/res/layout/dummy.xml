@@ -80,7 +80,6 @@
                     android:layout_below="@+id/timeLeft"
                     android:layout_gravity="center"
                     android:background="@drawable/round_red"
-                    android:drawableStart="@drawable/ic_subscribe"
                     android:textColor="@color/colorPrimary"
                     android:textStyle="bold"
                     android:text="Subscribe"

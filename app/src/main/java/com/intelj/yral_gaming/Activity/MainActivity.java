@@ -11,6 +11,8 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -154,35 +156,33 @@ public class MainActivity extends AppCompatActivity {
         db = new DatabaseHelper(this, "notifications");
         backgroundDB = new DatabaseHelper(this, "background_db");
         inflated = stub.inflate();
-        coin = findViewById(R.id.coin);
-        coin.setText(new AppConstant(this).getCoins() + "");
-        findViewById(R.id.subscription).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openSubscribe();
-            }
-        });
+
+
 //        getGameName();
 //        openTopSheetDialog(roomPassword);
+        ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
-        YouTubePlayerFragment youtubeFragment = (YouTubePlayerFragment)
-                getFragmentManager().findFragmentById(R.id.youtubeFragment);
-        youtubeFragment.initialize(AppConstant.youtubeApiKey,
-                new YouTubePlayer.OnInitializedListener() {
-                    @Override
-                    public void onInitializationSuccess(YouTubePlayer.Provider provider,
-                                                        YouTubePlayer youTubePlayer, boolean b) {
-                        if (!b) {
-                            youTubePlayer.loadVideo("zBD-WH3X4nc");
+        if (mWifi.isConnected()) {
+            YouTubePlayerFragment youtubeFragment = (YouTubePlayerFragment)
+                    getFragmentManager().findFragmentById(R.id.youtubeFragment);
+            youtubeFragment.initialize(AppConstant.youtubeApiKey,
+                    new YouTubePlayer.OnInitializedListener() {
+                        @Override
+                        public void onInitializationSuccess(YouTubePlayer.Provider provider,
+                                                            YouTubePlayer youTubePlayer, boolean b) {
+                            if (!b) {
+                                youTubePlayer.loadVideo("zBD-WH3X4nc");
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onInitializationFailure(YouTubePlayer.Provider provider,
-                                                        YouTubeInitializationResult youTubeInitializationResult) {
-                        Log.d("onInitianFailure: ", youTubeInitializationResult.toString());
-                    }
-                });
+                        @Override
+                        public void onInitializationFailure(YouTubePlayer.Provider provider,
+                                                            YouTubeInitializationResult youTubeInitializationResult) {
+                            Log.d("onInitianFailure: ", youTubeInitializationResult.toString());
+                        }
+                    });
+        }
         setFirstView();
         SharedPreferences shd = getSharedPreferences(AppConstant.saveYTid, 0);
         String saveYTid = shd.getString(AppConstant.saveYTid, "");
@@ -281,7 +281,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void showTeam() {
         inflated.findViewById(R.id.newTeam).setVisibility(View.GONE);
-        inflated.findViewById(R.id.addTeam).setVisibility(View.GONE);
+        inflated.findViewById(R.id.bott_button).setVisibility(View.GONE);
         inflated.findViewById(R.id.create_team).setVisibility(View.VISIBLE);
         RecyclerView recyclerview = inflated.findViewById(R.id.recyclerview);
         ArrayList teamModel = new ArrayList<>();
@@ -531,8 +531,10 @@ public class MainActivity extends AppCompatActivity {
     public void setFirstView() {
         gameViewpager = inflated.findViewById(R.id.gameViewpager);
         tabLayout = inflated.findViewById(R.id.tabs);
+        coin = inflated.findViewById(R.id.coin);
+        coin.setText(new AppConstant(this).getCoins() + " Coin");
         tabLayout.setupWithViewPager(gameViewpager);
-        textView = inflated.findViewById(R.id.channel_name);
+        textView = inflated.findViewById(R.id.subscription);
         textView.setSelected(true);
         AppController.getInstance().supportFragmentManager = getSupportFragmentManager();
         AppController.getInstance().gameViewpager = gameViewpager;
@@ -540,7 +542,7 @@ public class MainActivity extends AppCompatActivity {
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                openSubscribe();
             }
         });
     }

@@ -9,25 +9,40 @@
     app:behavior_hideable="false"
     app:behavior_peekHeight="356dp"
     app:layout_behavior="@string/bottom_sheet_behavior">
-
-    <TextView
-        android:id="@+id/channel_name"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="5dp"
         android:background="@drawable/curved_drawable"
-        android:drawableLeft="@drawable/trophy"
-        android:ellipsize="marquee"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/coin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:background="@android:color/transparent"
+            android:drawableStart="@drawable/ic_coin"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text=" coins"
+            android:textColor="@color/black"
+            android:textStyle="bold" />
+    <TextView
+        android:id="@+id/subscription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:singleLine="true"
+        android:textStyle="bold"
+        android:layout_alignParentRight="true"
         android:fadingEdge = "horizontal"
         android:marqueeRepeatLimit="marquee_forever"
         android:scrollHorizontally = "true"
         android:gravity="center"
-        android:layout_margin="10dp"
         android:padding="10dp"
-        android:text="Click Here to apply for Pro version"
-        android:textColor="#333333"
+        android:text="Buy Pro Subscription"
+        android:textColor="@color/black"
         />
-
+    </RelativeLayout>
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabs"
         android:layout_width="match_parent"
