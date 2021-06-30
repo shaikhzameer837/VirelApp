@@ -21,6 +21,7 @@
         android:roundIcon="@mipmap/app_logo"
         android:screenOrientation="portrait"
         android:supportsRtl="true"
+        android:networkSecurityConfig="@xml/remote_config"
         android:theme="@style/AppTheme.NoActionBar"
         tools:replace="android:allowBackup">
         <activity android:name=".Activity.NewProfileActivity"></activity>
@@ -60,6 +61,7 @@
             android:name=".Activity.SearchActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".ComingSoon" />
+        <activity android:name=".Activity.SplashScreen" />
 
         <service
             android:name=".FirebaseFCMServices"

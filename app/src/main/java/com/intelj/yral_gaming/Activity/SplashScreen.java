@@ -1,45 +1,27 @@
 package com.intelj.yral_gaming.Activity;
 
-import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.IntentSender;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.play.core.appupdate.AppUpdateInfo;
 import com.google.android.play.core.appupdate.AppUpdateManager;
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
-import com.google.android.play.core.install.model.AppUpdateType;
-import com.google.android.play.core.install.model.UpdateAvailability;
 import com.google.android.play.core.review.ReviewInfo;
 import com.google.android.play.core.review.ReviewManager;
 import com.google.android.play.core.review.ReviewManagerFactory;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
-import com.intelj.yral_gaming.AppController;
-import com.intelj.yral_gaming.DemoDelete;
 import com.intelj.yral_gaming.R;
-import com.intelj.yral_gaming.SigninActivity;
-import com.intelj.yral_gaming.Utils.AppConstant;
 
-
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
-import static com.google.android.play.core.install.model.AppUpdateType.*;
-import static com.google.android.play.core.install.model.UpdateAvailability.*;
+import static com.google.android.play.core.install.model.AppUpdateType.IMMEDIATE;
+import static com.google.android.play.core.install.model.UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS;
+import static com.google.android.play.core.install.model.UpdateAvailability.UPDATE_AVAILABLE;
 
 public class SplashScreen extends AppCompatActivity {
     private static final int IMMEDIATE_APP_UPDATE_REQ_CODE = 222222;
@@ -55,14 +37,9 @@ public class SplashScreen extends AppCompatActivity {
         reviewManager = ReviewManagerFactory.create(this);
 
 
+
         showRateApp();
 
-//        RotatingTextWrapper rotatingTextWrapper = findViewById(R.id.custom_switcher);
-//        rotatingTextWrapper.setSize(18);
-//        Rotatable rotatable = new Rotatable(Color.parseColor("#ffffff"), 1300, "If you good at Gaming", "Why not play and earn", "Get 500rs on every chicken dinner");
-//        rotatable.setSize(18);
-//        rotatable.setAnimationDuration(500);
-//        rotatingTextWrapper.setContent("This is ?", rotatable);
 
     }
 

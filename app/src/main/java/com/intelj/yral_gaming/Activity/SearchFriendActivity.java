@@ -23,13 +23,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.annotations.NotNull;
 import com.intelj.yral_gaming.Adapter.UserListAdapter;
 import com.intelj.yral_gaming.AppController;
 import com.intelj.yral_gaming.R;
 import com.intelj.yral_gaming.Utils.AppConstant;
 import com.intelj.yral_gaming.model.UserListModel;
 
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashSet;

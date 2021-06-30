@@ -1,12 +1,8 @@
 package com.intelj.yral_gaming.Adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,27 +10,39 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.intelj.yral_gaming.AppController;
 import com.intelj.yral_gaming.R;
 import com.intelj.yral_gaming.Utils.AppConstant;
+import com.intelj.yral_gaming.Utils.RecyclerTouchListener;
+import com.intelj.yral_gaming.model.UserListModel;
 import com.intelj.yral_gaming.model.UserModel;
 
-import java.text.DateFormat;
-import java.text.ParseException;
+import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyViewHolder> {
     DatabaseReference mDatabase;
@@ -44,8 +52,8 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
     long miliSec = 0;
     String title = "";
     String date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
-    long endslot = 0 ;
-
+    long endslot = 0;
+    ArrayList<UserListModel> teamModel;
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView title, info;
         ImageView reg;
@@ -82,15 +90,14 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
         holder.reg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                    Intent waIntent = new Intent(Intent.ACTION_SEND);
-                    waIntent.setType("text/plain");
-                    String text = "YOUR TEXT HERE @zacshooter#4354";
-                    waIntent.setPackage("com.discord");
-                    waIntent.putExtra(Intent.EXTRA_TEXT, text);
-                    mContext.startActivity(Intent.createChooser(waIntent, "Share with"));
-
-
-
+                //Intent waIntent = new Intent(Intent.ACTION_SEND);
+                //waIntent.setType("text/plain");
+//                Intent waIntent=new Intent(Intent.ACTION_VIEW,Uri.parse("https://discord.gg/9Shnr3nY"));
+//                String text = "YOUR TEXT HERE @zacshooter#4354";
+//                waIntent.setPackage("com.discord");
+//                waIntent.putExtra(Intent.EXTRA_TEXT, text);
+//                mContext.startActivity(Intent.createChooser(waIntent, "Share with"));
+                showTeamList();
 
                 // if(System.currentTimeMillis() < miliSec) {
 //                if (!new AppConstant(mContext).checkLogin()) {
@@ -131,6 +138,80 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
             holder.reg.setImageResource(R.drawable.arrow);
         }
         holder.info.setText(allData.get(position).getTotalCount() + "/100 members");
+    }
+    private void showTeamList() {
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(mContext);
+        bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog);
+        bottomSheetDialog.findViewById(R.id.newTeam).setVisibility(View.GONE);
+        bottomSheetDialog.findViewById(R.id.bott_button).setVisibility(View.GONE);
+        RecyclerView recyclerview = bottomSheetDialog.findViewById(R.id.recyclerview);
+        teamModel = new ArrayList<>();
+        for (DataSnapshot snapshot : AppController.getInstance().mySnapShort.child(AppConstant.team).getChildren()) {
+            SharedPreferences prefs = mContext.getSharedPreferences(snapshot.getKey(), Context.MODE_PRIVATE);
+            teamModel.add(new UserListModel(prefs.getString(AppConstant.teamName, null),
+                    prefs.getString(AppConstant.myPicUrl, null),
+                    snapshot.getKey(),
+                    prefs.getStringSet(AppConstant.teamMember, null)));
+        }
+        MemberListAdapter userAdapter = new MemberListAdapter(mContext, teamModel,AppConstant.applyMatches);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext);
+        recyclerview.setLayoutManager(mLayoutManager);
+        recyclerview.setAdapter(userAdapter);
+        bottomSheetDialog.show();
+        recyclerview.addOnItemTouchListener(new RecyclerTouchListener(mContext, recyclerview, new RecyclerTouchListener.ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                sendRequest(position);
+
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+
+            }
+        }));
+    }
+
+    private void sendRequest(int position) {
+        Set<String> teamMember = teamModel.get(position).getTeamMember();
+        JSONObject json = new JSONObject();
+        try {
+            json.put("set", teamMember);
+        }catch (Exception e){
+
+        }
+        RequestQueue queue = Volley.newRequestQueue(mContext);
+        String url = "http://y-ral-gaming.com/demo.php";
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Display the first 500 characters of the response string.
+                        Log.e("Response is: ", response);
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("error Response is ", "That didn't work!");
+                Log.e("error Response is ", error.getMessage());
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("user", json.toString());
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Content-Type", "application/x-www-form-urlencoded");
+                return params;
+            }
+        };
+
+         queue.add(stringRequest);
     }
 
     private void showBottomSheet(final int position) {

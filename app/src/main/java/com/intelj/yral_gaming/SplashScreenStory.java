@@ -2,6 +2,7 @@ package com.intelj.yral_gaming;
 
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -102,7 +103,6 @@ public class SplashScreenStory extends AppCompatActivity implements StoriesProgr
         storiesProgressView.setStoryDuration(3000L);
         storiesProgressView.setStoriesListener(this);
         storiesProgressView.startStories(counter);
-
         image = findViewById(R.id.image);
         desc = findViewById(R.id.desc);
         if (posterImage.size() == 0) {

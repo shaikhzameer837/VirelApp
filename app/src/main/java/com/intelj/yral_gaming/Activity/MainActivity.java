@@ -16,6 +16,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
@@ -85,6 +86,8 @@ import com.intelj.yral_gaming.TopSheet.TopSheetDialog;
 import com.intelj.yral_gaming.Utils.AppConstant;
 import com.intelj.yral_gaming.model.Note;
 import com.intelj.yral_gaming.model.UserListModel;
+import com.roughike.swipeselector.SwipeItem;
+import com.roughike.swipeselector.SwipeSelector;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -117,6 +120,7 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView navigationView;
     private DrawerLayout drawer;
     public static final int PERMISSIONS_REQUEST_READ_CONTACTS = 15;
+
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,7 +161,31 @@ public class MainActivity extends AppCompatActivity {
         backgroundDB = new DatabaseHelper(this, "background_db");
         inflated = stub.inflate();
 
+        SwipeSelector swipeSelector = findViewById(R.id.swipeSelector);
+        swipeSelector.setItems(
+                // The first argument is the value for that item, and should in most cases be unique for the
+                // current SwipeSelector, just as you would assign values to radio buttons.
+                // You can use the value later on to check what the selected item was.
+                // The value can be any Object, here we're using ints.
+                new SwipeItem(0, "Slide one", "Description for slide one."),
+                new SwipeItem(1, "Slide two", "Description for slide two."),
+                new SwipeItem(2, "Slide three", "Description for slide three.")
+        );
+        final Handler handler = new Handler();
+        final int delay = 5000; // 1000 milliseconds == 1 second
 
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                SwipeItem selectedItem = swipeSelector.getSelectedItem();
+                int current = (Integer) selectedItem.value;
+                if (current == 2)
+                    current = 0;
+                else
+                    ++current;
+                swipeSelector.selectItemAt(current); // Do your work here
+                handler.postDelayed(this, delay);
+            }
+        }, delay);
 //        getGameName();
 //        openTopSheetDialog(roomPassword);
         ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -292,7 +320,7 @@ public class MainActivity extends AppCompatActivity {
                     snapshot.getKey(),
                     prefs.getStringSet(AppConstant.teamMember, null)));
         }
-        MemberListAdapter userAdapter = new MemberListAdapter(this, teamModel);
+        MemberListAdapter userAdapter = new MemberListAdapter(this, teamModel, AppConstant.applyMatches);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         recyclerview.setLayoutManager(mLayoutManager);
         recyclerview.setAdapter(userAdapter);
@@ -461,6 +489,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case 100:
                 if (dialog != null)
@@ -475,7 +504,7 @@ public class MainActivity extends AppCompatActivity {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                    Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     startActivityForResult(i, RESULT_LOAD_IMAGE);
                 } else {
                     Toast.makeText(MainActivity.this, "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();

@@ -91,7 +91,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.MyView
                     snapshot.getKey(),
                     prefs.getStringSet(AppConstant.teamMember, null)));
         }
-        userAdapter = new MemberListAdapter(mContext, teamModel);
+        userAdapter = new MemberListAdapter(mContext, teamModel, AppConstant.applyMatches);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext);
         recyclerview.setLayoutManager(mLayoutManager);
         recyclerview.setAdapter(userAdapter);
