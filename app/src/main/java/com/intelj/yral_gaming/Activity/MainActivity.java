@@ -112,7 +112,8 @@ public class MainActivity extends AppCompatActivity {
     TextView textView;
     String picturePath = null;
     EditText playerName = null;
-    EditText gameBio = null;
+    EditText discordId = null;
+    EditText pubgId = null;
     private Uri filePath = null;
     private DatabaseHelper db;
     private DatabaseHelper backgroundDB;
@@ -283,18 +284,27 @@ public class MainActivity extends AppCompatActivity {
 
                                 Glide.with(MainActivity.this).load(AppController.getInstance().mySnapShort.child(AppConstant.myPicUrl).getValue() + "").placeholder(R.drawable.profile_icon).apply(new RequestOptions().circleCrop()).into(imgProfile);
                                 playerName = inflated.findViewById(R.id.name);
-                                gameBio = inflated.findViewById(R.id.gameBio);
+                                discordId = inflated.findViewById(R.id.discordId);
+                                pubgId = inflated.findViewById(R.id.pubgId);
                                 EditText phoneNumber = inflated.findViewById(R.id.phoneNumber);
                                 TextView save = inflated.findViewById(R.id.save);
                                 playerName.setText(AppController.getInstance().mySnapShort.child(AppConstant.userName).getValue() + "");
                                 phoneNumber.setText(new AppConstant(MainActivity.this).getPhoneNumber());
-                                gameBio.setText(AppController.getInstance().mySnapShort.child(AppConstant.gameBio).exists() ? AppController.getInstance().mySnapShort.child(AppConstant.gameBio).getValue() + "" : "");
+                                discordId.setText(AppController.getInstance().mySnapShort.child(AppConstant.discordId).exists() ? AppController.getInstance().mySnapShort.child(AppConstant.discordId).getValue() + "" : "");
+                                pubgId.setText(AppController.getInstance().mySnapShort.child(AppConstant.pubgId).exists() ? AppController.getInstance().mySnapShort.child(AppConstant.pubgId).getValue() + "" : "");
                                 save.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
                                         if (picturePath == null) {
                                             FirebaseDatabase.getInstance().getReference(AppConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.userName).setValue(playerName.getText().toString());
-                                            FirebaseDatabase.getInstance().getReference(AppConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.gameBio).setValue(gameBio.getText().toString());
+                                            FirebaseDatabase.getInstance().getReference(AppConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.discordId).setValue(discordId.getText().toString());
+                                            FirebaseDatabase.getInstance().getReference(AppConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.pubgId).setValue(pubgId.getText().toString());
+                                            SharedPreferences sharedPreferences = getSharedPreferences(AppConstant.AppName,0);
+                                            SharedPreferences.Editor editor =sharedPreferences.edit();
+                                            editor.putString(AppConstant.userName,playerName.getText().toString());
+                                            editor.putString(AppConstant.discordId,discordId.getText().toString());
+                                            editor.putString(AppConstant.pubgId,pubgId.getText().toString());
+                                            editor.apply();
                                         } else
                                             uploadFiles();
                                     }
@@ -306,7 +316,9 @@ public class MainActivity extends AppCompatActivity {
                 };
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
     }
+    public void saveInfo(){
 
+    }
     private void showTeam() {
         inflated.findViewById(R.id.newTeam).setVisibility(View.GONE);
         inflated.findViewById(R.id.bott_button).setVisibility(View.GONE);
@@ -456,8 +468,16 @@ public class MainActivity extends AppCompatActivity {
                                         public void onSuccess(Uri uri) {
                                             String imageUrl = uri.toString();
                                             FirebaseDatabase.getInstance().getReference(AppConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.userName).setValue(playerName.getText().toString());
-                                            FirebaseDatabase.getInstance().getReference(AppConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.gameBio).setValue(gameBio.getText().toString());
+                                            FirebaseDatabase.getInstance().getReference(AppConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.discordId).setValue(discordId.getText().toString());
+                                            FirebaseDatabase.getInstance().getReference(AppConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.pubgId).setValue(pubgId.getText().toString());
                                             FirebaseDatabase.getInstance().getReference(AppConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.myPicUrl).setValue(imageUrl);
+                                            SharedPreferences sharedPreferences = getSharedPreferences(AppConstant.AppName,0);
+                                            SharedPreferences.Editor editor =sharedPreferences.edit();
+                                            editor.putString(AppConstant.userName,playerName.getText().toString());
+                                            editor.putString(AppConstant.discordId,discordId.getText().toString());
+                                            editor.putString(AppConstant.pubgId,pubgId.getText().toString());
+                                            editor.putString(AppConstant.myPicUrl,imageUrl);
+                                            editor.apply();
                                             progressDialog.dismiss();
                                             picturePath = null;
                                             Toast.makeText(MainActivity.this, "Uploaded", Toast.LENGTH_SHORT).show();

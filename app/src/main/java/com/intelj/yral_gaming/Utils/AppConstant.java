@@ -44,6 +44,8 @@ public class AppConstant {
             realTime = "realTime",
             paymentHistory = "phist",
             gameBio = "gbio",
+            discordId = "discordId",
+            pubgId = "pubgId",
             youtubeApiKey = "AIzaSyBQiqtYCe51DtHvGhJOjO20Vv9Y_uzRyks",
             pre_registration = "Pre_registration",
             splashscreen = "splashscreen",

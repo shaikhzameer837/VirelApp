@@ -49,8 +49,14 @@
         android:textSize="15sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-    <EditText android:id="@+id/gameBio"
-        android:hint="Discord tag"
+    <EditText android:id="@+id/discordId"
+        android:hint="Discord Id"
+        android:textSize="15sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <EditText android:id="@+id/pubgId"
+        android:hint="Pubg Id"
         android:textSize="15sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

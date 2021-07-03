@@ -91,6 +91,7 @@ public class SearchFriendActivity extends AppCompatActivity {
     }
 
     private void displayFriends() {
+        userListModel.clear();
         Set<String> set = prefs.getStringSet(AppConstant.users, null);
         for (String s : set) {
             SharedPreferences sharedpreferences = getSharedPreferences(s, Context.MODE_PRIVATE);
@@ -174,6 +175,8 @@ public class SearchFriendActivity extends AppCompatActivity {
                         editors.putString(AppConstant.userName, childDataSnap.child(AppConstant.pinfo).child(AppConstant.userName).getValue() + "");
                         editors.putString(AppConstant.phoneNumber, childDataSnap.child(AppConstant.phoneNumber).getValue() + "");
                         editors.putString(AppConstant.myPicUrl, childDataSnap.child(AppConstant.pinfo).child(AppConstant.myPicUrl).getValue() + "");
+                        editors.putString(AppConstant.discordId, childDataSnap.child(AppConstant.pinfo).child(AppConstant.discordId).getValue() + "");
+                        editors.putString(AppConstant.pubgId, childDataSnap.child(AppConstant.pinfo).child(AppConstant.pubgId).getValue() + "");
                         editors.apply();
                         Log.e("xyz123myPicUrl", childDataSnap.child(AppConstant.pinfo).child(AppConstant.userName).getValue() + "");
                     }

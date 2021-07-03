@@ -88,6 +88,7 @@ public class AppController extends Application implements Application.ActivityLi
     public void getReadyForCheckin() {
         appConstant = new AppConstant(this);
         if (new AppConstant(this).checkLogin()) {
+            FirebaseFirestore.getInstance().disableNetwork();
             userId = appConstant.getUserId();
             getUserInfo();
         }

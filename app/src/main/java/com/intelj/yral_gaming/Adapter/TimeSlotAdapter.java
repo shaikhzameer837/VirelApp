@@ -1,5 +1,6 @@
 package com.intelj.yral_gaming.Adapter;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -53,11 +54,12 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
     String title = "";
     String date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
     long endslot = 0;
+    BottomSheetDialog bottomSheetDialog;
+    SharedPreferences sharedPreferences;
     ArrayList<UserListModel> teamModel;
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView title, info;
         ImageView reg;
-
         public MyViewHolder(View view) {
             super(view);
             title = view.findViewById(R.id.title);
@@ -71,6 +73,9 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
         this.mContext = mContext;
         this.allData = allData;
         this.title = title;
+        sharedPreferences =
+                mContext.getSharedPreferences
+                        (AppConstant.AppName,0);
         appConstant = new AppConstant(mContext);
         mDatabase = FirebaseDatabase.getInstance().getReference(AppConstant.live_stream);
     }
@@ -86,10 +91,11 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
         holder.title.setText(allData.get(position).getTime());
-
-        holder.reg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        String strDate = title+" "+date + " " + allData.get(position).getTime().replace("pm", ":00:00 pm")
+                                    .replace("am", ":00:00 am");
+//        holder.reg.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
                 //Intent waIntent = new Intent(Intent.ACTION_SEND);
                 //waIntent.setType("text/plain");
 //                Intent waIntent=new Intent(Intent.ACTION_VIEW,Uri.parse("https://discord.gg/9Shnr3nY"));
@@ -97,7 +103,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
 //                waIntent.setPackage("com.discord");
 //                waIntent.putExtra(Intent.EXTRA_TEXT, text);
 //                mContext.startActivity(Intent.createChooser(waIntent, "Share with"));
-                showTeamList();
+//                showTeamList(strDate);
 
                 // if(System.currentTimeMillis() < miliSec) {
 //                if (!new AppConstant(mContext).checkLogin()) {
@@ -129,18 +135,25 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
 
                 // }else
                 //    Toast.makeText(mContext,"sorry",Toast.LENGTH_LONG).show();
-            }
-        });
-        if (allData.get(position).getRegisterd()) {
+//            }
+//        });
+        if (sharedPreferences.getBoolean(strDate,false)) {
             holder.reg.setImageResource(R.drawable.check);
             holder.reg.setBackgroundResource(0);
+            holder.reg.setOnClickListener(null);
         } else {
             holder.reg.setImageResource(R.drawable.arrow);
+            holder.reg.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showTeamList(strDate);
+                }
+            });
         }
         holder.info.setText(allData.get(position).getTotalCount() + "/100 members");
     }
-    private void showTeamList() {
-        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(mContext);
+    private void showTeamList(String strDate) {
+        bottomSheetDialog = new BottomSheetDialog(mContext);
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog);
         bottomSheetDialog.findViewById(R.id.newTeam).setVisibility(View.GONE);
         bottomSheetDialog.findViewById(R.id.bott_button).setVisibility(View.GONE);
@@ -161,7 +174,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
         recyclerview.addOnItemTouchListener(new RecyclerTouchListener(mContext, recyclerview, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
-                sendRequest(position);
+                sendRequest(position,strDate);
 
             }
 
@@ -172,34 +185,51 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
         }));
     }
 
-    private void sendRequest(int position) {
+    private void sendRequest(int position, String strDate) {
+        ProgressDialog dialog = new ProgressDialog(mContext);
+        dialog.setMessage("Registering for App, please wait.");
+        dialog.show();
         Set<String> teamMember = teamModel.get(position).getTeamMember();
-        JSONObject json = new JSONObject();
-        try {
-            json.put("set", teamMember);
-        }catch (Exception e){
-
-        }
+        ArrayList<String> discordId = new ArrayList<>();
+        ArrayList<String> pubgId = new ArrayList<>();
+        for (String s : teamMember) {
+            SharedPreferences sharedPreferences = mContext.getSharedPreferences(s,0);
+            discordId.add(sharedPreferences.getString(AppConstant.discordId,""));
+            pubgId.add(sharedPreferences.getString(AppConstant.pubgId,""));
+         }
+        Log.e("teamMember",teamMember.toString().replace("[","").replace("]",""));
         RequestQueue queue = Volley.newRequestQueue(mContext);
         String url = "http://y-ral-gaming.com/demo.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        // Display the first 500 characters of the response string.
                         Log.e("Response is: ", response);
+                        if (dialog.isShowing()) {
+                            dialog.dismiss();
+                        }
+                        SharedPreferences.Editor editShared = sharedPreferences.edit();
+                       // editShared.putBoolean(strDate,true);
+                        editShared.apply();
+                        notifyDataSetChanged();
+                        bottomSheetDialog.cancel();
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e("error Response is ", "That didn't work!");
                 Log.e("error Response is ", error.getMessage());
+                if (dialog.isShowing()) {
+                    dialog.dismiss();
+                }
             }
         }) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put("user", json.toString());
+                params.put("user", teamMember.toString().replace("[","").replace("]",""));
+                params.put("strDate", strDate);
+                params.put("discordId", discordId.toString().replace("[","").replace("]",""));
+                params.put("pubgId", pubgId.toString().replace("[","").replace("]",""));
                 return params;
             }
 
