@@ -161,8 +161,8 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
         teamModel = new ArrayList<>();
         for (DataSnapshot snapshot : AppController.getInstance().mySnapShort.child(AppConstant.team).getChildren()) {
             SharedPreferences prefs = mContext.getSharedPreferences(snapshot.getKey(), Context.MODE_PRIVATE);
-            teamModel.add(new UserListModel(prefs.getString(AppConstant.teamName, null),
-                    prefs.getString(AppConstant.myPicUrl, null),
+            teamModel.add(new UserListModel(prefs.getString(AppConstant.teamName, ""),
+                    prefs.getString(AppConstant.myPicUrl, ""),
                     snapshot.getKey(),
                     prefs.getStringSet(AppConstant.teamMember, null)));
         }
@@ -191,11 +191,11 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
         dialog.show();
         Set<String> teamMember = teamModel.get(position).getTeamMember();
         ArrayList<String> discordId = new ArrayList<>();
-        ArrayList<String> pubgId = new ArrayList<>();
+        ArrayList<String> game_id = new ArrayList<>();
         for (String s : teamMember) {
             SharedPreferences sharedPreferences = mContext.getSharedPreferences(s,0);
             discordId.add(sharedPreferences.getString(AppConstant.discordId,""));
-            pubgId.add(sharedPreferences.getString(AppConstant.pubgId,""));
+            game_id.add(sharedPreferences.getString(title,""));
          }
         Log.e("teamMember",teamMember.toString().replace("[","").replace("]",""));
         RequestQueue queue = Volley.newRequestQueue(mContext);
@@ -209,7 +209,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
                             dialog.dismiss();
                         }
                         SharedPreferences.Editor editShared = sharedPreferences.edit();
-                       // editShared.putBoolean(strDate,true);
+                        editShared.putBoolean(strDate,true);
                         editShared.apply();
                         notifyDataSetChanged();
                         bottomSheetDialog.cancel();
@@ -228,8 +228,10 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
                 Map<String, String> params = new HashMap<>();
                 params.put("user", teamMember.toString().replace("[","").replace("]",""));
                 params.put("strDate", strDate);
+                params.put("teamName", teamModel.get(position).getTeamName());
                 params.put("discordId", discordId.toString().replace("[","").replace("]",""));
-                params.put("pubgId", pubgId.toString().replace("[","").replace("]",""));
+                params.put("game_name", title);
+                params.put("game_id", game_id.toString().replace("[","").replace("]",""));
                 return params;
             }
 

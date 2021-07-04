@@ -85,8 +85,6 @@ public class OneFragment extends Fragment {
         imageView = rootView.findViewById(R.id.imageview);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(mLayoutManager);
-
-
         Glide.with(this).load(R.drawable.coming_soon).centerCrop().into(imageView);
         if (show_listview) {
             recyclerView.setVisibility(View.VISIBLE);

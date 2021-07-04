@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -248,16 +249,30 @@ public class AppController extends Application implements Application.ActivityLi
     }
 
     public void setupViewPager(ViewPager viewPager) {
-
+        ArrayList<String> titleList = new ArrayList<>();
         if (gameNameHashmap.size() > 0) {
             ViewPagerAdapter adapter = new ViewPagerAdapter(supportFragmentManager);
 
             for (Map.Entry<String, Boolean> entry : gameNameHashmap.entrySet()) {
                 adapter.addFragment(new OneFragment(entry.getKey(), entry.getValue()), entry.getKey());
+                titleList.add(entry.getKey());
                 // do something with key and/or tab
             }
             viewPager.setAdapter(adapter);
+            Intent intent = new Intent("custom-event-name");
+            intent.putExtra(AppConstant.title, titleList.get(0));
+            LocalBroadcastManager.getInstance(instance).sendBroadcast(intent);
         }
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            public void onPageScrollStateChanged(int state) {}
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+
+            public void onPageSelected(int position) {
+                Intent intent = new Intent("custom-event-name");
+                intent.putExtra(AppConstant.title, titleList.get(position));
+                LocalBroadcastManager.getInstance(instance).sendBroadcast(intent);
+            }
+        });
         /*if (gameNameArray.size() > 0) {
             ViewPagerAdapter adapter = new ViewPagerAdapter(supportFragmentManager);
             for (String s : gameNameArray) {

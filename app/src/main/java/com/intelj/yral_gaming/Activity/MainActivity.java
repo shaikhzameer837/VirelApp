@@ -20,6 +20,7 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,6 +30,8 @@ import android.view.ViewParent;
 import android.view.ViewStub;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -59,6 +62,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerFragment;
@@ -86,6 +90,7 @@ import com.intelj.yral_gaming.TopSheet.TopSheetDialog;
 import com.intelj.yral_gaming.Utils.AppConstant;
 import com.intelj.yral_gaming.model.Note;
 import com.intelj.yral_gaming.model.UserListModel;
+import com.roughike.swipeselector.OnSwipeItemSelectedListener;
 import com.roughike.swipeselector.SwipeItem;
 import com.roughike.swipeselector.SwipeSelector;
 
@@ -104,6 +109,8 @@ public class MainActivity extends AppCompatActivity {
     ViewPager gameViewpager;
     TextView timeLeft;
     TextView coin;
+    EditText game_id;
+    ImageView edit;
     private RecyclerView recyclerView;
     TeamAdapter mAdapter;
     View inflated;
@@ -113,7 +120,6 @@ public class MainActivity extends AppCompatActivity {
     String picturePath = null;
     EditText playerName = null;
     EditText discordId = null;
-    EditText pubgId = null;
     private Uri filePath = null;
     private DatabaseHelper db;
     private DatabaseHelper backgroundDB;
@@ -133,6 +139,8 @@ public class MainActivity extends AppCompatActivity {
         AppController.getInstance().getTournamentTime();
         drawer = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view_drawer);
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
+                new IntentFilter("custom-event-name"));
         setUpNavigationView();
         if (savedInstanceState == null) {
             invalidateOptionsMenu();
@@ -168,10 +176,16 @@ public class MainActivity extends AppCompatActivity {
                 // current SwipeSelector, just as you would assign values to radio buttons.
                 // You can use the value later on to check what the selected item was.
                 // The value can be any Object, here we're using ints.
-                new SwipeItem(0, "Slide one", "Description for slide one."),
-                new SwipeItem(1, "Slide two", "Description for slide two."),
-                new SwipeItem(2, "Slide three", "Description for slide three.")
+                new SwipeItem(0, "Pro Subscription", "Earn more on Every Chicken Dinner"),
+                new SwipeItem(1, "Click here for Subscription", "it is very easy to apply for subscription"),
+                new SwipeItem(2, "Earn Coins", "Free coins")
         );
+        swipeSelector.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openSubscribe();
+             }
+        });
         final Handler handler = new Handler();
         final int delay = 5000; // 1000 milliseconds == 1 second
 
@@ -222,8 +236,7 @@ public class MainActivity extends AppCompatActivity {
         // startService(new Intent(MainActivity.this,MyService.class));
 
         timeLeft = findViewById(R.id.timeLeft);
-        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
-                new IntentFilter("custom-event-name"));
+
         BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override
@@ -285,25 +298,21 @@ public class MainActivity extends AppCompatActivity {
                                 Glide.with(MainActivity.this).load(AppController.getInstance().mySnapShort.child(AppConstant.myPicUrl).getValue() + "").placeholder(R.drawable.profile_icon).apply(new RequestOptions().circleCrop()).into(imgProfile);
                                 playerName = inflated.findViewById(R.id.name);
                                 discordId = inflated.findViewById(R.id.discordId);
-                                pubgId = inflated.findViewById(R.id.pubgId);
                                 EditText phoneNumber = inflated.findViewById(R.id.phoneNumber);
                                 TextView save = inflated.findViewById(R.id.save);
                                 playerName.setText(AppController.getInstance().mySnapShort.child(AppConstant.userName).getValue() + "");
                                 phoneNumber.setText(new AppConstant(MainActivity.this).getPhoneNumber());
                                 discordId.setText(AppController.getInstance().mySnapShort.child(AppConstant.discordId).exists() ? AppController.getInstance().mySnapShort.child(AppConstant.discordId).getValue() + "" : "");
-                                pubgId.setText(AppController.getInstance().mySnapShort.child(AppConstant.pubgId).exists() ? AppController.getInstance().mySnapShort.child(AppConstant.pubgId).getValue() + "" : "");
                                 save.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
                                         if (picturePath == null) {
                                             FirebaseDatabase.getInstance().getReference(AppConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.userName).setValue(playerName.getText().toString());
                                             FirebaseDatabase.getInstance().getReference(AppConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.discordId).setValue(discordId.getText().toString());
-                                            FirebaseDatabase.getInstance().getReference(AppConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.pubgId).setValue(pubgId.getText().toString());
-                                            SharedPreferences sharedPreferences = getSharedPreferences(AppConstant.AppName,0);
-                                            SharedPreferences.Editor editor =sharedPreferences.edit();
-                                            editor.putString(AppConstant.userName,playerName.getText().toString());
-                                            editor.putString(AppConstant.discordId,discordId.getText().toString());
-                                            editor.putString(AppConstant.pubgId,pubgId.getText().toString());
+                                            SharedPreferences sharedPreferences = getSharedPreferences(AppConstant.AppName, 0);
+                                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                                            editor.putString(AppConstant.userName, playerName.getText().toString());
+                                            editor.putString(AppConstant.discordId, discordId.getText().toString());
                                             editor.apply();
                                         } else
                                             uploadFiles();
@@ -316,9 +325,8 @@ public class MainActivity extends AppCompatActivity {
                 };
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
     }
-    public void saveInfo(){
 
-    }
+
     private void showTeam() {
         inflated.findViewById(R.id.newTeam).setVisibility(View.GONE);
         inflated.findViewById(R.id.bott_button).setVisibility(View.GONE);
@@ -469,14 +477,11 @@ public class MainActivity extends AppCompatActivity {
                                             String imageUrl = uri.toString();
                                             FirebaseDatabase.getInstance().getReference(AppConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.userName).setValue(playerName.getText().toString());
                                             FirebaseDatabase.getInstance().getReference(AppConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.discordId).setValue(discordId.getText().toString());
-                                            FirebaseDatabase.getInstance().getReference(AppConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.pubgId).setValue(pubgId.getText().toString());
                                             FirebaseDatabase.getInstance().getReference(AppConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.myPicUrl).setValue(imageUrl);
-                                            SharedPreferences sharedPreferences = getSharedPreferences(AppConstant.AppName,0);
-                                            SharedPreferences.Editor editor =sharedPreferences.edit();
-                                            editor.putString(AppConstant.userName,playerName.getText().toString());
-                                            editor.putString(AppConstant.discordId,discordId.getText().toString());
-                                            editor.putString(AppConstant.pubgId,pubgId.getText().toString());
-                                            editor.putString(AppConstant.myPicUrl,imageUrl);
+                                            SharedPreferences sharedPreferences = getSharedPreferences(AppConstant.AppName, 0);
+                                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                                            editor.putString(AppConstant.userName, playerName.getText().toString());
+                                            editor.putString(AppConstant.myPicUrl, imageUrl);
                                             editor.apply();
                                             progressDialog.dismiss();
                                             picturePath = null;
@@ -580,6 +585,8 @@ public class MainActivity extends AppCompatActivity {
     public void setFirstView() {
         gameViewpager = inflated.findViewById(R.id.gameViewpager);
         tabLayout = inflated.findViewById(R.id.tabs);
+        game_id = inflated.findViewById(R.id.game_id);
+        edit = inflated.findViewById(R.id.edit);
         coin = inflated.findViewById(R.id.coin);
         coin.setText(new AppConstant(this).getCoins() + " Coin");
         tabLayout.setupWithViewPager(gameViewpager);
@@ -588,12 +595,7 @@ public class MainActivity extends AppCompatActivity {
         AppController.getInstance().supportFragmentManager = getSupportFragmentManager();
         AppController.getInstance().gameViewpager = gameViewpager;
         AppController.getInstance().setupViewPager(gameViewpager);
-        textView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openSubscribe();
-            }
-        });
+
     }
 
     /*public void getGameName() {
@@ -724,13 +726,53 @@ public class MainActivity extends AppCompatActivity {
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            // Get extra data included in the Intent
-            String message = intent.getStringExtra("message");
-            if (message.equals("bottom_sheet_broadcast")) {
-                showBottomSheetDialog();
-                return;
-            }
-            final String roomPlan = intent.getStringExtra("roomPlan");
+            SharedPreferences sharedPreferences = getSharedPreferences(AppConstant.AppName, 0);
+            game_id.setHint(intent.getStringExtra(AppConstant.title) + " id");
+            game_id.setText(sharedPreferences.getString(intent.getStringExtra(AppConstant.title), ""));
+            inflated.findViewById(R.id.edit).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (game_id.isEnabled()) {
+                        game_id.setEnabled(false);
+                        game_id.clearFocus();
+                        edit.setImageResource(R.drawable.ic_edit);
+                    } else {
+                        edit.setImageResource(R.drawable.close);
+                        game_id.setEnabled(true);
+                        InputMethodManager inputMethodManager =  (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+                        inputMethodManager.toggleSoftInputFromWindow(game_id.getApplicationWindowToken(), InputMethodManager.SHOW_FORCED, 0);
+                        game_id.requestFocus();
+                        game_id.setSelection(game_id.getText().length());
+                    }
+                }
+            });
+            game_id.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                    if (actionId == EditorInfo.IME_ACTION_DONE) {
+                        edit.setImageResource(R.drawable.ic_edit);
+                        InputMethodManager imm = (InputMethodManager)v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putString(intent.getStringExtra(AppConstant.title), game_id.getText().toString());
+                        editor.apply();
+                        Toast.makeText(MainActivity.this,"Id updated",Toast.LENGTH_LONG).show();
+                        FirebaseDatabase.getInstance().getReference(AppConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(intent.getStringExtra(AppConstant.title)).setValue(game_id.getText().toString());
+                        inflated.findViewById(R.id.edit).performClick();
+                        return true;
+                    }
+                    return false;
+                }
+            });
+
+            // game_id.setText(intent.getStringExtra(AppConstant.title));
+//            // Get extra data included in the Intent
+//            String message = intent.getStringExtra("message");
+//            if (message.equals("bottom_sheet_broadcast")) {
+//                showBottomSheetDialog();
+//                return;
+//            }
+//            final String roomPlan = intent.getStringExtra("roomPlan");
 //            new CountDownTimer(Long.parseLong(message), 1000) {
 //                @Override
 //                public void onTick(long millisUntilFinished) {
@@ -751,7 +793,7 @@ public class MainActivity extends AppCompatActivity {
 //                    timeLeft.setText("Finished");
 //                }
 //            }.start();
-            setRoomVideo(roomPlan);
+            //   setRoomVideo(roomPlan);
         }
     };
 

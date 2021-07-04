@@ -16,6 +16,7 @@ public class AppConstant {
             phoneNumber = "phoneNumber",
             userId = "userId",
             applyMatches = "applyMatches",
+            title = "title",
             user = "user",
             deviceId = "deviceId",
             follower = "follower",

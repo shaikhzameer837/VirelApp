@@ -33,6 +33,7 @@ import com.intelj.yral_gaming.model.UserListModel;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class SearchFriendActivity extends AppCompatActivity {
@@ -176,7 +177,9 @@ public class SearchFriendActivity extends AppCompatActivity {
                         editors.putString(AppConstant.phoneNumber, childDataSnap.child(AppConstant.phoneNumber).getValue() + "");
                         editors.putString(AppConstant.myPicUrl, childDataSnap.child(AppConstant.pinfo).child(AppConstant.myPicUrl).getValue() + "");
                         editors.putString(AppConstant.discordId, childDataSnap.child(AppConstant.pinfo).child(AppConstant.discordId).getValue() + "");
-                        editors.putString(AppConstant.pubgId, childDataSnap.child(AppConstant.pinfo).child(AppConstant.pubgId).getValue() + "");
+                        for (Map.Entry<String, Boolean> entry : AppController.getInstance().gameNameHashmap.entrySet()) {
+                            editors.putString(entry.getKey(), childDataSnap.child(AppConstant.pinfo).child(entry.getKey()).getValue() + "");
+                        }
                         editors.apply();
                         Log.e("xyz123myPicUrl", childDataSnap.child(AppConstant.pinfo).child(AppConstant.userName).getValue() + "");
                     }
