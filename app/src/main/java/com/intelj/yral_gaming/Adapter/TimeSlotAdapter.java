@@ -2,6 +2,7 @@ package com.intelj.yral_gaming.Adapter;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.util.Log;
@@ -12,6 +13,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,6 +28,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.intelj.yral_gaming.Activity.MainActivity;
 import com.intelj.yral_gaming.AppController;
 import com.intelj.yral_gaming.R;
 import com.intelj.yral_gaming.Utils.AppConstant;
@@ -146,7 +149,13 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
             holder.reg.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    showTeamList(strDate);
+                    if (new AppConstant(mContext).checkLogin())
+                        showTeamList(strDate);
+                    else{
+                        Intent intent = new Intent("custom-event-name");
+                        intent.putExtra(AppConstant.AppName,true);
+                        LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);
+                    }
                 }
             });
         }
@@ -157,6 +166,9 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog);
         bottomSheetDialog.findViewById(R.id.newTeam).setVisibility(View.GONE);
         bottomSheetDialog.findViewById(R.id.bott_button).setVisibility(View.GONE);
+        bottomSheetDialog.findViewById(R.id.lin).setVisibility(View.GONE);
+        TextView txt =bottomSheetDialog.findViewById(R.id.subtitle);
+        txt.setText("Select Team Member");
         RecyclerView recyclerview = bottomSheetDialog.findViewById(R.id.recyclerview);
         teamModel = new ArrayList<>();
         for (DataSnapshot snapshot : AppController.getInstance().mySnapShort.child(AppConstant.team).getChildren()) {

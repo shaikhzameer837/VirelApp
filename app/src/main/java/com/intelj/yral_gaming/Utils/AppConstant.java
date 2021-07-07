@@ -1,11 +1,20 @@
 package com.intelj.yral_gaming.Utils;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Build;
+import android.provider.ContactsContract;
 import android.provider.Settings;
+import android.util.Log;
+
+import com.google.firebase.database.DataSnapshot;
+import com.intelj.yral_gaming.AppController;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Map;
 
 public class AppConstant {
     public static String follow = "follow";
@@ -82,7 +91,18 @@ public class AppConstant {
         sharedPreferences.edit().putInt(coin, _coin).apply();
         sharedPreferences.edit().putString(phoneNumber, _phoneNumber).apply();
     }
-
+    public void saveUserInfo(Context context,DataSnapshot childDataSnap){
+        SharedPreferences sharedpreferences = context.getSharedPreferences(childDataSnap.getKey(), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editors = sharedpreferences.edit();
+        editors.putString(AppConstant.userName, childDataSnap.child(AppConstant.pinfo).child(AppConstant.userName).getValue() + "");
+        editors.putString(AppConstant.phoneNumber, childDataSnap.child(AppConstant.phoneNumber).getValue() + "");
+        editors.putString(AppConstant.myPicUrl, childDataSnap.child(AppConstant.pinfo).child(AppConstant.myPicUrl).getValue() + "");
+        editors.putString(AppConstant.discordId, childDataSnap.child(AppConstant.pinfo).child(AppConstant.discordId).getValue() + "");
+        for (Map.Entry<String, Boolean> entry : AppController.getInstance().gameNameHashmap.entrySet()) {
+            editors.putString(entry.getKey(), childDataSnap.child(AppConstant.pinfo).child(entry.getKey()).getValue() + "");
+        }
+        editors.apply();
+    }
     public void saveSlot(String _uniqueId) {
         setSharedPref();
         sharedPreferences.edit().putString(saveYTid, _uniqueId).apply();
@@ -130,5 +150,9 @@ public class AppConstant {
     public String getPhoneNumber() {
         setSharedPref();
         return sharedPreferences.getString(phoneNumber, "");
+    }
+    public boolean getFriendCheck() {
+        setSharedPref();
+        return sharedPreferences.getBoolean(friends, false);
     }
 }

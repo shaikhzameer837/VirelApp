@@ -72,7 +72,7 @@ public class AppController extends Application implements Application.ActivityLi
     public DataSnapshot dataSnapshot;
     public ArrayList<String> followingList = new ArrayList<>();
     AlertDialog.Builder builder;
-
+    public boolean isFirstTime = false;
     @Override
     public void onCreate() {
         super.onCreate();
@@ -89,13 +89,13 @@ public class AppController extends Application implements Application.ActivityLi
     public void getReadyForCheckin() {
         appConstant = new AppConstant(this);
         if (new AppConstant(this).checkLogin()) {
-            FirebaseFirestore.getInstance().disableNetwork();
             userId = appConstant.getUserId();
             getUserInfo();
         }
     }
-
+    int x = 0;
     private void getUserInfo() {
+        x = 0;
         mDatabase = FirebaseDatabase.getInstance().getReference(AppConstant.users).child(userId).child(AppConstant.pinfo);
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
@@ -109,6 +109,7 @@ public class AppController extends Application implements Application.ActivityLi
                     docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            x++;
                             if (task.isSuccessful()) {
                                 DocumentSnapshot document = task.getResult();
                                 if (document.exists()) {
@@ -123,20 +124,12 @@ public class AppController extends Application implements Application.ActivityLi
                                     editors.apply();
                                 }
                             }
+                            if(x == mySnapShort.child(AppConstant.team).getChildrenCount()){
+                                FirebaseFirestore.getInstance().disableNetwork();
+                                Log.e(TAG,"Completed");
+                            }
                         }
                     });
-//                            .collection(AppConstant.myTeam).document(child.getKey()+"").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//                        @Override
-//                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                             if(task.isSuccessful()) {
-//                                DocumentSnapshot documentSnapshot = task.getResult();
-//                                //if(documentSnapshot.exists()) {
-//                                Log.i("LOGGER","First "+documentSnapshot.getString("teamName")+" ");
-//                                //}
-//                            }
-//                        }
-//                    });
-
                 }
                 if (progressDialog != null) {
                     progressDialog.cancel();
@@ -195,8 +188,11 @@ public class AppController extends Application implements Application.ActivityLi
 
     public void startToRunActivity() {
         Intent intent = new Intent(this, MainActivity.class);
-        if (remoteConfig.getString(AppConstant.pre_registration).equalsIgnoreCase("yes")) {
-            intent = new Intent(this, PreRegistartionActivity.class);
+//        if (remoteConfig.getString(AppConstant.pre_registration).equalsIgnoreCase("yes")) {
+//            intent = new Intent(this, PreRegistartionActivity.class);
+//        }
+        if (!userId.isEmpty() && !new AppConstant(this).getFriendCheck()) {
+            intent = new Intent(this, UserInfoCheck.class);
         }
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);

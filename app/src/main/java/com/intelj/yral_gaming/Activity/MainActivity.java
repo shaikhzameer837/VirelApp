@@ -176,9 +176,9 @@ public class MainActivity extends AppCompatActivity {
                 // current SwipeSelector, just as you would assign values to radio buttons.
                 // You can use the value later on to check what the selected item was.
                 // The value can be any Object, here we're using ints.
-                new SwipeItem(0, "Pro Subscription", "Earn more on Every Chicken Dinner"),
-                new SwipeItem(1, "Click here for Subscription", "it is very easy to apply for subscription"),
-                new SwipeItem(2, "Earn Coins", "Free coins")
+                new SwipeItem(0, "Silver", "Earn more on Every Chicken Dinner"),
+                new SwipeItem(1, "Gold", "it is very easy to apply for subscription"),
+                new SwipeItem(2, "Platinum", "Free coins")
         );
         swipeSelector.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -726,6 +726,10 @@ public class MainActivity extends AppCompatActivity {
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            if (intent.getBooleanExtra(AppConstant.AppName,false) == true){
+                showBottomSheetDialog();
+                return;
+            }
             SharedPreferences sharedPreferences = getSharedPreferences(AppConstant.AppName, 0);
             game_id.setHint(intent.getStringExtra(AppConstant.title) + " id");
             game_id.setText(sharedPreferences.getString(intent.getStringExtra(AppConstant.title), ""));
