@@ -102,7 +102,6 @@ public class AppController extends Application implements Application.ActivityLi
             public void onDataChange(DataSnapshot dataSnapshot) {
                 mySnapShort = dataSnapshot;
                 userInfoList = new ArrayList<>();
-                String TAG = "LOGGER";
                 for (DataSnapshot child : mySnapShort.child(AppConstant.team).getChildren()) {
                     DocumentReference docRef = FirebaseFirestore.getInstance().collection(AppConstant.team)
                             .document(child.getKey()+"");
@@ -114,7 +113,6 @@ public class AppController extends Application implements Application.ActivityLi
                                 DocumentSnapshot document = task.getResult();
                                 if (document.exists()) {
                                     ArrayList<String> list = (ArrayList<String>) document.get(AppConstant.teamMember);
-                                    Log.d(TAG, list.toString());
                                     Set<String> hashSet = new HashSet<>(list);
                                     SharedPreferences sharedpreferences = getSharedPreferences(child.getKey(), Context.MODE_PRIVATE);
                                     SharedPreferences.Editor editors = sharedpreferences.edit();
@@ -126,7 +124,6 @@ public class AppController extends Application implements Application.ActivityLi
                             }
                             if(x == mySnapShort.child(AppConstant.team).getChildrenCount()){
                                 FirebaseFirestore.getInstance().disableNetwork();
-                                Log.e(TAG,"Completed");
                             }
                         }
                     });
@@ -188,9 +185,6 @@ public class AppController extends Application implements Application.ActivityLi
 
     public void startToRunActivity() {
         Intent intent = new Intent(this, MainActivity.class);
-//        if (remoteConfig.getString(AppConstant.pre_registration).equalsIgnoreCase("yes")) {
-//            intent = new Intent(this, PreRegistartionActivity.class);
-//        }
         if (!userId.isEmpty() && !new AppConstant(this).getFriendCheck()) {
             intent = new Intent(this, UserInfoCheck.class);
         }

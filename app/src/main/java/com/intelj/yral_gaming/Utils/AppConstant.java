@@ -45,6 +45,7 @@ public class AppConstant {
             teamMember = "teamMember",
             team = "team",
             token = "token",
+            countryCode = "countryCode",
             coin = "coin",
             nextCoinTime = "nextCoinTime",
             myPicUrl = "myPicUrl",
@@ -84,11 +85,12 @@ public class AppConstant {
         }
     }
 
-    public void saveLogin(String user_id, String _phoneNumber, int _coin) {
+    public void saveLogin(String user_id, String _phoneNumber, int _coin,String _countryCode) {
         setSharedPref();
         sharedPreferences.edit().putBoolean(login, true).apply();
         sharedPreferences.edit().putString(userId, user_id).apply();
         sharedPreferences.edit().putInt(coin, _coin).apply();
+        sharedPreferences.edit().putString(countryCode, _countryCode).apply();
         sharedPreferences.edit().putString(phoneNumber, _phoneNumber).apply();
     }
     public void saveUserInfo(Context context,DataSnapshot childDataSnap){

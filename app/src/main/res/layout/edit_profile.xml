@@ -2,64 +2,105 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="10dp"
     android:orientation="vertical">
-    <TextView android:id="@+id/title"
-        android:layout_width="wrap_content"
-        android:text="Profile setting"
-        android:textStyle="bold"
-        android:textColor="@color/black"
-        android:layout_height="wrap_content"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:text="Edit your profile setting"
-        android:textSize="12sp"
-        android:layout_marginTop="5dp"
-        android:layout_below="@+id/title"
-        android:id="@+id/subtitle"
-        android:layout_height="wrap_content"/>
 
+    <LinearLayout
+        android:id="@+id/lin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:background="@drawable/curved_drawable"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="45dp"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:enabled="false"
+            android:padding="10dp"
+            android:gravity="center_vertical"
+            android:text="Profile setting"
+            android:textColor="@color/black"
+            android:textColorHint="@color/grey_black"
+            android:textSize="14sp" />
+
+        <ImageView
+            android:id="@+id/save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
+            android:src="@drawable/ic_edit"
+            android:gravity="center_vertical"
+            android:textColor="@color/black" />
+    </LinearLayout>
     <ImageView
         android:id="@+id/imgs"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:layout_marginTop="30dp"
-        android:layout_below="@+id/title"
+        android:layout_below="@+id/lin"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="15dp"
         android:src="@drawable/profile_icon" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_alignParentRight="true"
-        android:text=" Save"
-        android:id="@+id/save"
-        android:paddingLeft="10dp"
-        android:gravity="center"
-        android:drawableLeft="@drawable/ic_check"
-        android:paddingRight="10dp"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        android:layout_height="35dp"/>
     <LinearLayout
         android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:layout_marginTop="5dp"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/imgs"
-        android:layout_height="wrap_content">
-    <EditText android:id="@+id/name"
-        android:hint="name"
-        android:textSize="15sp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    <EditText android:id="@+id/discordId"
-        android:hint="Discord Id"
-        android:textSize="15sp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_marginTop="5dp"
+        android:orientation="vertical">
 
-    <EditText android:id="@+id/phoneNumber"
-        android:layout_width="match_parent"
-        android:hint="phone number"
-        android:textSize="15sp"
-        android:enabled="false"
-        android:layout_height="wrap_content" />
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="15dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/name"
+                android:enabled="false"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="your Name"
+                android:textSize="14sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="15dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/discordId"
+                android:enabled="false"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Discord Id"
+                android:textSize="14sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:visibility="gone"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="15dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/phoneNumber"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:hint="your Name"
+                android:textSize="14sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
     </LinearLayout>
 </RelativeLayout>

@@ -112,14 +112,12 @@ public class MainActivity extends AppCompatActivity {
     EditText game_id;
     ImageView edit;
     private RecyclerView recyclerView;
-    TeamAdapter mAdapter;
     View inflated;
     int RESULT_LOAD_IMAGE = 9;
-    ImageView imgProfile;
+    ImageView imgProfile,saveProf;
     TextView textView;
     String picturePath = null;
-    EditText playerName = null;
-    EditText discordId = null;
+    TextInputEditText playerName, discordId;
     private Uri filePath = null;
     private DatabaseHelper db;
     private DatabaseHelper backgroundDB;
@@ -127,7 +125,9 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView navigationView;
     private DrawerLayout drawer;
     public static final int PERMISSIONS_REQUEST_READ_CONTACTS = 15;
-
+    FirebaseStorage storage;
+    StorageReference storageReference;
+    ProgressDialog progressDialog;
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -298,23 +298,23 @@ public class MainActivity extends AppCompatActivity {
                                 Glide.with(MainActivity.this).load(AppController.getInstance().mySnapShort.child(AppConstant.myPicUrl).getValue() + "").placeholder(R.drawable.profile_icon).apply(new RequestOptions().circleCrop()).into(imgProfile);
                                 playerName = inflated.findViewById(R.id.name);
                                 discordId = inflated.findViewById(R.id.discordId);
-                                EditText phoneNumber = inflated.findViewById(R.id.phoneNumber);
-                                TextView save = inflated.findViewById(R.id.save);
+                                TextInputEditText phoneNumber = inflated.findViewById(R.id.phoneNumber);
+                                saveProf = inflated.findViewById(R.id.save);
                                 playerName.setText(AppController.getInstance().mySnapShort.child(AppConstant.userName).getValue() + "");
                                 phoneNumber.setText(new AppConstant(MainActivity.this).getPhoneNumber());
                                 discordId.setText(AppController.getInstance().mySnapShort.child(AppConstant.discordId).exists() ? AppController.getInstance().mySnapShort.child(AppConstant.discordId).getValue() + "" : "");
-                                save.setOnClickListener(new View.OnClickListener() {
+                                saveProf.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        if (picturePath == null) {
-                                            FirebaseDatabase.getInstance().getReference(AppConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.userName).setValue(playerName.getText().toString());
-                                            FirebaseDatabase.getInstance().getReference(AppConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.discordId).setValue(discordId.getText().toString());
-                                            SharedPreferences sharedPreferences = getSharedPreferences(AppConstant.AppName, 0);
-                                            SharedPreferences.Editor editor = sharedPreferences.edit();
-                                            editor.putString(AppConstant.userName, playerName.getText().toString());
-                                            editor.putString(AppConstant.discordId, discordId.getText().toString());
-                                            editor.apply();
-                                        } else
+                                        if(!discordId.isEnabled()){
+                                            discordId.setEnabled(true);
+                                            playerName.setEnabled(true);
+                                            saveProf.setImageResource(R.drawable.check);
+                                            return;
+                                        }
+                                        if (picturePath == null)
+                                            saveToProfile(null);
+                                         else
                                             uploadFiles();
                                     }
                                 });
@@ -324,6 +324,26 @@ public class MainActivity extends AppCompatActivity {
                     }
                 };
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
+    }
+
+    private void saveToProfile(String imageUrl) {
+        FirebaseDatabase.getInstance().getReference(AppConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.userName).setValue(playerName.getText().toString());
+        FirebaseDatabase.getInstance().getReference(AppConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.discordId).setValue(discordId.getText().toString());
+        SharedPreferences sharedPreferences = getSharedPreferences(AppConstant.AppName, 0);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(AppConstant.userName, playerName.getText().toString());
+        editor.putString(AppConstant.discordId, discordId.getText().toString());
+        if(imageUrl != null){
+            FirebaseDatabase.getInstance().getReference(AppConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.myPicUrl).setValue(imageUrl);
+            editor.putString(AppConstant.myPicUrl, imageUrl);
+            progressDialog.dismiss();
+            picturePath = null;
+        }
+        editor.apply();
+        discordId.setEnabled(false);
+        playerName.setEnabled(false);
+        saveProf.setImageResource(R.drawable.ic_edit);
+        Toast.makeText(MainActivity.this,"Profile Updated Susccessfully",Toast.LENGTH_LONG).show();
     }
 
 
@@ -382,6 +402,7 @@ public class MainActivity extends AppCompatActivity {
         if (notesList.size() == 0) {
             recyclerView.setVisibility(View.GONE);
             findViewById(R.id.not).setVisibility(View.VISIBLE);
+            findViewById(R.id.pBar3).setVisibility(View.VISIBLE);
         }
         NotesAdapter mAdapter = new NotesAdapter(this, notesList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -451,15 +472,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    FirebaseStorage storage;
-    StorageReference storageReference;
 
     private void uploadFiles() {
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
 
         if (filePath != null) {
-            final ProgressDialog progressDialog = new ProgressDialog(this);
+            progressDialog = new ProgressDialog(this);
             progressDialog.setTitle("Uploading...");
             progressDialog.show();
 
@@ -475,17 +494,7 @@ public class MainActivity extends AppCompatActivity {
                                         @Override
                                         public void onSuccess(Uri uri) {
                                             String imageUrl = uri.toString();
-                                            FirebaseDatabase.getInstance().getReference(AppConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.userName).setValue(playerName.getText().toString());
-                                            FirebaseDatabase.getInstance().getReference(AppConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.discordId).setValue(discordId.getText().toString());
-                                            FirebaseDatabase.getInstance().getReference(AppConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.myPicUrl).setValue(imageUrl);
-                                            SharedPreferences sharedPreferences = getSharedPreferences(AppConstant.AppName, 0);
-                                            SharedPreferences.Editor editor = sharedPreferences.edit();
-                                            editor.putString(AppConstant.userName, playerName.getText().toString());
-                                            editor.putString(AppConstant.myPicUrl, imageUrl);
-                                            editor.apply();
-                                            progressDialog.dismiss();
-                                            picturePath = null;
-                                            Toast.makeText(MainActivity.this, "Uploaded", Toast.LENGTH_SHORT).show();
+                                            saveToProfile(imageUrl);
                                         }
                                     });
                                 }
@@ -576,7 +585,7 @@ public class MainActivity extends AppCompatActivity {
             picturePath = cursor.getString(columnIndex);
 
             cursor.close();
-            Glide.with(this).load(picturePath).into(imgProfile);
+            Glide.with(this).load(picturePath).apply(new RequestOptions().circleCrop()).into(imgProfile);
 
 
         }
@@ -736,6 +745,10 @@ public class MainActivity extends AppCompatActivity {
             inflated.findViewById(R.id.edit).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if(!new AppConstant(context).checkLogin()){
+                        showBottomSheetDialog();
+                        return;
+                    }
                     if (game_id.isEnabled()) {
                         game_id.setEnabled(false);
                         game_id.clearFocus();

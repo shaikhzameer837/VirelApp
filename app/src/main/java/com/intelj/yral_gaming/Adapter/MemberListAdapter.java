@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.intelj.yral_gaming.R;
+import com.intelj.yral_gaming.Utils.AppConstant;
 import com.intelj.yral_gaming.model.UserListModel;
 
 import java.util.List;
@@ -29,6 +30,9 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.My
             genre =  view.findViewById(R.id.genre);
             imgs =  view.findViewById(R.id.imgs);
             add_user =  view.findViewById(R.id.add_user);
+            if(type.equals(AppConstant.team)){
+                add_user.setVisibility(View.GONE);
+            }
         }
     }
 

@@ -166,9 +166,11 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog);
         bottomSheetDialog.findViewById(R.id.newTeam).setVisibility(View.GONE);
         bottomSheetDialog.findViewById(R.id.bott_button).setVisibility(View.GONE);
-        bottomSheetDialog.findViewById(R.id.lin).setVisibility(View.GONE);
+        bottomSheetDialog.findViewById(R.id.create_team).setVisibility(View.GONE);
+        TextView title = bottomSheetDialog.findViewById(R.id.title);
+        title.setText("Select your team");
         TextView txt =bottomSheetDialog.findViewById(R.id.subtitle);
-        txt.setText("Select Team Member");
+        txt.setText("only one team can be seelcted");
         RecyclerView recyclerview = bottomSheetDialog.findViewById(R.id.recyclerview);
         teamModel = new ArrayList<>();
         for (DataSnapshot snapshot : AppController.getInstance().mySnapShort.child(AppConstant.team).getChildren()) {
@@ -178,7 +180,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
                     snapshot.getKey(),
                     prefs.getStringSet(AppConstant.teamMember, null)));
         }
-        MemberListAdapter userAdapter = new MemberListAdapter(mContext, teamModel,AppConstant.applyMatches);
+        MemberListAdapter userAdapter = new MemberListAdapter(mContext, teamModel,AppConstant.team);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext);
         recyclerview.setLayoutManager(mLayoutManager);
         recyclerview.setAdapter(userAdapter);
@@ -229,7 +231,6 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e("error Response is ", error.getMessage());
                 if (dialog.isShowing()) {
                     dialog.dismiss();
                 }

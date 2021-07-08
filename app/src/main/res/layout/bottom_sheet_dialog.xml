@@ -5,7 +5,7 @@
     android:layout_height="match_parent">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="45dp"
         android:layout_margin="5dp"
         android:padding="5dp"
         android:id="@+id/lin"
@@ -38,10 +38,12 @@
         android:layout_height="wrap_content"/>
     <EditText android:id="@+id/newTeam"
         android:layout_width="match_parent"
-        android:hint=" Create new team"
+        android:hint="New team name"
         android:drawableLeft="@drawable/ic_team"
+        android:drawablePadding="10dp"
         android:layout_marginLeft="12dp"
         android:layout_marginRight="12dp"
+        android:paddingLeft="15dp"
         android:layout_marginTop="6dp"
         android:layout_height="wrap_content"/>
     <androidx.recyclerview.widget.RecyclerView
@@ -51,7 +53,7 @@
         android:layout_marginRight="12dp"
         android:layout_marginTop="6dp"
         android:layout_width="match_parent"
-        android:layout_height="250dp"/>
+        android:layout_height="230dp"/>
     <View
         android:layout_width="match_parent"
         android:background="@color/black"

@@ -105,6 +105,17 @@ public class UserInfoCheck extends AppCompatActivity {
         rotatable.setAnimationDuration(500);
         rotatable.setInterpolator(new BounceInterpolator());
         rotatingTextWrapper.setContent("", rotatable);
+        PackageManager pm = getPackageManager();
+        int hasPerm = pm.checkPermission(
+                android.Manifest.permission.READ_CONTACTS,
+                getPackageName());
+        if (hasPerm != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(UserInfoCheck.this,
+                    new String[]{Manifest.permission.READ_CONTACTS},
+                    PERMISSIONS_REQUEST_READ_CONTACTS);
+        } else {
+            new LoadContact().execute();
+        }
     }
 
     private void saveUserInfoData() {
@@ -117,17 +128,7 @@ public class UserInfoCheck extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        PackageManager pm = getPackageManager();
-        int hasPerm = pm.checkPermission(
-                android.Manifest.permission.READ_CONTACTS,
-                getPackageName());
-        if (hasPerm != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(UserInfoCheck.this,
-                    new String[]{Manifest.permission.READ_CONTACTS},
-                    PERMISSIONS_REQUEST_READ_CONTACTS);
-        } else {
-            new LoadContact().execute();
-        }
+
     }
 
     private void saveAndExit() {
@@ -243,6 +244,10 @@ public class UserInfoCheck extends AppCompatActivity {
     }
 
     private void startingList() {
+        HashSet hs = new HashSet();
+        hs.addAll(contactList);
+        contactList.clear();
+        contactList.addAll(hs);
         SharedPreferences prefs = getSharedPreferences(AppConstant.AppName, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         Set<String> set = new HashSet<>();

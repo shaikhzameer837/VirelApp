@@ -82,6 +82,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.MyView
         bottomSheetDialog = new BottomSheetDialog(mContext);
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog);
         EditText teamName = bottomSheetDialog.findViewById(R.id.newTeam);
+        bottomSheetDialog.findViewById(R.id.create_team).setVisibility(View.GONE);
         recyclerview = bottomSheetDialog.findViewById(R.id.recyclerview);
         teamModel = new ArrayList<>();
         for (DataSnapshot snapshot : AppController.getInstance().mySnapShort.child(AppConstant.team).getChildren()) {
@@ -91,7 +92,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.MyView
                     snapshot.getKey(),
                     prefs.getStringSet(AppConstant.teamMember, null)));
         }
-        userAdapter = new MemberListAdapter(mContext, teamModel, AppConstant.applyMatches);
+        userAdapter = new MemberListAdapter(mContext, teamModel, AppConstant.team);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext);
         recyclerview.setLayoutManager(mLayoutManager);
         recyclerview.setAdapter(userAdapter);
@@ -112,6 +113,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.MyView
         ArrayList<String> teamUserList = new ArrayList<>();
         teamUserList.add(moviesList.get(positionClick).getUserId());
         teamUserList.add(AppController.getInstance().userId);
+        FirebaseFirestore.getInstance().enableNetwork();
         CollectionReference myTeam = db.collection(AppConstant.team);
         HashMap<String,Object> teamHash = new HashMap<>();
         teamHash.put(AppConstant.teamName,teamName);

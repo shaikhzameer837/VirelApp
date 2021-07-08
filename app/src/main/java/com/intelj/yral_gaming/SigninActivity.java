@@ -72,7 +72,7 @@ public class SigninActivity extends AppCompatActivity {
     EditText pgUsername;
     CountryCodePicker ccp;
     TextView et_countdown, resend_btn;
-    String _phoneNumber = "", _otp = "", token = "", _pgUsername = "";
+    String _phoneNumber = "", _otp = "", token = "", _pgUsername = "",_countryCode="+91";
     DatabaseReference mDatabase;
     private String mVerificationId;
     private FirebaseAuth mAuth;
@@ -257,7 +257,8 @@ public class SigninActivity extends AppCompatActivity {
                 ccp.setOnCountryChangeListener(new CountryCodePicker.OnCountryChangeListener() {
                     @Override
                     public void onCountrySelected(Country selectedCountry) {
-                        Toast.makeText(SigninActivity.this, "Updated " + selectedCountry.getName(), Toast.LENGTH_SHORT).show();
+                        _countryCode = selectedCountry.getPhoneCode();
+                        Toast.makeText(SigninActivity.this, "Updated " + selectedCountry.getPhoneCode(), Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -379,7 +380,7 @@ public class SigninActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return 3;
+            return 2;
         }
 
         @Override
@@ -436,7 +437,7 @@ public class SigninActivity extends AppCompatActivity {
             return;
         }
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                "+91" + mobile,
+                _countryCode + mobile,
                 60,
                 TimeUnit.SECONDS,
                 SigninActivity.this,
@@ -543,13 +544,14 @@ public class SigninActivity extends AppCompatActivity {
                 }else
                     AppController.getInstance().isFirstTime = true;
                 login.put(appConstant.token, token);
+                login.put(appConstant.countryCode, _countryCode);
                 realTime.put(appConstant.deviceId, Settings.Secure.getString(getContentResolver(),
                         Settings.Secure.ANDROID_ID));
                 mDatabase.child(AppController.getInstance().userId).child(AppConstant.pinfo).
                         updateChildren(login);
                 mDatabase.child(AppController.getInstance().userId).child(AppConstant.realTime).
                         updateChildren(realTime);
-                appConstant.saveLogin(AppController.getInstance().userId, _phoneNumber, coin);
+                appConstant.saveLogin(AppController.getInstance().userId, _phoneNumber, coin,_countryCode);
                 AppController.getInstance().mySnapShort = dataSnapshot;
                 AppController.getInstance().progressDialog = null;
                 progressDialog.cancel();
