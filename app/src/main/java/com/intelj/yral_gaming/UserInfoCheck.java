@@ -1,8 +1,10 @@
 package com.intelj.yral_gaming;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -67,7 +69,6 @@ public class UserInfoCheck extends AppCompatActivity {
     int x = 0;
     private ArrayList<String> contactList = new ArrayList<>();
     private DatabaseReference mFirebaseDatabaseReference;
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_info_check);
@@ -116,6 +117,13 @@ public class UserInfoCheck extends AppCompatActivity {
         } else {
             new LoadContact().execute();
         }
+        SharedPreferences sharedPreferences = getSharedPreferences(AppConstant.AppName, 0);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        for (Map.Entry<String, Boolean> entry : AppController.getInstance().gameNameHashmap.entrySet()) {
+            editor.putString(entry.getKey()+"",AppController.getInstance().mySnapShort.child(entry.getKey()).getValue()+"");
+            Log.e(entry.getKey()+"",AppController.getInstance().mySnapShort.child(entry.getKey()).getValue()+"");
+        }
+        editor.apply();
     }
 
     private void saveUserInfoData() {
@@ -171,7 +179,7 @@ public class UserInfoCheck extends AppCompatActivity {
             picturePath = cursor.getString(columnIndex);
 
             cursor.close();
-            Glide.with(this).load(picturePath).into(profile);
+            Glide.with(this).load(picturePath).apply(new RequestOptions().circleCrop()).into(profile);
         }
     }
 
@@ -195,6 +203,7 @@ public class UserInfoCheck extends AppCompatActivity {
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     new LoadContact().execute();
                 } else {
+                    showDialogPermission();
                     Toast.makeText(this, "You have disabled a contacts permission", Toast.LENGTH_LONG).show();
                 }
                 break;
@@ -202,6 +211,25 @@ public class UserInfoCheck extends AppCompatActivity {
             // other 'case' lines to check for other
             // permissions this app might request
         }
+    }
+
+    private void showDialogPermission() {
+        new AlertDialog.Builder(this)
+                .setTitle("Grant Permission")
+                .setMessage("Please grant permission")
+                .setCancelable(false)
+
+                // Specifying a listener allows you to take an action before dismissing the dialog.
+                // The dialog is automatically dismissed when a dialog button is clicked.
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        ActivityCompat.requestPermissions(UserInfoCheck.this,
+                                new String[]{Manifest.permission.READ_CONTACTS},
+                                PERMISSIONS_REQUEST_READ_CONTACTS);
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 
     class LoadContact extends AsyncTask<Void, Integer, String> {

@@ -86,11 +86,10 @@ import com.intelj.yral_gaming.HelloService;
 import com.intelj.yral_gaming.NotesAdapter;
 import com.intelj.yral_gaming.R;
 import com.intelj.yral_gaming.SigninActivity;
-import com.intelj.yral_gaming.TopSheet.TopSheetDialog;
 import com.intelj.yral_gaming.Utils.AppConstant;
+import com.intelj.yral_gaming.Utils.RecyclerTouchListener;
 import com.intelj.yral_gaming.model.Note;
 import com.intelj.yral_gaming.model.UserListModel;
-import com.roughike.swipeselector.OnSwipeItemSelectedListener;
 import com.roughike.swipeselector.SwipeItem;
 import com.roughike.swipeselector.SwipeSelector;
 
@@ -169,7 +168,6 @@ public class MainActivity extends AppCompatActivity {
         db = new DatabaseHelper(this, "notifications");
         backgroundDB = new DatabaseHelper(this, "background_db");
         inflated = stub.inflate();
-
         SwipeSelector swipeSelector = findViewById(R.id.swipeSelector);
         swipeSelector.setItems(
                 // The first argument is the value for that item, and should in most cases be unique for the
@@ -242,7 +240,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                         switch (item.getItemId()) {
-                            case R.id.my_team:
+                            case R.id.game_slot:
                                 inflateView(R.layout.game_slot);
                                 setFirstView();
                                 // showTeamBottomSheet();
@@ -364,6 +362,19 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         recyclerview.setLayoutManager(mLayoutManager);
         recyclerview.setAdapter(userAdapter);
+        recyclerview.addOnItemTouchListener(new RecyclerTouchListener(this, recyclerview, new RecyclerTouchListener.ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                Intent intent = new Intent(MainActivity.this,GroupProfile.class);
+               // intent.
+                startActivity(intent);
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+
+            }
+        }));
         inflated.findViewById(R.id.create_team).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -913,13 +924,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-    public void openTopSheetDialog(View view) {
-        TopSheetDialog dialog = new TopSheetDialog(this);
-        dialog.setContentView(R.layout.sheet_content);
-        dialog.show();
-    }
-
 
     @Override
     public void onBackPressed() {

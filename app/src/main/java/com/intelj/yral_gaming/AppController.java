@@ -102,6 +102,7 @@ public class AppController extends Application implements Application.ActivityLi
             public void onDataChange(DataSnapshot dataSnapshot) {
                 mySnapShort = dataSnapshot;
                 userInfoList = new ArrayList<>();
+
                 for (DataSnapshot child : mySnapShort.child(AppConstant.team).getChildren()) {
                     DocumentReference docRef = FirebaseFirestore.getInstance().collection(AppConstant.team)
                             .document(child.getKey()+"");
@@ -128,6 +129,7 @@ public class AppController extends Application implements Application.ActivityLi
                         }
                     });
                 }
+
                 if (progressDialog != null) {
                     progressDialog.cancel();
                     progressDialog = null;

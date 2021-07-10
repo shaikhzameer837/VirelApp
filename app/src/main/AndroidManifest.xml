@@ -66,6 +66,7 @@
         <activity android:name=".Activity.SplashScreen" />
         <activity android:name=".UserInfoCheck"
             android:theme="@style/AppThemes" />
+        <activity android:name=".Activity.GroupProfile" />
 
         <service
             android:name=".FirebaseFCMServices"

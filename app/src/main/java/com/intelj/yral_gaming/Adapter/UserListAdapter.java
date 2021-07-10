@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.FirebaseDatabase;
@@ -67,7 +68,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.MyView
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         UserListModel movie = moviesList.get(position);
-        Glide.with(mContext).load(movie.getTitle()).centerCrop().circleCrop().placeholder(R.drawable.game_avatar).fitCenter().into(holder.imgs);
+        Glide.with(mContext).load(movie.getTitle()).apply(new RequestOptions().circleCrop()).placeholder(R.drawable.game_avatar).fitCenter().into(holder.imgs);
         holder.title.setText(movie.getGenre());
         holder.genre.setText(movie.getUserId());
         holder.add_user.setOnClickListener(new View.OnClickListener() {
