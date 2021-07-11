@@ -24,6 +24,7 @@
             android:enabled="false"
             android:textColorHint="@color/grey_black"
             android:padding="10dp"
+            android:textStyle="bold"
             android:singleLine="true"
             android:lines="1"
             android:imeOptions="actionDone"

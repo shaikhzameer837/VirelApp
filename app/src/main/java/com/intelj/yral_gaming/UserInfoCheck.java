@@ -142,7 +142,7 @@ public class UserInfoCheck extends AppCompatActivity {
     private void saveAndExit() {
         FirebaseDatabase.getInstance().getReference(AppConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.userName).setValue(playerName.getText().toString());
         FirebaseDatabase.getInstance().getReference(AppConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.discordId).setValue(discordId.getText().toString());
-        SharedPreferences sharedPreferences = getSharedPreferences(AppConstant.AppName, 0);
+        SharedPreferences sharedPreferences = getSharedPreferences(AppController.getInstance().userId, 0);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(AppConstant.userName, playerName.getText().toString());
         editor.putBoolean(AppConstant.friends, true);

@@ -39,6 +39,7 @@
         android:minHeight="400dp"
         android:scaleType="centerCrop"
         android:background="#374347"
+        android:transitionName="fade"
         android:src="@drawable/account_group" />
 
     <EditText android:id="@+id/nameEdt"
@@ -59,6 +60,7 @@
         android:paddingLeft="10dp"
         android:paddingBottom="10dp"
         android:text="12 member"
+        android:id="@+id/member_count"
         android:background="#90000000"
         android:textColor="@color/colorPrimary"
         android:textSize="12sp" />

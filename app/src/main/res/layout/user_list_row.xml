@@ -9,6 +9,7 @@
     <ImageView android:id="@+id/imgs"
         android:layout_width="45dp"
         android:src="@drawable/img"
+        android:transitionName="fade"
         android:layout_marginRight="10dp"
         android:layout_height="45dp"/>
     <TextView
@@ -29,12 +30,11 @@
         android:layout_toLeftOf="@+id/add_user"
         android:layout_height="wrap_content"
         android:layout_below="@id/title" />
-    <TextView
+    <CheckBox android:id="@+id/checkbox"
         android:layout_width="wrap_content"
-        android:text="Add User"
-        android:drawableTop="@drawable/ic_plus"
-        android:id="@+id/add_user"
         android:layout_centerVertical="true"
+        android:visibility="gone"
         android:layout_alignParentRight="true"
         android:layout_height="wrap_content"/>
+
 </RelativeLayout>

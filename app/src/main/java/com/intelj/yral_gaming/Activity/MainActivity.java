@@ -44,7 +44,9 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.ViewCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -343,14 +345,13 @@ public class MainActivity extends AppCompatActivity {
         saveProf.setImageResource(R.drawable.ic_edit);
         Toast.makeText(MainActivity.this,"Profile Updated Susccessfully",Toast.LENGTH_LONG).show();
     }
-
-
-    private void showTeam() {
-        inflated.findViewById(R.id.newTeam).setVisibility(View.GONE);
-        inflated.findViewById(R.id.bott_button).setVisibility(View.GONE);
-        inflated.findViewById(R.id.create_team).setVisibility(View.VISIBLE);
-        RecyclerView recyclerview = inflated.findViewById(R.id.recyclerview);
-        ArrayList teamModel = new ArrayList<>();
+    ArrayList<UserListModel> teamModel;
+    MemberListAdapter userAdapter;
+    @Override
+    protected void onResume() {
+        super.onResume();
+        teamModel = new ArrayList<>();
+        userAdapter = new MemberListAdapter(this, teamModel, AppConstant.applyMatches);
         for (DataSnapshot snapshot : AppController.getInstance().mySnapShort.child(AppConstant.team).getChildren()) {
             SharedPreferences prefs = getSharedPreferences(snapshot.getKey(), Context.MODE_PRIVATE);
             teamModel.add(new UserListModel(prefs.getString(AppConstant.teamName, null),
@@ -358,16 +359,24 @@ public class MainActivity extends AppCompatActivity {
                     snapshot.getKey(),
                     prefs.getStringSet(AppConstant.teamMember, null)));
         }
-        MemberListAdapter userAdapter = new MemberListAdapter(this, teamModel, AppConstant.applyMatches);
+        userAdapter.notifyDataSetChanged();
+    }
+    private void showTeam() {
+        inflated.findViewById(R.id.newTeam).setVisibility(View.GONE);
+        inflated.findViewById(R.id.bott_button).setVisibility(View.GONE);
+        inflated.findViewById(R.id.create_team).setVisibility(View.VISIBLE);
+        RecyclerView recyclerviewTeam = inflated.findViewById(R.id.recyclerview);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
-        recyclerview.setLayoutManager(mLayoutManager);
-        recyclerview.setAdapter(userAdapter);
-        recyclerview.addOnItemTouchListener(new RecyclerTouchListener(this, recyclerview, new RecyclerTouchListener.ClickListener() {
+        recyclerviewTeam.setLayoutManager(mLayoutManager);
+        recyclerviewTeam.setAdapter(userAdapter);
+        recyclerviewTeam.addOnItemTouchListener(new RecyclerTouchListener(this, recyclerviewTeam, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
                 Intent intent = new Intent(MainActivity.this,GroupProfile.class);
-               // intent.
-                startActivity(intent);
+                intent.putExtra(AppConstant.team,teamModel.get(position).getTeamId());
+                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                        MainActivity.this, view.findViewById(R.id.imgs), ViewCompat.getTransitionName(view.findViewById(R.id.imgs)));
+                startActivity(intent,options.toBundle());
             }
 
             @Override
@@ -383,9 +392,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
 
 //        boolean granted;
 //        AppOpsManager appOps = (AppOpsManager) getSystemService(Context.APP_OPS_SERVICE);
@@ -400,12 +409,10 @@ public class MainActivity extends AppCompatActivity {
 //            MyBottomSheetDialog bottomSheetFragment = new MyBottomSheetDialog();
 //            bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
 //        }
-    }
+  //  }
 
     private void showNotification() {
         List<Note> notesList = new ArrayList<>();
-        TextView subtitle = inflated.findViewById(R.id.subtitle);
-        subtitle.setText("Notification game result in which u participated");
         TextView title = inflated.findViewById(R.id.title);
         title.setText("Match history");
         recyclerView = inflated.findViewById(R.id.recycler_view);
@@ -751,7 +758,7 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
             SharedPreferences sharedPreferences = getSharedPreferences(AppConstant.AppName, 0);
-            game_id.setHint(intent.getStringExtra(AppConstant.title) + " id");
+            game_id.setHint("Enter your "+intent.getStringExtra(AppConstant.title) + " id");
             game_id.setText(sharedPreferences.getString(intent.getStringExtra(AppConstant.title), ""));
             inflated.findViewById(R.id.edit).setOnClickListener(new View.OnClickListener() {
                 @Override

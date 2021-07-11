@@ -19,6 +19,7 @@
             android:background="@android:color/transparent"
             android:enabled="false"
             android:padding="10dp"
+            android:textStyle="bold"
             android:gravity="center_vertical"
             android:text="Profile setting"
             android:textColor="@color/black"

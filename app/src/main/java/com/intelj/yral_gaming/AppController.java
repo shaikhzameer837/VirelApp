@@ -123,9 +123,9 @@ public class AppController extends Application implements Application.ActivityLi
                                     editors.apply();
                                 }
                             }
-                            if(x == mySnapShort.child(AppConstant.team).getChildrenCount()){
-                                FirebaseFirestore.getInstance().disableNetwork();
-                            }
+//                            if(x == mySnapShort.child(AppConstant.team).getChildrenCount()){
+//                                FirebaseFirestore.getInstance().disableNetwork();
+//                            }
                         }
                     });
                 }

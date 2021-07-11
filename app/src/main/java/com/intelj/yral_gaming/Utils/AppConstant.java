@@ -20,6 +20,7 @@ public class AppConstant {
     public static String follow = "follow";
     private Context _context;
     private SharedPreferences sharedPreferences;
+    private SharedPreferences myInfo;
     public static String AppName = "Y-Ral Gaming",
             login = "login",
             phoneNumber = "phoneNumber",
@@ -87,11 +88,12 @@ public class AppConstant {
 
     public void saveLogin(String user_id, String _phoneNumber, int _coin,String _countryCode) {
         setSharedPref();
+        myInfo = _context.getSharedPreferences(userId, Context.MODE_PRIVATE);
         sharedPreferences.edit().putBoolean(login, true).apply();
         sharedPreferences.edit().putString(userId, user_id).apply();
-        sharedPreferences.edit().putInt(coin, _coin).apply();
-        sharedPreferences.edit().putString(countryCode, _countryCode).apply();
-        sharedPreferences.edit().putString(phoneNumber, _phoneNumber).apply();
+        myInfo.edit().putInt(coin, _coin).apply();
+        myInfo.edit().putString(countryCode, _countryCode).apply();
+        myInfo.edit().putString(phoneNumber, _phoneNumber).apply();
     }
     public void saveUserInfo(Context context,DataSnapshot childDataSnap){
         SharedPreferences sharedpreferences = context.getSharedPreferences(childDataSnap.getKey(), Context.MODE_PRIVATE);
@@ -132,11 +134,13 @@ public class AppConstant {
     }
 
     public int getCoins() {
-        return sharedPreferences.getInt(coin, 0);
+        myInfo = _context.getSharedPreferences(AppController.getInstance().userId, Context.MODE_PRIVATE);
+        return myInfo.getInt(coin, 0);
     }
 
     public void setCoins(int _coin, long _nextCoinTime) {
-        sharedPreferences.edit().putInt(coin, _coin).apply();
+        myInfo = _context.getSharedPreferences(AppController.getInstance().userId, Context.MODE_PRIVATE);
+        myInfo.edit().putInt(coin, _coin).apply();
         sharedPreferences.edit().putLong(nextCoinTime, _nextCoinTime).apply();
     }
 
@@ -150,11 +154,11 @@ public class AppConstant {
     }
 
     public String getPhoneNumber() {
-        setSharedPref();
-        return sharedPreferences.getString(phoneNumber, "");
+        myInfo = _context.getSharedPreferences(AppController.getInstance().userId, Context.MODE_PRIVATE);
+        return myInfo.getString(phoneNumber, "");
     }
     public boolean getFriendCheck() {
-        setSharedPref();
-        return sharedPreferences.getBoolean(friends, false);
+        myInfo = _context.getSharedPreferences(AppController.getInstance().userId, Context.MODE_PRIVATE);
+        return myInfo.getBoolean(friends, false);
     }
 }
