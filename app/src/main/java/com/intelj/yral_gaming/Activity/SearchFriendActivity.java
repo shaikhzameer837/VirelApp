@@ -92,6 +92,8 @@ public class SearchFriendActivity extends AppCompatActivity {
 
     private void displayFriends() {
         Set<String> set = prefs.getStringSet(AppConstant.users, null);
+        if(set == null)
+            return;
         for (String s : set) {
             SharedPreferences sharedpreferences = getSharedPreferences(s, Context.MODE_PRIVATE);
             userListModel.add(new UserListModel(sharedpreferences.getString(AppConstant.myPicUrl, ""),
