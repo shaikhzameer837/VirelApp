@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -85,9 +86,7 @@ public class OneFragment extends Fragment {
         imageView = rootView.findViewById(R.id.imageview);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(mLayoutManager);
-
-
-        Glide.with(this).load(R.drawable.coming_soon).centerCrop().into(imageView);
+        Glide.with(this).load(R.drawable.coming_soon).diskCacheStrategy(DiskCacheStrategy.ALL).centerCrop().into(imageView);
         if (show_listview) {
             recyclerView.setVisibility(View.VISIBLE);
             tv_coming_soon.setVisibility(View.GONE);

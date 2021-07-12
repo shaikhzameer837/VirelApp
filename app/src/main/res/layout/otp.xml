@@ -2,47 +2,47 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:orientation="vertical">
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/name_text_input"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_height="wrap_content"
+            >
 
-
-        <EditText
-            android:layout_width="200dp"
-            android:padding="10dp"
-            android:layout_margin="15dp"
-            android:hint="OTP CODE"
-            android:id="@+id/otp"
-            android:digits="1234567890"
-            android:inputType="number"
-            android:maxLength="6"
-            android:background="@drawable/edit_stroke"
-            android:textColor="@color/colorPrimary"
-            android:textColorHint="@color/colorPrimary"
-            android:layout_height="wrap_content"/>
-
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/otp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:digits="1234567890"
+                android:maxLength="6"
+                android:inputType="number"
+                android:hint="OTP CODE"/>
+        </com.google.android.material.textfield.TextInputLayout>
         <TextView
             android:id="@+id/et_countdown"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_margin="15dp"
             android:text="hello"
-            android:textColor="@color/colorPrimary"
+            android:layout_below="@+id/name_text_input"
+            android:textColor="@color/colorPrimaryDark"
             android:textColorHint="@color/colorPrimary"
-            android:textSize="30sp" />
+            android:textSize="15sp" />
 
-        <Button
+        <TextView
             android:id="@+id/resend_btn"
             android:text="RESEND"
-            android:textColor="@color/colorPrimary"
-            android:background="@drawable/button_login"
+            android:layout_margin="15dp"
+            android:padding="10dp"
+            android:textColor="@color/appColor"
+            android:textStyle="bold"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/name_text_input"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
-
-    </LinearLayout>
-
-
 
 </RelativeLayout>

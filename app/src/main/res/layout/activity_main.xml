@@ -40,25 +40,12 @@
                 android:text="online"
                 android:visibility="gone" />
 
-            <RelativeLayout
+            <com.roughike.swipeselector.SwipeSelector
+                android:id="@+id/swipeSelector"
+                app:swipe_indicatorInActiveColor="#810d0e"
+                app:swipe_indicatorActiveColor="#000000"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:id="@+id/timeLeft"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:background="@android:color/transparent"
-                    android:gravity="center"
-                    android:padding="10dp"
-                    android:text="Get Subscription and play bigger Prize pool"
-                    android:textColor="@color/black"
-                    android:textStyle="bold" />
-
-
-
-            </RelativeLayout>
+                android:layout_height="wrap_content" />
         </LinearLayout>
 
         <include

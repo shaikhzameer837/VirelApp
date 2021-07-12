@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -71,7 +72,7 @@ public class AppController extends Application implements Application.ActivityLi
     public DataSnapshot dataSnapshot;
     public ArrayList<String> followingList = new ArrayList<>();
     AlertDialog.Builder builder;
-
+    public boolean isFirstTime = false;
     @Override
     public void onCreate() {
         super.onCreate();
@@ -92,26 +93,27 @@ public class AppController extends Application implements Application.ActivityLi
             getUserInfo();
         }
     }
-
+    int x = 0;
     private void getUserInfo() {
+        x = 0;
         mDatabase = FirebaseDatabase.getInstance().getReference(AppConstant.users).child(userId).child(AppConstant.pinfo);
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 mySnapShort = dataSnapshot;
                 userInfoList = new ArrayList<>();
-                String TAG = "LOGGER";
+
                 for (DataSnapshot child : mySnapShort.child(AppConstant.team).getChildren()) {
                     DocumentReference docRef = FirebaseFirestore.getInstance().collection(AppConstant.team)
                             .document(child.getKey()+"");
                     docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            x++;
                             if (task.isSuccessful()) {
                                 DocumentSnapshot document = task.getResult();
                                 if (document.exists()) {
                                     ArrayList<String> list = (ArrayList<String>) document.get(AppConstant.teamMember);
-                                    Log.d(TAG, list.toString());
                                     Set<String> hashSet = new HashSet<>(list);
                                     SharedPreferences sharedpreferences = getSharedPreferences(child.getKey(), Context.MODE_PRIVATE);
                                     SharedPreferences.Editor editors = sharedpreferences.edit();
@@ -121,21 +123,13 @@ public class AppController extends Application implements Application.ActivityLi
                                     editors.apply();
                                 }
                             }
+//                            if(x == mySnapShort.child(AppConstant.team).getChildrenCount()){
+//                                FirebaseFirestore.getInstance().disableNetwork();
+//                            }
                         }
                     });
-//                            .collection(AppConstant.myTeam).document(child.getKey()+"").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//                        @Override
-//                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                             if(task.isSuccessful()) {
-//                                DocumentSnapshot documentSnapshot = task.getResult();
-//                                //if(documentSnapshot.exists()) {
-//                                Log.i("LOGGER","First "+documentSnapshot.getString("teamName")+" ");
-//                                //}
-//                            }
-//                        }
-//                    });
-
                 }
+
                 if (progressDialog != null) {
                     progressDialog.cancel();
                     progressDialog = null;
@@ -193,8 +187,8 @@ public class AppController extends Application implements Application.ActivityLi
 
     public void startToRunActivity() {
         Intent intent = new Intent(this, MainActivity.class);
-        if (remoteConfig.getString(AppConstant.pre_registration).equalsIgnoreCase("yes")) {
-            intent = new Intent(this, PreRegistartionActivity.class);
+        if (!userId.isEmpty() && !new AppConstant(this).getFriendCheck()) {
+            intent = new Intent(this, UserInfoCheck.class);
         }
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
@@ -247,16 +241,30 @@ public class AppController extends Application implements Application.ActivityLi
     }
 
     public void setupViewPager(ViewPager viewPager) {
-
+        ArrayList<String> titleList = new ArrayList<>();
         if (gameNameHashmap.size() > 0) {
             ViewPagerAdapter adapter = new ViewPagerAdapter(supportFragmentManager);
 
             for (Map.Entry<String, Boolean> entry : gameNameHashmap.entrySet()) {
                 adapter.addFragment(new OneFragment(entry.getKey(), entry.getValue()), entry.getKey());
+                titleList.add(entry.getKey());
                 // do something with key and/or tab
             }
             viewPager.setAdapter(adapter);
+            Intent intent = new Intent("custom-event-name");
+            intent.putExtra(AppConstant.title, titleList.get(0));
+            LocalBroadcastManager.getInstance(instance).sendBroadcast(intent);
         }
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            public void onPageScrollStateChanged(int state) {}
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+
+            public void onPageSelected(int position) {
+                Intent intent = new Intent("custom-event-name");
+                intent.putExtra(AppConstant.title, titleList.get(position));
+                LocalBroadcastManager.getInstance(instance).sendBroadcast(intent);
+            }
+        });
         /*if (gameNameArray.size() > 0) {
             ViewPagerAdapter adapter = new ViewPagerAdapter(supportFragmentManager);
             for (String s : gameNameArray) {

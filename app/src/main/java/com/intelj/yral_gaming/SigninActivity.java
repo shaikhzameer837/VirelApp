@@ -3,12 +3,14 @@ package com.intelj.yral_gaming;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,6 +19,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,8 +29,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -39,15 +44,22 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.intelj.yral_gaming.Activity.MainActivity;
 import com.intelj.yral_gaming.Utils.AppConstant;
+import com.rilixtech.widget.countrycodepicker.Country;
+import com.rilixtech.widget.countrycodepicker.CountryCodePicker;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 
@@ -56,27 +68,26 @@ public class SigninActivity extends AppCompatActivity {
     private MyViewPagerAdapter myViewPagerAdapter;
     int[] layouts;
     AppConstant appConstant;
-    EditText userName, phoneNumber, otp, pgUsername;
-    TextView et_countdown;
-    Button resend_btn;
-    String _phoneNumber = "", _userName = "", _otp = "", token = "", _pgUsername = "";
+    TextInputEditText phoneNumber,otp;
+    EditText pgUsername;
+    CountryCodePicker ccp;
+    TextView et_countdown, resend_btn;
+    String _phoneNumber = "", _otp = "", token = "", _pgUsername = "",_countryCode="+91";
     DatabaseReference mDatabase;
     private String mVerificationId;
     private FirebaseAuth mAuth;
     private PhoneAuthProvider.ForceResendingToken mResendToken;
-
-    @Override
+     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (Build.VERSION.SDK_INT >= 21) {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         }
-
         setContentView(R.layout.signin);
         appConstant = new AppConstant(SigninActivity.this);
         viewPager = findViewById(R.id.view_pager);
         mAuth = FirebaseAuth.getInstance();
-        FirebaseInstanceId.getInstance().getInstanceId()
+          FirebaseInstanceId.getInstance().getInstanceId()
                 .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
                     @Override
                     public void onComplete(@NonNull Task<InstanceIdResult> task) {
@@ -241,20 +252,25 @@ public class SigninActivity extends AppCompatActivity {
             view = layoutInflater.inflate(layouts[position], container, false);
             if (position == layout_view.size())
                 layout_view.add(view);
+            if(position ==0){
+                ccp = layout_view.get(0).findViewById(R.id.ccp);
+                ccp.setOnCountryChangeListener(new CountryCodePicker.OnCountryChangeListener() {
+                    @Override
+                    public void onCountrySelected(Country selectedCountry) {
+                        _countryCode = selectedCountry.getPhoneCode();
+                        Toast.makeText(SigninActivity.this, "Updated " + selectedCountry.getPhoneCode(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
             container.addView(view);
             return view;
         }
 
         public void checkError() {
             if (viewPager.getCurrentItem() == 0) {
-                userName = layout_view.get(0).findViewById(R.id.userName);
                 phoneNumber = layout_view.get(0).findViewById(R.id.phoneNumber);
+                ccp = layout_view.get(0).findViewById(R.id.ccp);
                 _phoneNumber = phoneNumber.getText().toString();
-                _userName = userName.getText().toString();
-                if (_userName.length() < 3) {
-                    Toast.makeText(SigninActivity.this, "Please Fill Proper name", Toast.LENGTH_LONG).show();
-                    return;
-                }
                 if (_phoneNumber.length() != 10) {
                     Toast.makeText(SigninActivity.this, "Please Fill Proper phone number", Toast.LENGTH_LONG).show();
                     return;
@@ -364,7 +380,7 @@ public class SigninActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return 3;
+            return 2;
         }
 
         @Override
@@ -421,7 +437,7 @@ public class SigninActivity extends AppCompatActivity {
             return;
         }
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                "+91" + mobile,
+                _countryCode + mobile,
                 60,
                 TimeUnit.SECONDS,
                 SigninActivity.this,
@@ -518,28 +534,29 @@ public class SigninActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 HashMap<String, Object> login = new HashMap<>();
                 HashMap<String, Object> realTime = new HashMap<>();
-//                                    login.put("model", Build.MODEL);
-//                                    login.put("brand", Build.BRAND);
-//                                    login.put("type", Build.TYPE);
-//                                    login.put("version", Build.VERSION.RELEASE);
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot postSnapshot : dataSnapshot.getChildren())
                         AppController.getInstance().userId = postSnapshot.getKey();
                     if (dataSnapshot.child(AppConstant.coin).exists())
                         coin = dataSnapshot.child(AppConstant.coin).getValue(Integer.class);
-                } else
-                    login.put(appConstant.myPicUrl, "");
-                login.put(appConstant.userName, _userName);
+                    mDatabase.child(AppController.getInstance().userId).child(appConstant.phoneNumber).setValue(_phoneNumber);
+                    appConstant.saveUserInfo(SigninActivity.this,dataSnapshot);
+                }else
+                    AppController.getInstance().isFirstTime = true;
                 login.put(appConstant.token, token);
+                login.put(appConstant.countryCode, _countryCode);
                 realTime.put(appConstant.deviceId, Settings.Secure.getString(getContentResolver(),
                         Settings.Secure.ANDROID_ID));
                 mDatabase.child(AppController.getInstance().userId).child(AppConstant.pinfo).
                         updateChildren(login);
                 mDatabase.child(AppController.getInstance().userId).child(AppConstant.realTime).
                         updateChildren(realTime);
-                mDatabase.child(AppController.getInstance().userId).child(appConstant.phoneNumber).setValue(_phoneNumber);
-                appConstant.saveLogin(AppController.getInstance().userId, _phoneNumber, coin);
+                appConstant.saveLogin(AppController.getInstance().userId, _phoneNumber, coin,_countryCode);
+                AppController.getInstance().mySnapShort = dataSnapshot;
+                AppController.getInstance().progressDialog = null;
+                progressDialog.cancel();
                 AppController.getInstance().getReadyForCheckin();
+                startActivity(new Intent(SigninActivity.this,UserInfoCheck.class));
             }
 
             @Override

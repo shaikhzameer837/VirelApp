@@ -3,27 +3,35 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/back"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:showIn="@layout/signin">
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/animationView"
+        android:layout_centerHorizontal="true"
+        android:layout_width="180dp"
+        android:layout_height="180dp"
+        android:layout_marginTop="40dp"
+        app:lottie_fileName="phone.json"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"/>
     <TextView
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="10dp"
         android:padding="10dp"
+        android:layout_below="@+id/animationView"
         android:gravity="center"
         android:text="Welcome to Y-RAL gaming"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@color/appColor"
         android:textSize="19sp" />
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_below="@+id/title"
-        android:layout_marginTop="85dp" />
+        android:layout_below="@+id/title" />
 
     <TextView
         android:layout_width="match_parent"
@@ -34,12 +42,13 @@
 
     <Button
         android:id="@+id/btn_next"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
+        android:background="@color/appColor"
+        android:textColor="@color/colorPrimary"
         android:layout_marginTop="25dp"
-        android:layout_marginBottom="45dp"
         android:drawableRight="@drawable/arrow_right"
         android:scaleType="centerCrop"
         android:text="Next" />

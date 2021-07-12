@@ -1,24 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:padding="12dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:text="Payment History"
         android:textStyle="bold"
+        android:layout_margin="5dp"
+        android:paddingLeft="15dp"
+        android:gravity="center_vertical"
+        android:background="@drawable/curved_drawable"
         android:textColor="@color/black"
-        android:layout_height="wrap_content"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:text="All transaction are secured and encripted"
-        android:textSize="12sp"
-        android:layout_height="wrap_content"/>
+        android:layout_height="45dp"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:scrollbars="vertical"
         android:background="#ffffff"
          android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="wrap_content"/>
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/pBar3"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center"
+        app:lottie_fileName="payment.json"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"/>
 </LinearLayout>
