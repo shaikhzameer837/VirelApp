@@ -55,15 +55,12 @@ public class AppConstant {
             pinfo = "pinfo",
             realTime = "realTime",
             paymentHistory = "phist",
-            gameBio = "gbio",
             discordId = "discordId",
             pubgId = "pubgId",
             youtubeApiKey = "AIzaSyBQiqtYCe51DtHvGhJOjO20Vv9Y_uzRyks",
-            pre_registration = "Pre_registration",
             splashscreen = "splashscreen",
             userName = "userName",
             bookingid = "bookingid",
-            bio = "pubg",
             username_search = "username";
 
     public static boolean isProduction = false;

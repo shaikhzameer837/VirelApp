@@ -21,7 +21,6 @@ import java.util.List;
 public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.MyViewHolder> {
     private List<UserListModel> moviesList;
     private Context mContext;
-    private String type;
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView title, genre;
         public ImageView imgs;
@@ -37,7 +36,6 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.My
     public MemberListAdapter(Context mContext, List<UserListModel> moviesList, String type) {
         this.moviesList = moviesList;
         this.mContext = mContext;
-        this.type = type;
     }
 
     @Override

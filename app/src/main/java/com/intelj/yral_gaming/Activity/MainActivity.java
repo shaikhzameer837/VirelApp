@@ -20,7 +20,6 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,7 +29,6 @@ import android.view.ViewParent;
 import android.view.ViewStub;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -40,7 +38,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -102,21 +99,17 @@ import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
     AppConstant appConstant;
-    private ViewPager viewPager;
+    private ViewPager viewPager, gameViewpager;
     private MyViewPagerAdapter myViewPagerAdapter;
     private ArrayList<String> diaplayUrl = new ArrayList<>();
     BottomNavigationView bottomNavigation;
     private TabLayout tabLayout;
-    ViewPager gameViewpager;
-    TextView timeLeft;
-    TextView coin;
-    EditText game_id;
-    ImageView edit;
+    TextView timeLeft, coin, textView;
+    EditText ign, igid;
     private RecyclerView recyclerView;
     View inflated;
     int RESULT_LOAD_IMAGE = 9;
-    ImageView imgProfile,saveProf;
-    TextView textView;
+    ImageView imgProfile, saveProf, edit;
     String picturePath = null;
     TextInputEditText playerName, discordId;
     private Uri filePath = null;
@@ -129,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
     FirebaseStorage storage;
     StorageReference storageReference;
     ProgressDialog progressDialog;
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -184,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 openSubscribe();
-             }
+            }
         });
         final Handler handler = new Handler();
         final int delay = 5000; // 1000 milliseconds == 1 second
@@ -306,7 +299,7 @@ public class MainActivity extends AppCompatActivity {
                                 saveProf.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        if(!discordId.isEnabled()){
+                                        if (!discordId.isEnabled()) {
                                             discordId.setEnabled(true);
                                             playerName.setEnabled(true);
                                             saveProf.setImageResource(R.drawable.check);
@@ -314,7 +307,7 @@ public class MainActivity extends AppCompatActivity {
                                         }
                                         if (picturePath == null)
                                             saveToProfile(null);
-                                         else
+                                        else
                                             uploadFiles();
                                     }
                                 });
@@ -333,7 +326,7 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(AppConstant.userName, playerName.getText().toString());
         editor.putString(AppConstant.discordId, discordId.getText().toString());
-        if(imageUrl != null){
+        if (imageUrl != null) {
             FirebaseDatabase.getInstance().getReference(AppConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.myPicUrl).setValue(imageUrl);
             editor.putString(AppConstant.myPicUrl, imageUrl);
             progressDialog.dismiss();
@@ -343,10 +336,12 @@ public class MainActivity extends AppCompatActivity {
         discordId.setEnabled(false);
         playerName.setEnabled(false);
         saveProf.setImageResource(R.drawable.ic_edit);
-        Toast.makeText(MainActivity.this,"Profile Updated Susccessfully",Toast.LENGTH_LONG).show();
+        Toast.makeText(MainActivity.this, "Profile Updated Susccessfully", Toast.LENGTH_LONG).show();
     }
+
     ArrayList<UserListModel> teamModel;
     MemberListAdapter userAdapter;
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -361,6 +356,7 @@ public class MainActivity extends AppCompatActivity {
         }
         userAdapter.notifyDataSetChanged();
     }
+
     private void showTeam() {
         inflated.findViewById(R.id.newTeam).setVisibility(View.GONE);
         inflated.findViewById(R.id.bott_button).setVisibility(View.GONE);
@@ -372,11 +368,11 @@ public class MainActivity extends AppCompatActivity {
         recyclerviewTeam.addOnItemTouchListener(new RecyclerTouchListener(this, recyclerviewTeam, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
-                Intent intent = new Intent(MainActivity.this,GroupProfile.class);
-                intent.putExtra(AppConstant.team,teamModel.get(position).getTeamId());
+                Intent intent = new Intent(MainActivity.this, GroupProfile.class);
+                intent.putExtra(AppConstant.team, teamModel.get(position).getTeamId());
                 ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
                         MainActivity.this, view.findViewById(R.id.imgs), ViewCompat.getTransitionName(view.findViewById(R.id.imgs)));
-                startActivity(intent,options.toBundle());
+                startActivity(intent, options.toBundle());
             }
 
             @Override
@@ -409,7 +405,7 @@ public class MainActivity extends AppCompatActivity {
 //            MyBottomSheetDialog bottomSheetFragment = new MyBottomSheetDialog();
 //            bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
 //        }
-  //  }
+    //  }
 
     private void showNotification() {
         List<Note> notesList = new ArrayList<>();
@@ -612,7 +608,8 @@ public class MainActivity extends AppCompatActivity {
     public void setFirstView() {
         gameViewpager = inflated.findViewById(R.id.gameViewpager);
         tabLayout = inflated.findViewById(R.id.tabs);
-        game_id = inflated.findViewById(R.id.game_id);
+        ign = inflated.findViewById(R.id.ign);
+        igid = inflated.findViewById(R.id.igid);
         edit = inflated.findViewById(R.id.edit);
         coin = inflated.findViewById(R.id.coin);
         coin.setText(new AppConstant(this).getCoins() + " Coin");
@@ -753,52 +750,51 @@ public class MainActivity extends AppCompatActivity {
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getBooleanExtra(AppConstant.AppName,false) == true){
+            if (intent.getBooleanExtra(AppConstant.AppName, false) == true) {
                 showBottomSheetDialog();
                 return;
             }
             SharedPreferences sharedPreferences = getSharedPreferences(AppConstant.AppName, 0);
-            game_id.setHint("Enter your "+intent.getStringExtra(AppConstant.title) + " id");
-            game_id.setText(sharedPreferences.getString(intent.getStringExtra(AppConstant.title), ""));
+            ign.setHint(intent.getStringExtra(AppConstant.title) + " name");
+            igid.setHint(intent.getStringExtra(AppConstant.title) + " id");
+            ign.setText(sharedPreferences.getString(intent.getStringExtra(AppConstant.title), ""));
+            igid.setText(sharedPreferences.getString(intent.getStringExtra(AppConstant.title) + "_" + AppConstant.userName, ""));
             inflated.findViewById(R.id.edit).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(!new AppConstant(context).checkLogin()){
+                    if (!new AppConstant(context).checkLogin()) {
                         showBottomSheetDialog();
                         return;
                     }
-                    if (game_id.isEnabled()) {
-                        game_id.setEnabled(false);
-                        game_id.clearFocus();
+
+                    if (ign.isEnabled()) {
+                        if (igid.getText().toString().trim().equals("") || ign.getText().toString().trim().equals("")) {
+                            Toast.makeText(MainActivity.this, intent.getStringExtra(AppConstant.title) + "id and " + intent.getStringExtra(AppConstant.title) + " name cannot be empty", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                        ign.setEnabled(false);
+                        igid.setEnabled(false);
+                        ign.clearFocus();
                         edit.setImageResource(R.drawable.ic_edit);
-                    } else {
-                        edit.setImageResource(R.drawable.close);
-                        game_id.setEnabled(true);
-                        InputMethodManager inputMethodManager =  (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
-                        inputMethodManager.toggleSoftInputFromWindow(game_id.getApplicationWindowToken(), InputMethodManager.SHOW_FORCED, 0);
-                        game_id.requestFocus();
-                        game_id.setSelection(game_id.getText().length());
-                    }
-                }
-            });
-            game_id.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-                @Override
-                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                    if (actionId == EditorInfo.IME_ACTION_DONE) {
-                        edit.setImageResource(R.drawable.ic_edit);
-                        InputMethodManager imm = (InputMethodManager)v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                         SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putString(intent.getStringExtra(AppConstant.title), game_id.getText().toString());
+                        editor.putString(intent.getStringExtra(AppConstant.title), ign.getText().toString());
+                        editor.putString(intent.getStringExtra(AppConstant.title) + "_" + AppConstant.userName, igid.getText().toString());
                         editor.apply();
-                        Toast.makeText(MainActivity.this,"Id updated",Toast.LENGTH_LONG).show();
-                        FirebaseDatabase.getInstance().getReference(AppConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(intent.getStringExtra(AppConstant.title)).setValue(game_id.getText().toString());
-                        inflated.findViewById(R.id.edit).performClick();
-                        return true;
+                        Toast.makeText(MainActivity.this, "Id updated", Toast.LENGTH_LONG).show();
+                        FirebaseDatabase.getInstance().getReference(AppConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(intent.getStringExtra(AppConstant.title)).setValue(ign.getText().toString());
+                        FirebaseDatabase.getInstance().getReference(AppConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(intent.getStringExtra(AppConstant.title) + "_" + AppConstant.userName).setValue(igid.getText().toString());
+                    } else {
+                        edit.setImageResource(R.drawable.ic_check);
+                        ign.setEnabled(true);
+                        igid.setEnabled(true);
+                        igid.requestFocus();
+                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.showSoftInput(igid, InputMethodManager.SHOW_IMPLICIT);
+                        ign.setSelection(ign.getText().length());
                     }
-                    return false;
                 }
             });
+
 
             // game_id.setText(intent.getStringExtra(AppConstant.title));
 //            // Get extra data included in the Intent

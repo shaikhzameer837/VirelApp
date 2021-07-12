@@ -205,11 +205,13 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
         dialog.show();
         Set<String> teamMember = teamModel.get(position).getTeamMember();
         ArrayList<String> discordId = new ArrayList<>();
-        ArrayList<String> game_id = new ArrayList<>();
+        ArrayList<String> igid = new ArrayList<>();
+        ArrayList<String> ign = new ArrayList<>();
         for (String s : teamMember) {
             SharedPreferences sharedPreferences = mContext.getSharedPreferences(s,0);
             discordId.add(sharedPreferences.getString(AppConstant.discordId,""));
-            game_id.add(sharedPreferences.getString(title,""));
+            ign.add(sharedPreferences.getString(title,""));
+            igid.add(sharedPreferences.getString(title+ "_" + AppConstant.userName,""));
          }
         Log.e("teamMember",teamMember.toString().replace("[","").replace("]",""));
         RequestQueue queue = Volley.newRequestQueue(mContext);
@@ -244,7 +246,8 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
                 params.put("teamName", teamModel.get(position).getTeamName());
                 params.put("discordId", discordId.toString().replace("[","").replace("]",""));
                 params.put("game_name", title);
-                params.put("game_id", game_id.toString().replace("[","").replace("]",""));
+                params.put("game_id", ign.toString().replace("[","").replace("]",""));
+                params.put("igid", igid.toString().replace("[","").replace("]",""));
                 return params;
             }
 
