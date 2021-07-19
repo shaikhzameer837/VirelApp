@@ -13,6 +13,7 @@ import androidx.core.app.NotificationManagerCompat;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.intelj.yral_gaming.Utils.AppConstant;
 
 import org.json.JSONObject;
 
@@ -23,23 +24,34 @@ import static android.app.Notification.DEFAULT_VIBRATE;
 import static android.content.ContentValues.TAG;
 
 public class FirebaseFCMServices extends FirebaseMessagingService {
+    boolean isLoading = false;
+    private DatabaseHelper db;
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        // ...
          if (remoteMessage.getData().size() > 0) {
-
-            try {
+             db = new DatabaseHelper(this, "notifications");
+             try {
                 JSONObject json = new JSONObject(remoteMessage.getData().toString());
-                String message = json.getJSONObject("data").getJSONObject("payload").getString("msg");
-                String title = json.getJSONObject("data").getJSONObject("payload").getString("title");
-                Log.e(TAG, "Data Payload: " +message);
-                Log.e(TAG, "Data Payload: " +json);
+                String title = json.getJSONObject("data").getString("title");
+                String subject = json.getJSONObject("data").getString("subject");
+                String message = json.getJSONObject("data").getString("payload");//.getString("title");
+                Log.e("Payload", "Data Payload: " +message);
+                Log.e("Payload", "Data Payload: " +json);
                 showNotification(message,title);
+                if (subject.equals("match_result")){
+                    String youtube_id = json.getJSONObject("data").getString("youtube_id");
+                    String winner_id = json.getJSONObject("data").getString("winner_id");
+                    String game_name = json.getJSONObject("data").getString("game_name");
+                    long id = db.insertNote(title, youtube_id,winner_id,game_name);
+                    db.getNote(id);
+                    Log.e("Payload", "Data Payload: " +youtube_id);
+                }
             } catch (Exception e) {
-                Log.e(TAG, "Exception: " + e.getMessage());
+                Log.e("Payload", "Exception: " + e.getMessage());
                 FirebaseCrashlytics.getInstance().recordException(e);
             }
         }
+
       //  showNotification();
         // TODO(developer): Handle FCM messages here.
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
@@ -58,6 +70,7 @@ public class FirebaseFCMServices extends FirebaseMessagingService {
         // Also if you intend on generating your own notifications as a result of a received FCM
         // message, here is where that should be initiated. See sendNotification method below.
     }
+
     public void showNotification (String msg,String title){
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -77,7 +90,7 @@ public class FirebaseFCMServices extends FirebaseMessagingService {
                 .setPriority(Notification.PRIORITY_MAX);
         Notification buildNotification = mBuilder.build();
         NotificationManager mNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        mNotifyMgr.notify(001, buildNotification);
+        mNotifyMgr.notify((int)(System.currentTimeMillis()/1000), buildNotification);
 
 //        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
 //            NotificationChannel notificationChannel = new NotificationChannel("n","n", NotificationManager.IMPORTANCE_HIGH);
