@@ -345,16 +345,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        teamModel = new ArrayList<>();
-        userAdapter = new MemberListAdapter(this, teamModel, AppConstant.applyMatches);
-        for (DataSnapshot snapshot : AppController.getInstance().mySnapShort.child(AppConstant.team).getChildren()) {
-            SharedPreferences prefs = getSharedPreferences(snapshot.getKey(), Context.MODE_PRIVATE);
-            teamModel.add(new UserListModel(prefs.getString(AppConstant.teamName, null),
-                    prefs.getString(AppConstant.myPicUrl, null),
-                    snapshot.getKey(),
-                    prefs.getStringSet(AppConstant.teamMember, null)));
+        if(AppController.getInstance().mySnapShort != null) {
+            teamModel = new ArrayList<>();
+            userAdapter = new MemberListAdapter(this, teamModel, AppConstant.applyMatches);
+            for (DataSnapshot snapshot : AppController.getInstance().mySnapShort.child(AppConstant.team).getChildren()) {
+                SharedPreferences prefs = getSharedPreferences(snapshot.getKey(), Context.MODE_PRIVATE);
+                teamModel.add(new UserListModel(prefs.getString(AppConstant.teamName, null),
+                        prefs.getString(AppConstant.myPicUrl, null),
+                        snapshot.getKey(),
+                        prefs.getStringSet(AppConstant.teamMember, null)));
+            }
+            userAdapter.notifyDataSetChanged();
         }
-        userAdapter.notifyDataSetChanged();
     }
 
     private void showTeam() {
@@ -413,6 +415,7 @@ public class MainActivity extends AppCompatActivity {
         title.setText("Match history");
         recyclerView = inflated.findViewById(R.id.recycler_view);
         notesList.addAll(db.getAllNotes());
+        Log.e("db_Toll",db.getAllNotes().size()+"");
         if (notesList.size() == 0) {
             recyclerView.setVisibility(View.GONE);
             findViewById(R.id.not).setVisibility(View.VISIBLE);

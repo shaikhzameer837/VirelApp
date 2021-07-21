@@ -57,6 +57,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // return newly inserted row id
         return id;
     }
+    public long insertNote(String note,String youtubeId,String winner_id,String ign) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(Note.COLUMN_NOTE, note);
+        values.put(AppConstant.youtubeId, youtubeId);
+        values.put(AppConstant.winner_id, winner_id);
+        values.put(AppConstant.ign, ign);
+
+        // insert row
+        long id = db.insert(Note.TABLE_NAME, null, values);
+
+        // close db connection
+        db.close();
+
+        // return newly inserted row id
+        return id;
+    }
 
     public Note getNote(long id) {
         // get readable database as we are not inserting anything
