@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.intelj.yral_gaming.Utils.AppConstant;
 
 import org.json.JSONArray;
@@ -81,6 +82,10 @@ public class SplashScreenStory extends AppCompatActivity implements StoriesProgr
                 } else
                     Toast.makeText(SplashScreenStory.this, "Please register to earn the coin ", Toast.LENGTH_LONG).show();
             }
+        });
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(this, instanceIdResult -> {
+            String newToken = instanceIdResult.getToken();
+            Log.e("newToken", newToken);
         });
         String splashscreen = AppController.getInstance().remoteConfig.getString(AppConstant.splashscreen);
         try {

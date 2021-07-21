@@ -37,6 +37,8 @@ public class AppConstant {
             member = "member",
             mobile_info = "mobile_info",
             youtubeId = "youtubeId",
+            winner_id = "winner_id",
+            ign = "ign",
             saveYTid = "saveYTid",
             stopTime = "stopTime",
             backgroundData = "backgroundData",
