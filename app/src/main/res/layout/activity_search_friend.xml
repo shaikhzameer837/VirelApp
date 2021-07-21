@@ -10,11 +10,12 @@
         android:orientation="vertical"
         tools:context=".Activity.SearchFriendActivity">
 
-        <androidx.appcompat.widget.SearchView
-            android:id="@+id/searchview"
+        <EditText
+            android:id="@+id/et_search"
+            android:hint="Search Your Friend"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:elevation="2dp" />
+             />
 
         <ProgressBar
             android:id="@+id/progress"

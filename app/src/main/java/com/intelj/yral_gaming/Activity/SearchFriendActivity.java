@@ -7,6 +7,8 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -45,11 +47,11 @@ import java.util.Map;
 import java.util.Set;
 
 public class SearchFriendActivity extends AppCompatActivity {
-    private SearchView searchView;
+    private EditText et_search;
     private RecyclerView recyclerview;
     private ArrayList<String> contactList;
     private ArrayList<UserListModel> userListModel;
-    private ArrayList<UserListModel> userListModel2 = new ArrayList<>();
+    private ArrayList<UserListModel> userListModel2;
     private DatabaseReference mFirebaseDatabaseReference;
     private UserListAdapter userAdapter;
     private ProgressBar progress;
@@ -64,7 +66,7 @@ public class SearchFriendActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_friend);
-        searchView = findViewById(R.id.searchview);
+        et_search = findViewById(R.id.et_search);
         recyclerview = findViewById(R.id.recyclerview);
         progress = findViewById(R.id.progress);
         userListModel = new ArrayList<>();
@@ -81,30 +83,35 @@ public class SearchFriendActivity extends AppCompatActivity {
             }
         });
         mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference(AppConstant.users);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+        et_search.addTextChangedListener(new TextWatcher() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
             }
 
             @Override
-            public boolean onQueryTextChange(String newText) {
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
                 userListModel.clear();
-                if (newText.length() == 0) {
+                if (s.length() == 0) {
                     userListModel.addAll(userListModel2);
                 } else {
                     for (UserListModel listModel : userListModel2) {
-                        if(listModel.getGenre().toLowerCase().contains(newText.toLowerCase())){
+                        if(listModel.getGenre().toLowerCase().contains(s.toString().toLowerCase())){
                             userListModel.add(listModel);
                         }
                     }
                 }
 
                 userAdapter.notifyDataSetChanged();
+            }
 
-                return true;
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
+
     }
 
     public void showBottomSheetDialog() {
@@ -170,6 +177,7 @@ public class SearchFriendActivity extends AppCompatActivity {
         Toast.makeText(this, "Team Created", Toast.LENGTH_LONG).show();
     }
     private void displayFriends() {
+        userListModel2 = new ArrayList<>();
         userListModel.clear();
         Set<String> set = prefs.getStringSet(AppConstant.users, null);
         if(set == null)
