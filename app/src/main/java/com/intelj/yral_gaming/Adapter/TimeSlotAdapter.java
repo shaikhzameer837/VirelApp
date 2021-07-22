@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -31,6 +33,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.intelj.yral_gaming.Activity.MainActivity;
 import com.intelj.yral_gaming.AppController;
 import com.intelj.yral_gaming.R;
+import com.intelj.yral_gaming.SigninActivity;
 import com.intelj.yral_gaming.Utils.AppConstant;
 import com.intelj.yral_gaming.Utils.RecyclerTouchListener;
 import com.intelj.yral_gaming.model.UserListModel;
@@ -40,10 +43,8 @@ import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -60,9 +61,11 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
     BottomSheetDialog bottomSheetDialog;
     SharedPreferences sharedPreferences;
     ArrayList<UserListModel> teamModel;
+
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView title, info;
         ImageView reg;
+
         public MyViewHolder(View view) {
             super(view);
             title = view.findViewById(R.id.title);
@@ -78,7 +81,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
         this.title = title;
         sharedPreferences =
                 mContext.getSharedPreferences
-                        (AppConstant.AppName,0);
+                        (AppConstant.AppName, 0);
         appConstant = new AppConstant(mContext);
         mDatabase = FirebaseDatabase.getInstance().getReference(AppConstant.live_stream);
     }
@@ -94,13 +97,13 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
         holder.title.setText(allData.get(position).getTime());
-        String strDate = title+" "+date + " " + allData.get(position).getTime().replace("pm", ":00:00 pm")
-                                    .replace("am", ":00:00 am");
+        String strDate = title + " " + date + " " + allData.get(position).getTime().replace("pm", ":00:00 pm")
+                .replace("am", ":00:00 am");
 //        holder.reg.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
-                //Intent waIntent = new Intent(Intent.ACTION_SEND);
-                //waIntent.setType("text/plain");
+        //Intent waIntent = new Intent(Intent.ACTION_SEND);
+        //waIntent.setType("text/plain");
 //                Intent waIntent=new Intent(Intent.ACTION_VIEW,Uri.parse("https://discord.gg/9Shnr3nY"));
 //                String text = "YOUR TEXT HERE @zacshooter#4354";
 //                waIntent.setPackage("com.discord");
@@ -108,7 +111,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
 //                mContext.startActivity(Intent.createChooser(waIntent, "Share with"));
 //                showTeamList(strDate);
 
-                // if(System.currentTimeMillis() < miliSec) {
+        // if(System.currentTimeMillis() < miliSec) {
 //                if (!new AppConstant(mContext).checkLogin()) {
 //                    Intent intent = new Intent("custom-event-name");
 //                    intent.putExtra("message", "bottom_sheet_broadcast");
@@ -136,11 +139,11 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
 //                    showBottomSheet(position);
 //                }
 
-                // }else
-                //    Toast.makeText(mContext,"sorry",Toast.LENGTH_LONG).show();
+        // }else
+        //    Toast.makeText(mContext,"sorry",Toast.LENGTH_LONG).show();
 //            }
 //        });
-        if (sharedPreferences.getBoolean(strDate,false)) {
+        if (sharedPreferences.getBoolean(strDate, false)) {
             holder.reg.setImageResource(R.drawable.check);
             holder.reg.setBackgroundResource(0);
             holder.reg.setOnClickListener(null);
@@ -151,9 +154,9 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
                 public void onClick(View v) {
                     if (new AppConstant(mContext).checkLogin())
                         showTeamList(strDate);
-                    else{
+                    else {
                         Intent intent = new Intent("custom-event-name");
-                        intent.putExtra(AppConstant.AppName,true);
+                        intent.putExtra(AppConstant.AppName, true);
                         LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);
                     }
                 }
@@ -161,6 +164,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
         }
         holder.info.setText(allData.get(position).getTotalCount() + "/100 members");
     }
+
     private void showTeamList(String strDate) {
         bottomSheetDialog = new BottomSheetDialog(mContext);
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog);
@@ -169,7 +173,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
         bottomSheetDialog.findViewById(R.id.create_team).setVisibility(View.GONE);
         TextView title = bottomSheetDialog.findViewById(R.id.title);
         title.setText("Select your team");
-        TextView txt =bottomSheetDialog.findViewById(R.id.subtitle);
+        TextView txt = bottomSheetDialog.findViewById(R.id.subtitle);
         txt.setText("only one team can be seelcted");
         RecyclerView recyclerview = bottomSheetDialog.findViewById(R.id.recyclerview);
         teamModel = new ArrayList<>();
@@ -180,7 +184,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
                     snapshot.getKey(),
                     prefs.getStringSet(AppConstant.teamMember, null)));
         }
-        MemberListAdapter userAdapter = new MemberListAdapter(mContext, teamModel,AppConstant.team);
+        MemberListAdapter userAdapter = new MemberListAdapter(mContext, teamModel, AppConstant.team);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext);
         recyclerview.setLayoutManager(mLayoutManager);
         recyclerview.setAdapter(userAdapter);
@@ -188,7 +192,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
         recyclerview.addOnItemTouchListener(new RecyclerTouchListener(mContext, recyclerview, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
-                sendRequest(position,strDate);
+                sendRequest(position, strDate);
 
             }
 
@@ -208,19 +212,17 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
         ArrayList<String> igid = new ArrayList<>();
         ArrayList<String> ign = new ArrayList<>();
         for (String s : teamMember) {
-            SharedPreferences sharedPreferences = mContext.getSharedPreferences(s,0);
-            discordId.add(sharedPreferences.getString(AppConstant.discordId,""));
-            ign.add(sharedPreferences.getString(title,""));
-            igid.add(sharedPreferences.getString(title+ "_" + AppConstant.userName,""));
-         }
-        Log.e("teamMember",teamMember.toString().replace("[","").replace("]",""));
+            SharedPreferences sharedPreferences = mContext.getSharedPreferences(s, 0);
+            discordId.add(sharedPreferences.getString(AppConstant.discordId, ""));
+            ign.add(sharedPreferences.getString(title, ""));
+            igid.add(sharedPreferences.getString(title + "_" + AppConstant.userName, ""));
+        }
         RequestQueue queue = Volley.newRequestQueue(mContext);
-        String url = "http://y-ral-gaming.com/demo.php";
+        String url = "http://y-ral-gaming.com/admin/register_matches.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.e("Response is: ", response);
                         if (dialog.isShowing()) {
                             dialog.dismiss();
                         }
@@ -241,13 +243,15 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put("user", teamMember.toString().replace("[","").replace("]",""));
+                params.put("user", teamMember.toString().replace("[", "").replace("]", ""));
                 params.put("strDate", strDate);
                 params.put("teamName", teamModel.get(position).getTeamName());
-                params.put("discordId", discordId.toString().replace("[","").replace("]",""));
+                params.put("teamUrl", teamModel.get(position).getTeamUrl());
+                params.put("discordId", discordId.toString().replace("[", "").replace("]", ""));
+                params.put("teamId", teamModel.get(position).getTeamId());
                 params.put("game_name", title);
-                params.put("game_id", ign.toString().replace("[","").replace("]",""));
-                params.put("igid", igid.toString().replace("[","").replace("]",""));
+                params.put("game_id", ign.toString().replace("[", "").replace("]", ""));
+                params.put("igid", igid.toString().replace("[", "").replace("]", ""));
                 return params;
             }
 
@@ -259,7 +263,47 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
             }
         };
 
-         queue.add(stringRequest);
+        queue.add(stringRequest);
+
+//        RequestQueue queue = Volley.newRequestQueue(mContext);
+//        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+//                new Response.Listener<String>() {
+//                    @Override
+//                    public void onResponse(String response) {
+//                        Log.e("Response is: ", response);
+//                        if (dialog.isShowing()) {
+//                            dialog.dismiss();
+//                        }
+////                        SharedPreferences.Editor editShared = sharedPreferences.edit();
+////                        editShared.putBoolean(strDate,true);
+////                        editShared.apply();
+////                        notifyDataSetChanged();
+//                        bottomSheetDialog.cancel();
+//                    }
+//                }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                if (dialog.isShowing()) {
+//                    dialog.dismiss();
+//                }
+//            }
+//        }) {
+//            @Override
+//            protected Map<String, String> getParams() {
+//                Map<String, String> params = new HashMap<>();
+//                params.put("user", teamMember.toString().replace("[", "").replace("]", ""));
+//                params.put("strDate", strDate);
+//                params.put("teamName", teamModel.get(position).getTeamName());
+//                params.put("discordId", discordId.toString().replace("[", "").replace("]", ""));
+//                params.put("game_name", title);
+//                params.put("game_id", ign.toString().replace("[", "").replace("]", ""));
+//                params.put("igid", igid.toString().replace("[", "").replace("]", ""));
+//                return params;
+//            }
+//
+//        };
+//
+//        queue.add(stringRequest);
     }
 
     private void showBottomSheet(final int position) {
