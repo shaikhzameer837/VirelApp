@@ -83,10 +83,7 @@ public class SplashScreenStory extends AppCompatActivity implements StoriesProgr
                     Toast.makeText(SplashScreenStory.this, "Please register to earn the coin ", Toast.LENGTH_LONG).show();
             }
         });
-        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(this, instanceIdResult -> {
-            String newToken = instanceIdResult.getToken();
-            Log.e("newToken", newToken);
-        });
+
         String splashscreen = AppController.getInstance().remoteConfig.getString(AppConstant.splashscreen);
         try {
             JSONObject jsonObject = new JSONObject(splashscreen);
