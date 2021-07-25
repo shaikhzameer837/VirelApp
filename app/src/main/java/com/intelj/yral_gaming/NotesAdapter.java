@@ -57,13 +57,13 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
     public void onBindViewHolder(MyViewHolder holder, int position) {
         Note note = notesList.get(position);
 
-        holder.note.setText(note.getYoutubeId());
+        holder.note.setText(note.getTeam_name());
 
         // Displaying dot from HTML character code
-        holder.time.setText(note.getTimestamp().replace("_"," "));
+        holder.time.setText(note.getGame_id().replace("_"," "));
 
         Glide.with(context)
-                .load("https://i.ytimg.com/vi/"+note.getYoutubeId()+"/hqdefault.jpg")
+                .load("https://i.ytimg.com/vi/"+note.getYoutube_id()+"/hqdefault.jpg")
                 .placeholder(R.drawable.game_avatar)
                 .into(holder.images);
 

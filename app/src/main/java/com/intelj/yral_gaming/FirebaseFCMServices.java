@@ -45,9 +45,9 @@ public class FirebaseFCMServices extends FirebaseMessagingService {
                 if (subject.equals("match_result")){
                     String youtube_id = json.getJSONObject("data").getString("youtube_id");
                     String winner_id = json.getJSONObject("data").getString("winner_id");
-                    String game_name = json.getJSONObject("data").getString("game_name");
+                    String game_name = json.getJSONObject("datgit commit a").getString("game_name");
                     long id = db.insertNote(title, youtube_id,winner_id,game_name);
-                    db.getNote(id);
+                   // db.getNote(id);
                     Log.e("Payload", "Data Payload: " +youtube_id);
                 }
             } catch (Exception e) {

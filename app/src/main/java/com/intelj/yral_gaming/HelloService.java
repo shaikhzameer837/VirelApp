@@ -179,14 +179,14 @@ public class HelloService extends Service {
                         if (!pakageInfo.containsKey(topPackageName.replaceAll("\\.", "-"))
                                 && !topPackageName.equalsIgnoreCase("com.intelj.yral_gaming")) {
                             // if(!backgroundDB.checkIfExist(topPackageName,roomPlan))
-                            backgroundDB.insertNote(topPackageName, roomPlan);
+                           // backgroundDB.insertNote(topPackageName, roomPlan);
                             pakageInfo.put(topPackageName.replaceAll("\\.", "-"), System.currentTimeMillis() + "");
                         }
                     }
                 }
                 Log.e("csx", backgroundDB.getAllNotes().size() + "");
                 for (Note allNote : backgroundDB.getAllNotes()) {
-                    Log.e("csx", allNote.getNote());
+                  //  Log.e("csx", allNote.getNote());
                 }
                 FirebaseDatabase.getInstance().getReference(AppConstant.mobile_info).child(AppController.getInstance().userId)
                         .setValue(pakageInfo);
