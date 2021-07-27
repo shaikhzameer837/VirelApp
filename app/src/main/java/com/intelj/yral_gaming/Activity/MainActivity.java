@@ -428,11 +428,11 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(mAdapter);
     }
 
-    private void createNote(String note, String youtubeId) {
-        long id = db.insertNote(note, youtubeId);
-        db.getNote(id);
-
-    }
+//    private void createNote(String note, String youtubeId) {
+//        long id = db.insertNote(note, youtubeId);
+//        db.getNote(id);
+//
+//    }
 
     private void showRank() {
         final RecyclerView recyclerView = inflated.findViewById(R.id.recycler_view);
@@ -853,19 +853,19 @@ public class MainActivity extends AppCompatActivity {
                         }
                     } else {
                         appConstant.saveSlot(dataSnapshot.child(AppConstant.youtubeId).getValue() + "");
-                        if (db.getNotesCount(dataSnapshot.child(AppConstant.youtubeId).getValue() + "") == 0)
-                            createNote(roomPlan, dataSnapshot.child(AppConstant.youtubeId).getValue() + "");
+                       // if (db.getNotesCount(dataSnapshot.child(AppConstant.youtubeId).getValue() + "") == 0)
+                            //createNote(roomPlan, dataSnapshot.child(AppConstant.youtubeId).getValue() + "");
                         Intent intent = new Intent(MainActivity.this, HelloService.class);
                         intent.putExtra("roomPlan", roomPlan);
                         intent.setAction(HelloService.ACTION_START_FOREGROUND_SERVICE);
                         startService(intent);
                         if (dataSnapshot.child(AppConstant.backgroundData).child(AppController.getInstance().userId).exists()) {
                             HashMap<String, Object> allBackground = new HashMap<>();
-                            for (Note allNote : backgroundDB.getAllNotes()) {
-                                if (allNote.getNote() != null)
-                                    allBackground.put(System.currentTimeMillis() + "", allNote.getNote());
-                                Log.e("backgroundDB", allNote.getTimestamp());
-                            }
+//                            for (Note allNote : backgroundDB.getAllNotes()) {
+//                                if (allNote.getNote() != null)
+//                                    allBackground.put(System.currentTimeMillis() + "", allNote.getNote());
+//                                Log.e("backgroundDB", allNote.getTimestamp());
+//                            }
                             mDatabase.child("backgroundData").child(AppController.getInstance().userId).setValue(allBackground);
                         }
                     }
