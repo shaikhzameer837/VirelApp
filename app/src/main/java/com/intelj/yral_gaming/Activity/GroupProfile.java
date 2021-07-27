@@ -64,7 +64,6 @@ public class GroupProfile extends AppCompatActivity {
     String groupId;
     SharedPreferences Groupprefs;
     Set<String> set;
-    private Button addmemberingoup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,9 +74,7 @@ public class GroupProfile extends AppCompatActivity {
         Groupprefs = getSharedPreferences(groupId, Context.MODE_PRIVATE);
         nameEdt = findViewById(R.id.nameEdt);
         member_count = findViewById(R.id.member_count);
-        addmemberingoup = findViewById(R.id.addmemberingoup);
         nameEdt.setText(Groupprefs.getString(AppConstant.teamName, ""));
-        member_count.setText(set == null ? "0" : set.size() + " Member");
         Glide.with(this).load(Groupprefs.getString(AppConstant.myPicUrl, "")).placeholder(R.drawable.account_group)
                 .into(imgs);
         recyclerview = findViewById(R.id.recyclerview);
@@ -101,22 +98,6 @@ public class GroupProfile extends AppCompatActivity {
         }));
 
         prefs = getSharedPreferences(AppConstant.AppName, Context.MODE_PRIVATE);
-
-        addmemberingoup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(GroupProfile.this, SearchFriendActivity.class);
-                i.putExtra("group_id", groupId);
-                ArrayList<String> member_list = new ArrayList<>();
-                for (UserListModel listModel : userListModel) {
-                    if (!listModel.getUserId().equals(AppController.getInstance().userId))
-                        member_list.add(listModel.getUserId());
-                }
-                i.putExtra("member_list", member_list);
-                i.putExtra("team_name", nameEdt.getText().toString());
-                startActivity(i);
-            }
-        });
 
     }
 
@@ -160,6 +141,7 @@ public class GroupProfile extends AppCompatActivity {
     private void displayFriends() {
         Groupprefs = getSharedPreferences(groupId, Context.MODE_PRIVATE);
         set = Groupprefs.getStringSet(AppConstant.teamMember, null);
+        member_count.setText(set == null ? "0" : set.size() + " Member");
         userListModel.clear();
         for (String s : set) {
             SharedPreferences sharedpreferences = getSharedPreferences(s, Context.MODE_PRIVATE);
@@ -337,5 +319,18 @@ public class GroupProfile extends AppCompatActivity {
 
         AlertDialog alert11 = builder1.create();
         alert11.show();
+    }
+
+    public void MemberAddRemove(View view) {
+        Intent i = new Intent(GroupProfile.this, SearchFriendActivity.class);
+        i.putExtra("group_id", groupId);
+        ArrayList<String> member_list = new ArrayList<>();
+        for (UserListModel listModel : userListModel) {
+            if (!listModel.getUserId().equals(AppController.getInstance().userId))
+                member_list.add(listModel.getUserId());
+        }
+        i.putExtra("member_list", member_list);
+        i.putExtra("team_name", nameEdt.getText().toString());
+        startActivity(i);
     }
 }

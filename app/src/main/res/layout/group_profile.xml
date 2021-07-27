@@ -11,7 +11,16 @@
         android:gravity="right"
         android:layout_width="match_parent"
         android:layout_height="45dp">
-       <ImageView
+
+        <ImageView
+            android:layout_margin="5dp"
+            android:onClick="MemberAddRemove"
+            android:layout_gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:src="@drawable/add"
+            android:layout_height="wrap_content"/>
+
+        <ImageView
             android:layout_margin="5dp"
            android:onClick="openCamera"
            android:layout_gravity="center_vertical"
@@ -32,6 +41,7 @@
            android:layout_width="wrap_content"
             android:src="@drawable/ic_delete"
             android:layout_height="wrap_content"/>
+
     </LinearLayout>
     <ImageView android:id="@+id/group_img"
         android:layout_width="match_parent"
@@ -53,12 +63,6 @@
         android:background="#90000000"
         android:textColor="@color/colorPrimary"
         android:textStyle="bold" />
-
-    <Button
-        android:id="@+id/addmemberingoup"
-        android:text="Add Member"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
 
     <TextView
         android:layout_width="match_parent"
