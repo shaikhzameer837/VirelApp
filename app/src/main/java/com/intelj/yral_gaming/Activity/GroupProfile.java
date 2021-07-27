@@ -46,6 +46,7 @@ import com.intelj.yral_gaming.model.UserListModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -76,8 +77,6 @@ public class GroupProfile extends AppCompatActivity {
         member_count = findViewById(R.id.member_count);
         addmemberingoup = findViewById(R.id.addmemberingoup);
         nameEdt.setText(Groupprefs.getString(AppConstant.teamName, ""));
-        set = Groupprefs.getStringSet(AppConstant.teamMember, null);
-
         member_count.setText(set == null ? "0" : set.size() + " Member");
         Glide.with(this).load(Groupprefs.getString(AppConstant.myPicUrl, "")).placeholder(R.drawable.account_group)
                 .into(imgs);
@@ -159,6 +158,8 @@ public class GroupProfile extends AppCompatActivity {
     }
 
     private void displayFriends() {
+        Groupprefs = getSharedPreferences(groupId, Context.MODE_PRIVATE);
+        set = Groupprefs.getStringSet(AppConstant.teamMember, null);
         userListModel.clear();
         for (String s : set) {
             SharedPreferences sharedpreferences = getSharedPreferences(s, Context.MODE_PRIVATE);
@@ -166,6 +167,7 @@ public class GroupProfile extends AppCompatActivity {
                     sharedpreferences.getString(AppConstant.userName, ""),
                     sharedpreferences.getString(AppConstant.phoneNumber, ""), s));
         }
+
         userAdapter.notifyDataSetChanged();
     }
 

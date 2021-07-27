@@ -250,21 +250,20 @@ public class SearchFriendActivity extends AppCompatActivity {
         if (getIntent().getExtras() == null)
             showBottomSheetDialog();
         else {
-         String group_id =  getIntent().getExtras().getString("group_id");
+            String group_id = getIntent().getExtras().getString("group_id");
             teamUserList.add(AppController.getInstance().userId);
             CollectionReference myTeam = db.collection(AppConstant.team);
-
             HashMap<String, Object> teamHash = new HashMap<>();
             teamHash.put(AppConstant.teamName, getIntent().getExtras().getString("team_name"));
             teamHash.put(AppConstant.teamMember, teamUserList);
-
             myTeam.document(group_id).set(teamHash);
-
+            Set<String> hashSet = new HashSet<>(teamUserList);
+            SharedPreferences sharedpreferences = getSharedPreferences(group_id, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editors = sharedpreferences.edit();
+            editors.putStringSet(AppConstant.teamMember, hashSet);
+            editors.apply();
             Toast.makeText(SearchFriendActivity.this, "Member updated successfully", Toast.LENGTH_LONG).show();
             finish();
-/*            Intent i = new Intent(SearchFriendActivity.this, GroupProfile.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(i);*/
         }
     }
 

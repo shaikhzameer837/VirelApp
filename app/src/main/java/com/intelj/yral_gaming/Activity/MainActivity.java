@@ -341,13 +341,12 @@ public class MainActivity extends AppCompatActivity {
 
     ArrayList<UserListModel> teamModel;
     MemberListAdapter userAdapter;
-
+    RecyclerView recyclerviewTeam;
     @Override
     protected void onResume() {
         super.onResume();
-        if(AppController.getInstance().mySnapShort != null) {
-            teamModel = new ArrayList<>();
-            userAdapter = new MemberListAdapter(this, teamModel, AppConstant.applyMatches);
+        if(AppController.getInstance().mySnapShort != null && recyclerviewTeam != null) {
+            teamModel.clear();
             for (DataSnapshot snapshot : AppController.getInstance().mySnapShort.child(AppConstant.team).getChildren()) {
                 SharedPreferences prefs = getSharedPreferences(snapshot.getKey(), Context.MODE_PRIVATE);
                 teamModel.add(new UserListModel(prefs.getString(AppConstant.teamName, null),
@@ -363,9 +362,12 @@ public class MainActivity extends AppCompatActivity {
         inflated.findViewById(R.id.newTeam).setVisibility(View.GONE);
         inflated.findViewById(R.id.bott_button).setVisibility(View.GONE);
         inflated.findViewById(R.id.create_team).setVisibility(View.VISIBLE);
-        RecyclerView recyclerviewTeam = inflated.findViewById(R.id.recyclerview);
+        recyclerviewTeam = inflated.findViewById(R.id.recyclerview);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         recyclerviewTeam.setLayoutManager(mLayoutManager);
+        teamModel = new ArrayList<>();
+        userAdapter = new MemberListAdapter(this, teamModel, AppConstant.applyMatches);
+        onResume();
         recyclerviewTeam.setAdapter(userAdapter);
         recyclerviewTeam.addOnItemTouchListener(new RecyclerTouchListener(this, recyclerviewTeam, new RecyclerTouchListener.ClickListener() {
             @Override
