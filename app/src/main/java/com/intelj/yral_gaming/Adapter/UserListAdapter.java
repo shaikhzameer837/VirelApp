@@ -52,10 +52,13 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.MyView
         this.mContext = mContext;
     }
 
-    public UserListAdapter(Context mContext, List<UserListModel> moviesList, String subject) {
+    public UserListAdapter(Context mContext, List<UserListModel> moviesList, String subject, ArrayList<String> checked_array) {
         this.moviesList = moviesList;
         this.mContext = mContext;
         this.subject = subject;
+        if (this.moviesList.size() > 0 && checked_array != null && checked_array.size() > 0) {
+            userCheck.addAll(checked_array);
+        }
     }
 
     @Override

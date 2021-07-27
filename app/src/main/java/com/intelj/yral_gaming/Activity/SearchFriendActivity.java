@@ -2,6 +2,7 @@ package com.intelj.yral_gaming.Activity;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.AsyncTask;
@@ -62,18 +63,24 @@ public class SearchFriendActivity extends AppCompatActivity {
     RecyclerView userRecyclerView;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     int x = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_search_friend);
         et_search = findViewById(R.id.et_search);
         recyclerview = findViewById(R.id.recyclerview);
         progress = findViewById(R.id.progress);
+        teamModel = new ArrayList<>();
         userListModel = new ArrayList<>();
-        userAdapter = new UserListAdapter(SearchFriendActivity.this, userListModel,AppConstant.user);
+        /*ArrayList<String> myList = new ArrayList<>();
+        if (getIntent() != null)
+        myList = (ArrayList<String>) getIntent().getSerializableExtra("member_list");
+        userAdapter = new UserListAdapter(SearchFriendActivity.this, userListModel, AppConstant.user, myList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(SearchFriendActivity.this);
         recyclerview.setLayoutManager(mLayoutManager);
-        recyclerview.setAdapter(userAdapter);
+        recyclerview.setAdapter(userAdapter);*/
         prefs = getSharedPreferences(AppConstant.AppName, Context.MODE_PRIVATE);
         displayFriends();
         findViewById(R.id.floating_action_button).setOnClickListener(new View.OnClickListener() {
@@ -97,7 +104,7 @@ public class SearchFriendActivity extends AppCompatActivity {
                     userListModel.addAll(userListModel2);
                 } else {
                     for (UserListModel listModel : userListModel2) {
-                        if(listModel.getGenre().toLowerCase().contains(s.toString().toLowerCase())){
+                        if (listModel.getGenre().toLowerCase().contains(s.toString().toLowerCase())) {
                             userListModel.add(listModel);
                         }
                     }
@@ -155,7 +162,7 @@ public class SearchFriendActivity extends AppCompatActivity {
         teamHash.put(AppConstant.teamName, teamName);
         teamHash.put(AppConstant.teamMember, teamUserList);
         String uniqueId = System.currentTimeMillis() + "";
-        for (String s :teamUserList) {
+        for (String s : teamUserList) {
             FirebaseDatabase.getInstance().getReference(AppConstant.users).child(s)
                     .child(AppConstant.pinfo).child(AppConstant.team)
                     .child(uniqueId).setValue(s.equals(AppController.getInstance().userId) ? "1" : "0");
@@ -176,19 +183,28 @@ public class SearchFriendActivity extends AppCompatActivity {
         userRecyclerView.scrollToPosition(teamModel.size() - 1);
         Toast.makeText(this, "Team Created", Toast.LENGTH_LONG).show();
     }
+
     private void displayFriends() {
         userListModel2 = new ArrayList<>();
         userListModel.clear();
         Set<String> set = prefs.getStringSet(AppConstant.users, null);
-        if(set == null)
+        if (set == null)
             return;
         for (String s : set) {
             SharedPreferences sharedpreferences = getSharedPreferences(s, Context.MODE_PRIVATE);
             userListModel.add(new UserListModel(sharedpreferences.getString(AppConstant.myPicUrl, ""),
                     sharedpreferences.getString(AppConstant.userName, ""),
-                    sharedpreferences.getString(AppConstant.phoneNumber, ""),s));
+                    sharedpreferences.getString(AppConstant.phoneNumber, ""), s));
         }
         userListModel2.addAll(userListModel);
+        ArrayList<String> myList = new ArrayList<>();
+        if (getIntent() != null)
+            myList = (ArrayList<String>) getIntent().getSerializableExtra("member_list");
+        userAdapter = new UserListAdapter(SearchFriendActivity.this, userListModel, AppConstant.user, myList);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(SearchFriendActivity.this);
+        recyclerview.setLayoutManager(mLayoutManager);
+        recyclerview.setAdapter(userAdapter);
+
         userAdapter.notifyDataSetChanged();
     }
 
@@ -230,7 +246,26 @@ public class SearchFriendActivity extends AppCompatActivity {
     }
 
     public void AddUser(View view) {
-        showBottomSheetDialog();
+        List<String> teamUserList = userAdapter.getArrayList();
+        if (getIntent().getExtras() == null)
+            showBottomSheetDialog();
+        else {
+         String group_id =  getIntent().getExtras().getString("group_id");
+            teamUserList.add(AppController.getInstance().userId);
+            CollectionReference myTeam = db.collection(AppConstant.team);
+
+            HashMap<String, Object> teamHash = new HashMap<>();
+            teamHash.put(AppConstant.teamName, getIntent().getExtras().getString("team_name"));
+            teamHash.put(AppConstant.teamMember, teamUserList);
+
+            myTeam.document(group_id).set(teamHash);
+
+            Toast.makeText(SearchFriendActivity.this, "Member updated successfully", Toast.LENGTH_LONG).show();
+            finish();
+/*            Intent i = new Intent(SearchFriendActivity.this, GroupProfile.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(i);*/
+        }
     }
 
     class LoadContact extends AsyncTask<Void, Integer, String> {
@@ -251,11 +286,12 @@ public class SearchFriendActivity extends AppCompatActivity {
             startingList();
         }
     }
+
     private void startingList() {
         SharedPreferences.Editor editor = prefs.edit();
         Set<String> set = new HashSet<>();
         x = 0;
-         for (String s : contactList) {
+        for (String s : contactList) {
             Query query = mFirebaseDatabaseReference.orderByChild(AppConstant.phoneNumber).equalTo(s);
             query.keepSynced(false);
             query.addListenerForSingleValueEvent(new ValueEventListener() {
