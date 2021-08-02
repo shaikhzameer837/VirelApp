@@ -38,11 +38,11 @@ public class SubscriptionFragment extends Fragment {
         rootView.findViewById(R.id.price).setBackgroundColor(Color.parseColor(colorCode));
         rootView.findViewById(R.id.subscription).setBackgroundColor(Color.parseColor(colorCode));
         if (colorCode.equals("#7e241c"))
-            setViews("35Rs \n Per Match");
+            setViews("35 Coins \n Per Match");
         if (colorCode.equals("#cb7069"))
-            setViews("1200rs \n Per Month");
+            setViews("1200 Coins \n Per Month");
         if (colorCode.equals("#000000"))
-            setViews("1500rs\n Per Month");
+            setViews("1500 Coins \n Per Month");
         return rootView;
     }
 

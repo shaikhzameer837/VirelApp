@@ -437,7 +437,7 @@ public class SigninActivity extends AppCompatActivity {
         dialog.setMessage("Registering for App, please wait.");
         dialog.show();
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://y-ral-gaming.com/admin/reg.php";
+        String url = "http://y-ral-gaming.com/admin/api/reg.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override

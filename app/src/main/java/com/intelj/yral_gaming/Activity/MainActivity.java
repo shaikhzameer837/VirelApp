@@ -234,6 +234,10 @@ public class MainActivity extends AppCompatActivity {
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        if(item.getItemId() != R.id.game_slot && !new AppConstant(MainActivity.this).checkLogin()){
+                                showBottomSheetDialog();
+                                return true;
+                        }
                         switch (item.getItemId()) {
                             case R.id.game_slot:
                                 inflateView(R.layout.game_slot);
@@ -241,42 +245,42 @@ public class MainActivity extends AppCompatActivity {
                                 // showTeamBottomSheet();
                                 return true;
                             case R.id.showNotification:
-                                if (!new AppConstant(MainActivity.this).checkLogin()) {
-                                    showBottomSheetDialog();
-                                    return true;
-                                }
+//                                if (!new AppConstant(MainActivity.this).checkLogin()) {
+//                                    showBottomSheetDialog();
+//                                    return true;
+//                                }
                                 inflateView(R.layout.rank);
                                 showNotification();
                                 return true;
                             case R.id.rank:
-                                if (!new AppConstant(MainActivity.this).checkLogin()) {
-                                    showBottomSheetDialog();
-                                    return true;
-                                }
+//                                if (!new AppConstant(MainActivity.this).checkLogin()) {
+//                                    showBottomSheetDialog();
+//                                    return true;
+//                                }
                                 inflateView(R.layout.rank);
                                 showRank();
                                 return true;
                             case R.id.team:
-                                if (!new AppConstant(MainActivity.this).checkLogin()) {
-                                    showBottomSheetDialog();
-                                    return true;
-                                }
+//                                if (!new AppConstant(MainActivity.this).checkLogin()) {
+//                                    showBottomSheetDialog();
+//                                    return true;
+//                                }
                                 inflateView(R.layout.bottom_sheet_dialog);
                                 showTeam();
                                 return true;
                             case R.id.history:
-                                if (!new AppConstant(MainActivity.this).checkLogin()) {
-                                    showBottomSheetDialog();
-                                    return true;
-                                }
+//                                if (!new AppConstant(MainActivity.this).checkLogin()) {
+//                                    showBottomSheetDialog();
+//                                    return true;
+//                                }
                                 inflateView(R.layout.history);
                                 showHistory(inflated);
                                 return true;
                             case R.id.profile:
-                                if (!new AppConstant(MainActivity.this).checkLogin()) {
-                                    showBottomSheetDialog();
-                                    return true;
-                                }
+//                                if (!new AppConstant(MainActivity.this).checkLogin()) {
+//                                    showBottomSheetDialog();
+//                                    return true;
+//                                }
                                 inflateView(R.layout.edit_profile);
                                 imgProfile = inflated.findViewById(R.id.imgs);
                                 imgProfile.setOnClickListener(new View.OnClickListener() {
