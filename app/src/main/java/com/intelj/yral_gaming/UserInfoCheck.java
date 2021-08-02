@@ -120,8 +120,8 @@ public class UserInfoCheck extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences(AppConstant.AppName, 0);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         for (Map.Entry<String, Boolean> entry : AppController.getInstance().gameNameHashmap.entrySet()) {
-            editor.putString(entry.getKey()+ "_" + AppConstant.userName,AppController.getInstance().mySnapShort.child(entry.getKey()+ "_" + AppConstant.userName).getValue()+"");
-            editor.putString(entry.getKey()+"",AppController.getInstance().mySnapShort.child(entry.getKey()).getValue()+"");
+            editor.putString(entry.getKey()+ "_" + AppConstant.userName,AppController.getInstance().mySnapShort.child(entry.getKey()+ "_" + AppConstant.userName).getValue() == null ? "" : AppController.getInstance().mySnapShort.child(entry.getKey()+ "_" + AppConstant.userName).getValue()+"");
+            editor.putString(entry.getKey()+"",AppController.getInstance().mySnapShort.child(entry.getKey()).getValue() == null ? "" : AppController.getInstance().mySnapShort.child(entry.getKey()).getValue()+"");
             Log.e(entry.getKey()+"",AppController.getInstance().mySnapShort.child(entry.getKey()).getValue()+"");
         }
         editor.apply();
