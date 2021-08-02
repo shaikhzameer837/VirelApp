@@ -71,6 +71,8 @@ public class AppController extends Application implements Application.ActivityLi
     public FirebaseRemoteConfig remoteConfig;
     public DataSnapshot dataSnapshot;
     public ArrayList<String> followingList = new ArrayList<>();
+    public String subscription_amount;
+    public String is_production;
     AlertDialog.Builder builder;
     public boolean isFirstTime = false;
     @Override
@@ -83,7 +85,10 @@ public class AppController extends Application implements Application.ActivityLi
         getReadyForCheckin();
         getGameName();
         getTournamentTime();
-
+        subscription_amount = remoteConfig.getString("subscription_amount");
+        Log.e("subs_amount",subscription_amount);
+        is_production = remoteConfig.getString("is_production");
+        Log.e("is_production",is_production);
     }
 
     public void getReadyForCheckin() {

@@ -280,6 +280,7 @@ public class SigninActivity extends AppCompatActivity {
                     return;
                 }
                 if (viewPager.getCurrentItem() < layouts.length) {
+                    if (AppController.getInstance().is_production.equals("true"))
                     sendVerificationCode(_phoneNumber);
                     viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
                     resend_btn = findViewById(R.id.resend_btn);
@@ -337,7 +338,7 @@ public class SigninActivity extends AppCompatActivity {
 //                    return;
 //                }
                 if (_otp.trim().length() != 0) {
-                    if (!AppConstant.isProduction && _otp.equals("123456"))
+                    if (!AppController.getInstance().is_production.equals("true") && _otp.equals("123456"))
                         checkAndSaveLogin();
                     else verifyVerificationCode(_otp);
                 } else
