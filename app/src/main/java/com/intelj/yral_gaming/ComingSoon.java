@@ -27,25 +27,27 @@ public class ComingSoon extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.coming_soon);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar =  findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(Color.BLACK);
         toolbar.setTitle("Subscription");
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        viewPager =  findViewById(R.id.viewpager);
         setupViewPager(viewPager);
 
-        tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout =  findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
     }
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new SubscriptionFragment("#7e241c"), "Normal");
-        adapter.addFragment(new SubscriptionFragment("#cb7069"), "PRO");
-        adapter.addFragment(new SubscriptionFragment("#000000"), "ULTRA PRO");
+        adapter.addFragment(new SubscriptionFragment("#7e241c",0,0+"",0), "Normal");
+        adapter.addFragment(new SubscriptionFragment("#cb7069",1,(System.currentTimeMillis()/1000)+"",35), "PRO");
+        adapter.addFragment(new SubscriptionFragment("#000000",2,(System.currentTimeMillis()/1000)+"",100), "ULTRA PRO");
+        adapter.addFragment(new SubscriptionFragment("#000000",2,(System.currentTimeMillis()/1000)+"",1200), "ULTRA PRO");
+        adapter.addFragment(new SubscriptionFragment("#000000",2,(System.currentTimeMillis()/1000)+"",1500), "ULTRA PRO");
         viewPager.setAdapter(adapter);
     }
 
