@@ -114,7 +114,6 @@ public class MainActivity extends AppCompatActivity {
     TextInputEditText playerName, discordId;
     private Uri filePath = null;
     private DatabaseHelper db;
-    private DatabaseHelper backgroundDB;
     AlertDialog dialog;
     private NavigationView navigationView;
     private DrawerLayout drawer;
@@ -161,7 +160,6 @@ public class MainActivity extends AppCompatActivity {
         stub.setLayoutResource(R.layout.game_slot);
         appConstant = new AppConstant(this);
         db = new DatabaseHelper(this, "notifications");
-        backgroundDB = new DatabaseHelper(this, "background_db");
         inflated = stub.inflate();
         SwipeSelector swipeSelector = findViewById(R.id.swipeSelector);
         swipeSelector.setItems(
@@ -199,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
         ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
-        if (mWifi.isConnected()) {
+        if (mWifi.isConnected() && !mWifi.isConnected() ) {
             YouTubePlayerFragment youtubeFragment = (YouTubePlayerFragment)
                     getFragmentManager().findFragmentById(R.id.youtubeFragment);
             youtubeFragment.initialize(AppConstant.youtubeApiKey,
