@@ -21,8 +21,6 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.database.DataSnapshot;
@@ -33,10 +31,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.intelj.yral_gaming.Activity.MainActivity;
-import com.intelj.yral_gaming.Activity.PreRegistartionActivity;
 import com.intelj.yral_gaming.Fragment.OneFragment;
 import com.intelj.yral_gaming.Utils.AppConstant;
 
@@ -75,12 +71,15 @@ public class AppController extends Application implements Application.ActivityLi
     public String is_production;
     AlertDialog.Builder builder;
     public boolean isFirstTime = false;
+    public String subscription_package;
     @Override
     public void onCreate() {
         super.onCreate();
         instance = this;
         remoteConfig = FirebaseRemoteConfig.getInstance();
         remoteConfig.fetchAndActivate();
+        subscription_package = remoteConfig.getString("subscription_package");
+        Log.e("subscription_package",subscription_package);
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         getReadyForCheckin();
         getGameName();
@@ -201,7 +200,6 @@ public class AppController extends Application implements Application.ActivityLi
 
     public void getGameName() {
         gameNameHashmap.clear();
-
         String game_name = remoteConfig.getString("gameStreaming");
         Log.e("game_name_cont", game_name);
         try {

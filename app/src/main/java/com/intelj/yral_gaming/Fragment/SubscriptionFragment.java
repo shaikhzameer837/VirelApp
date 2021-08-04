@@ -1,39 +1,45 @@
 package com.intelj.yral_gaming.Fragment;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
-import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.firebase.crashlytics.FirebaseCrashlytics;
-import com.intelj.yral_gaming.AppController;
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.intelj.yral_gaming.R;
+import com.intelj.yral_gaming.SigninActivity;
 import com.intelj.yral_gaming.Utils.AppConstant;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SubscriptionFragment extends Fragment {
-    View rootView;
-    String colorCode;
-    private Button subscription;
-    private int[] rs = {120,450,650};
-    private int coins;
-    private JSONObject subscription_amount;
+    public View rootView;
+    public String colorCode, time_of_expired,desc;
+    int package_price;
+    int position;
 
-    public SubscriptionFragment(String s) {
+    public SubscriptionFragment(String s, int position, String time_of_expired, int package_price,String desc) {
         colorCode = s;
+        this.position = position;
+        this.time_of_expired = time_of_expired;
+        this.package_price = package_price;
+        this.desc = desc;
     }
 
     @Override
@@ -47,36 +53,67 @@ public class SubscriptionFragment extends Fragment {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.subscription, container, false);
         rootView.findViewById(R.id.price).setBackgroundColor(Color.parseColor(colorCode));
-//        rootView.findViewById(R.id.subscription).setBackgroundColor(Color.parseColor(colorCode));
-        subscription = rootView.findViewById(R.id.subscription);
-        subscription.setBackgroundColor(Color.parseColor(colorCode));
-        try {
-            subscription_amount = new JSONObject(AppController.getInstance().subscription_amount);
-//            rs = new int[]{subscription_amount.getInt("normal"), subscription_amount.getInt("pro"), subscription_amount.getInt("ultra_pro")};
-        } catch (JSONException e) {
-            e.printStackTrace();
-            FirebaseCrashlytics.getInstance().recordException(e);
-        }
-
-        if (colorCode.equals("#7e241c")) {
-            coins = rs[0];
-            setViews(coins + "Rs \n Per Match");
-        }
-        if (colorCode.equals("#cb7069")) {
-            coins = rs[1];
-            setViews(coins + "Rs \n Per Month");
-        }
-        if (colorCode.equals("#000000")) {
-            coins = rs[2];
-            setViews(coins + "Rs\n Per Month");
-        }
-        subscription.setOnClickListener(new View.OnClickListener() {
+        rootView.findViewById(R.id.subscription).setBackgroundColor(Color.parseColor(colorCode));
+        //if (colorCode.equals("#7e241c"))
+        setViews(package_price + " Coins \n Per Match");
+//        if (colorCode.equals("#cb7069"))
+//            setViews("1200 Coins \n Per Month");
+//        if (colorCode.equals("#000000"))
+//            setViews("1500 Coins \n Per Month");
+        rootView.findViewById(R.id.subscription).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                applySubscription();
+            public void onClick(View view) {
+                if (!new AppConstant(getActivity()).checkLogin())
+                    startActivity(new Intent(getActivity(), SigninActivity.class));
+                else
+                    updateSubscription();
             }
         });
         return rootView;
+    }
+
+    private void updateSubscription() {
+        ProgressDialog dialog = new ProgressDialog(getActivity());
+        dialog.setMessage("Registering for App, please wait.");
+        dialog.show();
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
+        String url = "http://y-ral-gaming.com/admin/api/save_subscription.php";
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        if (dialog.isShowing()) {
+                            dialog.dismiss();
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (dialog.isShowing()) {
+                    dialog.dismiss();
+                }
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("user_id", new AppConstant(getActivity()).getUserId());
+                params.put("package_id", position + "");
+                params.put("time_of_purchase", (System.currentTimeMillis() / 1000) + "");
+                params.put("time_of_expired", ""+((System.currentTimeMillis() / 1000) + Integer.parseInt(time_of_expired)));
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Content-Type", "application/x-www-form-urlencoded");
+                return params;
+            }
+        };
+
+        queue.add(stringRequest);
     }
 
     private void setViews(String strPrice) {
@@ -84,7 +121,7 @@ public class SubscriptionFragment extends Fragment {
         price.setText(strPrice);
         LinearLayout linbox = rootView.findViewById(R.id.linbox);
         Drawable img = getContext().getResources().getDrawable(R.drawable.ic_check);
-        for (int x = 0; x < 8; x++) {
+       // for (int x = 0; x < 8; x++) {
             TextView tv = new TextView(getActivity());
             LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT, 0,
@@ -93,25 +130,9 @@ public class SubscriptionFragment extends Fragment {
             tv.setLayoutParams(lparams);
             tv.setLayoutParams(lparams);
             tv.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
-            tv.setText(" Daily free Custom matches Worth " + strPrice);
+            tv.setText(desc);
             tv.setGravity(Gravity.CENTER);
             linbox.addView(tv);
-        }
-    }
-
-    private void applySubscription() {
-        if (coins > new AppConstant(getContext()).getCoins()) {
-            showBottomSheetDialog();
-        } else {
-            Toast.makeText(getContext(), "Subscription successful", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void showBottomSheetDialog() {
-        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getActivity());
-        bottomSheetDialog.setContentView(R.layout.bottom_sheet_purchase_sub);
-        TextView copy = bottomSheetDialog.findViewById(R.id.tv_purchase);
-        TextView share = bottomSheetDialog.findViewById(R.id.tv_coins_rate);
-        bottomSheetDialog.show();
+      //  }
     }
 }

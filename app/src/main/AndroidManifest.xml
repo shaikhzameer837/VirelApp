@@ -52,6 +52,7 @@
             android:theme="@style/AppThemes" />
         <activity android:name=".SigninActivity"
             android:theme="@style/AppThemes"
+            android:screenOrientation="portrait"
             />
         <activity
             android:name=".DemoDelete"
@@ -62,9 +63,12 @@
         <activity
             android:name=".Activity.SearchActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".ComingSoon" />
+        <activity android:name=".ComingSoon"
+            android:screenOrientation="portrait"
+            />
         <activity android:name=".Activity.SplashScreen" />
         <activity android:name=".UserInfoCheck"
+            android:screenOrientation="portrait"
             android:theme="@style/AppThemes" />
         <activity android:name=".Activity.GroupProfile" />
 

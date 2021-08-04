@@ -2,79 +2,70 @@ package com.intelj.yral_gaming;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.viewpager.widget.ViewPager;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.tabs.TabLayout;
-import com.intelj.yral_gaming.Fragment.OneFragment;
-import com.intelj.yral_gaming.Fragment.SubscriptionFragment;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ComingSoon extends AppCompatActivity {
     private Toolbar toolbar;
-    private TabLayout tabLayout;
-    private ViewPager viewPager;
-
+    private List<SubscriptionModel> SubscriptionModelList = new ArrayList<>();
+    private RecyclerView recyclerView;
+    private SubscriptionAdapter mAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.coming_soon);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(Color.BLACK);
         toolbar.setTitle("Subscription");
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        viewPager = (ViewPager) findViewById(R.id.viewpager);
-        setupViewPager(viewPager);
-
-        tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(viewPager);
+        recyclerView =  findViewById(R.id.recycler_view);
+        mAdapter = new SubscriptionAdapter(SubscriptionModelList,this);
+        setupViewPager();
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(mAdapter);
     }
 
-    private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new SubscriptionFragment("#7e241c"), "Normal");
-        adapter.addFragment(new SubscriptionFragment("#cb7069"), "PRO");
-        adapter.addFragment(new SubscriptionFragment("#000000"), "ULTRA PRO");
-        viewPager.setAdapter(adapter);
-    }
 
-    class ViewPagerAdapter extends FragmentPagerAdapter {
-        private final List<Fragment> mFragmentList = new ArrayList<>();
-        private final List<String> mFragmentTitleList = new ArrayList<>();
 
-        public ViewPagerAdapter(FragmentManager manager) {
-            super(manager);
+    private void setupViewPager() {
+        try {
+            JSONObject jsnobject = new JSONObject(AppController.getInstance().subscription_package);
+            JSONArray jsonArray = jsnobject.getJSONArray("package");
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject explrObject = jsonArray.getJSONObject(i);
+
+                SubscriptionModel SUbscriptionModel = new SubscriptionModel(explrObject.getString("name"),
+                        explrObject.getString("description"),
+                        explrObject.getString("tenure"),
+                        explrObject.getString("price"));
+                SubscriptionModelList.add(SUbscriptionModel);
+
+
+            }
+            mAdapter.notifyDataSetChanged();
+
+            Log.d("My App", jsnobject.toString());
+
+        } catch (Exception e) {
+            Log.e("My App", "Could not parse malformed JSON:" + e.getMessage());
         }
 
-        @Override
-        public Fragment getItem(int position) {
-            return mFragmentList.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return mFragmentList.size();
-        }
-
-        public void addFragment(Fragment fragment, String title) {
-            mFragmentList.add(fragment);
-            mFragmentTitleList.add(title);
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mFragmentTitleList.get(position);
-        }
     }
 }
