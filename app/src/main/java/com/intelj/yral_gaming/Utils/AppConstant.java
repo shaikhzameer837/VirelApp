@@ -1,19 +1,14 @@
 package com.intelj.yral_gaming.Utils;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.os.Build;
-import android.provider.ContactsContract;
 import android.provider.Settings;
-import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
 import com.intelj.yral_gaming.AppController;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Map;
 
 public class AppConstant {
@@ -28,9 +23,12 @@ public class AppConstant {
             applyMatches = "applyMatches",
             title = "title",
             user = "user",
-            deviceId = "deviceId",
+            package_id = "package_id",
+            package_name = "package_name",
+            expiry_date = "expiry_date",
             follower = "follower",
             following = "following",
+            success = "success",
             uniqueId = "uniqueId",
             live_stream = "live_stream",
             friends = "friends",
@@ -38,6 +36,7 @@ public class AppConstant {
             mobile_info = "mobile_info",
             youtubeId = "youtubeId",
             winner_id = "winner_id",
+            deviceId = "deviceId",
             ign = "ign",
             saveYTid = "saveYTid",
             stopTime = "stopTime",
@@ -94,6 +93,13 @@ public class AppConstant {
         myInfo.edit().putString(countryCode, _countryCode).apply();
         myInfo.edit().putString(phoneNumber, _phoneNumber).apply();
     }
+   public void savePackage(String packageId, String expiryDate) {
+        setSharedPref();
+        myInfo = _context.getSharedPreferences(userId, Context.MODE_PRIVATE);
+        sharedPreferences.edit().putString(package_id, packageId).apply();
+        sharedPreferences.edit().putString(expiry_date, expiryDate).apply();
+    }
+
     public void saveUserInfo(Context context,DataSnapshot childDataSnap){
         SharedPreferences sharedpreferences = context.getSharedPreferences(childDataSnap.getKey(), Context.MODE_PRIVATE);
         SharedPreferences.Editor editors = sharedpreferences.edit();
@@ -122,9 +128,9 @@ public class AppConstant {
     }
 
 
-    public String getDataFromShared(String param) {
+    public String getDataFromShared(String param,String value) {
         setSharedPref();
-        return sharedPreferences.getString(param, "");
+        return sharedPreferences.getString(param, value);
     }
 
     public boolean checkLogin() {

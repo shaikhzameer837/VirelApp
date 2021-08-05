@@ -92,6 +92,9 @@ import com.intelj.yral_gaming.model.UserListModel;
 import com.roughike.swipeselector.SwipeItem;
 import com.roughike.swipeselector.SwipeSelector;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -281,6 +284,16 @@ public class MainActivity extends AppCompatActivity {
 //                                }
                                 inflateView(R.layout.edit_profile);
                                 imgProfile = inflated.findViewById(R.id.imgs);
+                                TextView package_name = inflated.findViewById(R.id.package_name);
+                                try {
+                                    JSONObject jsnobject = new JSONObject(AppController.getInstance().subscription_package);
+                                    JSONArray jsonArray = jsnobject.getJSONArray("package");
+                                    JSONObject explrObject = jsonArray.getJSONObject(Integer.parseInt(new AppConstant(MainActivity.this)
+                                            .getDataFromShared(AppConstant.package_id,"0")));
+                                    package_name.setText(explrObject.getString(AppConstant.package_name));
+                                } catch (Exception e) {
+                                    Log.e("My App", "Could not parse malformed JSON:" + e.getMessage());
+                                }
                                 imgProfile.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {

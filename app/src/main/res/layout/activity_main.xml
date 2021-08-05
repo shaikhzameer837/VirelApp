@@ -39,7 +39,7 @@
                 android:drawableLeft="@drawable/online"
                 android:text="online"
                 android:visibility="gone" />
-            <RelativeLayout android:background="#810d0e"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:elevation="2dp"
                 android:layout_height="wrap_content">
