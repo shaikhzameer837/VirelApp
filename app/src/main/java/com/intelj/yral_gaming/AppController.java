@@ -69,7 +69,7 @@ public class AppController extends Application implements Application.ActivityLi
     public ArrayList<String> followingList = new ArrayList<>();
     AlertDialog.Builder builder;
     public boolean isFirstTime = false;
-    public String subscription_package;
+    public String subscription_package = "";
     @Override
     public void onCreate() {
         super.onCreate();
@@ -84,6 +84,12 @@ public class AppController extends Application implements Application.ActivityLi
         getTournamentTime();
 
     }
+
+    public String getSubscription_package() {
+        return subscription_package.equals("") ? new AppConstant(this).getDataFromShared(AppConstant.package_info,"") : subscription_package;
+    }
+
+
 
     public void getReadyForCheckin() {
         appConstant = new AppConstant(this);

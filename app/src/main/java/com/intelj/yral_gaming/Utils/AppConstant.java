@@ -53,6 +53,7 @@ public class AppConstant {
             myPicUrl = "myPicUrl",
             users = "users",
             count_win = "winner",
+            package_info = "package_info",
             pinfo = "pinfo",
             realTime = "realTime",
             paymentHistory = "phist",
@@ -128,7 +129,7 @@ public class AppConstant {
     }
 
 
-    public String getDataFromShared(String param,String value) {
+   public String getDataFromShared(String param,String value) {
         setSharedPref();
         return sharedPreferences.getString(param, value);
     }

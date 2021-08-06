@@ -434,6 +434,12 @@ public class SigninActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //registerdOnServer();
+    }
+
     private void registerdOnServer() {
         ProgressDialog dialog = new ProgressDialog(this);
         dialog.setMessage("Registering for App, please wait.");
@@ -452,8 +458,9 @@ public class SigninActivity extends AppCompatActivity {
                             if (obj.getBoolean("success")) {
                                 String package_id = obj.getString("package_id");
                                 String expiry_date = obj.getString("expiry_date");
+                                new AppConstant(SigninActivity.this).getDataFromShared(AppConstant.package_info,obj.getString("package"));
                                 appConstant.savePackage(package_id, expiry_date);
-                                Intent intent = new Intent(SigninActivity.this, MainActivity.class);
+                                Intent intent = new Intent(SigninActivity.this, UserInfoCheck.class);
                                 startActivity(intent);
                             } else {
 
@@ -475,6 +482,7 @@ public class SigninActivity extends AppCompatActivity {
                 Map<String, String> params = new HashMap<>();
                 params.put("token", token);
                 params.put("uniqueId", AppController.getInstance().userId);
+                params.put("isSubscription", AppController.getInstance().subscription_package.equals("") ? "0" : "1");
                 return params;
             }
 

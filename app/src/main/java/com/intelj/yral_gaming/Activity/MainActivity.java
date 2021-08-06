@@ -286,7 +286,7 @@ public class MainActivity extends AppCompatActivity {
                                 imgProfile = inflated.findViewById(R.id.imgs);
                                 TextView package_name = inflated.findViewById(R.id.package_name);
                                 try {
-                                    JSONObject jsnobject = new JSONObject(AppController.getInstance().subscription_package);
+                                    JSONObject jsnobject = new JSONObject(AppController.getInstance().getSubscription_package());
                                     JSONArray jsonArray = jsnobject.getJSONArray("package");
                                     JSONObject explrObject = jsonArray.getJSONObject(Integer.parseInt(new AppConstant(MainActivity.this)
                                             .getDataFromShared(AppConstant.package_id,"0")));
@@ -706,6 +706,10 @@ public class MainActivity extends AppCompatActivity {
 //    }
 
     public void openSubscribe() {
+        if(!new AppConstant(MainActivity.this).checkLogin()){
+            showBottomSheetDialog();
+            return;
+        }
         Intent intent = new Intent(this, ComingSoon.class);
         startActivity(intent);
     }

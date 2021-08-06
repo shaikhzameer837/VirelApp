@@ -48,7 +48,7 @@ public class ComingSoon extends AppCompatActivity {
 
     private void setupViewPager() {
         try {
-            JSONObject jsnobject = new JSONObject(AppController.getInstance().subscription_package);
+            JSONObject jsnobject = new JSONObject(AppController.getInstance().getSubscription_package());
             JSONArray jsonArray = jsnobject.getJSONArray("package");
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject explrObject = jsonArray.getJSONObject(i);
