@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.intelj.yral_gaming.Utils.AppConstant;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -46,18 +48,15 @@ public class ComingSoon extends AppCompatActivity {
 
     private void setupViewPager() {
         try {
-            JSONObject jsnobject = new JSONObject(AppController.getInstance().subscription_package);
+            JSONObject jsnobject = new JSONObject(AppController.getInstance().getSubscription_package());
             JSONArray jsonArray = jsnobject.getJSONArray("package");
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject explrObject = jsonArray.getJSONObject(i);
-
-                SubscriptionModel SUbscriptionModel = new SubscriptionModel(explrObject.getString("name"),
+                SubscriptionModel SUbscriptionModel = new SubscriptionModel(explrObject.getString(AppConstant.package_name),
                         explrObject.getString("description"),
                         explrObject.getString("tenure"),
-                        explrObject.getString("price"));
+                        explrObject.getString("price"),explrObject.getString(AppConstant.package_id));
                 SubscriptionModelList.add(SUbscriptionModel);
-
-
             }
             mAdapter.notifyDataSetChanged();
 

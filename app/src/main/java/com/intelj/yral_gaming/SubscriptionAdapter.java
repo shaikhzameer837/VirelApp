@@ -2,10 +2,12 @@ package com.intelj.yral_gaming;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,13 +20,15 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.intelj.yral_gaming.Utils.AppConstant;
 
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapter.MyViewHolder> {
 
-    private List<SubscriptionModel> moviesList;
+    private List<SubscriptionModel> packageList;
     Context mContext;
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView title,  genre,price,apply;
@@ -39,8 +43,8 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
     }
 
 
-    public SubscriptionAdapter(List<SubscriptionModel> moviesList,Context mContext) {
-        this.moviesList = moviesList;
+    public SubscriptionAdapter(List<SubscriptionModel> packageList, Context mContext) {
+        this.packageList = packageList;
         this.mContext = mContext;
     }
 
@@ -54,7 +58,7 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        SubscriptionModel SUbscriptionModel = moviesList.get(position);
+        SubscriptionModel SUbscriptionModel = packageList.get(position);
         holder.title.setText(SUbscriptionModel.getTitle());
         holder.price.setText(SUbscriptionModel.getYear());
         holder.genre.setText(SUbscriptionModel.getGenre());
@@ -66,6 +70,7 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
         });
     }
     private void updateSubscription(int position) {
+        String expiry_date = ""+((System.currentTimeMillis() / 1000) + Integer.parseInt(packageList.get(position).getTenure()));
         ProgressDialog dialog = new ProgressDialog(mContext);
         dialog.setMessage("Registering for App, please wait.");
         dialog.show();
@@ -78,7 +83,17 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
                         if (dialog.isShowing()) {
                             dialog.dismiss();
                         }
+                        try {
+                            JSONObject obj = new JSONObject(response);
+                            if (obj.getBoolean(AppConstant.success)) {
+                                new AppConstant(mContext).savePackage(packageList.get(position).getPackage_id(), expiry_date);
+                                Toast.makeText(mContext,"Suscription Purchases",Toast.LENGTH_LONG).show();
+                            } else {
 
+                            }
+                        } catch (Exception e) {
+                            Log.e("exception",e.getMessage());
+                        }
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -92,9 +107,10 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
                 params.put("user_id", new AppConstant(mContext).getUserId());
-                params.put("package_id", position + "");
+                params.put("amount", packageList.get(position).getYear());
+                params.put("package_id", packageList.get(position).getPackage_id() + "");
                 params.put("time_of_purchase", (System.currentTimeMillis() / 1000) + "");
-                params.put("time_of_expired", ""+((System.currentTimeMillis() / 1000) + Integer.parseInt(moviesList.get(position).getTenure())));
+                params.put("time_of_expired", expiry_date);
                 return params;
             }
 
@@ -110,6 +126,6 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
     }
     @Override
     public int getItemCount() {
-        return moviesList.size();
+        return packageList.size();
     }
 }

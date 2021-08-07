@@ -1,16 +1,25 @@
 package com.intelj.yral_gaming;
 
 public class SubscriptionModel {
-    private String title, genre, year,tenure;
+    private String title, genre, year,tenure,package_id;
 
     public SubscriptionModel() {
     }
 
-    public SubscriptionModel(String title, String genre,String tenure, String year) {
+    public SubscriptionModel(String title, String genre,String tenure, String year, String package_id) {
         this.title = title;
         this.genre = genre;
         this.year = year;
         this.tenure = tenure;
+        this.package_id = package_id;
+    }
+
+    public String getPackage_id() {
+        return package_id;
+    }
+
+    public void setPackage_id(String package_id) {
+        this.package_id = package_id;
     }
 
     public String getTenure() {
