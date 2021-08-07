@@ -107,6 +107,7 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
                 params.put("user_id", new AppConstant(mContext).getUserId());
+                params.put("amount", packageList.get(position).getYear());
                 params.put("package_id", packageList.get(position).getPackage_id() + "");
                 params.put("time_of_purchase", (System.currentTimeMillis() / 1000) + "");
                 params.put("time_of_expired", expiry_date);
