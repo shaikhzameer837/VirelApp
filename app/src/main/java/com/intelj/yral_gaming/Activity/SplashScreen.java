@@ -5,10 +5,20 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.play.core.appupdate.AppUpdateInfo;
 import com.google.android.play.core.appupdate.AppUpdateManager;
@@ -17,7 +27,16 @@ import com.google.android.play.core.review.ReviewInfo;
 import com.google.android.play.core.review.ReviewManager;
 import com.google.android.play.core.review.ReviewManagerFactory;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.intelj.yral_gaming.AppController;
 import com.intelj.yral_gaming.R;
+import com.intelj.yral_gaming.SplashScreenStory;
+import com.intelj.yral_gaming.UserInfoCheck;
+import com.intelj.yral_gaming.Utils.AppConstant;
+
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.google.android.play.core.install.model.AppUpdateType.IMMEDIATE;
 import static com.google.android.play.core.install.model.UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS;
@@ -25,22 +44,81 @@ import static com.google.android.play.core.install.model.UpdateAvailability.UPDA
 
 public class SplashScreen extends AppCompatActivity {
     private static final int IMMEDIATE_APP_UPDATE_REQ_CODE = 222222;
-
     private AppUpdateManager appUpdateManager;
     private ReviewManager reviewManager;
+    private ProgressBar progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splashscreen);
+        Intent intent = null;
+        if (!AppController.getInstance().remoteConfig.getString("subscription_package").equals(""))
+            intent = new Intent(this, SplashScreenStory.class);
+        else if (!AppController.getInstance().userId.isEmpty() && !new AppConstant(this).getFriendCheck())
+            intent = new Intent(this, UserInfoCheck.class);
+        if (intent != null) {
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+            return;
+        }
+        progress = findViewById(R.id.progress);
+        serviceForData();
         appUpdateManager = AppUpdateManagerFactory.create(getApplicationContext());
         reviewManager = ReviewManagerFactory.create(this);
-
-
-
         showRateApp();
+    }
 
+    private void serviceForData() {
+        progress.setVisibility(View.VISIBLE);
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = "http://y-ral-gaming.com/admin/api/background_data.php";
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        progress.setVisibility(View.GONE);
+                        Log.e("ProgressResponse", response);
+                        try {
+                            JSONObject obj = new JSONObject(response);
+                            if (obj.getBoolean("success")) {
+                                new AppConstant(SplashScreen.this).setDataFromShared(AppConstant.package_info, obj.getString(AppConstant.package_info));
+                                new AppConstant(SplashScreen.this).setDataFromShared(AppConstant.game_slot, obj.getString(AppConstant.game_slot));
+                                new AppConstant(SplashScreen.this).setDataFromShared(AppConstant.gameStreaming, obj.getString(AppConstant.gameStreaming));
+                                AppController.getInstance().getGameName();
+                                AppController.getInstance().getTournamentTime();
+                                Intent intent = new Intent(SplashScreen.this, MainActivity.class);
+                                if (!AppController.getInstance().userId.isEmpty() && !new AppConstant(SplashScreen.this).getFriendCheck())
+                                    intent = new Intent(SplashScreen.this, UserInfoCheck.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                                startActivity(intent);
+                            } else {
+                                Log.e("error Rec", "success false");
+                            }
+                        } catch (Exception e) {
+                            Log.e("error Rec", e.getMessage());
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                progress.setVisibility(View.GONE);
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                return new HashMap<>();
+            }
 
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Content-Type", "application/x-www-form-urlencoded");
+                return params;
+            }
+        };
+
+        queue.add(stringRequest);
     }
 
     @Override
@@ -55,7 +133,7 @@ public class SplashScreen extends AppCompatActivity {
             if (appUpdateInfo.updateAvailability() == UPDATE_AVAILABLE
                     && appUpdateInfo.isUpdateTypeAllowed(IMMEDIATE)) {
                 startUpdateFlow(appUpdateInfo);
-            } else if (appUpdateInfo.updateAvailability() == DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS){
+            } else if (appUpdateInfo.updateAvailability() == DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
                 startUpdateFlow(appUpdateInfo);
             }
         });
@@ -77,7 +155,7 @@ public class SplashScreen extends AppCompatActivity {
                 // We can get the ReviewInfo object
                 ReviewInfo reviewInfo = task.getResult();
 
-                com.google.android.play.core.tasks.Task<Void> flow = reviewManager.launchReviewFlow(  this, reviewInfo);
+                com.google.android.play.core.tasks.Task<Void> flow = reviewManager.launchReviewFlow(this, reviewInfo);
                 flow.addOnCompleteListener(task1 -> {
                     // The flow has finished. The API does not indicate whether the user
                     // reviewed or not, or even whether the review dialog was shown. Thus, no
@@ -90,6 +168,7 @@ public class SplashScreen extends AppCompatActivity {
             }
         });
     }
+
     private void showRateAppFallbackDialog() {
         new MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.rate_app_title)

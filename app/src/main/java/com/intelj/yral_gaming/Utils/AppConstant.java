@@ -54,6 +54,8 @@ public class AppConstant {
             users = "users",
             count_win = "winner",
             package_info = "package_info",
+            game_slot = "game_slot",
+            gameStreaming = "gameStreaming",
             pinfo = "pinfo",
             realTime = "realTime",
             paymentHistory = "phist",
@@ -85,7 +87,7 @@ public class AppConstant {
         }
     }
 
-    public void saveLogin(String user_id, String _phoneNumber, int _coin,String _countryCode) {
+    public void saveLogin(String user_id, String _phoneNumber, int _coin, String _countryCode) {
         setSharedPref();
         myInfo = _context.getSharedPreferences(userId, Context.MODE_PRIVATE);
         sharedPreferences.edit().putBoolean(login, true).apply();
@@ -94,14 +96,15 @@ public class AppConstant {
         myInfo.edit().putString(countryCode, _countryCode).apply();
         myInfo.edit().putString(phoneNumber, _phoneNumber).apply();
     }
-   public void savePackage(String packageId, String expiryDate) {
+
+    public void savePackage(String packageId, String expiryDate) {
         setSharedPref();
         myInfo = _context.getSharedPreferences(userId, Context.MODE_PRIVATE);
         sharedPreferences.edit().putString(package_id, packageId).apply();
         sharedPreferences.edit().putString(expiry_date, expiryDate).apply();
     }
 
-    public void saveUserInfo(Context context,DataSnapshot childDataSnap){
+    public void saveUserInfo(Context context, DataSnapshot childDataSnap) {
         SharedPreferences sharedpreferences = context.getSharedPreferences(childDataSnap.getKey(), Context.MODE_PRIVATE);
         SharedPreferences.Editor editors = sharedpreferences.edit();
         editors.putString(AppConstant.userName, childDataSnap.child(AppConstant.pinfo).child(AppConstant.userName).getValue() + "");
@@ -113,6 +116,7 @@ public class AppConstant {
         }
         editors.apply();
     }
+
     public void saveSlot(String _uniqueId) {
         setSharedPref();
         sharedPreferences.edit().putString(saveYTid, _uniqueId).apply();
@@ -129,9 +133,14 @@ public class AppConstant {
     }
 
 
-   public String getDataFromShared(String param,String value) {
+    public String getDataFromShared(String param, String value) {
         setSharedPref();
         return sharedPreferences.getString(param, value);
+    }
+
+    public void setDataFromShared(String param, String value) {
+        setSharedPref();
+        sharedPreferences.edit().putString(param, value).apply();
     }
 
     public boolean checkLogin() {
@@ -163,6 +172,7 @@ public class AppConstant {
         myInfo = _context.getSharedPreferences(AppController.getInstance().userId, Context.MODE_PRIVATE);
         return myInfo.getString(phoneNumber, "");
     }
+
     public boolean getFriendCheck() {
         myInfo = _context.getSharedPreferences(AppController.getInstance().userId, Context.MODE_PRIVATE);
         return myInfo.getBoolean(friends, false);

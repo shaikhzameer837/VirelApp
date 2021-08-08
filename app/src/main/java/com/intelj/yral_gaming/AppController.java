@@ -67,8 +67,6 @@ public class AppController extends Application implements Application.ActivityLi
     public FirebaseRemoteConfig remoteConfig;
     public DataSnapshot dataSnapshot;
     public ArrayList<String> followingList = new ArrayList<>();
-    public String subscription_amount;
-    public String is_production;
     AlertDialog.Builder builder;
     public boolean isFirstTime = false;
     public String subscription_package = "";
@@ -78,24 +76,15 @@ public class AppController extends Application implements Application.ActivityLi
         instance = this;
         remoteConfig = FirebaseRemoteConfig.getInstance();
         remoteConfig.fetchAndActivate();
-        subscription_package = remoteConfig.getString("subscription_package");
-        Log.e("subscription_package",subscription_package);
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         getReadyForCheckin();
         getGameName();
         getTournamentTime();
-        subscription_amount = remoteConfig.getString("subscription_amount");
-        Log.e("subs_amount",subscription_amount);
-        is_production = remoteConfig.getString("is_production");
-        Log.e("is_production",is_production);
     }
 
     public String getSubscription_package() {
         return subscription_package.equals("") ? new AppConstant(this).getDataFromShared(AppConstant.package_info,"") : subscription_package;
     }
-
-
-
     public void getReadyForCheckin() {
         appConstant = new AppConstant(this);
         if (new AppConstant(this).checkLogin()) {
@@ -133,9 +122,7 @@ public class AppController extends Application implements Application.ActivityLi
                                     editors.apply();
                                 }
                             }
-//                            if(x == mySnapShort.child(AppConstant.team).getChildrenCount()){
-//                                FirebaseFirestore.getInstance().disableNetwork();
-//                            }
+
                         }
                     });
                 }
@@ -145,20 +132,7 @@ public class AppController extends Application implements Application.ActivityLi
                     progressDialog = null;
                     startToRunActivity();
                 }
-//                for (DataSnapshot postSnapshot : dataSnapshot.child(AppConstant.myTeam).getChildren()) {
-//                    FirebaseDatabase.getInstance().getReference(AppConstant.users).child(postSnapshot.getKey() + "")
-//                            .addListenerForSingleValueEvent(new ValueEventListener() {
-//                                @Override
-//                                public void onDataChange(DataSnapshot childDataSnapshot) {
-//                                    userInfoList.add(childDataSnapshot);
-//                                }
-//
-//                                @Override
-//                                public void onCancelled(DatabaseError error) {
-//
-//                                }
-//                            });
-//                }
+
             }
 
             @Override
@@ -168,45 +142,18 @@ public class AppController extends Application implements Application.ActivityLi
         });
     }
 
-//    public void myFollowingList() {
-//        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-//
-//        DocumentReference docRef = firebaseFirestore.collection(AppConstant.user).document(new AppConstant(this).getUserId()).collection(AppConstant.follow).document(AppConstant.following);
-//        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                if (task.isSuccessful()) {
-//                    /*DocumentSnapshot questions = task.getResult();
-//
-//                    questions.*/
-//                }
-//            }
-//        });
-        /*docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (task.getResult())
-
-                } else {
-                    Log.d("get failed with ", task.getException() + "");
-                }
-            }
-        });*/
-    //}
 
     public void startToRunActivity() {
         Intent intent = new Intent(this, MainActivity.class);
-        if (!userId.isEmpty() && !new AppConstant(this).getFriendCheck()) {
+        if (!userId.isEmpty() && !new AppConstant(this).getFriendCheck())
             intent = new Intent(this, UserInfoCheck.class);
-        }
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
     }
 
     public void getGameName() {
         gameNameHashmap.clear();
-        String game_name = remoteConfig.getString("gameStreaming");
+        String game_name = remoteConfig.getString(AppConstant.gameStreaming).equals("") ? new AppConstant(this).getDataFromShared(AppConstant.gameStreaming,"") : remoteConfig.getString(AppConstant.gameStreaming);
         Log.e("game_name_cont", game_name);
         try {
             JSONObject jsonObject = new JSONObject(game_name);
@@ -226,27 +173,6 @@ public class AppController extends Application implements Application.ActivityLi
             e.printStackTrace();
             FirebaseCrashlytics.getInstance().recordException(e);
         }
-
-        /*mDatabase = FirebaseDatabase.getInstance().getReference("gameStreaming");
-        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                gameNameArray.clear();
-                if (dataSnapshot.exists()) {
-                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                        if ((boolean) postSnapshot.getValue())
-                            gameNameArray.add(postSnapshot.getKey());
-                    }
-                }
-                if (gameViewpager != null)
-                    setupViewPager(gameViewpager);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-
-            }
-        });*/
     }
 
     public void setupViewPager(ViewPager viewPager) {
@@ -352,7 +278,8 @@ public class AppController extends Application implements Application.ActivityLi
 
     public void getTournamentTime() {
         timeArray.clear();
-        String game_name = remoteConfig.getString("game_slot");
+        String game_name = remoteConfig.getString(AppConstant.game_slot).equals("") ? new AppConstant(this).getDataFromShared(AppConstant.game_slot,"") : remoteConfig.getString(AppConstant.game_slot);
+       // String game_name =  new AppConstant(this).getDataFromShared(AppConstant.game_slot,"");
         Log.e("game_name_cont", game_name);
         try {
             JSONObject jsonObject = new JSONObject(game_name);
