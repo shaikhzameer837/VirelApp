@@ -1,15 +1,33 @@
 package com.intelj.yral_gaming;
 
+import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.intelj.yral_gaming.Utils.AppConstant;
 
 import org.json.JSONArray;
@@ -42,10 +60,72 @@ public class ComingSoon extends AppCompatActivity {
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
+                new IntentFilter("custom-event-names"));
     }
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+                showBottomSheetDialog();
+        }
+    };
+    AlertDialog dialog;
+    public void showBottomSheetDialog() {
+        View view = getLayoutInflater().inflate(R.layout.fragment_login_bottom_sheet_fragment, null);
+        final BottomSheetDialog dialogBottom = new BottomSheetDialog(ComingSoon.this);
+        dialogBottom.setContentView(view);
+        dialogBottom.show();
+        Button btn_ok = view.findViewById(R.id.ok);
+//        Button btn_cancel = view.findViewById(R.id.cancel);
+        ImageView imageView = view.findViewById(R.id.imageview);
+        Glide.with(ComingSoon.this).load(R.drawable.login).into(imageView);
+        btn_ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (ContextCompat.checkSelfPermission(ComingSoon.this,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
 
+                    // Permission is not granted
+                    // Should we show an explanation?
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(ComingSoon.this,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE) && dialog == null) {
+                        //If User was asked permission before and denied
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ComingSoon.this);
 
+                        alertDialogBuilder.setTitle("Permission needed");
+                        alertDialogBuilder.setMessage("Storage permission needed for accessing Storage");
+                        alertDialogBuilder.setPositiveButton("Open Setting", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Intent intent = new Intent();
+                                intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                Uri uri = Uri.fromParts("package", ComingSoon.this.getPackageName(),
+                                        null);
+                                intent.setData(uri);
+                                ComingSoon.this.startActivity(intent);
+                            }
+                        });
+                        alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                            }
+                        });
 
+                        dialog = alertDialogBuilder.create();
+                        dialog.show();
+                    } else {
+                        // No explanation needed; request the permission
+                        ActivityCompat.requestPermissions(ComingSoon.this,
+                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                100);
+                    }
+                } else
+                    startActivity(new Intent(ComingSoon.this, SigninActivity.class));
+            }
+        });
+
+    }
     private void setupViewPager() {
         try {
             JSONObject jsnobject = new JSONObject(AppController.getInstance().getSubscription_package());

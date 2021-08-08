@@ -2,6 +2,7 @@ package com.intelj.yral_gaming;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.AuthFailureError;
@@ -65,10 +67,16 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
         holder.apply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(!new AppConstant(mContext).checkLogin()){
+                    Intent intent = new Intent("custom-event-names");
+                    LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);
+                    return;
+                }
                 updateSubscription(position);
             }
         });
     }
+
     private void updateSubscription(int position) {
         String expiry_date = ""+((System.currentTimeMillis() / 1000) + Integer.parseInt(packageList.get(position).getTenure()));
         ProgressDialog dialog = new ProgressDialog(mContext);

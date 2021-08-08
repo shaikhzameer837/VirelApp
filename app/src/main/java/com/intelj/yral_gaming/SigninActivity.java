@@ -47,7 +47,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.intelj.yral_gaming.Activity.MainActivity;
 import com.intelj.yral_gaming.Utils.AppConstant;
 import com.rilixtech.widget.countrycodepicker.Country;
 import com.rilixtech.widget.countrycodepicker.CountryCodePicker;
@@ -137,79 +136,6 @@ public class SigninActivity extends AppCompatActivity {
         return viewPager.getCurrentItem() + i;
     }
 
-    /*
-        @Override
-        protected void onResume() {
-            super.onResume();
-            if (ContextCompat.checkSelfPermission(SigninActivity.this,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    != PackageManager.PERMISSION_GRANTED) {
-
-                // Permission is not granted
-                // Should we show an explanation?
-                if (ActivityCompat.shouldShowRequestPermissionRationale(SigninActivity.this,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE) && dialog == null) {
-                    //If User was asked permission before and denied
-                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-
-                    alertDialogBuilder.setTitle("Permission needed");
-                    alertDialogBuilder.setMessage("Storage permission needed for accessing Storage");
-                    alertDialogBuilder.setPositiveButton("Open Setting", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            Intent intent = new Intent();
-                            intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                            Uri uri = Uri.fromParts("package", SigninActivity.this.getPackageName(),
-                                    null);
-                            intent.setData(uri);
-                            SigninActivity.this.startActivity(intent);
-                        }
-                    });
-                    alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                        }
-                    });
-
-                    dialog = alertDialogBuilder.create();
-                    dialog.show();
-                } else {
-                    // No explanation needed; request the permission
-                    ActivityCompat.requestPermissions(SigninActivity.this,
-                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                            100);
-                }
-            }
-        }
-
-
-        @Override
-        public void onRequestPermissionsResult(int requestCode,
-                                               String permissions[], int[] grantResults) {
-            switch (requestCode) {
-                case 100:
-                    if(dialog !=  null)
-                        dialog.cancel();
-                    break;
-                case 1:
-
-                    // If request is cancelled, the result arrays are empty.
-                    if (grantResults.length > 0
-                            && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                        Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                        startActivityForResult(i, RESULT_LOAD_IMAGE);
-                    } else {
-                        Toast.makeText(SigninActivity.this, "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();
-                    }
-                    break;
-
-
-                // other 'case' lines to check for other
-                // permissions this app might request
-            }
-        }*/
-    //	viewpager change listener
     ViewPager.OnPageChangeListener viewPagerPageChangeListener = new ViewPager.OnPageChangeListener() {
 
         @Override
@@ -458,7 +384,6 @@ public class SigninActivity extends AppCompatActivity {
                             if (obj.getBoolean("success")) {
                                 String package_id = obj.getString("package_id");
                                 String expiry_date = obj.getString("expiry_date");
-                                new AppConstant(SigninActivity.this).getDataFromShared(AppConstant.package_info,obj.getString("package"));
                                 appConstant.savePackage(package_id, expiry_date);
                                 Intent intent = new Intent(SigninActivity.this, UserInfoCheck.class);
                                 startActivity(intent);
@@ -482,7 +407,6 @@ public class SigninActivity extends AppCompatActivity {
                 Map<String, String> params = new HashMap<>();
                 params.put("token", token);
                 params.put("uniqueId", AppController.getInstance().userId);
-                params.put("isSubscription", AppController.getInstance().subscription_package.equals("") ? "0" : "1");
                 return params;
             }
 

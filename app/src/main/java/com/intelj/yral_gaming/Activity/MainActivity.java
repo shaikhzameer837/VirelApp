@@ -16,7 +16,6 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
@@ -124,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
     FirebaseStorage storage;
     StorageReference storageReference;
     ProgressDialog progressDialog;
-
+    int oldId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -141,16 +140,6 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             invalidateOptionsMenu();
         }
-        //JDABuilder
-//        ScreenshotManager.INSTANCE.requestScreenshotPermission(MainActivity.this, REQUEST_ID);
-//        final Handler handler = new Handler(Looper.getMainLooper());
-//        handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                Toast.makeText(MainActivity.this,"hey",Toast.LENGTH_LONG).show();
-//                ScreenshotManager.INSTANCE.takeScreenshot(MainActivity.this);
-//            }
-//        }, 3000);
         diaplayUrl.add("https://images.indianexpress.com/2020/09/PUBG-mobile.jpg");
         diaplayUrl.add("https://lh3.googleusercontent.com/proxy/TF9lDUkb1D8BL8kxXlbPFf4FZdoQcR8_eYpnxPdfGkUHHANMXHEXNc7c9ojPLo8_7x83nlHg_amEIdne2aulZve-p_VGIsZen6CpkDm4A45xIhf9_LfQst8");
         diaplayUrl.add("https://i.ytimg.com/vi/gs4mXgMxh-4/maxresdefault.jpg");
@@ -174,27 +163,27 @@ public class MainActivity extends AppCompatActivity {
                 new SwipeItem(1, "Gold", "it is very easy to apply for subscription"),
                 new SwipeItem(2, "Platinum", "Free coins")
         );
-        swipeSelector.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.views).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openSubscribe();
             }
         });
-        final Handler handler = new Handler();
-        final int delay = 5000; // 1000 milliseconds == 1 second
+//        final Handler handler = new Handler();
+//        final int delay = 5000; // 1000 milliseconds == 1 second
 
-        handler.postDelayed(new Runnable() {
-            public void run() {
-                SwipeItem selectedItem = swipeSelector.getSelectedItem();
-                int current = (Integer) selectedItem.value;
-                if (current == 2)
-                    current = 0;
-                else
-                    ++current;
-                swipeSelector.selectItemAt(current); // Do your work here
-                handler.postDelayed(this, delay);
-            }
-        }, delay);
+//        handler.postDelayed(new Runnable() {
+//            public void run() {
+//                SwipeItem selectedItem = swipeSelector.getSelectedItem();
+//                int current = (Integer) selectedItem.value;
+//                if (current == 2)
+//                    current = 0;
+//                else
+//                    ++current;
+//                swipeSelector.selectItemAt(current); // Do your work here
+//                handler.postDelayed(this, delay);
+//            }
+//        }, delay);
 //        getGameName();
 //        openTopSheetDialog(roomPassword);
         ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -230,7 +219,7 @@ public class MainActivity extends AppCompatActivity {
         // startService(new Intent(MainActivity.this,MyService.class));
 
         timeLeft = findViewById(R.id.timeLeft);
-
+         oldId = bottomNavigation.getSelectedItemId();
         BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override
@@ -239,49 +228,32 @@ public class MainActivity extends AppCompatActivity {
                                 showBottomSheetDialog();
                                 return true;
                         }
+                        if(item.getItemId() == oldId){
+                            return true;
+                        }
+                        oldId = item.getItemId();
                         switch (item.getItemId()) {
                             case R.id.game_slot:
                                 inflateView(R.layout.game_slot);
                                 setFirstView();
-                                // showTeamBottomSheet();
                                 return true;
                             case R.id.showNotification:
-//                                if (!new AppConstant(MainActivity.this).checkLogin()) {
-//                                    showBottomSheetDialog();
-//                                    return true;
-//                                }
                                 inflateView(R.layout.rank);
                                 showNotification();
                                 return true;
                             case R.id.rank:
-//                                if (!new AppConstant(MainActivity.this).checkLogin()) {
-//                                    showBottomSheetDialog();
-//                                    return true;
-//                                }
                                 inflateView(R.layout.rank);
                                 showRank();
                                 return true;
                             case R.id.team:
-//                                if (!new AppConstant(MainActivity.this).checkLogin()) {
-//                                    showBottomSheetDialog();
-//                                    return true;
-//                                }
                                 inflateView(R.layout.bottom_sheet_dialog);
                                 showTeam();
                                 return true;
                             case R.id.history:
-//                                if (!new AppConstant(MainActivity.this).checkLogin()) {
-//                                    showBottomSheetDialog();
-//                                    return true;
-//                                }
                                 inflateView(R.layout.history);
                                 showHistory(inflated);
                                 return true;
                             case R.id.profile:
-//                                if (!new AppConstant(MainActivity.this).checkLogin()) {
-//                                    showBottomSheetDialog();
-//                                    return true;
-//                                }
                                 inflateView(R.layout.edit_profile);
                                 imgProfile = inflated.findViewById(R.id.imgs);
                                 TextView package_name = inflated.findViewById(R.id.package_name);
@@ -706,10 +678,6 @@ public class MainActivity extends AppCompatActivity {
 //    }
 
     public void openSubscribe() {
-        if(!new AppConstant(MainActivity.this).checkLogin()){
-            showBottomSheetDialog();
-            return;
-        }
         Intent intent = new Intent(this, ComingSoon.class);
         startActivity(intent);
     }
@@ -1031,14 +999,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//        btn_cancel.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-////                context.startActivity(new Intent(context, MainActivity.class));
-//                bottomNavigation.getMenu().getItem(0).setChecked(true);
-//                dialogBottom.dismiss();
-//            }
-//        });
     }
 
     private void setUpNavigationView() {
