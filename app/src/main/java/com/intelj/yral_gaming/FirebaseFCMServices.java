@@ -7,21 +7,23 @@ package com.intelj.yral_gaming;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import com.intelj.yral_gaming.Utils.AppConstant;
 
 import org.json.JSONObject;
-
-import java.util.Map;
 
 import static android.app.Notification.DEFAULT_SOUND;
 import static android.app.Notification.DEFAULT_VIBRATE;
@@ -32,20 +34,20 @@ public class FirebaseFCMServices extends FirebaseMessagingService {
     private DatabaseHelper db;
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
+        Log.e("dataRecived","yes");
          if (remoteMessage.getData().size() > 0) {
              db = new DatabaseHelper(this, "notifications");
              try {
                 JSONObject json = new JSONObject(remoteMessage.getData().toString());
                 String title = json.getJSONObject("data").getString("title");
                 String subject = json.getJSONObject("data").getString("subject");
+                String image = json.getJSONObject("data").getString("image");
                 String message = json.getJSONObject("data").getString("payload");//.getString("title");
-                Log.e("Payload", "Data Payload: " +message);
-                Log.e("Payload", "Data Payload: " +json);
-                showNotification(message,title);
+                 getBitmapAsyncAndDoWork(message,title,image);
                 if (subject.equals("match_result")){
                     String youtube_id = json.getJSONObject("data").getString("youtube_id");
                     String winner_id = json.getJSONObject("data").getString("winner_id");
-                    String game_name = json.getJSONObject("datgit commit a").getString("game_name");
+                    String game_name = json.getJSONObject("data").getString("game_name");
                     long id = db.insertNote(title, youtube_id,winner_id,game_name);
                    // db.getNote(id);
                     Log.e("Payload", "Data Payload: " +youtube_id);
@@ -74,8 +76,28 @@ public class FirebaseFCMServices extends FirebaseMessagingService {
         // Also if you intend on generating your own notifications as a result of a received FCM
         // message, here is where that should be initiated. See sendNotification method below.
     }
+    private void getBitmapAsyncAndDoWork(String msg,String title,String imageUrl) {
 
-    public void showNotification (String msg,String title){
+        final Bitmap[] bitmap = {null};
+
+        Glide.with(getApplicationContext())
+                .asBitmap()
+                .load(imageUrl)
+                .into(new CustomTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+
+                        bitmap[0] = resource;
+                        // TODO Do some work: pass this bitmap
+                        showNotification(msg,title,bitmap[0]);
+                    }
+
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+                    }
+                });
+    }
+    public void showNotification (String msg,String title,Bitmap bitImage){
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             int importance = NotificationManager.IMPORTANCE_HIGH; //Important for heads-up notification
@@ -90,6 +112,7 @@ public class FirebaseFCMServices extends FirebaseMessagingService {
                 .setSmallIcon(R.drawable.common_google_signin_btn_text_light_focused)
                 .setContentTitle(title)
                 .setContentText(msg)
+                .setLargeIcon(bitImage)
                 .setDefaults(DEFAULT_SOUND | DEFAULT_VIBRATE) //Important for heads-up notification
                 .setPriority(Notification.PRIORITY_MAX);
         Notification buildNotification = mBuilder.build();
