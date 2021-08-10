@@ -1,18 +1,19 @@
 package com.intelj.yral_gaming.Adapter;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -23,17 +24,14 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.intelj.yral_gaming.Activity.MainActivity;
 import com.intelj.yral_gaming.AppController;
 import com.intelj.yral_gaming.R;
-import com.intelj.yral_gaming.SigninActivity;
 import com.intelj.yral_gaming.Utils.AppConstant;
 import com.intelj.yral_gaming.Utils.RecyclerTouchListener;
 import com.intelj.yral_gaming.model.UserListModel;
@@ -218,7 +216,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
             igid.add(sharedPreferences.getString(title + "_" + AppConstant.userName, ""));
         }
         RequestQueue queue = Volley.newRequestQueue(mContext);
-        String url = "http://y-ral-gaming.com/admin/register_matches.php";
+        String url = "http://y-ral-gaming.com/admin/api/register_matches.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
@@ -226,11 +224,29 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
                         if (dialog.isShowing()) {
                             dialog.dismiss();
                         }
-                        SharedPreferences.Editor editShared = sharedPreferences.edit();
-                        editShared.putBoolean(strDate,true);
-                        editShared.apply();
-                        notifyDataSetChanged();
-                        bottomSheetDialog.cancel();
+                        try {
+                            JSONObject obj = new JSONObject(response);
+                            if (obj.getBoolean(AppConstant.success)) {
+                                Toast.makeText(mContext,obj.getString(AppConstant.message),Toast.LENGTH_LONG).show();
+                                SharedPreferences.Editor editShared = sharedPreferences.edit();
+                                editShared.putBoolean(strDate,true);
+                                editShared.apply();
+                                notifyDataSetChanged();
+                                bottomSheetDialog.cancel();
+                            }else{
+                                AlertDialog alertDialog = new AlertDialog.Builder(mContext).create();
+                                alertDialog.setMessage(obj.getString(AppConstant.message));
+                                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+                                            }
+                                        });
+                                alertDialog.show();
+                            }
+                        }catch (Exception e){
+
+                        }
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -250,7 +266,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
                 params.put("discordId", discordId.toString().replace("[", "").replace("]", ""));
                 params.put("teamId", teamModel.get(position).getTeamId());
                 params.put("game_name", title);
-                params.put("game_id", ign.toString().replace("[", "").replace("]", ""));
+                params.put("ign", ign.toString().replace("[", "").replace("]", ""));
                 params.put("igid", igid.toString().replace("[", "").replace("]", ""));
                 return params;
             }

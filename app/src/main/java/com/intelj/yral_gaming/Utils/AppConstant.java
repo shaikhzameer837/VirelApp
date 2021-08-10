@@ -29,6 +29,7 @@ public class AppConstant {
             follower = "follower",
             following = "following",
             success = "success",
+            message = "message",
             uniqueId = "uniqueId",
             live_stream = "live_stream",
             friends = "friends",
