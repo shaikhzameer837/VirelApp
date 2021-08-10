@@ -1,7 +1,9 @@
 package com.intelj.yral_gaming;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -9,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.provider.Settings;
+import android.telephony.PhoneNumberUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -208,9 +211,7 @@ public class SigninActivity extends AppCompatActivity {
                     return;
                 }
                 if (viewPager.getCurrentItem() < layouts.length) {
-                    if (AppController.getInstance().is_production.equals("true"))
-                    sendVerificationCode(_phoneNumber);
-                    viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
+                    mobileConfirmationPopup();
                     resend_btn = findViewById(R.id.resend_btn);
                     resend_btn.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -564,4 +565,24 @@ public class SigninActivity extends AppCompatActivity {
         });
     }
 
+    private void mobileConfirmationPopup() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(PhoneNumberUtils.formatNumber(_countryCode + _phoneNumber, "IN"))
+                .setCancelable(false)
+                .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        if (AppController.getInstance().is_production.equals("true"))
+                            sendVerificationCode(_phoneNumber);
+                        viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.setTitle("Please confirm your mobile number");
+        alert.show();
+    }
 }
