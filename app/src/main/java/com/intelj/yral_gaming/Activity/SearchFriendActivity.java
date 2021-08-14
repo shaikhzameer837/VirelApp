@@ -2,7 +2,6 @@ package com.intelj.yral_gaming.Activity;
 
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.AsyncTask;
@@ -18,7 +17,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -38,7 +36,6 @@ import com.intelj.yral_gaming.AppController;
 import com.intelj.yral_gaming.R;
 import com.intelj.yral_gaming.Utils.AppConstant;
 import com.intelj.yral_gaming.model.UserListModel;
-
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -307,6 +304,7 @@ public class SearchFriendActivity extends AppCompatActivity {
                         editors.putString(AppConstant.discordId, childDataSnap.child(AppConstant.pinfo).child(AppConstant.discordId).getValue() + "");
                         for (Map.Entry<String, Boolean> entry : AppController.getInstance().gameNameHashmap.entrySet()) {
                             editors.putString(entry.getKey(), childDataSnap.child(AppConstant.pinfo).child(entry.getKey()).getValue() + "");
+                            editors.putString(entry.getKey()+ "_" + AppConstant.userName, childDataSnap.child(AppConstant.pinfo).child(entry.getKey()+ "_" + AppConstant.userName).getValue() == null ? "" : childDataSnap.child(AppConstant.pinfo).child(entry.getKey()+ "_" + AppConstant.userName).getValue() + "");
                         }
                         editors.apply();
                         Log.e("xyz123myPicUrl", childDataSnap.child(AppConstant.pinfo).child(AppConstant.userName).getValue() + "");
