@@ -202,19 +202,33 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
     }
 
     private void sendRequest(int position, String strDate) {
-        ProgressDialog dialog = new ProgressDialog(mContext);
-        dialog.setMessage("Registering for App, please wait.");
-        dialog.show();
         Set<String> teamMember = teamModel.get(position).getTeamMember();
         ArrayList<String> discordId = new ArrayList<>();
         ArrayList<String> igid = new ArrayList<>();
         ArrayList<String> ign = new ArrayList<>();
+        String error = "";
         for (String s : teamMember) {
             SharedPreferences sharedPreferences = mContext.getSharedPreferences(s, 0);
+            if(sharedPreferences.getString(AppConstant.discordId, "").equals("")){
+                error = error + " Discord id not found for "+sharedPreferences.getString(AppConstant.userName, "") +"\n";
+            }
+            if(sharedPreferences.getString(title, "").equals("")){
+                error = error + title + " Game id not found for "+sharedPreferences.getString(AppConstant.userName, "")+"\n";
+            }
+            if(sharedPreferences.getString(title+ "_" + AppConstant.userName, "").equals("")){
+                error = error + title + " Game name not found for "+sharedPreferences.getString(AppConstant.userName, "")+"\n";
+            }
             discordId.add(sharedPreferences.getString(AppConstant.discordId, ""));
             ign.add(sharedPreferences.getString(title, ""));
             igid.add(sharedPreferences.getString(title + "_" + AppConstant.userName, ""));
         }
+        if(!error.equals("")){
+            showDialog(error);
+            return;
+        }
+        ProgressDialog dialog = new ProgressDialog(mContext);
+        dialog.setMessage("Registering for App, please wait.");
+        dialog.show();
         RequestQueue queue = Volley.newRequestQueue(mContext);
         String url = "http://y-ral-gaming.com/admin/api/register_matches.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
@@ -280,46 +294,24 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
         };
 
         queue.add(stringRequest);
+    }
 
-//        RequestQueue queue = Volley.newRequestQueue(mContext);
-//        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-//                new Response.Listener<String>() {
-//                    @Override
-//                    public void onResponse(String response) {
-//                        Log.e("Response is: ", response);
-//                        if (dialog.isShowing()) {
-//                            dialog.dismiss();
-//                        }
-////                        SharedPreferences.Editor editShared = sharedPreferences.edit();
-////                        editShared.putBoolean(strDate,true);
-////                        editShared.apply();
-////                        notifyDataSetChanged();
-//                        bottomSheetDialog.cancel();
-//                    }
-//                }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                if (dialog.isShowing()) {
-//                    dialog.dismiss();
-//                }
-//            }
-//        }) {
-//            @Override
-//            protected Map<String, String> getParams() {
-//                Map<String, String> params = new HashMap<>();
-//                params.put("user", teamMember.toString().replace("[", "").replace("]", ""));
-//                params.put("strDate", strDate);
-//                params.put("teamName", teamModel.get(position).getTeamName());
-//                params.put("discordId", discordId.toString().replace("[", "").replace("]", ""));
-//                params.put("game_name", title);
-//                params.put("game_id", ign.toString().replace("[", "").replace("]", ""));
-//                params.put("igid", igid.toString().replace("[", "").replace("]", ""));
-//                return params;
-//            }
-//
-//        };
-//
-//        queue.add(stringRequest);
+    private void showDialog(String message) {
+        new AlertDialog.Builder(mContext)
+                .setMessage(message)
+
+                // Specifying a listener allows you to take an action before dismissing the dialog.
+                // The dialog is automatically dismissed when a dialog button is clicked.
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Continue with delete operation
+                    }
+                })
+
+                // A null listener allows the button to dismiss the dialog and take no further action.
+                .setNegativeButton(android.R.string.no, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 
     private void showBottomSheet(final int position) {
