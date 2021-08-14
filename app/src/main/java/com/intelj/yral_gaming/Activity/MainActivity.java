@@ -124,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
     StorageReference storageReference;
     ProgressDialog progressDialog;
     int oldId;
+    private TextView package_name;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -256,16 +257,8 @@ public class MainActivity extends AppCompatActivity {
                             case R.id.profile:
                                 inflateView(R.layout.edit_profile);
                                 imgProfile = inflated.findViewById(R.id.imgs);
-                                TextView package_name = inflated.findViewById(R.id.package_name);
-                                try {
-                                    JSONObject jsnobject = new JSONObject(AppController.getInstance().getSubscription_package());
-                                    JSONArray jsonArray = jsnobject.getJSONArray("package");
-                                    JSONObject explrObject = jsonArray.getJSONObject(Integer.parseInt(new AppConstant(MainActivity.this)
-                                            .getDataFromShared(AppConstant.package_id,"0")));
-                                    package_name.setText(explrObject.getString(AppConstant.package_name));
-                                } catch (Exception e) {
-                                    Log.e("My App", "Could not parse malformed JSON:" + e.getMessage());
-                                }
+                                package_name = inflated.findViewById(R.id.package_name);
+                                setPackagename();
                                 imgProfile.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
@@ -343,6 +336,7 @@ public class MainActivity extends AppCompatActivity {
             }
             userAdapter.notifyDataSetChanged();
         }
+        setPackagename();
     }
 
     private void showTeam() {
@@ -1133,6 +1127,20 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Intent intent = new Intent(MainActivity.this, SearchFriendActivity.class);
             startActivity(intent);
+        }
+    }
+
+    private void setPackagename() {
+        if (package_name != null) {
+            try {
+                JSONObject jsnobject = new JSONObject(AppController.getInstance().getSubscription_package());
+                JSONArray jsonArray = jsnobject.getJSONArray("package");
+                JSONObject explrObject = jsonArray.getJSONObject(Integer.parseInt(new AppConstant(MainActivity.this)
+                        .getDataFromShared(AppConstant.package_id,"0")));
+                package_name.setText(explrObject.getString(AppConstant.package_name));
+            } catch (Exception e) {
+                Log.e("My App", "Could not parse malformed JSON:" + e.getMessage());
+            }
         }
     }
 }

@@ -3,6 +3,7 @@ package com.intelj.yral_gaming;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,8 +21,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.intelj.yral_gaming.Activity.MainActivity;
 import com.intelj.yral_gaming.Utils.AppConstant;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -64,6 +67,13 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
         holder.title.setText(SUbscriptionModel.getTitle());
         holder.price.setText(SUbscriptionModel.getYear());
         holder.genre.setText(SUbscriptionModel.getGenre());
+
+        if (Integer.parseInt(new AppConstant(mContext)
+                .getDataFromShared(AppConstant.package_id,"0")) == position) {
+            holder.title.setBackgroundColor(Color.GRAY);
+        } else
+            holder.title.setBackgroundColor(Color.WHITE);
+
         holder.apply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -96,6 +106,7 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
                             if (obj.getBoolean(AppConstant.success)) {
                                 new AppConstant(mContext).savePackage(packageList.get(position).getPackage_id(), expiry_date);
                                 Toast.makeText(mContext,"Suscription Purchases",Toast.LENGTH_LONG).show();
+                                notifyDataSetChanged();
                             } else {
 
                             }
