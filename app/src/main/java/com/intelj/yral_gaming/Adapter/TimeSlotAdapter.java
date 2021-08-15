@@ -97,50 +97,6 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
         holder.title.setText(allData.get(position).getTime());
         String strDate = title + " " + date + " " + allData.get(position).getTime().replace("pm", ":00:00 pm")
                 .replace("am", ":00:00 am");
-//        holder.reg.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-        //Intent waIntent = new Intent(Intent.ACTION_SEND);
-        //waIntent.setType("text/plain");
-//                Intent waIntent=new Intent(Intent.ACTION_VIEW,Uri.parse("https://discord.gg/9Shnr3nY"));
-//                String text = "YOUR TEXT HERE @zacshooter#4354";
-//                waIntent.setPackage("com.discord");
-//                waIntent.putExtra(Intent.EXTRA_TEXT, text);
-//                mContext.startActivity(Intent.createChooser(waIntent, "Share with"));
-//                showTeamList(strDate);
-
-        // if(System.currentTimeMillis() < miliSec) {
-//                if (!new AppConstant(mContext).checkLogin()) {
-//                    Intent intent = new Intent("custom-event-name");
-//                    intent.putExtra("message", "bottom_sheet_broadcast");
-//                    LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);
-//                } else if (!allData.get(position).getRegisterd()) {
-//                        try {
-//                            String strDate = date + " " + allData.get(position).getTime().replace("pm", ":00:00 pm")
-//                                    .replace("am", ":00:00 am");
-//                            Date resultDate = AppConstant.dateFormat.parse(strDate);
-//                            miliSec = resultDate.getTime();
-//                            endslot = miliSec + 3600000;
-//                            Log.e("miliSec", miliSec + "");
-//                            Log.e("miliSec", System.currentTimeMillis() + "");
-//                        } catch (ParseException e) {
-//                            e.printStackTrace();
-//                            FirebaseCrashlytics.getInstance().recordException(e);
-//                        }
-//                    if (miliSec < System.currentTimeMillis()) {
-//
-//                        Toast.makeText(mContext, "Time is up .Slot is not avialable.", Toast.LENGTH_SHORT).show();
-//                        return;
-//                    }
-//
-//
-//                    showBottomSheet(position);
-//                }
-
-        // }else
-        //    Toast.makeText(mContext,"sorry",Toast.LENGTH_LONG).show();
-//            }
-//        });
         if (sharedPreferences.getBoolean(strDate, false)) {
             holder.reg.setImageResource(R.drawable.check);
             holder.reg.setBackgroundResource(0);

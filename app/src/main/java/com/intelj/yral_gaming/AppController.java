@@ -14,11 +14,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -33,7 +28,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.intelj.yral_gaming.Activity.MainActivity;
-import com.intelj.yral_gaming.Fragment.OneFragment;
 import com.intelj.yral_gaming.Utils.AppConstant;
 
 import org.json.JSONArray;
@@ -43,16 +37,12 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public class AppController extends Application implements Application.ActivityLifecycleCallbacks {
     public static AppController instance;
     public String userId = "";
     public String channelId = "O-1601351657084";
-    public FragmentManager supportFragmentManager;
-    public ViewPager gameViewpager;
     AppConstant appConstant;
     DatabaseReference mDatabase;
     public ArrayList<String> timeArray = new ArrayList<>();
@@ -168,8 +158,8 @@ public class AppController extends Application implements Application.ActivityLi
                     gameNameArray.add(key);*/
 
             }
-            if (gameViewpager != null)
-                setupViewPager(gameViewpager);
+//            if (gameViewpager != null)
+//                setupViewPager(gameViewpager);
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -177,39 +167,31 @@ public class AppController extends Application implements Application.ActivityLi
         }
     }
 
-    public void setupViewPager(ViewPager viewPager) {
-        ArrayList<String> titleList = new ArrayList<>();
-        if (gameNameHashmap.size() > 0) {
-            ViewPagerAdapter adapter = new ViewPagerAdapter(supportFragmentManager);
-
-            for (Map.Entry<String, Boolean> entry : gameNameHashmap.entrySet()) {
-                adapter.addFragment(new OneFragment(entry.getKey(), entry.getValue()), entry.getKey());
-                titleList.add(entry.getKey());
-                // do something with key and/or tab
-            }
-            viewPager.setAdapter(adapter);
-            Intent intent = new Intent("custom-event-name");
-            intent.putExtra(AppConstant.title, titleList.get(0));
-            LocalBroadcastManager.getInstance(instance).sendBroadcast(intent);
-        }
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            public void onPageScrollStateChanged(int state) {}
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
-
-            public void onPageSelected(int position) {
-                Intent intent = new Intent("custom-event-name");
-                intent.putExtra(AppConstant.title, titleList.get(position));
-                LocalBroadcastManager.getInstance(instance).sendBroadcast(intent);
-            }
-        });
-        /*if (gameNameArray.size() > 0) {
-            ViewPagerAdapter adapter = new ViewPagerAdapter(supportFragmentManager);
-            for (String s : gameNameArray) {
-                adapter.addFragment(new OneFragment(s), s);
-            }
-            viewPager.setAdapter(adapter);
-        }*/
-    }
+//    public void setupViewPager(ViewPager viewPager) {
+//        ArrayList<String> titleList = new ArrayList<>();
+//        ViewPagerAdapter adapter = new ViewPagerAdapter(supportFragmentManager);
+//        if (gameNameHashmap.size() > 0) {
+//            for (Map.Entry<String, Boolean> entry : gameNameHashmap.entrySet()) {
+//                adapter.addFragment(new OneFragment(entry.getKey(), entry.getValue()), entry.getKey());
+//                titleList.add(entry.getKey());
+//                // do something with key and/or tab
+//            }
+//            viewPager.setAdapter(adapter);
+//            Intent intent = new Intent("custom-event-name");
+//            intent.putExtra(AppConstant.title, titleList.get(0));
+//            LocalBroadcastManager.getInstance(instance).sendBroadcast(intent);
+//        }
+//        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+//            public void onPageScrollStateChanged(int state) {}
+//            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+//
+//            public void onPageSelected(int position) {
+//                Intent intent = new Intent("custom-event-name");
+//                intent.putExtra(AppConstant.title, titleList.get(position));
+//                LocalBroadcastManager.getInstance(instance).sendBroadcast(intent);
+//            }
+//        });
+//    }
 
     @Override
     public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState) {
@@ -249,40 +231,38 @@ public class AppController extends Application implements Application.ActivityLi
 
     }
 
-    class ViewPagerAdapter extends FragmentPagerAdapter {
-        private final List<Fragment> mFragmentList = new ArrayList<>();
-        private final List<String> mFragmentTitleList = new ArrayList<>();
-
-        public ViewPagerAdapter(FragmentManager manager) {
-            super(manager);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return mFragmentList.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return mFragmentList.size();
-        }
-
-        public void addFragment(Fragment fragment, String title) {
-            mFragmentList.add(fragment);
-            mFragmentTitleList.add(title);
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mFragmentTitleList.get(position);
-        }
-    }
+//    class ViewPagerAdapter extends FragmentPagerAdapter {
+//        private final List<Fragment> mFragmentList = new ArrayList<>();
+//        private final List<String> mFragmentTitleList = new ArrayList<>();
+//
+//        public ViewPagerAdapter(FragmentManager manager) {
+//            super(manager);
+//        }
+//
+//        @Override
+//        public Fragment getItem(int position) {
+//            return mFragmentList.get(position);
+//        }
+//
+//        @Override
+//        public int getCount() {
+//            return mFragmentList.size();
+//        }
+//
+//        public void addFragment(Fragment fragment, String title) {
+//            mFragmentList.add(fragment);
+//            mFragmentTitleList.add(title);
+//        }
+//
+//        @Override
+//        public CharSequence getPageTitle(int position) {
+//            return mFragmentTitleList.get(position);
+//        }
+//    }
 
     public void getTournamentTime() {
         timeArray.clear();
         String game_name = remoteConfig.getString(AppConstant.game_slot).equals("") ? new AppConstant(this).getDataFromShared(AppConstant.game_slot,"") : remoteConfig.getString(AppConstant.game_slot);
-       // String game_name =  new AppConstant(this).getDataFromShared(AppConstant.game_slot,"");
-        Log.e("game_name_cont", game_name);
         try {
             JSONObject jsonObject = new JSONObject(game_name);
             JSONArray keys = jsonObject.names();

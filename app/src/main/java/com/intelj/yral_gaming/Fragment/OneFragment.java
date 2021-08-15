@@ -22,7 +22,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.intelj.yral_gaming.Activity.MainActivity;
 import com.intelj.yral_gaming.Adapter.TimeSlotAdapter;
 import com.intelj.yral_gaming.AppController;
 import com.intelj.yral_gaming.R;
@@ -32,7 +31,6 @@ import com.intelj.yral_gaming.model.UserModel;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Locale;
 
 public class OneFragment extends Fragment {
@@ -48,7 +46,6 @@ public class OneFragment extends Fragment {
     boolean show_listview = true;
     String date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
     Date resultDate;
-
     public OneFragment() {
         // Required empty public constructor
     }
@@ -63,24 +60,13 @@ public class OneFragment extends Fragment {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
-            // Refresh your fragment here
-//            getFragmentManager().beginTransaction().detach(this).attach(this).commit();
-            Log.i("IsRefresh", "Yes");
+
         }
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public void onResumeView() {
         date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
-        // Inflate the layout for this fragment
         allData = new ArrayList<>();
-        rootView = inflater.inflate(R.layout.fragment_one, container, false);
         recyclerView = rootView.findViewById(R.id.recycler_view);
         tv_coming_soon = rootView.findViewById(R.id.tv_coming_soon);
         imageView = rootView.findViewById(R.id.imageview);
@@ -116,7 +102,6 @@ public class OneFragment extends Fragment {
                                 intent.putExtra("roomPlan", date + "/" + title + "/" + s);
                                 LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
                             } catch (Exception e) {
-                                Log.e("miliSeRec:-", e.getMessage() + "");
                                 e.printStackTrace();
                                 FirebaseCrashlytics.getInstance().recordException(e);
                             }
@@ -137,7 +122,18 @@ public class OneFragment extends Fragment {
 
             }
         });
+    }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        rootView = inflater.inflate(R.layout.fragment_one, container, false);
+        onResumeView();
         return rootView;
     }
 

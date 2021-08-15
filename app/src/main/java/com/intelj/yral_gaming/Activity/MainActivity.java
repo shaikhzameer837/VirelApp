@@ -19,7 +19,6 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -44,11 +43,13 @@ import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
@@ -80,7 +81,7 @@ import com.intelj.yral_gaming.Adapter.RankAdapter;
 import com.intelj.yral_gaming.AppController;
 import com.intelj.yral_gaming.ComingSoon;
 import com.intelj.yral_gaming.DatabaseHelper;
-import com.intelj.yral_gaming.HelloService;
+import com.intelj.yral_gaming.Fragment.OneFragment;
 import com.intelj.yral_gaming.NotesAdapter;
 import com.intelj.yral_gaming.R;
 import com.intelj.yral_gaming.SigninActivity;
@@ -97,13 +98,12 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
     AppConstant appConstant;
-    private ViewPager viewPager, gameViewpager;
-    private MyViewPagerAdapter myViewPagerAdapter;
-    private ArrayList<String> diaplayUrl = new ArrayList<>();
+    private ViewPager gameViewpager;
     BottomNavigationView bottomNavigation;
     private TabLayout tabLayout;
     TextView timeLeft, coin, textView;
@@ -141,14 +141,7 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             invalidateOptionsMenu();
         }
-        diaplayUrl.add("https://images.indianexpress.com/2020/09/PUBG-mobile.jpg");
-        diaplayUrl.add("https://lh3.googleusercontent.com/proxy/TF9lDUkb1D8BL8kxXlbPFf4FZdoQcR8_eYpnxPdfGkUHHANMXHEXNc7c9ojPLo8_7x83nlHg_amEIdne2aulZve-p_VGIsZen6CpkDm4A45xIhf9_LfQst8");
-        diaplayUrl.add("https://i.ytimg.com/vi/gs4mXgMxh-4/maxresdefault.jpg");
-        diaplayUrl.add("https://i.ytimg.com/vi/WfExDgYKHGQ/maxresdefault.jpg");
-        viewPager = findViewById(R.id.view_pager);
         bottomNavigation = findViewById(R.id.bottom_navigation);
-        myViewPagerAdapter = new MyViewPagerAdapter();
-        viewPager.setAdapter(myViewPagerAdapter);
         final ViewStub stub = findViewById(R.id.layout_stub);
         stub.setLayoutResource(R.layout.game_slot);
         appConstant = new AppConstant(this);
@@ -211,11 +204,11 @@ public class MainActivity extends AppCompatActivity {
                     });
         }
         setFirstView();
-        SharedPreferences shd = getSharedPreferences(AppConstant.saveYTid, 0);
-        String saveYTid = shd.getString(AppConstant.saveYTid, "");
-        if (!saveYTid.equals("")) {
-            setRoomVideo(saveYTid);
-        }
+//        SharedPreferences shd = getSharedPreferences(AppConstant.saveYTid, 0);
+//        String saveYTid = shd.getString(AppConstant.saveYTid, "");
+//        if (!saveYTid.equals("")) {
+//            setRoomVideo(saveYTid);
+//        }
 
         // startService(new Intent(MainActivity.this,MyService.class));
 
@@ -229,9 +222,9 @@ public class MainActivity extends AppCompatActivity {
                                 showBottomSheetDialog();
                                 return true;
                         }
-                        if(item.getItemId() == oldId){
+                        if(item.getItemId() == oldId)
                             return true;
-                        }
+
                         oldId = item.getItemId();
                         switch (item.getItemId()) {
                             case R.id.game_slot:
@@ -373,24 +366,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-
-//        boolean granted;
-//        AppOpsManager appOps = (AppOpsManager) getSystemService(Context.APP_OPS_SERVICE);
-//        int mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
-//                android.os.Process.myUid(), getPackageName());
-//        if (mode == AppOpsManager.MODE_DEFAULT) {
-//            granted = (checkCallingOrSelfPermission(android.Manifest.permission.PACKAGE_USAGE_STATS) == PackageManager.PERMISSION_GRANTED);
-//        } else {
-//            granted = (mode == AppOpsManager.MODE_ALLOWED);
-//        }
-//        if (!granted) {
-//            MyBottomSheetDialog bottomSheetFragment = new MyBottomSheetDialog();
-//            bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
-//        }
-    //  }
 
     private void showNotification() {
         List<Note> notesList = new ArrayList<>();
@@ -411,11 +386,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(mAdapter);
     }
 
-//    private void createNote(String note, String youtubeId) {
-//        long id = db.insertNote(note, youtubeId);
-//        db.getNote(id);
-//
-//    }
+
 
     private void showRank() {
         final RecyclerView recyclerView = inflated.findViewById(R.id.recycler_view);
@@ -553,17 +524,13 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(this, "You have disabled a contacts permission", Toast.LENGTH_LONG).show();
                 }
                 break;
-
-            // other 'case' lines to check for other
-            // permissions this app might request
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        /*if (requestCode == REQUEST_ID)
-            ScreenshotManager.INSTANCE.onActivityResult(resultCode, data);*/
+
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK
                 && null != data) {
             Uri selectedImage = data.getData();
@@ -602,44 +569,59 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(gameViewpager);
         textView = inflated.findViewById(R.id.subscription);
         textView.setSelected(true);
-        AppController.getInstance().supportFragmentManager = getSupportFragmentManager();
-        AppController.getInstance().gameViewpager = gameViewpager;
-        AppController.getInstance().setupViewPager(gameViewpager);
+        ArrayList<String> titleList = new ArrayList<>();
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        if (AppController.getInstance().gameNameHashmap.size() > 0) {
+            for (Map.Entry<String, Boolean> entry : AppController.getInstance().gameNameHashmap.entrySet()) {
+                adapter.addFragment(new OneFragment(entry.getKey(), entry.getValue()), entry.getKey());
+                titleList.add(entry.getKey());
+                // do something with key and/or tab
+            }
+            gameViewpager.setAdapter(adapter);
+            Intent intent = new Intent("custom-event-name");
+            intent.putExtra(AppConstant.title, titleList.get(0));
+            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+        }
+        gameViewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            public void onPageScrollStateChanged(int state) {}
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+
+            public void onPageSelected(int position) {
+                Intent intent = new Intent("custom-event-name");
+                intent.putExtra(AppConstant.title, titleList.get(position));
+                LocalBroadcastManager.getInstance(MainActivity.this).sendBroadcast(intent);
+            }
+        });
 
     }
+    class ViewPagerAdapter extends FragmentStatePagerAdapter{
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
 
-    /*public void getGameName() {
-        remoteConfig = FirebaseRemoteConfig.getInstance();
-        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
-                .setMinimumFetchIntervalInSeconds(0)
-                .build();
-        remoteConfig.setConfigSettingsAsync(configSettings);
-        ArrayList<String> arrayList = new ArrayList<>();
-        remoteConfig = FirebaseRemoteConfig.getInstance();
-        String game_name = remoteConfig.getString("gameStreaming");
-        Log.e("game_name", game_name);
-        try {
-            JSONObject jsonObject = new JSONObject(game_name);
-            JSONArray keys = jsonObject.names();
-            for (int i = 0; i < keys.length(); i++) {
-                String key = keys.getString(i); // Here's your key
-                boolean value = jsonObject.getBoolean(key);
-                if (value)
-                    arrayList.add(key);
-            }
-            for (int i = 0; i < arrayList.size(); i++) {
-                Log.e("arraylistvalue",arrayList.get(i));
-            }
-
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-            FirebaseCrashlytics.getInstance().recordException(e);
+        public ViewPagerAdapter(FragmentManager manager) {
+            super(manager);
         }
 
-    }*/
+        @Override
+        public Fragment getItem(int position) {
+            return mFragmentList.get(position);
+        }
 
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
 
+        public void addFragment(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
+        }
+    }
     public ViewStub deflate(View view) {
         ViewParent viewParent = view.getParent();
         if (viewParent != null && viewParent instanceof ViewGroup) {
@@ -658,58 +640,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-//    private void showTeamBottomSheet() {
-//        View myView = LayoutInflater.from(this).inflate(R.layout.my_team, null);
-//        final BottomSheetDialog dialog = new BottomSheetDialog(this);
-//        dialog.setContentView(myView);
-//        dialog.show();
-//        recyclerView = myView.findViewById(R.id.recycler_view);
-//        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
-//        recyclerView.setLayoutManager(mLayoutManager);
-//        mAdapter = new TeamAdapter(MainActivity.this, AppController.getInstance().userInfoList, AppConstant.friends);
-//        recyclerView.setAdapter(mAdapter);
-//        ((View) myView.getParent()).setBackgroundColor(Color.TRANSPARENT);
-//    }
 
     public void openSubscribe() {
         Intent intent = new Intent(this, ComingSoon.class);
         startActivity(intent);
     }
-
-    public class MyViewPagerAdapter extends PagerAdapter {
-        private LayoutInflater layoutInflater;
-
-        public MyViewPagerAdapter() {
-        }
-
-        @Override
-        public Object instantiateItem(ViewGroup container, int position) {
-            layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View view = layoutInflater.inflate(R.layout.image_view, container, false);
-            ImageView imageView = view.findViewById(R.id.img);
-            Glide.with(MainActivity.this).load(diaplayUrl.get(position)).into(imageView);
-            container.addView(view);
-            return view;
-        }
-
-        @Override
-        public int getCount() {
-            return diaplayUrl.size();
-        }
-
-        @Override
-        public boolean isViewFromObject(View view, Object obj) {
-            return view == obj;
-        }
-
-
-        @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            View view = (View) object;
-            container.removeView(view);
-        }
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -824,10 +759,10 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("dataSnapshotss", dataSnapshot.child(AppConstant.stopTime).exists() + "");
                 if (dataSnapshot.exists()) {
                     if (dataSnapshot.child(AppConstant.stopTime).exists()) {
-                        Intent intent = new Intent(MainActivity.this, HelloService.class);
-                        intent.putExtra("stopTiming", dataSnapshot.child(AppConstant.stopTime).getValue() + "");
-                        intent.setAction(HelloService.ACTION_STOP_FOREGROUND_SERVICE);
-                        startService(intent);
+//                        Intent intent = new Intent(MainActivity.this, HelloService.class);
+//                        intent.putExtra("stopTiming", dataSnapshot.child(AppConstant.stopTime).getValue() + "");
+//                        intent.setAction(HelloService.ACTION_STOP_FOREGROUND_SERVICE);
+//                        startService(intent);
                         try {
                             appConstant.saveSlot("XYZ");
                         } catch (Exception e) {
@@ -838,10 +773,10 @@ public class MainActivity extends AppCompatActivity {
                         appConstant.saveSlot(dataSnapshot.child(AppConstant.youtubeId).getValue() + "");
                        // if (db.getNotesCount(dataSnapshot.child(AppConstant.youtubeId).getValue() + "") == 0)
                             //createNote(roomPlan, dataSnapshot.child(AppConstant.youtubeId).getValue() + "");
-                        Intent intent = new Intent(MainActivity.this, HelloService.class);
-                        intent.putExtra("roomPlan", roomPlan);
-                        intent.setAction(HelloService.ACTION_START_FOREGROUND_SERVICE);
-                        startService(intent);
+//                        Intent intent = new Intent(MainActivity.this, HelloService.class);
+//                        intent.putExtra("roomPlan", roomPlan);
+//                        intent.setAction(HelloService.ACTION_START_FOREGROUND_SERVICE);
+//                        startService(intent);
                         if (dataSnapshot.child(AppConstant.backgroundData).child(AppController.getInstance().userId).exists()) {
                             HashMap<String, Object> allBackground = new HashMap<>();
 //                            for (Note allNote : backgroundDB.getAllNotes()) {

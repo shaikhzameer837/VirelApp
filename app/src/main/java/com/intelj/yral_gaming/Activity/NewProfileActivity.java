@@ -1,21 +1,16 @@
 package com.intelj.yral_gaming.Activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.VideoView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.google.android.exoplayer2.ui.PlayerView;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.intelj.yral_gaming.AppController;
 import com.intelj.yral_gaming.R;
 import com.intelj.yral_gaming.Utils.AppConstant;
@@ -62,9 +57,9 @@ public class NewProfileActivity extends AppCompatActivity {
     }
 
     private void setfollow() {
-        if (AppController.getInstance().followingList.contains(AppController.getInstance().dataSnapshot.getKey())) {
-            btn_invite.setText("Unfollow");
-        } else
-            btn_invite.setText("Follow");
+//        if (AppController.getInstance().followingList.contains(AppController.getInstance().dataSnapshot.getKey())) {
+//            btn_invite.setText("Unfollow");
+//        } else
+//            btn_invite.setText("Follow");
     }
 }
