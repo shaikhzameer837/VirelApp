@@ -58,7 +58,6 @@
             android:layout_height="wrap_content"
             android:background="#eeeeee"
             android:padding="15dp"
-            android:drawableRight="@drawable/arrow"
             android:text="Apply"
             android:textColor="@color/black" />
 

@@ -70,9 +70,9 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
 
         if (Integer.parseInt(new AppConstant(mContext)
                 .getDataFromShared(AppConstant.package_id,"0")) == position) {
-            holder.title.setBackgroundColor(Color.GRAY);
+            holder.apply.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.check, 0);
         } else
-            holder.title.setBackgroundColor(Color.WHITE);
+            holder.apply.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.arrow, 0);
 
         holder.apply.setOnClickListener(new View.OnClickListener() {
             @Override

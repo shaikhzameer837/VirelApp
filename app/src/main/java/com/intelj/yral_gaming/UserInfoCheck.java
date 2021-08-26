@@ -125,6 +125,8 @@ public class UserInfoCheck extends AppCompatActivity {
             Log.e(entry.getKey()+"",AppController.getInstance().mySnapShort.child(entry.getKey()).getValue()+"");
         }
         editor.apply();
+
+        startActivity(new Intent(UserInfoCheck.this, MainActivity.class));
     }
 
     private void saveUserInfoData() {
