@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="5dp"
+        android:orientation="vertical">
+        <ImageView android:id="@+id/imgs"
+            android:layout_width="60dp"
+            android:src="@drawable/profile_icon"
+            android:transitionName="fade"
+            android:layout_marginRight="10dp"
+            android:layout_height="60dp"/>
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/imgs"
+            android:layout_alignParentTop="true"
+            android:textSize="16dp"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/discordId"
+            android:layout_toRightOf="@+id/imgs"
+            android:layout_width="match_parent"
+            android:textSize="12dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/title" />
+
+    <TextView
+        android:id="@+id/gameId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/discordId"
+        android:layout_toRightOf="@+id/imgs"
+        android:textSize="12dp" />
+
+    <TextView
+        android:id="@+id/gameName"
+        android:layout_toRightOf="@+id/imgs"
+        android:layout_width="match_parent"
+        android:textSize="12dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/gameId" />
+
+
+</RelativeLayout>

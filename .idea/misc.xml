@@ -3,8 +3,17 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Android Projects/y-ral-gaming/app/src/main/res/layout/activity_demo.xml" value="0.12360688956433637" />
+        <entry key="..\:/Android Projects/y-ral-gaming/app/src/main/res/layout/activity_search_friend.xml" value="0.12360688956433637" />
         <entry key="..\:/Android Projects/y-ral-gaming/app/src/main/res/layout/bottom_sheet_dialog.xml" value="0.14990942028985507" />
+        <entry key="..\:/Android Projects/y-ral-gaming/app/src/main/res/layout/coming_soon.xml" value="0.12360688956433637" />
+        <entry key="..\:/Android Projects/y-ral-gaming/app/src/main/res/layout/demo_recyclerview.xml" value="0.12360688956433637" />
+        <entry key="..\:/Android Projects/y-ral-gaming/app/src/main/res/layout/fragment_bottom_sheet2.xml" value="0.11676798378926039" />
         <entry key="..\:/Android Projects/y-ral-gaming/app/src/main/res/layout/group_profile.xml" value="0.14990942028985507" />
+        <entry key="..\:/Android Projects/y-ral-gaming/app/src/main/res/layout/main_bottom_sheet_dialoglayout.xml" value="0.12360688956433637" />
+        <entry key="..\:/Android Projects/y-ral-gaming/app/src/main/res/layout/movie_list_row.xml" value="0.12360688956433637" />
+        <entry key="..\:/Android Projects/y-ral-gaming/app/src/main/res/layout/signin.xml" value="0.1" />
+        <entry key="..\:/Android Projects/y-ral-gaming/app/src/main/res/layout/splashscreen.xml" value="0.12360688956433637" />
         <entry key="..\:/Android Projects/y-ral-gaming/app/src/main/res/layout/user_list_row.xml" value="0.14990942028985507" />
       </map>
     </option>

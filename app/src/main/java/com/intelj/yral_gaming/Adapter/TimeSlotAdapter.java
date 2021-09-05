@@ -1,5 +1,6 @@
 package com.intelj.yral_gaming.Adapter;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -7,17 +8,26 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -30,7 +40,11 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.intelj.yral_gaming.Activity.DemoActivity;
 import com.intelj.yral_gaming.AppController;
+import com.intelj.yral_gaming.Fragment.BottomSheetFragment1;
+import com.intelj.yral_gaming.Fragment.BottomSheetFragment2;
+import com.intelj.yral_gaming.Fragment.OneFragment;
 import com.intelj.yral_gaming.R;
 import com.intelj.yral_gaming.Utils.AppConstant;
 import com.intelj.yral_gaming.Utils.RecyclerTouchListener;
@@ -39,10 +53,12 @@ import com.intelj.yral_gaming.model.UserModel;
 
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -108,6 +124,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
                 public void onClick(View v) {
                     if (new AppConstant(mContext).checkLogin())
                         showTeamList(strDate);
+//                        viepagerbottomsheet();
                     else {
                         Intent intent = new Intent("custom-event-name");
                         intent.putExtra(AppConstant.AppName, true);
@@ -146,7 +163,10 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
         recyclerview.addOnItemTouchListener(new RecyclerTouchListener(mContext, recyclerview, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
-                sendRequest(position, strDate);
+                Intent intent= new Intent(mContext, DemoActivity.class);
+                intent.putExtra("teammeber", (Serializable) teamModel.get(position).getTeamMember());
+                mContext.startActivity(intent);
+//                sendRequest(position, strDate);
 
             }
 
@@ -156,6 +176,30 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
             }
         }));
     }
+
+    private void viepagerbottomsheet() {
+        bottomSheetDialog = new BottomSheetDialog(mContext);
+        bottomSheetDialog.setContentView(R.layout.main_bottom_sheet_dialoglayout);
+        ViewPager viewPager = bottomSheetDialog.findViewById(R.id.vpPager);
+        Button next_button = bottomSheetDialog.findViewById(R.id.nextpage);
+        next_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewPager.setCurrentItem(viewPager.getCurrentItem() + (+1), true);
+            }
+        });
+
+
+        List<Fragment> fragmentList = new ArrayList<Fragment>();
+        fragmentList.add(new OneFragment());
+       // fragmentList.add(new BottomSheetFragment2());
+        FragmentManager manager = ((AppCompatActivity)mContext).getSupportFragmentManager();
+        MyPageAdapter pageAdapter = new MyPageAdapter(manager, fragmentList);
+        viewPager.setAdapter(pageAdapter);
+        bottomSheetDialog.show();
+
+    }
+
 
     private void sendRequest(int position, String strDate) {
         Set<String> teamMember = teamModel.get(position).getTeamMember();
@@ -313,5 +357,42 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
     @Override
     public int getItemCount() {
         return allData.size();
+    }
+
+    class MyPageAdapter extends FragmentPagerAdapter {
+
+        private List<Fragment> fragments;
+
+
+       /* public MyPageAdapter(FragmentManager fm, List<Fragment> fragments) {
+
+            super(fm);
+
+            this.fragments = fragments;
+
+        }*/
+
+        public MyPageAdapter(FragmentManager fragmentManager, List<Fragment> fragmentList) {
+            super(fragmentManager);
+            this.fragments = fragmentList;
+        }
+
+        @Override
+
+        public Fragment getItem(int position) {
+
+            return this.fragments.get(position);
+
+        }
+
+
+        @Override
+
+        public int getCount() {
+
+            return this.fragments.size();
+
+        }
+
     }
 }
