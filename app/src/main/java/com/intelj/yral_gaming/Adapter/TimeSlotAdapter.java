@@ -1,6 +1,5 @@
 package com.intelj.yral_gaming.Adapter;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -8,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,12 +20,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
-import androidx.viewpager2.widget.ViewPager2;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -42,8 +38,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.intelj.yral_gaming.Activity.DemoActivity;
 import com.intelj.yral_gaming.AppController;
-import com.intelj.yral_gaming.Fragment.BottomSheetFragment1;
-import com.intelj.yral_gaming.Fragment.BottomSheetFragment2;
 import com.intelj.yral_gaming.Fragment.OneFragment;
 import com.intelj.yral_gaming.R;
 import com.intelj.yral_gaming.Utils.AppConstant;
@@ -163,10 +157,16 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
         recyclerview.addOnItemTouchListener(new RecyclerTouchListener(mContext, recyclerview, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
-                Intent intent= new Intent(mContext, DemoActivity.class);
+                /*BottomSheetFragment bottomSheetFragment = new BottomSheetFragment();
+                bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());*/
+                /*Intent intent= new Intent(mContext, DemoActivity.class);
                 intent.putExtra("teammeber", (Serializable) teamModel.get(position).getTeamMember());
-                mContext.startActivity(intent);
+                mContext.startActivity(intent);*/
 //                sendRequest(position, strDate);
+                Intent intent = new Intent("custom-event-name");
+                intent.putExtra(AppConstant.teamMember, true);
+                intent.putExtra("teammeber", (Serializable) teamModel.get(position).getTeamMember());
+                LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);
 
             }
 

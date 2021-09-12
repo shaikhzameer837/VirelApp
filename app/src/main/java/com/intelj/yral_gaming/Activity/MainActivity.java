@@ -59,6 +59,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.textfield.TextInputEditText;
@@ -81,6 +82,7 @@ import com.intelj.yral_gaming.Adapter.RankAdapter;
 import com.intelj.yral_gaming.AppController;
 import com.intelj.yral_gaming.ComingSoon;
 import com.intelj.yral_gaming.DatabaseHelper;
+import com.intelj.yral_gaming.Fragment.BottomSheetDilogFragment;
 import com.intelj.yral_gaming.Fragment.OneFragment;
 import com.intelj.yral_gaming.NotesAdapter;
 import com.intelj.yral_gaming.R;
@@ -99,6 +101,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
@@ -673,6 +676,12 @@ public class MainActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             if (intent.getBooleanExtra(AppConstant.AppName, false) == true) {
                 showBottomSheetDialog();
+                return;
+            }
+            if (intent.getBooleanExtra(AppConstant.teamMember, false) == true) {
+                Set<String> myList = (Set<String>) getIntent().getSerializableExtra("teammeber");
+                BottomSheetDilogFragment bottomSheetFragment = new BottomSheetDilogFragment(myList);
+                bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
                 return;
             }
             SharedPreferences sharedPreferences = getSharedPreferences(AppConstant.AppName, 0);
