@@ -12,13 +12,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.PopupMenu;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.intelj.yral_gaming.R;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public class BottomSheetDilogFragment extends com.google.android.material.bottomsheet.BottomSheetDialogFragment {
@@ -27,6 +34,7 @@ public class BottomSheetDilogFragment extends com.google.android.material.bottom
     private int[] layouts;
     View rootView;
     ViewPager2 viewPager;
+    ViewPager viewPager1;
     Set<String> mylist;
     LinearLayout layoutDots;
     Button btnNext;
@@ -44,7 +52,13 @@ public class BottomSheetDilogFragment extends com.google.android.material.bottom
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.bootmsheetdialog_fragment, container, false);
-        viewPager = rootView.findViewById(R.id.view_pager);
+//        viewPager = rootView.findViewById(R.id.view_pager);
+        viewPager1 = rootView.findViewById(R.id.view_pager1);
+
+        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getParentFragmentManager());
+        viewPagerAdapter.add(new BottomSheetFragment1(),"hello");
+        viewPagerAdapter.add(new BottomSheetFragment2(),"hello");
+        viewPager1.setAdapter(viewPagerAdapter);
         btnNext = rootView.findViewById(R.id.btn_next);
         init();
         return rootView;
@@ -58,9 +72,11 @@ public class BottomSheetDilogFragment extends com.google.android.material.bottom
                 R.layout.slide_three,
                 R.layout.slide_four*/};
 
-        mAdapter = new ViewsSliderAdapter();
+        /*mAdapter = new ViewsSliderAdapter();
         viewPager.setAdapter(mAdapter);
-        viewPager.registerOnPageChangeCallback(pageChangeCallback);
+        viewPager.registerOnPageChangeCallback(pageChangeCallback);*/
+
+
 
 //        btnSkip.setOnClickListener(v -> launchHomeScreen());
 //
@@ -190,4 +206,41 @@ public class BottomSheetDilogFragment extends com.google.android.material.bottom
             }
         }
     }
+
+
+
+    public class ViewPagerAdapter extends FragmentPagerAdapter {
+
+        private final List<Fragment> fragments = new ArrayList<>();
+        private final List<String> fragmentTitle = new ArrayList<>();
+
+        public ViewPagerAdapter(@NonNull FragmentManager fm)
+        {
+            super(fm);
+        }
+
+        public void add(Fragment fragment, String title)
+        {
+            fragments.add(fragment);
+            fragmentTitle.add(title);
+        }
+
+        @NonNull @Override public Fragment getItem(int position)
+        {
+            return fragments.get(position);
+        }
+
+        @Override public int getCount()
+        {
+            return fragments.size();
+        }
+
+        @Nullable
+        @Override
+        public CharSequence getPageTitle(int position)
+        {
+            return fragmentTitle.get(position);
+        }
+    }
+
 }

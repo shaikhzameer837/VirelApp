@@ -44,6 +44,7 @@ import com.intelj.yral_gaming.Utils.AppConstant;
 import com.intelj.yral_gaming.Utils.RecyclerTouchListener;
 import com.intelj.yral_gaming.model.UserListModel;
 import com.intelj.yral_gaming.model.UserModel;
+import com.intelj.yral_gaming.project.BottomSheetFragment;
 
 import org.json.JSONObject;
 
@@ -116,9 +117,18 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
             holder.reg.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (new AppConstant(mContext).checkLogin())
-                        showTeamList(strDate);
-//                        viepagerbottomsheet();
+                    if (new AppConstant(mContext).checkLogin()){
+                        String strDatewithgame = title + " " + date + " " + allData.get(position).getTime().replace("pm", ":00:00 pm")
+                                .replace("am", ":00:00 am");
+                        SharedPreferences.Editor editShared = sharedPreferences.edit();
+                        editShared.putString("gameWithTime",strDatewithgame);
+                        editShared.putString("gameTitle",title);
+                        editShared.apply();
+                        BottomSheetFragment bottomSheetFragment = new BottomSheetFragment();
+                        bottomSheetFragment.show(((AppCompatActivity)mContext).getSupportFragmentManager(), bottomSheetFragment.getTag());
+                    }
+//                        showTeamList(strDate);
+//                        viewpagerbottomsheet();
                     else {
                         Intent intent = new Intent("custom-event-name");
                         intent.putExtra(AppConstant.AppName, true);
@@ -157,16 +167,18 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
         recyclerview.addOnItemTouchListener(new RecyclerTouchListener(mContext, recyclerview, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
+                BottomSheetFragment bottomSheetFragment = new BottomSheetFragment();
+                bottomSheetFragment.show(((AppCompatActivity)mContext).getSupportFragmentManager(), bottomSheetFragment.getTag());
                 /*BottomSheetFragment bottomSheetFragment = new BottomSheetFragment();
                 bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());*/
                 /*Intent intent= new Intent(mContext, DemoActivity.class);
                 intent.putExtra("teammeber", (Serializable) teamModel.get(position).getTeamMember());
                 mContext.startActivity(intent);*/
 //                sendRequest(position, strDate);
-                Intent intent = new Intent("custom-event-name");
+                /*Intent intent = new Intent("custom-event-name");
                 intent.putExtra(AppConstant.teamMember, true);
                 intent.putExtra("teammeber", (Serializable) teamModel.get(position).getTeamMember());
-                LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);
+                LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);*/
 
             }
 
@@ -177,7 +189,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
         }));
     }
 
-    private void viepagerbottomsheet() {
+    private void viewpagerbottomsheet() {
         bottomSheetDialog = new BottomSheetDialog(mContext);
         bottomSheetDialog.setContentView(R.layout.main_bottom_sheet_dialoglayout);
         ViewPager viewPager = bottomSheetDialog.findViewById(R.id.vpPager);

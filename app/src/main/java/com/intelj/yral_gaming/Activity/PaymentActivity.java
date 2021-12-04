@@ -226,6 +226,7 @@ public class PaymentActivity extends AppCompatActivity {
                         .authority("pay")
                         .appendQueryParameter("pa", "shaikhzameer837@okhdfcbank")
                         .appendQueryParameter("pn", "Zameer Shaikh")
+                        .appendQueryParameter("mc","jpJyTV10758783641665")
                         /*.appendQueryParameter("mc", "your-merchant-code")
                         .appendQueryParameter("tr", "your-transaction-ref-id")*/
                         .appendQueryParameter("tn", "testing")
