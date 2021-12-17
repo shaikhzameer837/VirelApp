@@ -15,18 +15,24 @@
         <entry key="..\:/Android Projects/y-ral-gaming/app/src/main/res/layout/coming_soon.xml" value="0.12360688956433637" />
         <entry key="..\:/Android Projects/y-ral-gaming/app/src/main/res/layout/demo_recyclerview.xml" value="0.12360688956433637" />
         <entry key="..\:/Android Projects/y-ral-gaming/app/src/main/res/layout/fragment_bottom_sheet2.xml" value="0.11676798378926039" />
+        <entry key="..\:/Android Projects/y-ral-gaming/app/src/main/res/layout/fragment_claim_now.xml" value="0.25416666666666665" />
         <entry key="..\:/Android Projects/y-ral-gaming/app/src/main/res/layout/fragment_login_bottom_sheet_fragment.xml" value="0.2028985507246377" />
         <entry key="..\:/Android Projects/y-ral-gaming/app/src/main/res/layout/group_profile.xml" value="0.14990942028985507" />
+        <entry key="..\:/Android Projects/y-ral-gaming/app/src/main/res/layout/history.xml" value="0.25416666666666665" />
         <entry key="..\:/Android Projects/y-ral-gaming/app/src/main/res/layout/item.xml" value="0.20833333333333334" />
         <entry key="..\:/Android Projects/y-ral-gaming/app/src/main/res/layout/layout_registration_successfull.xml" value="0.19746376811594202" />
         <entry key="..\:/Android Projects/y-ral-gaming/app/src/main/res/layout/list_row_movie.xml" value="0.20833333333333334" />
         <entry key="..\:/Android Projects/y-ral-gaming/app/src/main/res/layout/login.xml" value="0.25416666666666665" />
         <entry key="..\:/Android Projects/y-ral-gaming/app/src/main/res/layout/main_bottom_sheet_dialoglayout.xml" value="0.12360688956433637" />
         <entry key="..\:/Android Projects/y-ral-gaming/app/src/main/res/layout/movie_list_row.xml" value="0.12360688956433637" />
+        <entry key="..\:/Android Projects/y-ral-gaming/app/src/main/res/layout/note_list_row.xml" value="0.25416666666666665" />
+        <entry key="..\:/Android Projects/y-ral-gaming/app/src/main/res/layout/payment_row.xml" value="0.25416666666666665" />
+        <entry key="..\:/Android Projects/y-ral-gaming/app/src/main/res/layout/rank.xml" value="0.25416666666666665" />
         <entry key="..\:/Android Projects/y-ral-gaming/app/src/main/res/layout/recycler.xml" value="0.1" />
         <entry key="..\:/Android Projects/y-ral-gaming/app/src/main/res/layout/signin.xml" value="0.1" />
         <entry key="..\:/Android Projects/y-ral-gaming/app/src/main/res/layout/splashscreen.xml" value="0.12360688956433637" />
         <entry key="..\:/Android Projects/y-ral-gaming/app/src/main/res/layout/user_list_row.xml" value="0.14990942028985507" />
+        <entry key="..\:/Android Projects/y-ral-gaming/app/src/main/res/menu/bottom_navigation_menu.xml" value="0.25416666666666665" />
       </map>
     </option>
   </component>

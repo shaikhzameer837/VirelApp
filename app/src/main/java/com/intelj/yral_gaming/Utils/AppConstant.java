@@ -9,6 +9,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.intelj.yral_gaming.AppController;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Map;
 
 public class AppConstant {
@@ -177,5 +178,16 @@ public class AppConstant {
     public boolean getFriendCheck() {
         myInfo = _context.getSharedPreferences(AppController.getInstance().userId, Context.MODE_PRIVATE);
         return myInfo.getBoolean(friends, false);
+    }
+
+    public String getDateFromMilli(long milliSeconds, String dateFormat)
+    {
+        // Create a DateFormatter object for displaying date in specified format.
+        SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
+
+        // Create a calendar object that will convert the date and time value in milliseconds to date.
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(milliSeconds);
+        return formatter.format(calendar.getTime());
     }
 }

@@ -3,6 +3,7 @@ package com.intelj.yral_gaming.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,6 +28,8 @@ import com.google.android.play.core.review.ReviewInfo;
 import com.google.android.play.core.review.ReviewManager;
 import com.google.android.play.core.review.ReviewManagerFactory;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.intelj.yral_gaming.AppController;
 import com.intelj.yral_gaming.R;
 import com.intelj.yral_gaming.SplashScreenStory;
@@ -52,6 +55,7 @@ public class SplashScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splashscreen);
+//        tokenWebservice();
         Intent intent = null;
         if (!AppController.getInstance().remoteConfig.getString("subscription_package").equals(""))
             intent = new Intent(this, SplashScreenStory.class);
@@ -67,6 +71,58 @@ public class SplashScreen extends AppCompatActivity {
         appUpdateManager = AppUpdateManagerFactory.create(getApplicationContext());
         reviewManager = ReviewManagerFactory.create(this);
         showRateApp();
+    }
+
+    private void tokenWebservice() {
+        FirebaseMessaging.getInstance().subscribeToTopic("all");
+        String token = FirebaseInstanceId.getInstance().getToken();
+        SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref",MODE_PRIVATE);
+       Log.i("fb_token",token);
+
+       if (token.equals(sharedPreferences.getString("token","")))
+           return;
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = "http://y-ral-gaming.com/admin/api/save_token.php";
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.e("tokenResponse", response);
+                        try {
+                            JSONObject obj = new JSONObject(response);
+                            if (obj.getBoolean("success")) {
+                                SharedPreferences.Editor myEdit = sharedPreferences.edit();
+                                myEdit.putString("token", token);
+                                myEdit.apply();
+                            } else {
+                                Log.e("error", "something went wrong");
+                            }
+                        } catch (Exception e) {
+                            Log.e("error Rec", e.getMessage());
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                progress.setVisibility(View.GONE);
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("token", token);
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Content-Type", "application/x-www-form-urlencoded");
+                return params;
+            }
+        };
+
+        queue.add(stringRequest);
     }
 
     private void serviceForData() {

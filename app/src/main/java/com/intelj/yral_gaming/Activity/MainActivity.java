@@ -52,14 +52,21 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.textfield.TextInputEditText;
@@ -83,13 +90,15 @@ import com.intelj.yral_gaming.AppController;
 import com.intelj.yral_gaming.ComingSoon;
 import com.intelj.yral_gaming.DatabaseHelper;
 import com.intelj.yral_gaming.Fragment.BottomSheetDilogFragment;
+import com.intelj.yral_gaming.Fragment.ClaimNowFragment;
 import com.intelj.yral_gaming.Fragment.OneFragment;
-import com.intelj.yral_gaming.NotesAdapter;
+import com.intelj.yral_gaming.NotificationAdapter;
 import com.intelj.yral_gaming.R;
 import com.intelj.yral_gaming.SigninActivity;
 import com.intelj.yral_gaming.Utils.AppConstant;
 import com.intelj.yral_gaming.Utils.RecyclerTouchListener;
-import com.intelj.yral_gaming.model.Note;
+import com.intelj.yral_gaming.model.NotificationModel;
+import com.intelj.yral_gaming.model.PaymentHistoryModel;
 import com.intelj.yral_gaming.model.UserListModel;
 import com.roughike.swipeselector.SwipeItem;
 import com.roughike.swipeselector.SwipeSelector;
@@ -128,6 +137,8 @@ public class MainActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
     int oldId;
     private TextView package_name;
+    private Button claim_now;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -146,6 +157,7 @@ public class MainActivity extends AppCompatActivity {
         }
         bottomNavigation = findViewById(R.id.bottom_navigation);
         final ViewStub stub = findViewById(R.id.layout_stub);
+        claim_now = findViewById(R.id.claim_now);
         stub.setLayoutResource(R.layout.game_slot);
         appConstant = new AppConstant(this);
         db = new DatabaseHelper(this, "notifications");
@@ -164,6 +176,20 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 openSubscribe();
+            }
+        });
+
+        claim_now.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ClaimNowFragment dialog = new ClaimNowFragment();
+                Bundle b = new Bundle();
+               /* b.putString("lan", loannumbers.getLannumber());
+                b.putString("customer_name", loannumbers.getCustomer_name());
+                b.putString("pay_amount", null);
+                b.putInt("position", -1);
+                dialog.setArguments(b);*/
+                dialog.show(getSupportFragmentManager(),ClaimNowFragment.class.getName());
             }
         });
 //        final Handler handler = new Handler();
@@ -186,7 +212,7 @@ public class MainActivity extends AppCompatActivity {
         ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
-        if (mWifi.isConnected() && !mWifi.isConnected() ) {
+        if (mWifi.isConnected() && !mWifi.isConnected()) {
             YouTubePlayerFragment youtubeFragment = (YouTubePlayerFragment)
                     getFragmentManager().findFragmentById(R.id.youtubeFragment);
             youtubeFragment.initialize(AppConstant.youtubeApiKey,
@@ -216,16 +242,16 @@ public class MainActivity extends AppCompatActivity {
         // startService(new Intent(MainActivity.this,MyService.class));
 
         timeLeft = findViewById(R.id.timeLeft);
-         oldId = bottomNavigation.getSelectedItemId();
+        oldId = bottomNavigation.getSelectedItemId();
         BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        if(item.getItemId() != R.id.game_slot && !new AppConstant(MainActivity.this).checkLogin()){
-                                showBottomSheetDialog();
-                                return true;
+                        if (item.getItemId() != R.id.game_slot && !new AppConstant(MainActivity.this).checkLogin()) {
+                            showBottomSheetDialog();
+                            return true;
                         }
-                        if(item.getItemId() == oldId)
+                        if (item.getItemId() == oldId)
                             return true;
 
                         oldId = item.getItemId();
@@ -318,10 +344,11 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<UserListModel> teamModel;
     MemberListAdapter userAdapter;
     RecyclerView recyclerviewTeam;
+
     @Override
     protected void onResume() {
         super.onResume();
-        if(AppController.getInstance().mySnapShort != null && recyclerviewTeam != null) {
+        if (AppController.getInstance().mySnapShort != null && recyclerviewTeam != null) {
             teamModel.clear();
             for (DataSnapshot snapshot : AppController.getInstance().mySnapShort.child(AppConstant.team).getChildren()) {
                 SharedPreferences prefs = getSharedPreferences(snapshot.getKey(), Context.MODE_PRIVATE);
@@ -371,24 +398,68 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void showNotification() {
-        List<Note> notesList = new ArrayList<>();
+        List<NotificationModel> notificationModelList = new ArrayList<>();
         TextView title = inflated.findViewById(R.id.title);
         title.setText("Match history");
         recyclerView = inflated.findViewById(R.id.recycler_view);
-        notesList.addAll(db.getAllNotes());
-        Log.e("db_Toll",db.getAllNotes().size()+"");
-        if (notesList.size() == 0) {
-            recyclerView.setVisibility(View.GONE);
-            findViewById(R.id.not).setVisibility(View.VISIBLE);
-            findViewById(R.id.pBar3).setVisibility(View.VISIBLE);
-        }
-        NotesAdapter mAdapter = new NotesAdapter(this, notesList);
+        ShimmerFrameLayout shimmerFrameLayout = inflated.findViewById(R.id.shimmer_layout);
+        shimmerFrameLayout.startShimmer();
+//        Log.e("db_Toll", db.getAllNotes().size() + "");
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = "http://y-ral-gaming.com/admin/api/get_status.php";
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.e("tokenResponse", response);
+                        shimmerFrameLayout.hideShimmer();
+                        shimmerFrameLayout.setVisibility(View.GONE);
+                        try {
+                            JSONArray array = new JSONArray(response);
+                            for (int i = 0; i < array.length(); i++) {
+                                JSONObject obj = array.getJSONObject(i);
+                                notificationModelList.add(new NotificationModel(obj.getString("image_url"), obj.getString("date"), obj.getString("status")));
+                            }
+                            NotificationAdapter pAdapter = new NotificationAdapter(MainActivity.this, notificationModelList);
+                            recyclerView.setAdapter(pAdapter);
+
+                        } catch (Exception e) {
+                            Log.e("error Rec", e.getMessage());
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+/*                shimmer_container.hideShimmer();
+                shimmer_container.setVisibility(View.GONE);*/
+                error.printStackTrace();
+                FirebaseCrashlytics.getInstance().recordException(error);
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("user_id", "1605435786512");
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Content-Type", "application/x-www-form-urlencoded");
+                return params;
+            }
+        };
+
+        queue.add(stringRequest);
+
+
+        NotificationAdapter mAdapter = new NotificationAdapter(this, notificationModelList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
     }
-
 
 
     private void showRank() {
@@ -420,10 +491,62 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showHistory(View inflated) {
+        ArrayList<PaymentHistoryModel> paymentHistoryModels = new ArrayList<>();
         final RecyclerView recyclerView = inflated.findViewById(R.id.recycler_view);
+        ShimmerFrameLayout shimmer_container = inflated.findViewById(R.id.shimmer_container);
+        shimmer_container.startShimmer();
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(mLayoutManager);
-        if (AppController.getInstance().userId != null) {
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = "http://y-ral-gaming.com/admin/api/get_payment_list.php";
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.e("tokenResponse", response);
+                        shimmer_container.hideShimmer();
+                        shimmer_container.setVisibility(View.GONE);
+                        try {
+                            JSONArray array = new JSONArray(response);
+                            for (int i = 0; i < array.length(); i++) {
+                                JSONObject obj = array.getJSONObject(i);
+                                paymentHistoryModels.add(new PaymentHistoryModel(obj.getString("date"), obj.getString("transaction_id"), obj.getString("amount")));
+                            }
+                            PayMentAdapter pAdapter = new PayMentAdapter(MainActivity.this, paymentHistoryModels);
+                            recyclerView.setAdapter(pAdapter);
+
+                        } catch (Exception e) {
+                            Log.e("error Rec", e.getMessage());
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+/*                shimmer_container.hideShimmer();
+                shimmer_container.setVisibility(View.GONE);*/
+                error.printStackTrace();
+                FirebaseCrashlytics.getInstance().recordException(error);
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("user_id", "1605435786512");
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Content-Type", "application/x-www-form-urlencoded");
+                return params;
+            }
+        };
+
+        queue.add(stringRequest);
+
+        /*if (AppController.getInstance().userId != null) {
             DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference(AppConstant.users)
                     .child(AppController.getInstance().userId).child(AppConstant.paymentHistory);
             mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -433,8 +556,8 @@ public class MainActivity extends AppCompatActivity {
                     for (DataSnapshot child : dataSnapshot.getChildren()) {
                         dataSnapshots.add(child);
                     }
-                    PayMentAdapter pAdapter = new PayMentAdapter(MainActivity.this, dataSnapshots);
-                    recyclerView.setAdapter(pAdapter);
+                    *//*PayMentAdapter pAdapter = new PayMentAdapter(MainActivity.this, dataSnapshots);
+                    recyclerView.setAdapter(pAdapter);*//*
                 }
 
                 @Override
@@ -443,7 +566,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
-        }
+        }*/
     }
 
 
@@ -586,8 +709,11 @@ public class MainActivity extends AppCompatActivity {
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         }
         gameViewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            public void onPageScrollStateChanged(int state) {}
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+            public void onPageScrollStateChanged(int state) {
+            }
+
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
 
             public void onPageSelected(int position) {
                 Intent intent = new Intent("custom-event-name");
@@ -597,7 +723,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-    class ViewPagerAdapter extends FragmentStatePagerAdapter{
+
+    class ViewPagerAdapter extends FragmentStatePagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();
         private final List<String> mFragmentTitleList = new ArrayList<>();
 
@@ -625,6 +752,7 @@ public class MainActivity extends AppCompatActivity {
             return mFragmentTitleList.get(position);
         }
     }
+
     public ViewStub deflate(View view) {
         ViewParent viewParent = view.getParent();
         if (viewParent != null && viewParent instanceof ViewGroup) {
@@ -648,6 +776,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ComingSoon.class);
         startActivity(intent);
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -780,8 +909,8 @@ public class MainActivity extends AppCompatActivity {
                         }
                     } else {
                         appConstant.saveSlot(dataSnapshot.child(AppConstant.youtubeId).getValue() + "");
-                       // if (db.getNotesCount(dataSnapshot.child(AppConstant.youtubeId).getValue() + "") == 0)
-                            //createNote(roomPlan, dataSnapshot.child(AppConstant.youtubeId).getValue() + "");
+                        // if (db.getNotesCount(dataSnapshot.child(AppConstant.youtubeId).getValue() + "") == 0)
+                        //createNote(roomPlan, dataSnapshot.child(AppConstant.youtubeId).getValue() + "");
 //                        Intent intent = new Intent(MainActivity.this, HelloService.class);
 //                        intent.putExtra("roomPlan", roomPlan);
 //                        intent.setAction(HelloService.ACTION_START_FOREGROUND_SERVICE);
@@ -1080,7 +1209,7 @@ public class MainActivity extends AppCompatActivity {
                 JSONObject jsnobject = new JSONObject(AppController.getInstance().getSubscription_package());
                 JSONArray jsonArray = jsnobject.getJSONArray("package");
                 JSONObject explrObject = jsonArray.getJSONObject(Integer.parseInt(new AppConstant(MainActivity.this)
-                        .getDataFromShared(AppConstant.package_id,"0")));
+                        .getDataFromShared(AppConstant.package_id, "0")));
                 package_name.setText(explrObject.getString(AppConstant.package_name));
             } catch (Exception e) {
                 Log.e("My App", "Could not parse malformed JSON:" + e.getMessage());

@@ -454,9 +454,9 @@ public class SigninActivity extends AppCompatActivity {
             //in this case the code will be null
             //so user has to manually enter the code
             if (code != null) {
-                otp.setText(code);
+//                otp.setText(code);
                 //verifying the code
-                verifyVerificationCode(code);
+//                verifyVerificationCode(code);
             }
         }
 
