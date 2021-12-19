@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
-import com.intelj.yral_gaming.model.Note;
+import com.intelj.yral_gaming.model.NotificationModel;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -23,10 +23,10 @@ import java.util.Date;
 import java.util.List;
 
 
-public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder> {
+public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.MyViewHolder> {
 
     private Context context;
-    private List<Note> notesList;
+    private List<NotificationModel> notificationModelList;
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView note;
         public TextView time;
@@ -40,9 +40,9 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
     }
 
 
-    public NotesAdapter(Context context, List<Note> notesList) {
+    public NotificationAdapter(Context context, List<NotificationModel> notificationModelList) {
         this.context = context;
-        this.notesList = notesList;
+        this.notificationModelList = notificationModelList;
     }
 
     @Override
@@ -55,23 +55,22 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        Note note = notesList.get(position);
+        NotificationModel notificationModel = notificationModelList.get(position);
 
-        holder.note.setText(note.getTeam_name());
+        holder.note.setText(notificationModel.getStatus());
 
         // Displaying dot from HTML character code
-        holder.time.setText(note.getGame_id().replace("_"," "));
+        holder.time.setText(notificationModel.getDate());
 
         Glide.with(context)
-                .load("https://i.ytimg.com/vi/"+note.getYoutube_id()+"/hqdefault.jpg")
+                .load(notificationModel.getImage_url())
                 .placeholder(R.drawable.game_avatar)
                 .into(holder.images);
-
     }
 
     @Override
     public int getItemCount() {
-        return notesList.size();
+        return notificationModelList.size();
     }
 
     /**
