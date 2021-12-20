@@ -137,7 +137,6 @@ public class MainActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
     int oldId;
     private TextView package_name;
-    private Button claim_now;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,29 +156,36 @@ public class MainActivity extends AppCompatActivity {
         }
         bottomNavigation = findViewById(R.id.bottom_navigation);
         final ViewStub stub = findViewById(R.id.layout_stub);
-        claim_now = findViewById(R.id.claim_now);
         stub.setLayoutResource(R.layout.game_slot);
         appConstant = new AppConstant(this);
         db = new DatabaseHelper(this, "notifications");
         inflated = stub.inflate();
-        SwipeSelector swipeSelector = findViewById(R.id.swipeSelector);
-        swipeSelector.setItems(
-                // The first argument is the value for that item, and should in most cases be unique for the
-                // current SwipeSelector, just as you would assign values to radio buttons.
-                // You can use the value later on to check what the selected item was.
-                // The value can be any Object, here we're using ints.
-                new SwipeItem(0, "Silver", "Earn more on Every Chicken Dinner"),
-                new SwipeItem(1, "Gold", "it is very easy to apply for subscription"),
-                new SwipeItem(2, "Platinum", "Free coins")
-        );
-        findViewById(R.id.views).setOnClickListener(new View.OnClickListener() {
+//        SwipeSelector swipeSelector = findViewById(R.id.swipeSelector);
+//        swipeSelector.setItems(
+//                // The first argument is the value for that item, and should in most cases be unique for the
+//                // current SwipeSelector, just as you would assign values to radio buttons.
+//                // You can use the value later on to check what the selected item was.
+//                // The value can be any Object, here we're using ints.
+//                new SwipeItem(0, "Silver", "Earn more on Every Chicken Dinner"),
+//                new SwipeItem(1, "Gold", "it is very easy to apply for subscription"),
+//                new SwipeItem(2, "Platinum", "Free coins")
+//        );
+//        findViewById(R.id.views).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                openSubscribe();claim_now
+//            }
+//        });
+        findViewById(R.id.discord).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                openSubscribe();
+            public void onClick(View view) {
+                String url = "https://discord.gg/KPXDCGsmem";
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
             }
         });
-
-        claim_now.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.claim_now).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ClaimNowFragment dialog = new ClaimNowFragment();

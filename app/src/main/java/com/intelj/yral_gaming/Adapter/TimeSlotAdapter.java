@@ -90,7 +90,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
         this.title = title;
         sharedPreferences =
                 mContext.getSharedPreferences
-                        (AppConstant.AppName, 0);
+                        (AppConstant.AppName, Context.MODE_PRIVATE);
         appConstant = new AppConstant(mContext);
         mDatabase = FirebaseDatabase.getInstance().getReference(AppConstant.live_stream);
     }

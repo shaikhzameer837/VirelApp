@@ -93,7 +93,6 @@ public class ClaimNowFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         view = getActivity().getLayoutInflater().inflate(R.layout.fragment_claim_now, null);
         builder.setView(view);
-        builder.setTitle("Upload you claim");
 
         et_datetime = view.findViewById(R.id.et_datetime);
         upload_file = view.findViewById(R.id.upload_file);
