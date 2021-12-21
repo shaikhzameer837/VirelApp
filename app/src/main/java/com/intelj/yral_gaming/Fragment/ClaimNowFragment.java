@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -42,6 +43,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
 import com.intelj.yral_gaming.R;
 import com.intelj.yral_gaming.VolleyMultipartRequest;
 
@@ -49,7 +51,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -175,35 +179,66 @@ public class ClaimNowFragment extends DialogFragment {
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
     }
+    public void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
+        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+        try {
+            Uri imageUri = imageReturnedIntent.getData();
+            InputStream imageStream = getActivity().getContentResolver().openInputStream(imageUri);
+            Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
 
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            Uri picUri = data.getData();
-            Log.i("uri",picUri+"");
-            filePath = getPath(picUri);
-            if (filePath != null) {
-                try {
+            selectedImage = getResizedBitmap(selectedImage, 400);// 400 is for example, replace with desired size
 
-                    Log.d("filePath", String.valueOf(filePath));
-                    bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), picUri);
-//                    uploadBitmap(bitmap);
-                    imageView.setImageBitmap(bitmap);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            else
-            {
-                Toast.makeText(
-                        context,"no image selected",
-                        Toast.LENGTH_LONG).show();
-            }
+            Glide.with(this).load(selectedImage).into(imageView);
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
     }
 
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//
+//        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+//            Uri picUri = data.getData();
+//            Log.i("uri",picUri+"");
+//            filePath = getPath(picUri);
+//            if (filePath != null) {
+//                Uri imageUri = data.getData();
+//                InputStream imageStream = getActivity().getContentResolver().openInputStream(imageUri);
+//                Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+//
+//                selectedImage = getResizedBitmap(selectedImage, 400);// 400 is for example, replace with desired size
+//                try {
+//
+//                    imageView.setImageBitmap(selectedImage);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//            else
+//            {
+//                Toast.makeText(
+//                        context,"no image selected",
+//                        Toast.LENGTH_LONG).show();
+//            }
+//        }
+//    }
+    public Bitmap getResizedBitmap(Bitmap image, int maxSize) {
+        int width = image.getWidth();
+        int height = image.getHeight();
+
+        float bitmapRatio = (float)width / (float) height;
+        if (bitmapRatio > 1) {
+            width = maxSize;
+            height = (int) (width / bitmapRatio);
+        } else {
+            height = maxSize;
+            width = (int) (height * bitmapRatio);
+        }
+        return Bitmap.createScaledBitmap(image, width, height, true);
+    }
     public String getPath(Uri uri) {
         Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
         cursor.moveToFirst();

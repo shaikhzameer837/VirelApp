@@ -37,22 +37,26 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:gravity="center"
                 android:layout_height="wrap_content">
-                <Button
-                    android:padding="5dp"
-                    android:layout_margin="10dp"
-                    android:id="@+id/upload_file"
-                    android:text="Upload File"
-                    android:layout_gravity="center_vertical"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-                </Button>
+
 
                 <ImageView
                     android:id="@+id/imageview"
                     android:layout_width="140dp"
-                    android:layout_height="140dp">
-                </ImageView>
+                    android:background="@color/gray_scale"
+                    android:src="@drawable/upload"
+                    android:layout_height="140dp"/>
+                <Button
+                    android:padding="10dp"
+                    android:id="@+id/upload_file"
+                    android:text="Upload File"
+                    android:background="@color/colorPrimaryDark"
+                    android:textColor="@color/colorPrimary"
+                    android:gravity="center_vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
 
             </LinearLayout>
 
