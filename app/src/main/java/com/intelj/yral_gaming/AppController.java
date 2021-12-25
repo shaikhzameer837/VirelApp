@@ -56,7 +56,6 @@ public class AppController extends Application implements Application.ActivityLi
     public String uploadUrl;
     public FirebaseRemoteConfig remoteConfig;
     public DataSnapshot dataSnapshot;
-    public ArrayList<String> followingList = new ArrayList<>();
     public String is_production;
     AlertDialog.Builder builder;
     public boolean isFirstTime = false;

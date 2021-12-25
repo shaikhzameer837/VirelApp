@@ -2,7 +2,10 @@ package com.intelj.yral_gaming.Activity;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.app.TimePickerDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -11,11 +14,15 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
@@ -29,9 +36,11 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -53,6 +62,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -97,18 +107,26 @@ import com.intelj.yral_gaming.R;
 import com.intelj.yral_gaming.SigninActivity;
 import com.intelj.yral_gaming.Utils.AppConstant;
 import com.intelj.yral_gaming.Utils.RecyclerTouchListener;
+import com.intelj.yral_gaming.VolleyMultipartRequest;
 import com.intelj.yral_gaming.model.NotificationModel;
 import com.intelj.yral_gaming.model.PaymentHistoryModel;
 import com.intelj.yral_gaming.model.UserListModel;
 import com.roughike.swipeselector.SwipeItem;
 import com.roughike.swipeselector.SwipeSelector;
 
+import net.alhazmy13.mediapicker.Image.ImagePicker;
+
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -137,7 +155,8 @@ public class MainActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
     int oldId;
     private TextView package_name;
-
+    ImageView imageView;
+    private EditText et_datetime;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -188,14 +207,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.claim_now).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ClaimNowFragment dialog = new ClaimNowFragment();
-                Bundle b = new Bundle();
-               /* b.putString("lan", loannumbers.getLannumber());
-                b.putString("customer_name", loannumbers.getCustomer_name());
-                b.putString("pay_amount", null);
-                b.putInt("position", -1);
-                dialog.setArguments(b);*/
-                dialog.show(getSupportFragmentManager(),ClaimNowFragment.class.getName());
+                showPopDialog();
             }
         });
 //        final Handler handler = new Handler();
@@ -274,9 +286,13 @@ public class MainActivity extends AppCompatActivity {
                                 inflateView(R.layout.rank);
                                 showRank();
                                 return true;
-                            case R.id.team:
-                                inflateView(R.layout.bottom_sheet_dialog);
-                                showTeam();
+//                            case R.id.team:
+//                                inflateView(R.layout.bottom_sheet_dialog);
+//                                showTeam();
+//                                return true;
+                            case R.id.tournament:
+                                inflateView(R.layout.rank);
+                                showEvents();
                                 return true;
                             case R.id.history:
                                 inflateView(R.layout.history);
@@ -325,6 +341,82 @@ public class MainActivity extends AppCompatActivity {
                     }
                 };
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
+    }
+
+    private void showPopDialog() {
+        final int REQUEST_PERMISSIONS = 100;
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        dialog.setContentView(R.layout.fragment_claim_now);
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        Button dialogButton = dialog.findViewById(R.id.upload_file);
+        imageView = dialog.findViewById(R.id.imageview);
+        et_datetime = dialog.findViewById(R.id.et_datetime);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if ((ContextCompat.checkSelfPermission(MainActivity.this,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) && (ContextCompat.checkSelfPermission(MainActivity.this,
+                        Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)) {
+                    if ((ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE)) && (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
+                            Manifest.permission.READ_EXTERNAL_STORAGE))) {
+                        showFileChooser();
+                    } else {
+                        ActivityCompat.requestPermissions(MainActivity.this,
+                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
+                                REQUEST_PERMISSIONS);
+                    }
+                } else {
+                    showFileChooser();
+                }
+            }
+        });
+        et_datetime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar newCalendar = Calendar.getInstance();
+                DatePickerDialog fromDatePickerDialog = new DatePickerDialog(MainActivity.this, new DatePickerDialog.OnDateSetListener() {
+
+                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                        Calendar newDate = Calendar.getInstance();
+                        TimePickerDialog mTimePicker;
+                        mTimePicker = new TimePickerDialog(MainActivity.this, new TimePickerDialog.OnTimeSetListener() {
+                            @Override
+                            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                                newDate.set(year, monthOfYear, dayOfMonth, selectedHour, selectedMinute);
+                                et_datetime.setText(new SimpleDateFormat("dd/MMM/yyyy HH:mm", Locale.US).format(newDate.getTime()));
+                            }
+                        }, newCalendar.get(Calendar.HOUR_OF_DAY), newCalendar.get(Calendar.MINUTE), true);//Yes 24 hour time
+                        //mTimePicker.setTitle("Select Time");
+                        mTimePicker.show();
+                    }
+
+                }, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
+                fromDatePickerDialog.show();
+            }
+        });
+        dialogButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (selectedImage != null && !et_datetime.getText().toString().equals(""))
+                    uploadBitmap();
+                else
+                    Toast.makeText(MainActivity.this, "Please Select image And Time", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        dialog.show();
+    }
+
+    private void showFileChooser() {
+        new ImagePicker.Builder(this)
+                .mode(ImagePicker.Mode.GALLERY)
+                .compressLevel(ImagePicker.ComperesLevel.NONE)
+                .directory(ImagePicker.Directory.DEFAULT)
+                .allowMultipleImages(false)
+                .build();
     }
 
     private void saveToProfile(String imageUrl) {
@@ -401,6 +493,67 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+    private void showEvents() {
+        List<NotificationModel> notificationModelList = new ArrayList<>();
+        TextView title = inflated.findViewById(R.id.title);
+        title.setText("Upcoming/Ongoing Tournament");
+        recyclerView = inflated.findViewById(R.id.recycler_view);
+        ShimmerFrameLayout shimmerFrameLayout = inflated.findViewById(R.id.shimmer_layout);
+        shimmerFrameLayout.startShimmer();
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = "http://y-ral-gaming.com/admin/api/get_tournament.php";
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.e("tokenResponse", response);
+                        shimmerFrameLayout.hideShimmer();
+                        shimmerFrameLayout.setVisibility(View.GONE);
+                        try {
+                            JSONArray array = new JSONArray(response);
+                            for (int i = 0; i < array.length(); i++) {
+                                JSONObject obj = array.getJSONObject(i);
+                                notificationModelList.add(new NotificationModel(obj.getString("image_url"), obj.getString("name"), obj.getString("date")));
+                            }
+                            NotificationAdapter pAdapter = new NotificationAdapter(MainActivity.this, notificationModelList);
+                            recyclerView.setAdapter(pAdapter);
+                        } catch (Exception e) {
+                            Log.e("error Rec", e.getMessage());
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+/*                shimmer_container.hideShimmer();
+                shimmer_container.setVisibility(View.GONE);*/
+                error.printStackTrace();
+                FirebaseCrashlytics.getInstance().recordException(error);
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("user_id", "1605435786512");
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Content-Type", "application/x-www-form-urlencoded");
+                return params;
+            }
+        };
+
+        queue.add(stringRequest);
+
+
+        NotificationAdapter mAdapter = new NotificationAdapter(this, notificationModelList);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(mAdapter);
+    }
 
 
     private void showNotification() {
@@ -410,7 +563,6 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = inflated.findViewById(R.id.recycler_view);
         ShimmerFrameLayout shimmerFrameLayout = inflated.findViewById(R.id.shimmer_layout);
         shimmerFrameLayout.startShimmer();
-//        Log.e("db_Toll", db.getAllNotes().size() + "");
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = "http://y-ral-gaming.com/admin/api/get_status.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
@@ -428,7 +580,6 @@ public class MainActivity extends AppCompatActivity {
                             }
                             NotificationAdapter pAdapter = new NotificationAdapter(MainActivity.this, notificationModelList);
                             recyclerView.setAdapter(pAdapter);
-
                         } catch (Exception e) {
                             Log.e("error Rec", e.getMessage());
                         }
@@ -659,10 +810,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    Bitmap selectedImage;
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK
                 && null != data) {
             Uri selectedImage = data.getData();
@@ -685,9 +837,100 @@ public class MainActivity extends AppCompatActivity {
 
             cursor.close();
             Glide.with(this).load(picturePath).apply(new RequestOptions().circleCrop()).into(imgProfile);
-
-
+        } else if (requestCode == ImagePicker.IMAGE_PICKER_REQUEST_CODE && resultCode == RESULT_OK) {
+            List<String> mPaths = data.getStringArrayListExtra(ImagePicker.EXTRA_IMAGE_PATH);
+            BitmapFactory.Options opts = new BitmapFactory.Options();
+            selectedImage = BitmapFactory.decodeFile(mPaths.get(0), opts);
+            Glide.with(this).load(mPaths.get(0)).into(imageView);
+            //  uploadBitmap();
+            // Glide.with(holder.imagePhoto.getContext()).load(bitmapToByte(yourBitmap)).asBitmap().into(holder.imagePhoto); //>>not tested
+//            dialog.show();
         }
+    }
+
+    public Bitmap getResizedBitmap(Bitmap image, int maxSize) {
+        int width = image.getWidth();
+        int height = image.getHeight();
+
+        float bitmapRatio = (float) width / (float) height;
+        if (bitmapRatio > 1) {
+            width = maxSize;
+            height = (int) (width / bitmapRatio);
+        } else {
+            height = maxSize;
+            width = (int) (height * bitmapRatio);
+        }
+        return Bitmap.createScaledBitmap(image, width, height, true);
+    }
+
+    private void uploadBitmap() {
+        ProgressDialog dialog = new ProgressDialog(MainActivity.this);
+        dialog.setMessage("Uploading file, please wait.");
+        dialog.show();
+        VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST,
+                "http://y-ral-gaming.com/admin/api/upload.php?" +
+                        "userid="+appConstant.getUserId()+"&&time="+et_datetime.getText().toString() +
+                        "&&profile=" + AppController.getInstance().mySnapShort.child(AppConstant.myPicUrl).getValue()
+                        +"&&name="+AppController.getInstance().mySnapShort.child(AppConstant.userName).getValue()
+
+                ,
+                new Response.Listener<NetworkResponse>() {
+                    @Override
+                    public void onResponse(NetworkResponse response) {
+                        if (dialog.isShowing()) {
+                            dialog.dismiss();
+                        }
+                        try {
+                            Log.e("GotError", "success");
+                            JSONObject obj = new JSONObject(new String(response.data));
+                           // selectedImage = null;
+                            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(MainActivity.this, "Upload Successfully", Toast.LENGTH_LONG).show();
+                                }
+                            });
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Log.e("GotError", "" + e.getMessage());
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        if (dialog.isShowing()) {
+                            dialog.dismiss();
+                        }
+                        // Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
+                        Log.e("GotError", "" + error.getMessage());
+                    }
+                }) {
+
+            //            @Override
+//            protected Map<String, String> getParams() throws AuthFailureError {
+//                Map<String, String> params = new HashMap<>();
+//                params.put("tags", tags);
+//                return params;
+//            }
+            @Override
+            protected Map<String, DataPart> getByteData() {
+                Map<String, DataPart> params = new HashMap<>();
+                long imagename = System.currentTimeMillis();
+                params.put("uploaded_file", new DataPart(imagename + ".png", getFileDataFromDrawable()));
+               // params.put("userId", new DataPart("1605435786512"));
+                return params;
+            }
+        };
+        //adding the request to volley
+        Volley.newRequestQueue(this).add(volleyMultipartRequest);
+    }
+
+    public byte[] getFileDataFromDrawable() {
+        selectedImage = getResizedBitmap(selectedImage, 700);
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        selectedImage.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+        return byteArrayOutputStream.toByteArray();
     }
 
     public void setFirstView() {

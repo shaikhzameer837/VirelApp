@@ -1,10 +1,10 @@
 package com.intelj.yral_gaming.Fragment;
 
-import static android.app.Activity.RESULT_OK;
-
 import android.Manifest;
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -15,6 +15,17 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.provider.MediaStore;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TimePicker;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,21 +33,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-
-import android.provider.DocumentsContract;
-import android.provider.MediaStore;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.TimePicker;
-import android.widget.Toast;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
@@ -47,24 +43,24 @@ import com.bumptech.glide.Glide;
 import com.intelj.yral_gaming.R;
 import com.intelj.yral_gaming.VolleyMultipartRequest;
 
+import net.alhazmy13.mediapicker.Image.ImagePicker;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 /**
-
+ *
  */
 public class ClaimNowFragment extends DialogFragment {
+    private static final int RESULT_OK = 8;
     private View view;
     private EditText et_datetime, et_duration;
     private Button upload_file;
@@ -72,11 +68,9 @@ public class ClaimNowFragment extends DialogFragment {
     private AlertDialog dialog;
     private static final String ROOT_URL = "http://y-ral-gaming.com/admin/api/upload.php";
     private static final int REQUEST_PERMISSIONS = 100;
-    private static final int PICK_IMAGE_REQUEST =1 ;
-    private Bitmap bitmap;
-    private String filePath;
+    private static final int PICK_IMAGE_REQUEST = 1;
     ImageView imageView;
-    TextView textView;
+    Bitmap selectedImage;
 
     public ClaimNowFragment() {
         // Required empty public constructor
@@ -123,7 +117,6 @@ public class ClaimNowFragment extends DialogFragment {
                     }
 
                 }, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
-//                fromDatePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
                 fromDatePickerDialog.show();
             }
         });
@@ -137,7 +130,8 @@ public class ClaimNowFragment extends DialogFragment {
         builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
+                if (selectedImage != null)
+                    uploadBitmap(selectedImage);
             }
         });
         upload_file.setOnClickListener(new View.OnClickListener() {
@@ -149,7 +143,7 @@ public class ClaimNowFragment extends DialogFragment {
                     if ((ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
                             Manifest.permission.WRITE_EXTERNAL_STORAGE)) && (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
                             Manifest.permission.READ_EXTERNAL_STORAGE))) {
-                            showFileChooser();
+                        showFileChooser();
                     } else {
                         ActivityCompat.requestPermissions(getActivity(),
                                 new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
@@ -174,29 +168,67 @@ public class ClaimNowFragment extends DialogFragment {
     }
 
     private void showFileChooser() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+        new ImagePicker.Builder(getActivity())
+                .mode(ImagePicker.Mode.GALLERY)
+                .compressLevel(ImagePicker.ComperesLevel.NONE)
+                .directory(ImagePicker.Directory.DEFAULT)
+                .allowMultipleImages(false)
+                .build();
+//        Intent pickPhoto = new Intent(Intent.ACTION_PICK,
+//                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//        startActivityForResult(pickPhoto , 1);
+//        Intent intent = new Intent();
+//        intent.setType("image/*");
+//        intent.setAction(Intent.ACTION_GET_CONTENT);
+//        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
     }
-    public void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
-        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
 
-        try {
-            Uri imageUri = imageReturnedIntent.getData();
-            InputStream imageStream = getActivity().getContentResolver().openInputStream(imageUri);
-            Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-
-            selectedImage = getResizedBitmap(selectedImage, 400);// 400 is for example, replace with desired size
-
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == ImagePicker.IMAGE_PICKER_REQUEST_CODE && resultCode == RESULT_OK) {
+            List<String> mPaths = data.getStringArrayListExtra(ImagePicker.EXTRA_IMAGE_PATH);
+            BitmapFactory.Options opts = new BitmapFactory.Options();
+            selectedImage = BitmapFactory.decodeFile(mPaths.get(0), opts);
             Glide.with(this).load(selectedImage).into(imageView);
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            dialog.show();
         }
     }
+//    public void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
+//        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
+//            Uri selectedImages = imageReturnedIntent.getData();
+//            String[] filePathColumn = { MediaStore.Images.Media.DATA };
+//
+//            Cursor cursor = getActivity().getContentResolver().query(selectedImages,
+//                    filePathColumn, null, null, null);
+//            cursor.moveToFirst();
+//
+//            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+//            String picturePath = cursor.getString(columnIndex);
+//            cursor.close();
+//
+//            selectedImage = getResizedBitmap(BitmapFactory.decodeFile(picturePath),100);
+//            Glide.with(this).load(selectedImage).into(imageView);
+    //selectedImage = BitmapFactory.decodeFile(imgDecodableString);
+//        try {
+//            Uri imageUri = imageReturnedIntent.getData();
+//            InputStream imageStream = getActivity().getContentResolver().openInputStream(imageUri);
+//
+//            BitmapFactory.Options options = new BitmapFactory.Options();
+//            options.inSampleSize = 8;
+//            selectedImage = BitmapFactory.decodeStream(imageStream, null, options);
+//
+//            //selectedImage = BitmapFactory.decodeStream(imageStream);
+//
+//            selectedImage = getResizedBitmap(selectedImage, 100);// 400 is for example, replace with desired size
+//
+//            Glide.with(this).load(selectedImage).into(imageView);
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
+    //   }
 
-//    @Override
+    //    @Override
 //    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 //        super.onActivityResult(requestCode, resultCode, data);
 //
@@ -225,40 +257,6 @@ public class ClaimNowFragment extends DialogFragment {
 //            }
 //        }
 //    }
-    public Bitmap getResizedBitmap(Bitmap image, int maxSize) {
-        int width = image.getWidth();
-        int height = image.getHeight();
-
-        float bitmapRatio = (float)width / (float) height;
-        if (bitmapRatio > 1) {
-            width = maxSize;
-            height = (int) (width / bitmapRatio);
-        } else {
-            height = maxSize;
-            width = (int) (height * bitmapRatio);
-        }
-        return Bitmap.createScaledBitmap(image, width, height, true);
-    }
-    public String getPath(Uri uri) {
-        Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
-        cursor.moveToFirst();
-        String document_id = cursor.getString(0);
-        document_id = document_id.substring(document_id.lastIndexOf(":") + 1);
-        cursor.close();
-
-        cursor = context.getContentResolver().query(
-                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                null, MediaStore.Images.Media._ID + " = ? ", new String[]{document_id}, null);
-        cursor.moveToFirst();
-
-        String path = "";
-        if (cursor != null && cursor.moveToFirst()) {
-            path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
-            cursor.close();
-        }
-
-        return path;
-    }
 
 
     public byte[] getFileDataFromDrawable(Bitmap bitmap) {
@@ -268,25 +266,41 @@ public class ClaimNowFragment extends DialogFragment {
     }
 
 
-    /*private void uploadBitmap(final Bitmap bitmap) {
-
+    private void uploadBitmap(final Bitmap bitmap) {
+        ProgressDialog dialog = new ProgressDialog(getActivity());
+        dialog.setMessage("Uploading file, please wait.");
+        dialog.show();
         VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, ROOT_URL,
                 new Response.Listener<NetworkResponse>() {
                     @Override
                     public void onResponse(NetworkResponse response) {
+                        if (dialog.isShowing()) {
+                            dialog.dismiss();
+                        }
                         try {
+                            Log.e("GotError", "sucess");
                             JSONObject obj = new JSONObject(new String(response.data));
-                            //Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
+                            selectedImage = null;
+                            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(context, "Upload Successfully", Toast.LENGTH_LONG).show();
+                                }
+                            });
                         } catch (JSONException e) {
                             e.printStackTrace();
+                            Log.e("GotError", "" + e.getMessage());
                         }
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        if (dialog.isShowing()) {
+                            dialog.dismiss();
+                        }
                         Toast.makeText(context, error.getMessage(), Toast.LENGTH_LONG).show();
-                        Log.e("GotError",""+error.getMessage());
+                        Log.e("GotError", "" + error.getMessage());
                     }
                 }) {
 
@@ -301,6 +315,7 @@ public class ClaimNowFragment extends DialogFragment {
                 Map<String, DataPart> params = new HashMap<>();
                 long imagename = System.currentTimeMillis();
                 params.put("uploaded_file", new DataPart(imagename + ".png", getFileDataFromDrawable(bitmap)));
+                params.put("date_time", new DataPart(et_datetime.getText().toString()));
                 return params;
             }
         };
@@ -308,5 +323,4 @@ public class ClaimNowFragment extends DialogFragment {
         //adding the request to volley
         Volley.newRequestQueue(context).add(volleyMultipartRequest);
     }
-*/
 }

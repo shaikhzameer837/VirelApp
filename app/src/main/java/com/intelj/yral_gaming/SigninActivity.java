@@ -63,7 +63,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import static androidx.constraintlayout.motion.utils.Oscillator.TAG;
 
 
 public class SigninActivity extends AppCompatActivity {
@@ -93,7 +92,7 @@ public class SigninActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<String> task) {
                         if (!task.isSuccessful()) {
-                            Log.w(TAG, "Fetching FCM registration token failed", task.getException());
+                            Log.w("TAG", "Fetching FCM registration token failed", task.getException());
                             return;
                         }
 

@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
-import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.intelj.yral_gaming.AppController;
 import com.intelj.yral_gaming.R;
@@ -22,7 +21,6 @@ public class NewProfileActivity extends AppCompatActivity {
     private EditText username;
     private Button btn_invite;
     private FirebaseFirestore firestore;
-    private PlayerView playerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -1,6 +1,5 @@
 package com.intelj.yral_gaming.Activity;
 
-import static androidx.constraintlayout.motion.utils.Oscillator.TAG;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -64,7 +63,7 @@ public class SplashScreen extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<String> task) {
                         if (!task.isSuccessful()) {
-                            Log.w(TAG, "Fetching FCM registration token failed", task.getException());
+                            Log.w("TAG", "Fetching FCM registration token failed", task.getException());
                             return;
                         }
                         String token = task.getResult();
@@ -79,7 +78,7 @@ public class SplashScreen extends AppCompatActivity {
                 });
         Intent intent = null;
         if (!AppController.getInstance().remoteConfig.getString("subscription_package").equals(""))
-            intent = new Intent(this, SplashScreenStory.class);
+            intent = new Intent(this, MainActivity.class);
         else if (!AppController.getInstance().userId.isEmpty() && !new AppConstant(this).getFriendCheck())
             intent = new Intent(this, UserInfoCheck.class);
         if (intent != null) {
