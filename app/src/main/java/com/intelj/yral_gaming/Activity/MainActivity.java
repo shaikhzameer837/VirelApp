@@ -347,7 +347,7 @@ public class MainActivity extends AppCompatActivity {
         final int REQUEST_PERMISSIONS = 100;
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setCancelable(false);
+        dialog.setCancelable(true);
         dialog.setContentView(R.layout.fragment_claim_now);
         dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         Button dialogButton = dialog.findViewById(R.id.upload_file);
@@ -496,7 +496,7 @@ public class MainActivity extends AppCompatActivity {
     private void showEvents() {
         List<NotificationModel> notificationModelList = new ArrayList<>();
         TextView title = inflated.findViewById(R.id.title);
-        title.setText("Upcoming/Ongoing Tournament");
+        title.setText("Tournament");
         recyclerView = inflated.findViewById(R.id.recycler_view);
         ShimmerFrameLayout shimmerFrameLayout = inflated.findViewById(R.id.shimmer_layout);
         shimmerFrameLayout.startShimmer();
@@ -546,8 +546,6 @@ public class MainActivity extends AppCompatActivity {
         };
 
         queue.add(stringRequest);
-
-
         NotificationAdapter mAdapter = new NotificationAdapter(this, notificationModelList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
@@ -1459,7 +1457,7 @@ public class MainActivity extends AppCompatActivity {
                 JSONArray jsonArray = jsnobject.getJSONArray("package");
                 JSONObject explrObject = jsonArray.getJSONObject(Integer.parseInt(new AppConstant(MainActivity.this)
                         .getDataFromShared(AppConstant.package_id, "0")));
-                package_name.setText(explrObject.getString(AppConstant.package_name));
+               // package_name.setText(explrObject.getString(AppConstant.package_name));
             } catch (Exception e) {
                 Log.e("My App", "Could not parse malformed JSON:" + e.getMessage());
             }
