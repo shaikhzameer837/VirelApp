@@ -503,7 +503,7 @@ public class MainActivity extends AppCompatActivity {
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = "http://y-ral-gaming.com/admin/api/get_tournament.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                new Response.Listener<String>() {
+                new Response.Listener<String>() { 
                     @Override
                     public void onResponse(String response) {
                         Log.e("tokenResponse", response);
