@@ -13,19 +13,25 @@
          android:layout_marginRight="10dp"
         android:layout_height="60dp"/>
     <TextView
-        android:id="@+id/time"
+        android:id="@+id/name"
         android:layout_width="match_parent"
         android:layout_toRightOf="@+id/images"
         android:layout_height="wrap_content"
         android:textStyle="bold"
-        android:textColor="@color/colorAccent"
+        android:textColor="@color/black"
         android:lineSpacingExtra="0dp"  />
     <TextView
-        android:id="@+id/note"
+        android:id="@+id/time"
         android:layout_toRightOf="@+id/images"
         android:layout_width="match_parent"
         android:textSize="13sp"
         android:layout_height="wrap_content"
+        android:layout_below="@id/name"/>
+    <TextView
+        android:id="@+id/status"
+        android:layout_toRightOf="@+id/images"
+        android:layout_width="match_parent"
+        android:textSize="12sp"
+        android:layout_height="wrap_content"
         android:layout_below="@id/time"/>
-
 </RelativeLayout>

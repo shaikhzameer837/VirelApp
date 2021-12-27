@@ -5,6 +5,7 @@ package com.intelj.yral_gaming;
  */
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,17 +25,16 @@ import java.util.List;
 
 
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.MyViewHolder> {
-
     private Context context;
     private List<NotificationModel> notificationModelList;
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView note;
-        public TextView time;
+        public TextView name,time,status;
         ImageView images;
         public MyViewHolder(View view) {
             super(view);
-            note = view.findViewById(R.id.note);
+            name = view.findViewById(R.id.name);
             time = view.findViewById(R.id.time);
+            status = view.findViewById(R.id.status);
             images = view.findViewById(R.id.images);
         }
     }
@@ -56,12 +56,21 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         NotificationModel notificationModel = notificationModelList.get(position);
-
-        holder.note.setText(notificationModel.getStatus());
-
-        // Displaying dot from HTML character code
+        holder.name.setText(notificationModel.getName());
         holder.time.setText(notificationModel.getDate());
-
+        if(notificationModel.getStatus().equals("0")) {
+            holder.status.setText("Upcoming");
+            holder.status.setTextColor(Color.parseColor("#7e241c"));
+        }else if(notificationModel.getStatus().equals("1")) {
+            holder.status.setText("OnGoing");
+            holder.status.setTextColor(Color.parseColor("#228B22"));
+        }else if(notificationModel.getStatus().equals("2")){
+            holder.status.setText("Completed");
+            holder.status.setTextColor(Color.parseColor("#dddddd"));
+        }else{
+            holder.status.setText(notificationModel.getStatus());
+            holder.status.setTextColor(Color.parseColor("#bbbbbb"));
+        }
         Glide.with(context)
                 .load(notificationModel.getImage_url())
                 .placeholder(R.drawable.game_avatar)
@@ -73,21 +82,5 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         return notificationModelList.size();
     }
 
-    /**
-     * Formatting timestamp to `MMM d` format
-     * Input: 2018-02-21 00:15:42
-     * Output: Feb 21
-     */
-    private String formatDate(String dateStr) {
-        try {
-            SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            Date date = fmt.parse(dateStr);
-            SimpleDateFormat fmtOut = new SimpleDateFormat("MMM d");
-            return fmtOut.format(date);
-        } catch (ParseException e) {
-            FirebaseCrashlytics.getInstance().recordException(e);
-        }
 
-        return "";
-    }
 }

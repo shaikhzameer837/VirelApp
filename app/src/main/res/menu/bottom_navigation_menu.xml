@@ -13,9 +13,9 @@
         android:icon="@drawable/trophy_outline"
         android:title="Events" />
     <item
-        android:id="@+id/showNotification"
-        android:icon="@drawable/bell_outline"
-        android:title="Notification" />
+        android:id="@+id/status"
+        android:icon="@drawable/status"
+        android:title="status" />
     <item
         android:id="@+id/history"
         android:icon="@drawable/history"

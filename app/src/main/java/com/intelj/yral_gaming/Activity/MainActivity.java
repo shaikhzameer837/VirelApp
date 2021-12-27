@@ -19,6 +19,7 @@ import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -156,7 +157,8 @@ public class MainActivity extends AppCompatActivity {
     int oldId;
     private TextView package_name;
     ImageView imageView;
-    private EditText et_datetime;
+    private EditText et_datetime, upi;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -204,10 +206,22 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
+        findViewById(R.id.help).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String url = "https://www.youtube.com/c/YRALGaming";
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
+            }
+        });
         findViewById(R.id.claim_now).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showPopDialog();
+                if (new AppConstant(MainActivity.this).checkLogin())
+                    showPopDialog();
+                else
+                    showBottomSheetDialog();
             }
         });
 //        final Handler handler = new Handler();
@@ -227,38 +241,7 @@ public class MainActivity extends AppCompatActivity {
 //        }, delay);
 //        getGameName();
 //        openTopSheetDialog(roomPassword);
-        ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-
-        if (mWifi.isConnected() && !mWifi.isConnected()) {
-            YouTubePlayerFragment youtubeFragment = (YouTubePlayerFragment)
-                    getFragmentManager().findFragmentById(R.id.youtubeFragment);
-            youtubeFragment.initialize(AppConstant.youtubeApiKey,
-                    new YouTubePlayer.OnInitializedListener() {
-                        @Override
-                        public void onInitializationSuccess(YouTubePlayer.Provider provider,
-                                                            YouTubePlayer youTubePlayer, boolean b) {
-                            if (!b) {
-                                youTubePlayer.loadVideo("zBD-WH3X4nc");
-                            }
-                        }
-
-                        @Override
-                        public void onInitializationFailure(YouTubePlayer.Provider provider,
-                                                            YouTubeInitializationResult youTubeInitializationResult) {
-                            Log.d("onInitianFailure: ", youTubeInitializationResult.toString());
-                        }
-                    });
-        }
         setFirstView();
-//        SharedPreferences shd = getSharedPreferences(AppConstant.saveYTid, 0);
-//        String saveYTid = shd.getString(AppConstant.saveYTid, "");
-//        if (!saveYTid.equals("")) {
-//            setRoomVideo(saveYTid);
-//        }
-
-        // startService(new Intent(MainActivity.this,MyService.class));
-
         timeLeft = findViewById(R.id.timeLeft);
         oldId = bottomNavigation.getSelectedItemId();
         BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
@@ -278,7 +261,7 @@ public class MainActivity extends AppCompatActivity {
                                 inflateView(R.layout.game_slot);
                                 setFirstView();
                                 return true;
-                            case R.id.showNotification:
+                            case R.id.status:
                                 inflateView(R.layout.rank);
                                 showNotification();
                                 return true;
@@ -291,7 +274,6 @@ public class MainActivity extends AppCompatActivity {
 //                                showTeam();
 //                                return true;
                             case R.id.tournament:
-                                inflateView(R.layout.rank);
                                 showEvents();
                                 return true;
                             case R.id.history:
@@ -341,18 +323,50 @@ public class MainActivity extends AppCompatActivity {
                     }
                 };
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
+        ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        if (mWifi.isConnected()) {
+            SharedPreferences prefs = getSharedPreferences(AppConstant.AppName, MODE_PRIVATE);
+            String url = prefs.getString("url", "");
+            YouTubePlayerFragment youtubeFragment = (YouTubePlayerFragment)
+                    getFragmentManager().findFragmentById(R.id.youtubeFragment);
+            youtubeFragment.initialize(AppConstant.youtubeApiKey,
+                    new YouTubePlayer.OnInitializedListener() {
+                        @Override
+                        public void onInitializationSuccess(YouTubePlayer.Provider provider,
+                                                            YouTubePlayer youTubePlayer, boolean b) {
+                            System.out.println("susccess " + url);
+                            if (!b) {
+                                if (url.equals("")) {
+                                    youTubePlayer.loadPlaylist("PLFSCz7rRk_hVFGD9d25S_789spdVYLLj_");
+                                } else {
+                                    youTubePlayer.loadVideo(url);
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onInitializationFailure(YouTubePlayer.Provider provider,
+                                                            YouTubeInitializationResult youTubeInitializationResult) {
+                            Log.d("onInitianFailure: ", youTubeInitializationResult.toString());
+                        }
+                    });
+        }
     }
+
+    Dialog Pdialog;
 
     private void showPopDialog() {
         final int REQUEST_PERMISSIONS = 100;
-        final Dialog dialog = new Dialog(this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setCancelable(true);
-        dialog.setContentView(R.layout.fragment_claim_now);
-        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        Button dialogButton = dialog.findViewById(R.id.upload_file);
-        imageView = dialog.findViewById(R.id.imageview);
-        et_datetime = dialog.findViewById(R.id.et_datetime);
+        Pdialog = new Dialog(this);
+        Pdialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        Pdialog.setCancelable(true);
+        Pdialog.setContentView(R.layout.fragment_claim_now);
+        Pdialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        Button dialogButton = Pdialog.findViewById(R.id.upload_file);
+        imageView = Pdialog.findViewById(R.id.imageview);
+        et_datetime = Pdialog.findViewById(R.id.et_datetime);
+        upi = Pdialog.findViewById(R.id.upi);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -400,14 +414,14 @@ public class MainActivity extends AppCompatActivity {
         dialogButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (selectedImage != null && !et_datetime.getText().toString().equals(""))
+                if (selectedImage != null && !et_datetime.getText().toString().equals("") && !upi.getText().toString().equals(""))
                     uploadBitmap();
                 else
-                    Toast.makeText(MainActivity.this, "Please Select image And Time", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, "Please Select image and enter Time & UPI Id", Toast.LENGTH_LONG).show();
             }
         });
 
-        dialog.show();
+        Pdialog.show();
     }
 
     private void showFileChooser() {
@@ -493,7 +507,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
     private void showEvents() {
+        inflateView(R.layout.rank);
         List<NotificationModel> notificationModelList = new ArrayList<>();
         TextView title = inflated.findViewById(R.id.title);
         title.setText("Tournament");
@@ -503,7 +519,7 @@ public class MainActivity extends AppCompatActivity {
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = "http://y-ral-gaming.com/admin/api/get_tournament.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                new Response.Listener<String>() { 
+                new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         Log.e("tokenResponse", response);
@@ -513,7 +529,11 @@ public class MainActivity extends AppCompatActivity {
                             JSONArray array = new JSONArray(response);
                             for (int i = 0; i < array.length(); i++) {
                                 JSONObject obj = array.getJSONObject(i);
-                                notificationModelList.add(new NotificationModel(obj.getString("image_url"), obj.getString("name"), obj.getString("date")));
+                                notificationModelList.add(new NotificationModel(obj.getString("name"),
+                                        obj.getString("image_url"),
+                                        obj.getString("date"),
+                                        obj.getString("status"),
+                                        obj.getString("discord_url")));
                             }
                             NotificationAdapter pAdapter = new NotificationAdapter(MainActivity.this, notificationModelList);
                             recyclerView.setAdapter(pAdapter);
@@ -532,9 +552,7 @@ public class MainActivity extends AppCompatActivity {
         }) {
             @Override
             protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put("user_id", "1605435786512");
-                return params;
+                return new HashMap<>();
             }
 
             @Override
@@ -551,6 +569,20 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
+        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new RecyclerTouchListener.ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                String url = notificationModelList.get(position).getDiscord_url();
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+
+            }
+        }));
     }
 
 
@@ -574,7 +606,12 @@ public class MainActivity extends AppCompatActivity {
                             JSONArray array = new JSONArray(response);
                             for (int i = 0; i < array.length(); i++) {
                                 JSONObject obj = array.getJSONObject(i);
-                                notificationModelList.add(new NotificationModel(obj.getString("image_url"), obj.getString("date"), obj.getString("status")));
+                                notificationModelList.add(
+                                        new NotificationModel(obj.getString("name"),
+                                                obj.getString("image_url"),
+                                                obj.getString("date"),
+                                                obj.getString("status"),
+                                                obj.getString("comment")));
                             }
                             NotificationAdapter pAdapter = new NotificationAdapter(MainActivity.this, notificationModelList);
                             recyclerView.setAdapter(pAdapter);
@@ -687,7 +724,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put("user_id", "1605435786512");
+                params.put("user_id", appConstant.getUserId());
                 return params;
             }
 
@@ -867,24 +904,32 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
         VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST,
                 "http://y-ral-gaming.com/admin/api/upload.php?" +
-                        "userid="+appConstant.getUserId()+"&&time="+et_datetime.getText().toString() +
-                        "&&profile=" + AppController.getInstance().mySnapShort.child(AppConstant.myPicUrl).getValue()
-                        +"&&name="+AppController.getInstance().mySnapShort.child(AppConstant.userName).getValue()
+                        "userid=" + appConstant.getUserId() + "&&time=" + et_datetime.getText().toString() +
+                        "&&profile=" + AppController.getInstance().mySnapShort.child(AppConstant.myPicUrl).getValue() +
+                        "&&upi=" + upi.getText().toString() +
+                        "&&discord=" + AppController.getInstance().mySnapShort.child(AppConstant.discordId).getValue()
+                        + "&&name=" + AppController.getInstance().mySnapShort.child(AppConstant.userName).getValue()
 
                 ,
                 new Response.Listener<NetworkResponse>() {
                     @Override
                     public void onResponse(NetworkResponse response) {
-                        if (dialog.isShowing()) {
+                        if (dialog.isShowing())
                             dialog.dismiss();
-                        }
+                        if (Pdialog.isShowing())
+                            Pdialog.dismiss();
                         try {
                             Log.e("GotError", "success");
                             JSONObject obj = new JSONObject(new String(response.data));
-                           // selectedImage = null;
+                            // selectedImage = null;
                             new Handler(Looper.getMainLooper()).post(new Runnable() {
                                 @Override
                                 public void run() {
+                                    if (R.id.status == oldId)
+                                        showNotification();
+                                    else
+                                        bottomNavigation.findViewById(R.id.status).performClick();
+                                    //bottomNavigation.getMenu().findItem(R.id.status).setChecked(true);
                                     Toast.makeText(MainActivity.this, "Upload Successfully", Toast.LENGTH_LONG).show();
                                 }
                             });
@@ -900,6 +945,12 @@ public class MainActivity extends AppCompatActivity {
                         if (dialog.isShowing()) {
                             dialog.dismiss();
                         }
+                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(MainActivity.this, "Something Went Wrong! Please try again later", Toast.LENGTH_LONG).show();
+                            }
+                        });
                         // Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
                         Log.e("GotError", "" + error.getMessage());
                     }
@@ -916,7 +967,7 @@ public class MainActivity extends AppCompatActivity {
                 Map<String, DataPart> params = new HashMap<>();
                 long imagename = System.currentTimeMillis();
                 params.put("uploaded_file", new DataPart(imagename + ".png", getFileDataFromDrawable()));
-               // params.put("userId", new DataPart("1605435786512"));
+                // params.put("userId", new DataPart("1605435786512"));
                 return params;
             }
         };
@@ -1457,7 +1508,7 @@ public class MainActivity extends AppCompatActivity {
                 JSONArray jsonArray = jsnobject.getJSONArray("package");
                 JSONObject explrObject = jsonArray.getJSONObject(Integer.parseInt(new AppConstant(MainActivity.this)
                         .getDataFromShared(AppConstant.package_id, "0")));
-               // package_name.setText(explrObject.getString(AppConstant.package_name));
+                // package_name.setText(explrObject.getString(AppConstant.package_name));
             } catch (Exception e) {
                 Log.e("My App", "Could not parse malformed JSON:" + e.getMessage());
             }

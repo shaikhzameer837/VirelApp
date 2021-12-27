@@ -67,11 +67,11 @@ public class SplashScreen extends AppCompatActivity {
                             return;
                         }
                         String token = task.getResult();
-                        Log.d("okens",token);
+                        Log.d("Tokens",token);
                          FirebaseMessaging.getInstance().subscribeToTopic("push_yt").addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                             //   Toast.makeText(getApplicationContext(),"Success",Toast.LENGTH_LONG).show();
+                                Log.d("SUBSCRIBED","SUCCESS");
                             }
                         });
                     }

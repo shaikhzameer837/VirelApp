@@ -9,11 +9,13 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,9 +24,12 @@ import androidx.core.app.NotificationCompat;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.intelj.yral_gaming.Utils.AppConstant;
 
 import org.json.JSONObject;
 
@@ -36,7 +41,7 @@ public class FirebaseFCMServices extends FirebaseMessagingService {
     private DatabaseHelper db;
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        Log.e("dataRecived","yes");
+       // Log.e("dataRecived","yes");
          if (remoteMessage.getData().size() > 0) {
              db = new DatabaseHelper(this, "notifications");
              try {
@@ -80,6 +85,7 @@ public class FirebaseFCMServices extends FirebaseMessagingService {
         // Also if you intend on generating your own notifications as a result of a received FCM
         // message, here is where that should be initiated. See sendNotification method below.
     }
+
     private void getBitmapAsyncAndDoWork(String msg,String title,String imageUrl) {
 
         final Bitmap[] bitmap = {null};
@@ -107,6 +113,10 @@ public class FirebaseFCMServices extends FirebaseMessagingService {
        // intent.putExtra("youtubeUrl","https://www.youtube.com/watch?v=" + url);
 
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + url));
+        SharedPreferences sharedPreferences = getSharedPreferences(AppConstant.AppName,MODE_PRIVATE);
+        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+        myEdit.putString("url", url);
+        myEdit.apply();
         //Intent webIntent = new Intent(Intent.ACTION_VIEW,
          //       Uri.parse("http://www.youtube.com/watch?v=" + id));
 
@@ -153,5 +163,11 @@ public class FirebaseFCMServices extends FirebaseMessagingService {
     @Override
     public void onNewToken(@NonNull String s) {
         super.onNewToken(s);
+        FirebaseMessaging.getInstance().subscribeToTopic("push_yt").addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d("SUBSCRIBED","SUCCESS");
+            }
+        });
     }
 }

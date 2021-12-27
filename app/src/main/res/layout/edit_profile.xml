@@ -36,13 +36,14 @@
             android:gravity="center_vertical"
             android:textColor="@color/black" />
     </LinearLayout>
+
     <ImageView
         android:id="@+id/imgs"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_below="@+id/lin"
-        android:layout_marginTop="10dp"
         android:layout_marginLeft="15dp"
+        android:layout_marginTop="10dp"
         android:src="@drawable/profile_icon" />
 
     <TextView

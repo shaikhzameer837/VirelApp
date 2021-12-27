@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.database.DataSnapshot;
 import com.intelj.yral_gaming.R;
 import com.intelj.yral_gaming.Utils.AppConstant;
@@ -26,13 +27,14 @@ public class PayMentAdapter extends RecyclerView.Adapter<PayMentAdapter.MyViewHo
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView pinfo, transaction, amount;
-        ImageView reg;
+        ImageView imgs;
 
         public MyViewHolder(View view) {
             super(view);
             pinfo = view.findViewById(R.id.pinfo);
             transaction = view.findViewById(R.id.transaction);
             amount = view.findViewById(R.id.amount);
+            imgs = view.findViewById(R.id.imgs);
         }
     }
 
@@ -52,9 +54,14 @@ public class PayMentAdapter extends RecyclerView.Adapter<PayMentAdapter.MyViewHo
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-            holder.pinfo.append(new AppConstant(mContext).getDateFromMilli(Long.parseLong(paymentHistoryModel.get(position).getDate()),"dd/MM/yyyy hh:mm:ss.SSS"));
-            holder.transaction.append(paymentHistoryModel.get(position).getTransaction());
-            holder.amount.append(paymentHistoryModel.get(position).getAmount());
+            holder.pinfo.setText(paymentHistoryModel.get(position).getDate());
+            holder.transaction.setText(paymentHistoryModel.get(position).getTransaction());
+            holder.amount.setText(paymentHistoryModel.get(position).getAmount());
+            Glide.with(mContext)
+                .load("https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSjlU10XSzoxnmWAzJhadQvxYYEew49ogNqnDalCumIGid433o7")
+                .placeholder(R.drawable.game_avatar)
+                    .circleCrop()
+                .into(holder.imgs);
     }
 
     @Override

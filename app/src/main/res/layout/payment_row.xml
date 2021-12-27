@@ -1,21 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
+    android:padding="5dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-    <LinearLayout
+    <ImageView
+        android:layout_width="50dp"
+        android:id="@+id/imgs"
+        android:src="@drawable/check"
+        android:layout_height="50dp"/>
+    <RelativeLayout
         android:layout_width="match_parent"
         android:orientation="vertical"
-        android:background="@drawable/border_round"
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@+id/imgs"
         android:layout_height="wrap_content">
         <TextView
-            android:layout_width="match_parent"
-            android:text="Time:- "
-            android:padding="10dp"
+            android:layout_width="wrap_content"
+            android:padding="2dp"
             android:id="@+id/pinfo"
-            android:textColor="@color/colorPrimaryDark"
+            android:textSize="14sp"
+            android:textColor="@color/black"
             android:gravity="center_vertical"
-            android:drawableLeft="@drawable/clock"
             android:layout_height="wrap_content"/>
         <!--<View
             android:layout_width="match_parent"
@@ -50,13 +56,13 @@
             android:layout_height="1dp"/>
 -->
         <TextView
-            android:layout_width="match_parent"
-            android:text="Transcation id:- "
-            android:padding="10dp"
-            android:textColor="@color/colorPrimaryDark"
+            android:layout_width="wrap_content"
+            android:padding="2dp"
+            android:textSize="12sp"
+            android:layout_below="@+id/pinfo"
+            android:textColor="@color/textcolor"
             android:gravity="center_vertical"
             android:id="@+id/transaction"
-            android:drawableLeft="@drawable/transaction"
             android:layout_height="wrap_content"/>
 <!--
         <View
@@ -66,13 +72,15 @@
             android:layout_height="1dp"/>
 -->
         <TextView
-            android:layout_width="match_parent"
-            android:text="Amount:- "
-            android:padding="10dp"
+            android:layout_width="wrap_content"
+            android:padding="2dp"
             android:gravity="center_vertical"
             android:id="@+id/amount"
+            android:textStyle="bold"
+            android:layout_below="@+id/pinfo"
+            android:layout_alignParentRight="true"
+            android:textSize="15sp"
             android:textColor="@color/colorPrimaryDark"
-            android:drawableLeft="@drawable/transaction"
             android:layout_height="wrap_content"/>
-    </LinearLayout>
-</LinearLayout>
+    </RelativeLayout>
+</RelativeLayout>
