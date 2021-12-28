@@ -66,7 +66,7 @@
             android:layout_weight="1" />
     </LinearLayout>
 
-    <com.intelj.yral_gaming.StoriesProgressView
+    <com.intelj.y_ral_gaming.StoriesProgressView
         android:id="@+id/stories"
         android:layout_width="match_parent"
         android:layout_height="3dp"
