@@ -2,6 +2,7 @@ package com.intelj.yral_gaming.Activity;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -103,6 +104,7 @@ import com.intelj.yral_gaming.DatabaseHelper;
 import com.intelj.yral_gaming.Fragment.BottomSheetDilogFragment;
 import com.intelj.yral_gaming.Fragment.ClaimNowFragment;
 import com.intelj.yral_gaming.Fragment.OneFragment;
+import com.intelj.yral_gaming.GallerySelector;
 import com.intelj.yral_gaming.NotificationAdapter;
 import com.intelj.yral_gaming.R;
 import com.intelj.yral_gaming.SigninActivity;
@@ -425,12 +427,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showFileChooser() {
-        new ImagePicker.Builder(this)
-                .mode(ImagePicker.Mode.GALLERY)
-                .compressLevel(ImagePicker.ComperesLevel.NONE)
-                .directory(ImagePicker.Directory.DEFAULT)
-                .allowMultipleImages(false)
-                .build();
+        Intent inz = new Intent(this, GallerySelector.class);
+        startActivityForResult(inz, 80);
+//        new ImagePicker.Builder(this)
+//                .mode(ImagePicker.Mode.GALLERY)
+//                .compressLevel(ImagePicker.ComperesLevel.NONE)
+//                .directory(ImagePicker.Directory.DEFAULT)
+//                .allowMultipleImages(false)
+//                .build();
     }
 
     private void saveToProfile(String imageUrl) {
@@ -535,7 +539,7 @@ public class MainActivity extends AppCompatActivity {
                                         obj.getString("status"),
                                         obj.getString("discord_url")));
                             }
-                            NotificationAdapter pAdapter = new NotificationAdapter(MainActivity.this, notificationModelList);
+                            NotificationAdapter pAdapter = new NotificationAdapter(MainActivity.this, notificationModelList, true);
                             recyclerView.setAdapter(pAdapter);
                         } catch (Exception e) {
                             Log.e("error Rec", e.getMessage());
@@ -564,11 +568,10 @@ public class MainActivity extends AppCompatActivity {
         };
 
         queue.add(stringRequest);
-        NotificationAdapter mAdapter = new NotificationAdapter(this, notificationModelList);
+
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(mAdapter);
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
@@ -613,7 +616,7 @@ public class MainActivity extends AppCompatActivity {
                                                 obj.getString("status"),
                                                 obj.getString("comment")));
                             }
-                            NotificationAdapter pAdapter = new NotificationAdapter(MainActivity.this, notificationModelList);
+                            NotificationAdapter pAdapter = new NotificationAdapter(MainActivity.this, notificationModelList, false);
                             recyclerView.setAdapter(pAdapter);
                         } catch (Exception e) {
                             Log.e("error Rec", e.getMessage());
@@ -646,11 +649,9 @@ public class MainActivity extends AppCompatActivity {
         queue.add(stringRequest);
 
 
-        NotificationAdapter mAdapter = new NotificationAdapter(this, notificationModelList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(mAdapter);
     }
 
 
@@ -833,6 +834,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();
                 }
                 break;
+
             case PERMISSIONS_REQUEST_READ_CONTACTS:
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -880,6 +882,14 @@ public class MainActivity extends AppCompatActivity {
             //  uploadBitmap();
             // Glide.with(holder.imagePhoto.getContext()).load(bitmapToByte(yourBitmap)).asBitmap().into(holder.imagePhoto); //>>not tested
 //            dialog.show();
+        } else if (requestCode == 80) {
+            if (resultCode == Activity.RESULT_OK) {
+                String result = data.getStringExtra("result");
+                BitmapFactory.Options opts = new BitmapFactory.Options();
+                selectedImage = BitmapFactory.decodeFile(result, opts);
+                Glide.with(this).load(result).into(imageView);
+            }
+
         }
     }
 
@@ -1101,11 +1111,11 @@ public class MainActivity extends AppCompatActivity {
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getBooleanExtra(AppConstant.AppName, false) == true) {
+            if (intent.getBooleanExtra(AppConstant.AppName, false)) {
                 showBottomSheetDialog();
                 return;
             }
-            if (intent.getBooleanExtra(AppConstant.teamMember, false) == true) {
+            if (intent.getBooleanExtra(AppConstant.teamMember, false)) {
                 Set<String> myList = (Set<String>) getIntent().getSerializableExtra("teammeber");
                 BottomSheetDilogFragment bottomSheetFragment = new BottomSheetDilogFragment(myList);
                 bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());

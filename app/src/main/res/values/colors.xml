@@ -6,7 +6,9 @@
     <color name="appColor">#810d0e</color>
     <color name="black">#000000</color>
     <color name="grey_black">#777777</color>
-    <color name="grey">#ebecef</color>
+    <color name="grey">#ebecef</color>-
+    <color name="green">#228B22</color>
+    <color name="greyish_green">#768E73</color>
     <color name="textcolor">#333333</color>
     <color name="darkgrey">#9f9f9f</color>
     <color name="gray_scale">#8affffff</color>

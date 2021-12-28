@@ -41,7 +41,7 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation files('libs\\YouTubeAndroidPlayerApi.jar')
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'com.android.volley:volley:1.2.0'
+    implementation 'com.android.volley:volley:1.2.1'
     implementation 'com.google.firebase:firebase-auth:20.0.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
     implementation 'com.google.firebase:firebase-config:20.0.3'

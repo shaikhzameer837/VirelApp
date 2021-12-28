@@ -26,6 +26,7 @@ import java.util.List;
 
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.MyViewHolder> {
     private Context context;
+    private boolean isTour;
     private List<NotificationModel> notificationModelList;
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView name,time,status;
@@ -36,13 +37,18 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             time = view.findViewById(R.id.time);
             status = view.findViewById(R.id.status);
             images = view.findViewById(R.id.images);
+            if(isTour) {
+                images.getLayoutParams().width = 180;
+                images.getLayoutParams().height = 130;
+            }
         }
     }
 
 
-    public NotificationAdapter(Context context, List<NotificationModel> notificationModelList) {
+    public NotificationAdapter(Context context, List<NotificationModel> notificationModelList,boolean isTour) {
         this.context = context;
         this.notificationModelList = notificationModelList;
+        this.isTour = isTour;
     }
 
     @Override

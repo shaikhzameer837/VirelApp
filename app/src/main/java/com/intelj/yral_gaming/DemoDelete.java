@@ -14,7 +14,7 @@ public class DemoDelete extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.xx);
+//        setContentView(R.layout.xx);
 
         ScreenshotManager.INSTANCE.requestScreenshotPermission(DemoDelete.this, REQUEST_ID);
         final Handler handler = new Handler(Looper.getMainLooper());

@@ -83,45 +83,45 @@ public class OneFragment extends Fragment {
             imageView.setVisibility(View.VISIBLE);
         }
         initializedata();
-
-        mDatabase = FirebaseDatabase.getInstance().getReference(AppConstant.live_stream);
-        mDatabase.child(AppController.getInstance().channelId).child(date).child(title).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (String s : AppController.getInstance().timeArray) {
-                    String strDate = date + " " + s.replace("pm", ":00:00 pm")
-                            .replace("am", ":00:00 am");
-                    if (AppController.getInstance().userId != null) {
-                        if (miliSec == 0 && dataSnapshot.child(s).child(AppConstant.member).child(AppController.getInstance().userId).exists()) {
-                            try {
-                                resultDate = AppConstant.dateFormat.parse(strDate);
-                                miliSec = resultDate.getTime();
-                                Log.e("miliSeRec:-", date + "/" + title + "/" + s);
-                                Intent intent = new Intent("custom-event-name");
-                                intent.putExtra("message", (miliSec - System.currentTimeMillis()) + "");
-                                intent.putExtra("roomPlan", date + "/" + title + "/" + s);
-                                LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                FirebaseCrashlytics.getInstance().recordException(e);
-                            }
-                        }
-                        UserModel userModel = new UserModel()
-                                .setRegisterd(dataSnapshot.child(s).child(AppConstant.member).child(AppController.getInstance().userId).exists())
-                                .setTotalCount(dataSnapshot.child(s).child(AppConstant.member).getChildrenCount())
-                                .setTime(s).setuniqueDate(date + "/" + title + "/" + s).userModelBuilder();
-                        allData.add(userModel);
-                    }
-                }
+        for (String s : AppController.getInstance().timeArray) {
+//            String strDate = date + " " + s.replace("pm", ":00:00 pm")
+//                    .replace("am", ":00:00 am");
+            if (AppController.getInstance().userId != null) {
+//                        if (miliSec == 0 && dataSnapshot.child(s).child(AppConstant.member).child(AppController.getInstance().userId).exists()) {
+//                            try {
+//                                resultDate = AppConstant.dateFormat.parse(strDate);
+//                                miliSec = resultDate.getTime();
+//                                Log.e("miliSeRec:-", date + "/" + title + "/" + s);
+//                                Intent intent = new Intent("custom-event-name");
+//                                intent.putExtra("message", (miliSec - System.currentTimeMillis()) + "");
+//                                intent.putExtra("roomPlan", date + "/" + title + "/" + s);
+//                                LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+//                            } catch (Exception e) {
+//                                e.printStackTrace();
+//                                FirebaseCrashlytics.getInstance().recordException(e);
+//                            }
+//                        }
+                UserModel userModel = new UserModel()
+                        .setRegisterd(false)
+                        .setTotalCount(0)
+                        .setTime(s).setuniqueDate(date + "/" + title + "/" + s).userModelBuilder();
+                allData.add(userModel);
+            }
+        }
 //                mAdapter.notifyDataSetChanged();
-                initializedata();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-
-            }
-        });
+        initializedata();
+//        mDatabase = FirebaseDatabase.getInstance().getReference(AppConstant.live_stream);
+//        mDatabase.child(AppController.getInstance().channelId).child(date).child(title).addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//;
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError error) {
+//
+//            }
+//        });
     }
 
     @Override

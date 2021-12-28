@@ -37,6 +37,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.intelj.yral_gaming.Activity.DemoActivity;
+import com.intelj.yral_gaming.Activity.GameInfo;
 import com.intelj.yral_gaming.AppController;
 import com.intelj.yral_gaming.Fragment.OneFragment;
 import com.intelj.yral_gaming.R;
@@ -104,10 +105,11 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, final int position) {
+    public void onBindViewHolder(MyViewHolder holder, int position) {
         holder.title.setText(allData.get(position).getTime());
         String strDate = title + " " + date + " " + allData.get(position).getTime().replace("pm", ":00:00 pm")
                 .replace("am", ":00:00 am");
+        holder.reg.setTag(strDate);
         if (sharedPreferences.getBoolean(strDate, false)) {
             holder.reg.setImageResource(R.drawable.check);
             holder.reg.setBackgroundResource(0);
@@ -118,26 +120,29 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
                 @Override
                 public void onClick(View v) {
                     if (new AppConstant(mContext).checkLogin()){
-                        String strDatewithgame = title + " " + date + " " + allData.get(position).getTime().replace("pm", ":00:00 pm")
-                                .replace("am", ":00:00 am");
                         SharedPreferences.Editor editShared = sharedPreferences.edit();
-                        editShared.putString("gameWithTime",strDatewithgame);
+                        editShared.putString("gameWithTime",v.getTag()+"");
                         editShared.putString("gameTitle",title);
+                        editShared.putBoolean(holder.reg.getTag()+"", true);
                         editShared.apply();
-                        BottomSheetFragment bottomSheetFragment = new BottomSheetFragment();
-                        bottomSheetFragment.show(((AppCompatActivity)mContext).getSupportFragmentManager(), bottomSheetFragment.getTag());
+                        notifyItemChanged(position);
+                        Toast.makeText(mContext, "Successfully registered for the match", Toast.LENGTH_LONG).show();
+                        GameInfo bottomSheetFragment = new GameInfo(allData.get(position).getTime());
+                        bottomSheetFragment.show(((AppCompatActivity) mContext).getSupportFragmentManager(), bottomSheetFragment.getTag());
+//                        BottomSheetFragment bottomSheetFragment = new BottomSheetFragment();
+//                        bottomSheetFragment.show(((AppCompatActivity)mContext).getSupportFragmentManager(), bottomSheetFragment.getTag());
                     }
 //                        showTeamList(strDate);
 //                        viewpagerbottomsheet();
                     else {
-                        Intent intent = new Intent("custom-event-name");
+                                              Intent intent = new Intent("custom-event-name");
                         intent.putExtra(AppConstant.AppName, true);
                         LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);
                     }
                 }
             });
         }
-        holder.info.setText(allData.get(position).getTotalCount() + "/100 members");
+        holder.info.setText("Free entry With prize pool 240");
     }
 
     private void showTeamList(String strDate) {

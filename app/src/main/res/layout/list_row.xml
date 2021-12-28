@@ -18,10 +18,13 @@
         android:layout_alignParentTop="true"
         android:text="Game starts at 8am"
         android:textSize="16dp"
+        android:textColor="#555555"
         android:textStyle="bold" />
 
     <TextView
         android:id="@+id/info"
+        android:textSize="11sp"
+        android:textColor="@color/appColor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="56/100 member booked the slot"
