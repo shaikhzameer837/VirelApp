@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -78,7 +79,7 @@ public class GallerySelector extends AppCompatActivity {
             String[] directories = null;
             if (u != null)
             {
-                c = managedQuery(u, projection, null, null, null);
+                c = getContentResolver().query(u, projection, null, null, null);
             }
 
             if ((c != null) && (c.moveToFirst()))
@@ -92,7 +93,7 @@ public class GallerySelector extends AppCompatActivity {
                     }
                     catch(Exception e)
                     {
-
+                        Log.e("Exceptions",e.getMessage());
                     }
                 }
                 while (c.moveToNext());
@@ -133,6 +134,7 @@ public class GallerySelector extends AppCompatActivity {
                     //  }
                     catch (Exception e) {
                         e.printStackTrace();
+                        Log.e("Exceptions",e.getMessage());
                     }
                 }
             }

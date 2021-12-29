@@ -77,10 +77,11 @@ public class SplashScreen extends AppCompatActivity {
                     }
                 });
         Intent intent = null;
-        if (!AppController.getInstance().remoteConfig.getString("subscription_package").equals(""))
+
+         if (!AppController.getInstance().userId.isEmpty() && !new AppConstant(this).getFriendCheck())
+            intent = new Intent(this, MainActivity.class); //UserInfoCheck.class);
+        else if (!AppController.getInstance().remoteConfig.getString("subscription_package").equals(""))
             intent = new Intent(this, MainActivity.class);
-        else if (!AppController.getInstance().userId.isEmpty() && !new AppConstant(this).getFriendCheck())
-            intent = new Intent(this, UserInfoCheck.class);
         if (intent != null) {
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
@@ -88,9 +89,9 @@ public class SplashScreen extends AppCompatActivity {
         }
         progress = findViewById(R.id.progress);
         serviceForData();
-        appUpdateManager = AppUpdateManagerFactory.create(getApplicationContext());
-        reviewManager = ReviewManagerFactory.create(this);
-        showRateApp();
+//        appUpdateManager = AppUpdateManagerFactory.create(getApplicationContext());
+//        reviewManager = ReviewManagerFactory.create(this);
+    //    showRateApp();
     }
 
     private void serviceForData() {
@@ -113,7 +114,7 @@ public class SplashScreen extends AppCompatActivity {
                                 AppController.getInstance().getTournamentTime();
                                 Intent intent = new Intent(SplashScreen.this, MainActivity.class);
                                 if (!AppController.getInstance().userId.isEmpty() && !new AppConstant(SplashScreen.this).getFriendCheck())
-                                    intent = new Intent(SplashScreen.this, UserInfoCheck.class);
+                                    intent = new Intent(SplashScreen.this, MainActivity.class);//UserInfoCheck.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                                 startActivity(intent);
                             } else {

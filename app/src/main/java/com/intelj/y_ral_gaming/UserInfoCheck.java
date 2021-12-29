@@ -126,7 +126,7 @@ public class UserInfoCheck extends AppCompatActivity {
         }
         editor.apply();
 
-        startActivity(new Intent(UserInfoCheck.this, MainActivity.class));
+       // startActivity(new Intent(UserInfoCheck.this, MainActivity.class));
     }
 
     private void saveUserInfoData() {

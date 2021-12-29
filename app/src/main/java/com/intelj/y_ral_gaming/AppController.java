@@ -137,7 +137,7 @@ public class AppController extends Application implements Application.ActivityLi
     public void startToRunActivity() {
         Intent intent = new Intent(this, MainActivity.class);
         if (!userId.isEmpty() && !new AppConstant(this).getFriendCheck())
-            intent = new Intent(this, UserInfoCheck.class);
+            intent = new Intent(this, MainActivity.class);//UserInfoCheck.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
     }

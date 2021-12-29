@@ -8,8 +8,8 @@
     <ImageView
         android:id="@+id/imageview"
         android:layout_gravity="center"
-        android:layout_width="175dp"
-        android:layout_height="175dp"/>
+        android:layout_width="165dp"
+        android:layout_height="165dp"/>
     <TextView
         android:id="@+id/tv_coming_soon"
         android:text="Coming Soon"

@@ -47,10 +47,10 @@
         android:layout_width="match_parent"  
         android:layout_height="match_parent"/>
 
-    <!--<TextView android:id="@+id/not"
+    <TextView android:id="@+id/not"
         android:layout_width="wrap_content"
         android:drawableLeft="@drawable/bell_outline"
-        android:text="All caught up"
+        android:text="No status for Claim Prize"
         android:layout_gravity="center"
         android:gravity="center"
         android:padding="5dp"
@@ -61,11 +61,11 @@
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/pBar3"
         android:layout_width="200dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="5dp"
         android:layout_height="200dp"
         android:visibility="gone"
         android:layout_gravity="center"
         app:lottie_fileName="notification.json"
         app:lottie_autoPlay="true"
-        app:lottie_loop="true"/>-->
+        app:lottie_loop="true"/>
 </LinearLayout>

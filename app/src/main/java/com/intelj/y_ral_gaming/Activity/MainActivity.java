@@ -27,6 +27,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -109,6 +110,7 @@ import com.intelj.y_ral_gaming.NotificationAdapter;
 import com.intelj.y_ral_gaming.R;
 import com.intelj.y_ral_gaming.SigninActivity;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
+import com.intelj.y_ral_gaming.Utils.FileUtils;
 import com.intelj.y_ral_gaming.Utils.RecyclerTouchListener;
 import com.intelj.y_ral_gaming.VolleyMultipartRequest;
 import com.intelj.y_ral_gaming.model.NotificationModel;
@@ -127,6 +129,7 @@ import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -144,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     View inflated;
     int RESULT_LOAD_IMAGE = 9;
+    int PROFILE_IMAGE = 11;
     ImageView imgProfile, saveProf, edit;
     String picturePath = null;
     TextInputEditText playerName, discordId;
@@ -177,10 +181,22 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             invalidateOptionsMenu();
         }
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int Dheight = displayMetrics.heightPixels;
+        Log.e("allheight", Dheight + "");
+        findViewById(R.id.lin).post(new Runnable() {
+            @Override
+            public void run() {
+                findViewById(R.id.lin).getHeight();
+                findViewById(R.id.bottom).getLayoutParams().height = Dheight - findViewById(R.id.lin).getHeight() - findViewById(R.id.bottom_navigation).getHeight();
+            }
+        });
         bottomNavigation = findViewById(R.id.bottom_navigation);
         final ViewStub stub = findViewById(R.id.layout_stub);
         stub.setLayoutResource(R.layout.game_slot);
         appConstant = new AppConstant(this);
+        Log.e("appCon", appConstant.getUserId());
         db = new DatabaseHelper(this, "notifications");
         inflated = stub.inflate();
 //        SwipeSelector swipeSelector = findViewById(R.id.swipeSelector);
@@ -325,35 +341,49 @@ public class MainActivity extends AppCompatActivity {
                     }
                 };
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
-        ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        if (mWifi.isConnected()) {
-            SharedPreferences prefs = getSharedPreferences(AppConstant.AppName, MODE_PRIVATE);
-            String url = prefs.getString("url", "");
-            YouTubePlayerFragment youtubeFragment = (YouTubePlayerFragment)
-                    getFragmentManager().findFragmentById(R.id.youtubeFragment);
-            youtubeFragment.initialize(AppConstant.youtubeApiKey,
-                    new YouTubePlayer.OnInitializedListener() {
-                        @Override
-                        public void onInitializationSuccess(YouTubePlayer.Provider provider,
-                                                            YouTubePlayer youTubePlayer, boolean b) {
-                            System.out.println("susccess " + url);
-                            if (!b) {
-                                if (url.equals("")) {
-                                    youTubePlayer.loadPlaylist("PLFSCz7rRk_hVFGD9d25S_789spdVYLLj_");
-                                } else {
-                                    youTubePlayer.loadVideo(url);
-                                }
+//        ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+//        NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+//        if (mWifi.isConnected()) {
+//
+//        }
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                // Do something after 5s = 5000ms
+                playYTVideo();
+            }
+
+
+        }, 5000);
+    }
+
+    private void playYTVideo() {
+        SharedPreferences prefs = getSharedPreferences(AppConstant.AppName, MODE_PRIVATE);
+        String url = prefs.getString("url", "");
+        YouTubePlayerFragment youtubeFragment = (YouTubePlayerFragment)
+                getFragmentManager().findFragmentById(R.id.youtubeFragment);
+        youtubeFragment.initialize(AppConstant.youtubeApiKey,
+                new YouTubePlayer.OnInitializedListener() {
+                    @Override
+                    public void onInitializationSuccess(YouTubePlayer.Provider provider,
+                                                        YouTubePlayer youTubePlayer, boolean b) {
+                        System.out.println("susccess " + url);
+                        if (!b) {
+                            if (url.equals("")) {
+                                youTubePlayer.loadPlaylist("PLFSCz7rRk_hVFGD9d25S_789spdVYLLj_");
+                            } else {
+                                youTubePlayer.loadVideo(url);
                             }
                         }
+                    }
 
-                        @Override
-                        public void onInitializationFailure(YouTubePlayer.Provider provider,
-                                                            YouTubeInitializationResult youTubeInitializationResult) {
-                            Log.d("onInitianFailure: ", youTubeInitializationResult.toString());
-                        }
-                    });
-        }
+                    @Override
+                    public void onInitializationFailure(YouTubePlayer.Provider provider,
+                                                        YouTubeInitializationResult youTubeInitializationResult) {
+                        Log.d("onInitianFailure: ", youTubeInitializationResult.toString());
+                    }
+                });
     }
 
     Dialog Pdialog;
@@ -427,8 +457,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showFileChooser() {
-        Intent inz = new Intent(this, GallerySelector.class);
-        startActivityForResult(inz, 80);
+//        Intent inz = new Intent(this, GallerySelector.class);
+//        startActivityForResult(inz, 80);
+//        Intent intent = new Intent();
+//        intent.setType("image/*");
+//        intent.setAction(Intent.ACTION_GET_CONTENT);
+//        startActivityForResult(Intent.createChooser(intent, "Select Picture"),RESULT_LOAD_IMAGE);
+
+
+        Intent gallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+        startActivityForResult(gallery, RESULT_LOAD_IMAGE);
+
 //        new ImagePicker.Builder(this)
 //                .mode(ImagePicker.Mode.GALLERY)
 //                .compressLevel(ImagePicker.ComperesLevel.NONE)
@@ -530,7 +569,9 @@ public class MainActivity extends AppCompatActivity {
                         shimmerFrameLayout.hideShimmer();
                         shimmerFrameLayout.setVisibility(View.GONE);
                         try {
+
                             JSONArray array = new JSONArray(response);
+
                             for (int i = 0; i < array.length(); i++) {
                                 JSONObject obj = array.getJSONObject(i);
                                 notificationModelList.add(new NotificationModel(obj.getString("name"),
@@ -592,7 +633,7 @@ public class MainActivity extends AppCompatActivity {
     private void showNotification() {
         List<NotificationModel> notificationModelList = new ArrayList<>();
         TextView title = inflated.findViewById(R.id.title);
-        title.setText("Match history");
+        title.setText("Prize Claim History");
         recyclerView = inflated.findViewById(R.id.recycler_view);
         ShimmerFrameLayout shimmerFrameLayout = inflated.findViewById(R.id.shimmer_layout);
         shimmerFrameLayout.startShimmer();
@@ -607,6 +648,11 @@ public class MainActivity extends AppCompatActivity {
                         shimmerFrameLayout.setVisibility(View.GONE);
                         try {
                             JSONArray array = new JSONArray(response);
+                            if (array.length() == 0) {
+                                inflated.findViewById(R.id.pBar3).setVisibility(View.VISIBLE);
+                                inflated.findViewById(R.id.not).setVisibility(View.VISIBLE);
+                                return;
+                            }
                             for (int i = 0; i < array.length(); i++) {
                                 JSONObject obj = array.getJSONObject(i);
                                 notificationModelList.add(
@@ -634,7 +680,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put("user_id", "1605435786512");
+                params.put("user_id", appConstant.getUserId());
                 return params;
             }
 
@@ -690,7 +736,6 @@ public class MainActivity extends AppCompatActivity {
         shimmer_container.startShimmer();
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(mLayoutManager);
-
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = "http://y-ral-gaming.com/admin/api/get_payment_list.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
@@ -702,9 +747,16 @@ public class MainActivity extends AppCompatActivity {
                         shimmer_container.setVisibility(View.GONE);
                         try {
                             JSONArray array = new JSONArray(response);
+                            if (array.length() == 0) {
+                                inflated.findViewById(R.id.pBar3).setVisibility(View.VISIBLE);
+                                inflated.findViewById(R.id.msg).setVisibility(View.VISIBLE);
+                                return;
+                            }
                             for (int i = 0; i < array.length(); i++) {
                                 JSONObject obj = array.getJSONObject(i);
-                                paymentHistoryModels.add(new PaymentHistoryModel(obj.getString("date"), obj.getString("transaction_id"), obj.getString("amount")));
+                                paymentHistoryModels.add(new PaymentHistoryModel(AppConstant.getTimeAgo(Integer.parseInt(obj.getString("date"))),
+                                        obj.getString("transaction_id"), obj.getString("amount"),
+                                        obj.getString("screenshort"), obj.getString("ticket_id")));
                             }
                             PayMentAdapter pAdapter = new PayMentAdapter(MainActivity.this, paymentHistoryModels);
                             recyclerView.setAdapter(pAdapter);
@@ -829,7 +881,7 @@ public class MainActivity extends AppCompatActivity {
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                     Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    startActivityForResult(i, RESULT_LOAD_IMAGE);
+                    startActivityForResult(i, PROFILE_IMAGE);
                 } else {
                     Toast.makeText(MainActivity.this, "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();
                 }
@@ -852,7 +904,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK
+
+        if (requestCode == PROFILE_IMAGE && resultCode == RESULT_OK
                 && null != data) {
             Uri selectedImage = data.getData();
             filePath = data.getData();
@@ -874,22 +927,12 @@ public class MainActivity extends AppCompatActivity {
 
             cursor.close();
             Glide.with(this).load(picturePath).apply(new RequestOptions().circleCrop()).into(imgProfile);
-        } else if (requestCode == ImagePicker.IMAGE_PICKER_REQUEST_CODE && resultCode == RESULT_OK) {
-            List<String> mPaths = data.getStringArrayListExtra(ImagePicker.EXTRA_IMAGE_PATH);
+        } else if (resultCode == RESULT_OK && requestCode == RESULT_LOAD_IMAGE) {
+            Uri imageUri = data.getData();
+            Glide.with(this).load(imageUri).apply(new RequestOptions()).into(imageView);
+            String result = FileUtils.getPath(this,data.getData());
             BitmapFactory.Options opts = new BitmapFactory.Options();
-            selectedImage = BitmapFactory.decodeFile(mPaths.get(0), opts);
-            Glide.with(this).load(mPaths.get(0)).into(imageView);
-            //  uploadBitmap();
-            // Glide.with(holder.imagePhoto.getContext()).load(bitmapToByte(yourBitmap)).asBitmap().into(holder.imagePhoto); //>>not tested
-//            dialog.show();
-        } else if (requestCode == 80) {
-            if (resultCode == Activity.RESULT_OK) {
-                String result = data.getStringExtra("result");
-                BitmapFactory.Options opts = new BitmapFactory.Options();
-                selectedImage = BitmapFactory.decodeFile(result, opts);
-                Glide.with(this).load(result).into(imageView);
-            }
-
+            selectedImage = BitmapFactory.decodeFile(result, opts);
         }
     }
 
@@ -1059,6 +1102,7 @@ public class MainActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             return mFragmentTitleList.get(position);
         }
+
     }
 
     public ViewStub deflate(View view) {

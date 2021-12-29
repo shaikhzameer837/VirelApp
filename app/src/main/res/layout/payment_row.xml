@@ -7,7 +7,7 @@
     <ImageView
         android:layout_width="50dp"
         android:id="@+id/imgs"
-        android:src="@drawable/check"
+        android:src="@mipmap/app_logo"
         android:layout_height="50dp"/>
     <RelativeLayout
         android:layout_width="match_parent"
@@ -18,8 +18,18 @@
         <TextView
             android:layout_width="wrap_content"
             android:padding="2dp"
-            android:id="@+id/pinfo"
+            android:text="ticket id:-"
+            android:id="@+id/ticket_id"
             android:textSize="14sp"
+            android:textColor="@color/black"
+            android:gravity="center_vertical"
+            android:layout_height="wrap_content"/>
+       <TextView
+            android:layout_width="wrap_content"
+            android:padding="2dp"
+            android:id="@+id/pinfo"
+            android:textSize="12sp"
+           android:layout_alignParentRight="true"
             android:textColor="@color/black"
             android:gravity="center_vertical"
             android:layout_height="wrap_content"/>
@@ -63,6 +73,7 @@
             android:textColor="@color/textcolor"
             android:gravity="center_vertical"
             android:id="@+id/transaction"
+            android:text="transaction id:- "
             android:layout_height="wrap_content"/>
 <!--
         <View

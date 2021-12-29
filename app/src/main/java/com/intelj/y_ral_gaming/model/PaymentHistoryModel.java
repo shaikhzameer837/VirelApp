@@ -4,11 +4,31 @@ public class PaymentHistoryModel {
     private String date;
     private String transaction;
     private String amount;
+    private String img_url;
+    private String ticket_id;
 
-    public PaymentHistoryModel(String date, String transaction, String amount) {
+    public PaymentHistoryModel(String date, String transaction, String amount, String img_url, String ticket_id) {
         this.date = date;
         this.transaction = transaction;
         this.amount = amount;
+        this.img_url = img_url;
+        this.ticket_id = ticket_id;
+    }
+
+    public String getTicket_id() {
+        return ticket_id;
+    }
+
+    public void setTicket_id(String ticket_id) {
+        this.ticket_id = ticket_id;
+    }
+
+    public String getImg_url() {
+        return img_url;
+    }
+
+    public void setImg_url(String img_url) {
+        this.img_url = img_url;
     }
 
     public String getDate() {

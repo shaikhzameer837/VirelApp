@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <LinearLayout
+        <LinearLayout android:id="@+id/lin"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
@@ -83,7 +83,7 @@
             </LinearLayout>
         </LinearLayout>
 
-        <include
+        <include android:id="@+id/bottom"
             layout="@layout/bottom_sheet"
             android:layout_width="match_parent"
             android:layout_height="320dp"

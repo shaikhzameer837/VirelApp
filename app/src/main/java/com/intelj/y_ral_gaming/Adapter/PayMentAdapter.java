@@ -26,7 +26,7 @@ public class PayMentAdapter extends RecyclerView.Adapter<PayMentAdapter.MyViewHo
     ArrayList<PaymentHistoryModel> paymentHistoryModel;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView pinfo, transaction, amount;
+        public TextView pinfo, transaction, amount, ticket_id;
         ImageView imgs;
 
         public MyViewHolder(View view) {
@@ -35,6 +35,7 @@ public class PayMentAdapter extends RecyclerView.Adapter<PayMentAdapter.MyViewHo
             transaction = view.findViewById(R.id.transaction);
             amount = view.findViewById(R.id.amount);
             imgs = view.findViewById(R.id.imgs);
+            ticket_id = view.findViewById(R.id.ticket_id);
         }
     }
 
@@ -55,10 +56,11 @@ public class PayMentAdapter extends RecyclerView.Adapter<PayMentAdapter.MyViewHo
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
             holder.pinfo.setText(paymentHistoryModel.get(position).getDate());
-            holder.transaction.setText(paymentHistoryModel.get(position).getTransaction());
+            holder.transaction.append(paymentHistoryModel.get(position).getTransaction());
             holder.amount.setText(paymentHistoryModel.get(position).getAmount());
+            holder.ticket_id.append(paymentHistoryModel.get(position).getTicket_id());
             Glide.with(mContext)
-                .load("https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSjlU10XSzoxnmWAzJhadQvxYYEew49ogNqnDalCumIGid433o7")
+                .load(paymentHistoryModel.get(position).getImg_url())
                 .placeholder(R.drawable.game_avatar)
                     .circleCrop()
                 .into(holder.imgs);

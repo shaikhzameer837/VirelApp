@@ -54,4 +54,13 @@
         app:lottie_fileName="payment.json"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"/>
+    <TextView android:id="@+id/msg"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:visibility="gone"
+        android:textColor="@color/appColor"
+        android:textStyle="bold"
+        android:text="No payment history found"
+        android:layout_height="wrap_content"/>
 </LinearLayout>

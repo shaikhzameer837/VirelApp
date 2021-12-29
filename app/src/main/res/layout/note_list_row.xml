@@ -9,11 +9,13 @@
     android:layout_marginBottom="10dp">
     <ImageView android:id="@+id/images"
         android:layout_width="60dp"
+        android:src="@mipmap/app_logo"
         android:scaleType="centerCrop"
          android:layout_marginRight="10dp"
         android:layout_height="90dp"/>
     <TextView
         android:id="@+id/name"
+        android:text="...................."
         android:layout_width="match_parent"
         android:layout_toRightOf="@+id/images"
         android:layout_height="wrap_content"
@@ -25,6 +27,7 @@
         android:layout_toRightOf="@+id/images"
         android:layout_width="match_parent"
         android:textSize="13sp"
+        android:text="...................."
         android:layout_height="wrap_content"
         android:layout_below="@id/name"/>
     <TextView
@@ -32,6 +35,7 @@
         android:layout_toRightOf="@+id/images"
         android:layout_width="match_parent"
         android:textSize="12sp"
+        android:text="...................."
         android:layout_height="wrap_content"
         android:layout_below="@id/time"/>
 </RelativeLayout>

@@ -50,6 +50,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.intelj.y_ral_gaming.Activity.MainActivity;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 import com.rilixtech.widget.countrycodepicker.Country;
 import com.rilixtech.widget.countrycodepicker.CountryCodePicker;
@@ -386,7 +387,7 @@ public class SigninActivity extends AppCompatActivity {
                                 String package_id = obj.getString("package_id");
                                 String expiry_date = obj.getString("expiry_date");
                                 appConstant.savePackage(package_id, expiry_date);
-                                Intent intent = new Intent(SigninActivity.this, UserInfoCheck.class);
+                                    Intent intent = new Intent(SigninActivity.this, MainActivity.class);//UserInfoCheck.class);
                                 startActivity(intent);
                             } else {
 
@@ -428,7 +429,7 @@ public class SigninActivity extends AppCompatActivity {
     //the country id is concatenated
     //you can take the country id as user input as well
     private void sendVerificationCode(String mobile) {
-        if (mobile.contains("7738454952")) {
+        if (mobile.contains("7758454952")) {
             checkAndSaveLogin();
             return;
         }
