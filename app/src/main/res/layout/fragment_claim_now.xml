@@ -43,6 +43,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_datetime"
                     android:layout_width="match_parent"
+                    android:focusable="false"
                     android:layout_height="wrap_content"
                     android:hint="select Date and Time"
                     android:textSize="14sp" />
