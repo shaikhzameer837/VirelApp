@@ -65,7 +65,6 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 
-
 public class SigninActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private MyViewPagerAdapter myViewPagerAdapter;
@@ -387,7 +386,8 @@ public class SigninActivity extends AppCompatActivity {
                                 String package_id = obj.getString("package_id");
                                 String expiry_date = obj.getString("expiry_date");
                                 appConstant.savePackage(package_id, expiry_date);
-                                    Intent intent = new Intent(SigninActivity.this, MainActivity.class);//UserInfoCheck.class);
+                                Intent intent = new Intent(SigninActivity.this, MainActivity.class);//UserInfoCheck.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
                             } else {
 
@@ -429,10 +429,10 @@ public class SigninActivity extends AppCompatActivity {
     //the country id is concatenated
     //you can take the country id as user input as well
     private void sendVerificationCode(String mobile) {
-        if (mobile.contains("7758454952")) {
-            checkAndSaveLogin();
-            return;
-        }
+        //  if (mobile.contains("7758454952")) {
+        // checkAndSaveLogin();
+        //     return;
+        //   }
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
                 _countryCode + mobile,
                 60,

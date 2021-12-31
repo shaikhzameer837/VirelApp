@@ -46,7 +46,6 @@ public class AppController extends Application implements Application.ActivityLi
     AppConstant appConstant;
     DatabaseReference mDatabase;
     public ArrayList<String> timeArray = new ArrayList<>();
-    public HashMap<String, String> pakageInfo = new HashMap<>();
     public DataSnapshot ytdataSnapshot;
     public DataSnapshot mySnapShort;
     public ArrayList<DataSnapshot> userInfoList;

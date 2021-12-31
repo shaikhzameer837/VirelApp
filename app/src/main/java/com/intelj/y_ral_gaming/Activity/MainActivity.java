@@ -224,6 +224,15 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
+        findViewById(R.id.insta).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String url = "https://www.instagram.com/y_ral_gaming/";
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
+            }
+        });
         findViewById(R.id.help).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -317,7 +326,7 @@ public class MainActivity extends AppCompatActivity {
                                 discordId = inflated.findViewById(R.id.discordId);
                                 TextInputEditText phoneNumber = inflated.findViewById(R.id.phoneNumber);
                                 saveProf = inflated.findViewById(R.id.save);
-                                playerName.setText(AppController.getInstance().mySnapShort.child(AppConstant.userName).getValue() + "");
+                                playerName.setText(AppController.getInstance().mySnapShort.child(AppConstant.userName).getValue()  == null ? "" : AppController.getInstance().mySnapShort.child(AppConstant.userName).getValue() + "");
                                 phoneNumber.setText(new AppConstant(MainActivity.this).getPhoneNumber());
                                 discordId.setText(AppController.getInstance().mySnapShort.child(AppConstant.discordId).exists() ? AppController.getInstance().mySnapShort.child(AppConstant.discordId).getValue() + "" : "");
                                 saveProf.setOnClickListener(new View.OnClickListener() {
@@ -369,13 +378,20 @@ public class MainActivity extends AppCompatActivity {
                     public void onInitializationSuccess(YouTubePlayer.Provider provider,
                                                         YouTubePlayer youTubePlayer, boolean b) {
                         System.out.println("susccess " + url);
-                        if (!b) {
-                            if (url.equals("")) {
-                                youTubePlayer.loadPlaylist("PLFSCz7rRk_hVFGD9d25S_789spdVYLLj_");
-                            } else {
-                                youTubePlayer.loadVideo(url);
+                        Thread thread = new Thread(new Runnable(){
+                            @Override
+                            public void run(){
+                                if (!b) {
+                                    if (url.equals("")) {
+                                        youTubePlayer.loadPlaylist("PLFSCz7rRk_hVFGD9d25S_789spdVYLLj_");
+                                    } else {
+                                        youTubePlayer.loadVideo(url);
+                                    }
+                                }
                             }
-                        }
+                        });
+                        thread.start();
+
                     }
 
                     @Override
@@ -575,6 +591,7 @@ public class MainActivity extends AppCompatActivity {
                             for (int i = 0; i < array.length(); i++) {
                                 JSONObject obj = array.getJSONObject(i);
                                 notificationModelList.add(new NotificationModel(obj.getString("name"),
+                                        obj.getString("game_name"),
                                         obj.getString("image_url"),
                                         obj.getString("date"),
                                         obj.getString("status"),
@@ -657,6 +674,7 @@ public class MainActivity extends AppCompatActivity {
                                 JSONObject obj = array.getJSONObject(i);
                                 notificationModelList.add(
                                         new NotificationModel(obj.getString("name"),
+                                                "",
                                                 obj.getString("image_url"),
                                                 obj.getString("date"),
                                                 obj.getString("status"),

@@ -119,7 +119,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
             holder.reg.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (new AppConstant(mContext).checkLogin()){
+                  //  if (new AppConstant(mContext).checkLogin()){
                         SharedPreferences.Editor editShared = sharedPreferences.edit();
                         editShared.putString("gameWithTime",v.getTag()+"");
                         editShared.putString("gameTitle",title);
@@ -131,14 +131,14 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
                         bottomSheetFragment.show(((AppCompatActivity) mContext).getSupportFragmentManager(), bottomSheetFragment.getTag());
 //                        BottomSheetFragment bottomSheetFragment = new BottomSheetFragment();
 //                        bottomSheetFragment.show(((AppCompatActivity)mContext).getSupportFragmentManager(), bottomSheetFragment.getTag());
-                    }
-//                        showTeamList(strDate);
-//                        viewpagerbottomsheet();
-                    else {
-                                              Intent intent = new Intent("custom-event-name");
-                        intent.putExtra(AppConstant.AppName, true);
-                        LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);
-                    }
+//                    }
+////                        showTeamList(strDate);
+////                        viewpagerbottomsheet();
+//                    else {
+//                                              Intent intent = new Intent("custom-event-name");
+//                        intent.putExtra(AppConstant.AppName, true);
+//                        LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);
+//                    }
                 }
             });
         }

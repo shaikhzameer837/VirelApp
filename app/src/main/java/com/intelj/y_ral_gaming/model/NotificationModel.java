@@ -1,14 +1,23 @@
 package com.intelj.y_ral_gaming.model;
 
 public class NotificationModel {
-    String image_url,date, name,status,discord_url;
+    String image_url,date, name,status,discord_url,game_name;
 
-    public NotificationModel(String name,String image_url, String date, String status, String discord_url) {
+    public NotificationModel(String name,String game_name,String image_url, String date, String status, String discord_url) {
         this.image_url = image_url;
         this.date = date;
         this.status = status;
+        this.game_name = game_name;
         this.name = name;
         this.discord_url = discord_url;
+    }
+
+    public String getGame_name() {
+        return game_name;
+    }
+
+    public void setGame_name(String game_name) {
+        this.game_name = game_name;
     }
 
     public String getName() {

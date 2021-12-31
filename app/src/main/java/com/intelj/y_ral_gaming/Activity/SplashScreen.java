@@ -94,7 +94,7 @@ public class SplashScreen extends AppCompatActivity {
     //    showRateApp();
     }
 
-    private void serviceForData() {
+        private void serviceForData() {
         progress.setVisibility(View.VISIBLE);
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = "http://y-ral-gaming.com/admin/api/background_data.php";
