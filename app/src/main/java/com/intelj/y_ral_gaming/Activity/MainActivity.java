@@ -25,6 +25,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.DisplayMetrics;
@@ -103,29 +104,24 @@ import com.intelj.y_ral_gaming.AppController;
 import com.intelj.y_ral_gaming.ComingSoon;
 import com.intelj.y_ral_gaming.DatabaseHelper;
 import com.intelj.y_ral_gaming.Fragment.BottomSheetDilogFragment;
-import com.intelj.y_ral_gaming.Fragment.ClaimNowFragment;
 import com.intelj.y_ral_gaming.Fragment.OneFragment;
-import com.intelj.y_ral_gaming.GallerySelector;
 import com.intelj.y_ral_gaming.NotificationAdapter;
 import com.intelj.y_ral_gaming.R;
 import com.intelj.y_ral_gaming.SigninActivity;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
-import com.intelj.y_ral_gaming.Utils.FileUtils;
 import com.intelj.y_ral_gaming.Utils.RecyclerTouchListener;
 import com.intelj.y_ral_gaming.VolleyMultipartRequest;
 import com.intelj.y_ral_gaming.model.NotificationModel;
 import com.intelj.y_ral_gaming.model.PaymentHistoryModel;
 import com.intelj.y_ral_gaming.model.UserListModel;
-import com.roughike.swipeselector.SwipeItem;
-import com.roughike.swipeselector.SwipeSelector;
-
-import net.alhazmy13.mediapicker.Image.ImagePicker;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileDescriptor;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -199,6 +195,30 @@ public class MainActivity extends AppCompatActivity {
         Log.e("appCon", appConstant.getUserId());
         db = new DatabaseHelper(this, "notifications");
         inflated = stub.inflate();
+//        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+//            @Override
+//            public void onInitializationComplete(InitializationStatus initializationStatus) {
+//            }
+//        });
+//        AdLoader adLoader = new AdLoader.Builder(this, AppConstant.google_ad_mobs)
+//                .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
+//                    @Override
+//                    public void onNativeAdLoaded(NativeAd NativeAd) {
+//                        // Show the ad.
+//                    }
+//                })
+//                .withAdListener(new AdListener() {
+//                    @Override
+//                    public void onAdFailedToLoad(LoadAdError adError) {
+//                        // Handle the failure by logging, altering the UI, and so on.
+//                    }
+//                })
+//                .withNativeAdOptions(new NativeAdOptions.Builder()
+//                        // Methods in the NativeAdOptions.Builder class can be
+//                        // used here to specify individual options settings.
+//                        .build())
+//                .build();
+//        adLoader.loadAd(new AdRequest.Builder().build());
 //        SwipeSelector swipeSelector = findViewById(R.id.swipeSelector);
 //        swipeSelector.setItems(
 //                // The first argument is the value for that item, and should in most cases be unique for the
@@ -946,14 +966,22 @@ public class MainActivity extends AppCompatActivity {
             cursor.close();
             Glide.with(this).load(picturePath).apply(new RequestOptions().circleCrop()).into(imgProfile);
         } else if (resultCode == RESULT_OK && requestCode == RESULT_LOAD_IMAGE) {
-            Uri imageUri = data.getData();
-            Glide.with(this).load(imageUri).apply(new RequestOptions()).into(imageView);
-            String result = FileUtils.getPath(this,data.getData());
-            BitmapFactory.Options opts = new BitmapFactory.Options();
-            selectedImage = BitmapFactory.decodeFile(result, opts);
+            try {
+                selectedImage =getBitmapFromUri(data.getData());
+                Glide.with(this).load(selectedImage).apply(new RequestOptions()).into(imageView);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
-
+    private Bitmap getBitmapFromUri(Uri uri) throws IOException {
+        ParcelFileDescriptor parcelFileDescriptor =
+                getContentResolver().openFileDescriptor(uri, "r");
+        FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+        Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
+        parcelFileDescriptor.close();
+        return image;
+    }
     public Bitmap getResizedBitmap(Bitmap image, int maxSize) {
         int width = image.getWidth();
         int height = image.getHeight();

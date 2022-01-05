@@ -12,6 +12,12 @@
 <!--        android:name="android.permission.PACKAGE_USAGE_STATS"-->
 <!--        tools:ignore="ProtectedPermiAudioManager ssions" />-->
 <!--    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />-->
+<!--    <meta-data-->
+<!--        android:name="com.google.android.gms.ads.APPLICATION_ID"-->
+<!--        android:value="ca-app-pub-3940256099942544~3347511713"/>-->
+<!--   <meta-data-->
+<!--        android:name="com.google.android.gms.ads.APPLICATION_ID"-->
+<!--        android:value="ca-app-pub-434   0305355612346~5694710071"/>-->
 
     <application
         android:name=".AppController"
@@ -23,6 +29,7 @@
         android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:largeHeap="true"
+        android:hardwareAccelerated="true"
         android:theme="@style/AppTheme.NoActionBar"
         tools:replace="android:allowBackup">
         <activity

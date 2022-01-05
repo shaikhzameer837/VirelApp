@@ -21,6 +21,8 @@ public class AppConstant {
             login = "login",
             phoneNumber = "phoneNumber",
             userId = "userId",
+            ad_mobs = "ca-app-pub-4340305355612346/9283952361",
+            google_ad_mobs = "ca-app-pub-3940256099942544/2247696110",
             applyMatches = "applyMatches",
             title = "title",
             user = "user",
