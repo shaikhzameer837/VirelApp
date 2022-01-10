@@ -12,7 +12,6 @@
     <TextView android:layout_toRightOf="@+id/imgs"
         android:layout_width="match_parent"
         android:id="@+id/name"
-        android:layout_toLeftOf="@+id/count_win"
         android:text="asfwef"
         android:textStyle="bold"
         android:layout_marginTop="10dp"

@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +34,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -114,21 +116,26 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
             holder.reg.setImageResource(R.drawable.check);
             holder.reg.setBackgroundResource(0);
             holder.reg.setOnClickListener(null);
-        } else {
+        } else
             holder.reg.setImageResource(R.drawable.arrow);
-            holder.reg.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                  //  if (new AppConstant(mContext).checkLogin()){
-                        SharedPreferences.Editor editShared = sharedPreferences.edit();
-                        editShared.putString("gameWithTime",v.getTag()+"");
-                        editShared.putString("gameTitle",title);
-                        editShared.putBoolean(holder.reg.getTag()+"", true);
-                        editShared.apply();
-                        notifyItemChanged(position);
-                        Toast.makeText(mContext, "Successfully registered for the match", Toast.LENGTH_LONG).show();
-                        GameInfo bottomSheetFragment = new GameInfo(allData.get(position).getTime());
-                        bottomSheetFragment.show(((AppCompatActivity) mContext).getSupportFragmentManager(), bottomSheetFragment.getTag());
+        holder.reg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!new AppConstant(mContext).checkLogin()) {
+                    Intent intent = new Intent("custom-event-name");
+                    intent.putExtra(AppConstant.AppName, true);
+                    LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);
+                    return;
+                }
+                SharedPreferences sharedPreferences = mContext.getSharedPreferences(AppConstant.AppName, 0);
+                if (sharedPreferences.getString(title, "").equals("")) {
+                    Log.e("onClick3: ", "no bgmi id");
+                    Intent intent = new Intent("custom-event-name");
+                    intent.putExtra(AppConstant.userName, true);
+                    LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);
+                    return;
+                }
+                saveUserInfo(position, v, sharedPreferences.getString(title, ""), strDate);
 //                        BottomSheetFragment bottomSheetFragment = new BottomSheetFragment();
 //                        bottomSheetFragment.show(((AppCompatActivity)mContext).getSupportFragmentManager(), bottomSheetFragment.getTag());
 //                    }
@@ -138,11 +145,74 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
 //                                              Intent intent = new Intent("custom-event-name");
 //                        intent.putExtra(AppConstant.AppName, true);
 //                        LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);
-//                    }
-                }
-            });
-        }
+
+            }
+        });
+
         holder.info.setText("Free entry With prize pool 240");
+    }
+
+    private void saveUserInfo(int position, View v, String igname, String strDate) {
+        ProgressDialog progressDialog = new ProgressDialog(mContext);
+        progressDialog.setTitle("Uploading...");
+        progressDialog.show();
+        RequestQueue queue = Volley.newRequestQueue(mContext);
+        String url = "http://y-ral-gaming.com/admin/api/register_give_away.php";
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.e("onClick3", response);
+                        progressDialog.cancel();
+                        try {
+                            JSONObject json = new JSONObject(response);
+                            if (json.getBoolean("success")) {
+                                SharedPreferences.Editor editShared = sharedPreferences.edit();
+                                editShared.putString("gameWithTime", v.getTag() + "");
+                                editShared.putString("gameTitle", title);
+                                editShared.putBoolean(v.getTag() + "", json.getString("status").equals("1"));
+                                editShared.apply();
+                                notifyItemChanged(position);
+                                if (json.getString("status").equals("1")) {
+                                    Toast.makeText(mContext, "Successfully registered for the match", Toast.LENGTH_LONG).show();
+                                    GameInfo bottomSheetFragment = new GameInfo(allData.get(position).getTime());
+                                    bottomSheetFragment.show(((AppCompatActivity) mContext).getSupportFragmentManager(), bottomSheetFragment.getTag());
+                                }
+                            } else {
+                                Toast.makeText(mContext, "Something went wrong try again later", Toast.LENGTH_LONG).show();
+                            }
+                        } catch (Exception e) {
+
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                progressDialog.cancel();
+/*                shimmer_container.hideShimmer();
+                shimmer_container.setVisibility(View.GONE);*/
+                error.printStackTrace();
+                FirebaseCrashlytics.getInstance().recordException(error);
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("user_id", appConstant.getUserId());
+                params.put("ign", igname);
+                params.put("match_id", strDate);
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Content-Type", "application/x-www-form-urlencoded");
+                return params;
+            }
+        };
+
+        queue.add(stringRequest);
     }
 
     private void showTeamList(String strDate) {
@@ -173,7 +243,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
             @Override
             public void onClick(View view, int position) {
                 BottomSheetFragment bottomSheetFragment = new BottomSheetFragment();
-                bottomSheetFragment.show(((AppCompatActivity)mContext).getSupportFragmentManager(), bottomSheetFragment.getTag());
+                bottomSheetFragment.show(((AppCompatActivity) mContext).getSupportFragmentManager(), bottomSheetFragment.getTag());
                 /*BottomSheetFragment bottomSheetFragment = new BottomSheetFragment();
                 bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());*/
                 /*Intent intent= new Intent(mContext, DemoActivity.class);
@@ -209,8 +279,8 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
 
         List<Fragment> fragmentList = new ArrayList<Fragment>();
         fragmentList.add(new OneFragment());
-       // fragmentList.add(new BottomSheetFragment2());
-        FragmentManager manager = ((AppCompatActivity)mContext).getSupportFragmentManager();
+        // fragmentList.add(new BottomSheetFragment2());
+        FragmentManager manager = ((AppCompatActivity) mContext).getSupportFragmentManager();
         MyPageAdapter pageAdapter = new MyPageAdapter(manager, fragmentList);
         viewPager.setAdapter(pageAdapter);
         bottomSheetDialog.show();
@@ -226,20 +296,20 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
         String error = "";
         for (String s : teamMember) {
             SharedPreferences sharedPreferences = mContext.getSharedPreferences(s, 0);
-            if(sharedPreferences.getString(AppConstant.discordId, "").equals("")){
-                error = error + " Discord id not found for "+sharedPreferences.getString(AppConstant.userName, "") +"\n";
+            if (sharedPreferences.getString(AppConstant.discordId, "").equals("")) {
+                error = error + " Discord id not found for " + sharedPreferences.getString(AppConstant.userName, "") + "\n";
             }
-            if(sharedPreferences.getString(title, "").equals("")){
-                error = error + title + " Game id not found for "+sharedPreferences.getString(AppConstant.userName, "")+"\n";
+            if (sharedPreferences.getString(title, "").equals("")) {
+                error = error + title + " Game id not found for " + sharedPreferences.getString(AppConstant.userName, "") + "\n";
             }
-            if(sharedPreferences.getString(title+ "_" + AppConstant.userName, "").equals("")){
-                error = error + title + " Game name not found for "+sharedPreferences.getString(AppConstant.userName, "")+"\n";
+            if (sharedPreferences.getString(title + "_" + AppConstant.userName, "").equals("")) {
+                error = error + title + " Game name not found for " + sharedPreferences.getString(AppConstant.userName, "") + "\n";
             }
             discordId.add(sharedPreferences.getString(AppConstant.discordId, ""));
             ign.add(sharedPreferences.getString(title, ""));
             igid.add(sharedPreferences.getString(title + "_" + AppConstant.userName, ""));
         }
-        if(!error.equals("")){
+        if (!error.equals("")) {
             showDialog(error);
             return;
         }
@@ -258,13 +328,13 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
                         try {
                             JSONObject obj = new JSONObject(response);
                             if (obj.getBoolean(AppConstant.success)) {
-                                Toast.makeText(mContext,obj.getString(AppConstant.message),Toast.LENGTH_LONG).show();
+                                Toast.makeText(mContext, obj.getString(AppConstant.message), Toast.LENGTH_LONG).show();
                                 SharedPreferences.Editor editShared = sharedPreferences.edit();
-                                editShared.putBoolean(strDate,true);
+                                editShared.putBoolean(strDate, true);
                                 editShared.apply();
                                 notifyDataSetChanged();
                                 bottomSheetDialog.cancel();
-                            }else{
+                            } else {
                                 AlertDialog alertDialog = new AlertDialog.Builder(mContext).create();
                                 alertDialog.setMessage(obj.getString(AppConstant.message));
                                 alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
@@ -275,7 +345,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
                                         });
                                 alertDialog.show();
                             }
-                        }catch (Exception e){
+                        } catch (Exception e) {
 
                         }
                     }

@@ -85,7 +85,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppThemes" />
         <activity android:name=".Activity.GroupProfile" />
-        <activity android:name=".GallerySelector" />
 
         <service
             android:name=".FirebaseFCMServices"

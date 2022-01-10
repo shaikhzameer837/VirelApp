@@ -8,6 +8,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.BroadcastReceiver;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -28,6 +29,7 @@ import android.os.Looper;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.text.ClipboardManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
@@ -157,6 +159,7 @@ public class MainActivity extends AppCompatActivity {
     StorageReference storageReference;
     ProgressDialog progressDialog;
     int oldId;
+    String amount = "0";
     private TextView package_name;
     ImageView imageView;
     private EditText et_datetime, upi;
@@ -308,6 +311,10 @@ public class MainActivity extends AppCompatActivity {
                                 inflateView(R.layout.game_slot);
                                 setFirstView();
                                 return true;
+//                           case R.id.game_slot:
+//                                inflateView(R.layout.fragment_one);
+//                                //setFirstView();
+//                                return true;
                             case R.id.status:
                                 inflateView(R.layout.rank);
                                 showNotification();
@@ -330,8 +337,15 @@ public class MainActivity extends AppCompatActivity {
                             case R.id.profile:
                                 inflateView(R.layout.edit_profile);
                                 imgProfile = inflated.findViewById(R.id.imgs);
-                                package_name = inflated.findViewById(R.id.package_name);
-                                setPackagename();
+                                package_name = inflated.findViewById(R.id.amount);
+                                inflated.findViewById(R.id.withdraw).setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        showPopDialog();
+                                    }
+                                });
+                                getUserAmount();
+                                //setPackagename();
                                 imgProfile.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
@@ -375,16 +389,16 @@ public class MainActivity extends AppCompatActivity {
 //        if (mWifi.isConnected()) {
 //
 //        }
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                // Do something after 5s = 5000ms
-                playYTVideo();
-            }
-
-
-        }, 5000);
+//        final Handler handler = new Handler();
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                // Do something after 5s = 5000ms
+//                playYTVideo();
+//            }
+//
+//
+//        }, 5000);
     }
 
     private void playYTVideo() {
@@ -550,7 +564,7 @@ public class MainActivity extends AppCompatActivity {
             }
             userAdapter.notifyDataSetChanged();
         }
-        setPackagename();
+      //  setPackagename();
     }
 
     private void showTeam() {
@@ -1047,8 +1061,7 @@ public class MainActivity extends AppCompatActivity {
                         new Handler(Looper.getMainLooper()).post(new Runnable() {
                             @Override
                             public void run() {
-                                Toast.makeText(MainActivity.this, "Something Went Wrong! Please try again later", Toast.LENGTH_LONG).show();
-                            }
+                             }
                         });
                         // Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
                         Log.e("GotError", "" + error.getMessage());
@@ -1120,6 +1133,47 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
+    public void getUserAmount() {
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = "http://y-ral-gaming.com/admin/api/get_amount.php";
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.e("tokenResponse", response);
+                        amount = response;
+                        package_name.setText("Rs " + response);
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+/*                shimmer_container.hideShimmer();
+                shimmer_container.setVisibility(View.GONE);*/
+                error.printStackTrace();
+                FirebaseCrashlytics.getInstance().recordException(error);
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("user_id", appConstant.getUserId());
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Content-Type", "application/x-www-form-urlencoded");
+                return params;
+            }
+        };
+
+        queue.add(stringRequest);
+
+    }
+
+
 
     class ViewPagerAdapter extends FragmentStatePagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();
@@ -1201,6 +1255,15 @@ public class MainActivity extends AppCompatActivity {
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            Log.e("onClick3: ", intent.getBooleanExtra(AppConstant.userName, false)+"");
+            if (intent.getBooleanExtra(AppConstant.userName, false)) {
+                Log.e("onClick3: ", "set error");
+                ign.setEnabled(true);
+                ign.setError("Enter your BGMI in game name");
+                ign.requestFocus();
+                edit.setImageResource(R.drawable.ic_check);
+                return;
+            }
             if (intent.getBooleanExtra(AppConstant.AppName, false)) {
                 showBottomSheetDialog();
                 return;
@@ -1212,7 +1275,7 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
             SharedPreferences sharedPreferences = getSharedPreferences(AppConstant.AppName, 0);
-            ign.setHint(intent.getStringExtra(AppConstant.title) + " name");
+            ign.setHint(intent.getStringExtra(AppConstant.title) + " in game name");
             igid.setHint(intent.getStringExtra(AppConstant.title) + " id");
             ign.setText(sharedPreferences.getString(intent.getStringExtra(AppConstant.title), ""));
             igid.setText(sharedPreferences.getString(intent.getStringExtra(AppConstant.title) + "_" + AppConstant.userName, ""));
@@ -1225,8 +1288,9 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     if (ign.isEnabled()) {
-                        if (igid.getText().toString().trim().equals("") || ign.getText().toString().trim().equals("")) {
-                            Toast.makeText(MainActivity.this, intent.getStringExtra(AppConstant.title) + "id and " + intent.getStringExtra(AppConstant.title) + " name cannot be empty", Toast.LENGTH_LONG).show();
+                       // if (igid.getText().toString().trim().equals("") || ign.getText().toString().trim().equals("")) {
+                        if (ign.getText().toString().trim().equals("")) {
+                            Toast.makeText(MainActivity.this, intent.getStringExtra(AppConstant.title) + " id cannot be empty", Toast.LENGTH_LONG).show();
                             return;
                         }
                         ign.setEnabled(false);
@@ -1392,12 +1456,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setClipboard(String text) {
-        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
-            android.text.ClipboardManager clipboard = (android.text.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+            ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
             clipboard.setText(text);
         } else {
             android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-            android.content.ClipData clip = android.content.ClipData.newPlainText("Copied Text", text);
+            ClipData clip = ClipData.newPlainText("Copied Text", text);
             clipboard.setPrimaryClip(clip);
         }
     }
@@ -1568,9 +1632,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void requestContactPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                        android.Manifest.permission.READ_CONTACTS)) {
+                        Manifest.permission.READ_CONTACTS)) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
                     builder.setTitle("Read Contacts permission");
                     builder.setPositiveButton(android.R.string.ok, null);
@@ -1581,14 +1645,14 @@ public class MainActivity extends AppCompatActivity {
                         public void onDismiss(DialogInterface dialog) {
                             requestPermissions(
                                     new String[]
-                                            {android.Manifest.permission.READ_CONTACTS}
+                                            {Manifest.permission.READ_CONTACTS}
                                     , PERMISSIONS_REQUEST_READ_CONTACTS);
                         }
                     });
                     builder.show();
                 } else {
                     ActivityCompat.requestPermissions(this,
-                            new String[]{android.Manifest.permission.READ_CONTACTS},
+                            new String[]{Manifest.permission.READ_CONTACTS},
                             PERMISSIONS_REQUEST_READ_CONTACTS);
                 }
             } else {

@@ -19,7 +19,6 @@
         android:layout_toRightOf="@+id/imgs"
         android:layout_alignParentTop="true"
         android:textSize="16dp"
-        android:layout_toLeftOf="@+id/add_user"
         android:textColor="@color/black" />
 
     <TextView
@@ -27,7 +26,6 @@
         android:layout_toRightOf="@+id/imgs"
         android:layout_width="match_parent"
         android:textSize="12dp"
-        android:layout_toLeftOf="@+id/add_user"
         android:layout_height="wrap_content"
         android:layout_below="@id/title" />
     <CheckBox android:id="@+id/checkbox"

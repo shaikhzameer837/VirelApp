@@ -29,7 +29,7 @@
                     android:id="@+id/upi"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Enter UPI id "
+                    android:hint="Enter UPI id or any number linked with payment"
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
             <com.google.android.material.textfield.TextInputLayout
@@ -44,6 +44,7 @@
                     android:id="@+id/et_datetime"
                     android:layout_width="match_parent"
                     android:focusable="false"
+                    android:visibility="gone"
                     android:layout_height="wrap_content"
                     android:hint="select Date and Time"
                     android:textSize="14sp" />
@@ -61,13 +62,14 @@
                 <ImageView
                     android:id="@+id/imageview"
                     android:layout_width="140dp"
+                    android:visibility="gone"
                     android:background="@color/gray_scale"
                     android:src="@drawable/upload"
                     android:layout_height="140dp"/>
                 <Button
                     android:padding="10dp"
                     android:id="@+id/upload_file"
-                    android:text="Upload File"
+                    android:text="Claim amount"
                     android:background="@color/colorPrimaryDark"
                     android:textColor="@color/colorPrimary"
                     android:gravity="center_vertical"

@@ -1,7 +1,3 @@
-
-
-
-
 package com.intelj.y_ral_gaming;
 
 import android.app.Notification;
