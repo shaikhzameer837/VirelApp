@@ -329,6 +329,7 @@ public class SigninActivity extends AppCompatActivity {
         }
 
         private void countdown_timer() {
+            resend_btn.setVisibility(View.GONE);
             et_countdown = layout_view.get(1).findViewById(R.id.et_countdown);
             if (mcountDownTimer != null)
                 mcountDownTimer.cancel();
@@ -343,6 +344,7 @@ public class SigninActivity extends AppCompatActivity {
                 }
 
                 public void onFinish() {
+                    resend_btn.setVisibility(View.VISIBLE);
                     et_countdown.setText("00:00");
                 }
 

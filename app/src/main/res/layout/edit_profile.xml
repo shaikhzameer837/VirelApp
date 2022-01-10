@@ -18,13 +18,13 @@
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:enabled="false"
-            android:padding="10dp"
-            android:textStyle="bold"
             android:gravity="center_vertical"
+            android:padding="10dp"
             android:text="Profile setting"
             android:textColor="@color/black"
             android:textColorHint="@color/grey_black"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/save"
@@ -32,8 +32,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="5dp"
-            android:src="@drawable/ic_edit"
             android:gravity="center_vertical"
+            android:src="@drawable/ic_edit"
             android:textColor="@color/black" />
     </LinearLayout>
 
@@ -47,19 +47,33 @@
         android:src="@drawable/profile_icon" />
 
     <TextView
-        android:id="@+id/package_name"
+        android:id="@+id/amount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/lin"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:padding="10dp"
+        android:text="Loading..."
+        android:textColor="#000000" />
+
+    <TextView
+        android:id="@+id/withdraw"
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:layout_below="@+id/amount"
         android:layout_alignParentRight="true"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
-        android:background="#c0c0c0"
-        android:padding="10dp"
-        android:text="Premium Account"
-        android:textColor="@color/textcolor" />
+        android:background="#000000"
+        android:backgroundTint="@color/black"
+        android:padding="5dp"
+        android:text="withdraw"
+        android:textColor="#ffffff" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -77,9 +91,9 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/name"
-                android:enabled="false"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:enabled="false"
                 android:hint="your Name"
                 android:textSize="14sp" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -94,9 +108,9 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/discordId"
-                android:enabled="false"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:enabled="false"
                 android:hint="Discord Id"
                 android:textSize="14sp" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -106,9 +120,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
-            android:visibility="gone"
             android:layout_marginTop="10dp"
-            android:layout_marginRight="15dp">
+            android:layout_marginRight="15dp"
+            android:visibility="gone">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/phoneNumber"
