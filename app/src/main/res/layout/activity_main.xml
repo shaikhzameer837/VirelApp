@@ -20,12 +20,22 @@
             android:background="#ebecef"
             android:orientation="vertical">
 
+<!--
             <fragment
                 android:id="@+id/youtubeFragment"
                 android:name="com.google.android.youtube.player.YouTubePlayerFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"></fragment>
+-->
 
+            <com.google.android.gms.ads.AdView
+                android:id="@+id/adView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:adSize="SMART_BANNER"
+                app:adUnitId="ca-app-pub-3940256099942544/6300978111">
+
+            </com.google.android.gms.ads.AdView>
 <!--            <androidx.viewpager.widget.ViewPager-->
 <!--                android:id="@+id/view_pager"-->
 <!--                android:layout_width="match_parent"-->

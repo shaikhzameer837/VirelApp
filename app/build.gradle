@@ -68,6 +68,7 @@ dependencies {
     implementation 'com.github.joielechong:countrycodepicker:2.4.2'
     implementation 'commons-net:commons-net:3.3'
     implementation 'com.sdsmdg.harjot:rotatingtext:1.0.2'
+    implementation 'com.google.android.gms:play-services-ads:20.5.0'
   //  implementation 'com.google.android.gms:play-services-ads:20.5.0'
 //    implementation 'com.google.android.exoplayer:exoplayer-core:2.10.5'
 //    implementation 'com.google.android.exoplayer:exoplayer-dash:2.16.1'
