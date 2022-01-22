@@ -12,15 +12,50 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:gravity="center_vertical"
+        android:padding="10dp"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="Y Ral Gaming"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/coins"
+            android:layout_width="wrap_content"
+            android:drawableTop="@drawable/ic_coin"
+            android:text="coins"
+            android:textSize="12sp"
+            android:layout_marginRight="15dp"
+            android:textColor="@color/black"
+            android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/showSupport"
+            android:layout_width="wrap_content"
+            android:drawableTop="@drawable/support"
+            android:text="Help"
+            android:textSize="12sp"
+            android:textColor="@color/black"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:background="@color/black"
+            android:layout_height="1dp"/>
         <LinearLayout android:id="@+id/lin"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:background="#ebecef"
             android:orientation="vertical">
-
-<!--
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/viewpager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+            <!--
             <fragment
                 android:id="@+id/youtubeFragment"
                 android:name="com.google.android.youtube.player.YouTubePlayerFragment"
@@ -28,14 +63,7 @@
                 android:layout_height="wrap_content"></fragment>
 -->
 
-            <com.google.android.gms.ads.AdView
-                android:id="@+id/adView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:adSize="SMART_BANNER"
-                app:adUnitId="ca-app-pub-3940256099942544/6300978111">
 
-            </com.google.android.gms.ads.AdView>
 <!--            <androidx.viewpager.widget.ViewPager-->
 <!--                android:id="@+id/view_pager"-->
 <!--                android:layout_width="match_parent"-->
@@ -43,45 +71,45 @@
 <!--                android:visibility="gone" />-->
 
 
-            <LinearLayout android:id="@+id/views"
-                android:layout_width="match_parent"
-                android:elevation="2dp"
-                android:padding="10dp"
-                android:gravity="bottom"
-                android:orientation="horizontal"
-                android:layout_height="match_parent">
-                <TextView android:text="claim prize"
-                    android:textSize="11sp"
-                    android:id="@+id/claim_now"
-                    android:drawableTop="@drawable/cash"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:layout_height="wrap_content"/>
-                <TextView android:text="Instagram"
-                    android:textSize="11sp"
-                    android:id="@+id/insta"
-                    android:drawableTop="@drawable/instagram"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:layout_height="wrap_content"/>
-                <TextView android:text="YT Channel"
-                    android:textSize="11sp"
-                    android:id="@+id/help"
-                    android:drawableTop="@drawable/youtube"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:layout_height="wrap_content"/>
-                <TextView android:text="Chat with us"
-                    android:textSize="11sp"
-                    android:id="@+id/discord"
-                    android:drawableTop="@drawable/discord"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:layout_height="wrap_content"/>
+<!--            <LinearLayout android:id="@+id/views"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:elevation="2dp"-->
+<!--                android:padding="10dp"-->
+<!--                android:gravity="bottom"-->
+<!--                android:orientation="horizontal"-->
+<!--                android:layout_height="match_parent">-->
+<!--                <TextView android:text="claim prize"-->
+<!--                    android:textSize="11sp"-->
+<!--                    android:id="@+id/claim_now"-->
+<!--                    android:drawableTop="@drawable/cash"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:gravity="center"-->
+<!--                    android:layout_height="wrap_content"/>-->
+<!--                <TextView android:text="Instagram"-->
+<!--                    android:textSize="11sp"-->
+<!--                    android:id="@+id/insta"-->
+<!--                    android:drawableTop="@drawable/instagram"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:gravity="center"-->
+<!--                    android:layout_height="wrap_content"/>-->
+<!--                <TextView android:text="YT Channel"-->
+<!--                    android:textSize="11sp"-->
+<!--                    android:id="@+id/help"-->
+<!--                    android:drawableTop="@drawable/youtube"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:gravity="center"-->
+<!--                    android:layout_height="wrap_content"/>-->
+<!--                <TextView android:text="Chat with us"-->
+<!--                    android:textSize="11sp"-->
+<!--                    android:id="@+id/discord"-->
+<!--                    android:drawableTop="@drawable/discord"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:gravity="center"-->
+<!--                    android:layout_height="wrap_content"/>-->
 <!--                <com.roughike.swipeselector.SwipeSelector-->
 <!--                android:id="@+id/swipeSelector"-->
 <!--                android:visibility="gone"-->
@@ -98,13 +126,13 @@
 <!--                    android:layout_centerInParent="true"-->
 <!--                    android:layout_width="wrap_content"-->
 <!--                    android:layout_height="wrap_content"/>-->
-            </LinearLayout>
+<!--            </LinearLayout>-->
         </LinearLayout>
 
         <include android:id="@+id/bottom"
             layout="@layout/bottom_sheet"
             android:layout_width="match_parent"
-            android:layout_height="320dp"
+            android:layout_height="300dp"
             android:layout_marginBottom="-10dp"
             android:background="@color/black" />
 

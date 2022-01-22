@@ -18,6 +18,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -45,6 +46,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -111,6 +113,7 @@ import com.intelj.y_ral_gaming.Adapter.PayMentAdapter;
 import com.intelj.y_ral_gaming.Adapter.RankAdapter;
 import com.intelj.y_ral_gaming.AppController;
 import com.intelj.y_ral_gaming.ComingSoon;
+import com.intelj.y_ral_gaming.CustomPagerAdapter;
 import com.intelj.y_ral_gaming.DatabaseHelper;
 import com.intelj.y_ral_gaming.Fragment.BottomSheetDilogFragment;
 import com.intelj.y_ral_gaming.Fragment.OneFragment;
@@ -171,12 +174,14 @@ public class MainActivity extends AppCompatActivity {
     ImageView imageView;
     private EditText et_datetime, upi;
     private AdView mAdView;
+    LinearLayout moneyList;
+    String wAmount = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        // requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
         AppController.getInstance().getGameName();
         AppController.getInstance().getTournamentTime();
@@ -188,15 +193,39 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             invalidateOptionsMenu();
         }
+        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        viewPager.setAdapter(new CustomPagerAdapter(this));
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            public void onPageScrollStateChanged(int state) {}
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+
+            public void onPageSelected(int position) {
+                 if(position == 2){
+                   //  addviewDisplay();
+                 }
+            }
+        });
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int Dheight = displayMetrics.heightPixels;
+
         Log.e("allheight", Dheight + "");
         findViewById(R.id.lin).post(new Runnable() {
             @Override
             public void run() {
-                findViewById(R.id.lin).getHeight();
-                findViewById(R.id.bottom).getLayoutParams().height = Dheight - findViewById(R.id.lin).getHeight() - findViewById(R.id.bottom_navigation).getHeight();
+//                findViewById(R.id.bottom).getLayoutParams().height = Dheight - findViewById(R.id.lin).getHeight() - findViewById(R.id.bottom_navigation).getHeight();
+            }
+        });
+        findViewById(R.id.showSupport).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showSupport();
+            }
+        });
+        findViewById(R.id.coins).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showCoins();
             }
         });
         bottomNavigation = findViewById(R.id.bottom_navigation);
@@ -206,7 +235,6 @@ public class MainActivity extends AppCompatActivity {
         Log.e("appCon", appConstant.getUserId());
         db = new DatabaseHelper(this, "notifications");
         inflated = stub.inflate();
-        addviewDisplay();
 //        MobileAds.initialize(this, new OnInitializationCompleteListener() {
 //            @Override
 //            public void onInitializationComplete(InitializationStatus initializationStatus) {
@@ -247,42 +275,42 @@ public class MainActivity extends AppCompatActivity {
 //                openSubscribe();claim_now
 //            }
 //        });
-        findViewById(R.id.discord).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String url = "https://discord.gg/KPXDCGsmem";
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(url));
-                startActivity(i);
-            }
-        });
-        findViewById(R.id.insta).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String url = "https://www.instagram.com/y_ral_gaming/";
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(url));
-                startActivity(i);
-            }
-        });
-        findViewById(R.id.help).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String url = "https://www.youtube.com/c/YRALGaming";
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(url));
-                startActivity(i);
-            }
-        });
-        findViewById(R.id.claim_now).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (new AppConstant(MainActivity.this).checkLogin())
-                    showPopDialog();
-                else
-                    showBottomSheetDialog();
-            }
-        });
+//        findViewById(R.id.discord).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                String url = "https://discord.gg/KPXDCGsmem";
+//                Intent i = new Intent(Intent.ACTION_VIEW);
+//                i.setData(Uri.parse(url));
+//                startActivity(i);
+//            }
+//        });
+//        findViewById(R.id.insta).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                String url = "https://www.instagram.com/y_ral_gaming/";
+//                Intent i = new Intent(Intent.ACTION_VIEW);
+//                i.setData(Uri.parse(url));
+//                startActivity(i);
+//            }
+//        });
+//        findViewById(R.id.help).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                String url = "https://www.youtube.com/c/YRALGaming";
+//                Intent i = new Intent(Intent.ACTION_VIEW);
+//                i.setData(Uri.parse(url));
+//                startActivity(i);
+//            }
+//        });
+//        findViewById(R.id.claim_now).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (new AppConstant(MainActivity.this).checkLogin())
+//                    showPopDialog();
+//                else
+//                    showBottomSheetDialog();
+//            }
+//        });
 //        final Handler handler = new Handler();
 //        final int delay = 5000; // 1000 milliseconds == 1 second
 
@@ -307,7 +335,7 @@ public class MainActivity extends AppCompatActivity {
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        if ((item.getItemId() != R.id.game_slot && item.getItemId() != R.id.tournament) && !new AppConstant(MainActivity.this).checkLogin()) {
+                        if ((item.getItemId() != R.id.tournament && item.getItemId() != R.id.tournament) && !new AppConstant(MainActivity.this).checkLogin()) {
                             showBottomSheetDialog();
                             return true;
                         }
@@ -369,7 +397,7 @@ public class MainActivity extends AppCompatActivity {
                                 discordId = inflated.findViewById(R.id.discordId);
                                 TextInputEditText phoneNumber = inflated.findViewById(R.id.phoneNumber);
                                 saveProf = inflated.findViewById(R.id.save);
-                                playerName.setText(AppController.getInstance().mySnapShort.child(AppConstant.userName).getValue()  == null ? "" : AppController.getInstance().mySnapShort.child(AppConstant.userName).getValue() + "");
+                                playerName.setText(AppController.getInstance().mySnapShort.child(AppConstant.userName).getValue() == null ? "" : AppController.getInstance().mySnapShort.child(AppConstant.userName).getValue() + "");
                                 phoneNumber.setText(new AppConstant(MainActivity.this).getPhoneNumber());
                                 discordId.setText(AppController.getInstance().mySnapShort.child(AppConstant.discordId).exists() ? AppController.getInstance().mySnapShort.child(AppConstant.discordId).getValue() + "" : "");
                                 saveProf.setOnClickListener(new View.OnClickListener() {
@@ -410,6 +438,143 @@ public class MainActivity extends AppCompatActivity {
 //        }, 5000);
     }
 
+    public void WidthDrawAmount(View view) {
+        TextView selected = ((TextView) view);
+        selected.setBackgroundColor(Color.parseColor("#000000"));
+        selected.setTextColor(Color.parseColor("#ffffff"));
+        for (int i = 0; i < moneyList.getChildCount(); i++) {
+            TextView unselected = (TextView) moneyList.getChildAt(i);
+            if (selected != moneyList.getChildAt(i)) {
+                unselected.setBackgroundResource(R.drawable.outline);
+                unselected.setTextColor(Color.parseColor("#000000"));
+            }
+        }
+        wAmount = selected.getText().toString();
+    }
+
+    private void showCoins() {
+        wAmount = "";
+        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+        bottomSheetDialog.setContentView(R.layout.money_sheet);
+        moneyList = bottomSheetDialog.findViewById(R.id.moneyList);
+        bottomSheetDialog.findViewById(R.id.btn_next).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (wAmount.equals("")) {
+                    Toast.makeText(MainActivity.this, "Please any amount to withdraw", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                if (Integer.parseInt(wAmount) <= Integer.parseInt(amount)) {
+                    EditText upi = bottomSheetDialog.findViewById(R.id.upi);
+                    if (upi.getText().toString().trim().equals("")) {
+                        upi.setError("Upi id cannot be empty");
+                        return;
+                    }
+                    requestMoney(upi.getText().toString());
+                    bottomSheetDialog.dismiss();
+                } else {
+                    Toast.makeText(MainActivity.this, "Insufficient Balance", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+        bottomSheetDialog.findViewById(R.id.add_money).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AppConstant(MainActivity.this).addMoney(MainActivity.this);
+            }
+        });
+        bottomSheetDialog.show();
+    }
+
+    private void requestMoney(String upi) {
+        ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("loading...");
+        progressDialog.show();
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = "http://y-ral-gaming.com/admin/api/request_payment.php";
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.e("onClick3", response);
+                        progressDialog.cancel();
+                        try {
+                            new AlertDialog.Builder(MainActivity.this)
+                                    .setTitle("success")
+                                    .setMessage("Payment requested you will recieve payment in 24hrs")
+
+                                    // Specifying a listener allows you to take an action before dismissing the dialog.
+                                    // The dialog is automatically dismissed when a dialog button is clicked.
+                                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            // Continue with delete operation
+                                        }
+                                    })
+
+                                    // A null listener allows the button to dismiss the dialog and take no further action.
+                                    .setNegativeButton(android.R.string.no, null)
+                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                    .show();
+                            showNotification();
+                        } catch (Exception e) {
+                            Log.e("logMess", e.getMessage());
+
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                progressDialog.cancel();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("upi", upi);
+                params.put("userid", new AppConstant(MainActivity.this).getUserId());
+                params.put("amount", wAmount);
+                params.put("time", (System.currentTimeMillis()) + "");
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Content-Type", "application/x-www-form-urlencoded");
+                return params;
+            }
+        };
+
+        queue.add(stringRequest);
+    }
+
+    private void showSupport() {
+        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+        bottomSheetDialog.setContentView(R.layout.support);
+        bottomSheetDialog.findViewById(R.id.discord).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://discord.gg/5XDFC53w5q"));
+                startActivity(browserIntent);
+            }
+        });
+        bottomSheetDialog.findViewById(R.id.instagram).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.instagram.com/y_ral_gaming/"));
+                startActivity(browserIntent);
+            }
+        });
+        bottomSheetDialog.findViewById(R.id.youtube).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/c/YRALGaming"));
+                startActivity(browserIntent);
+            }
+        });
+        bottomSheetDialog.show();
+    }
+
     private void playYTVideo() {
         SharedPreferences prefs = getSharedPreferences(AppConstant.AppName, MODE_PRIVATE);
         String url = prefs.getString("url", "");
@@ -421,9 +586,9 @@ public class MainActivity extends AppCompatActivity {
                     public void onInitializationSuccess(YouTubePlayer.Provider provider,
                                                         YouTubePlayer youTubePlayer, boolean b) {
                         System.out.println("susccess " + url);
-                        Thread thread = new Thread(new Runnable(){
+                        Thread thread = new Thread(new Runnable() {
                             @Override
-                            public void run(){
+                            public void run() {
                                 if (!b) {
                                     if (url.equals("")) {
                                         youTubePlayer.loadPlaylist("PLFSCz7rRk_hVFGD9d25S_789spdVYLLj_");
@@ -573,7 +738,7 @@ public class MainActivity extends AppCompatActivity {
             }
             userAdapter.notifyDataSetChanged();
         }
-      //  setPackagename();
+        //  setPackagename();
     }
 
     private void showTeam() {
@@ -990,13 +1155,14 @@ public class MainActivity extends AppCompatActivity {
             Glide.with(this).load(picturePath).apply(new RequestOptions().circleCrop()).into(imgProfile);
         } else if (resultCode == RESULT_OK && requestCode == RESULT_LOAD_IMAGE) {
             try {
-                selectedImage =getBitmapFromUri(data.getData());
+                selectedImage = getBitmapFromUri(data.getData());
                 Glide.with(this).load(selectedImage).apply(new RequestOptions()).into(imageView);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
+
     private Bitmap getBitmapFromUri(Uri uri) throws IOException {
         ParcelFileDescriptor parcelFileDescriptor =
                 getContentResolver().openFileDescriptor(uri, "r");
@@ -1005,6 +1171,7 @@ public class MainActivity extends AppCompatActivity {
         parcelFileDescriptor.close();
         return image;
     }
+
     public Bitmap getResizedBitmap(Bitmap image, int maxSize) {
         int width = image.getWidth();
         int height = image.getHeight();
@@ -1070,7 +1237,7 @@ public class MainActivity extends AppCompatActivity {
                         new Handler(Looper.getMainLooper()).post(new Runnable() {
                             @Override
                             public void run() {
-                             }
+                            }
                         });
                         // Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
                         Log.e("GotError", "" + error.getMessage());
@@ -1183,7 +1350,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     class ViewPagerAdapter extends FragmentStatePagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();
         private final List<String> mFragmentTitleList = new ArrayList<>();
@@ -1264,7 +1430,7 @@ public class MainActivity extends AppCompatActivity {
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.e("onClick3: ", intent.getBooleanExtra(AppConstant.userName, false)+"");
+            Log.e("onClick3: ", intent.getBooleanExtra(AppConstant.userName, false) + "");
             if (intent.getBooleanExtra(AppConstant.userName, false)) {
                 Log.e("onClick3: ", "set error");
                 ign.setEnabled(true);
@@ -1297,7 +1463,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     if (ign.isEnabled()) {
-                       // if (igid.getText().toString().trim().equals("") || ign.getText().toString().trim().equals("")) {
+                        // if (igid.getText().toString().trim().equals("") || ign.getText().toString().trim().equals("")) {
                         if (ign.getText().toString().trim().equals("")) {
                             Toast.makeText(MainActivity.this, intent.getStringExtra(AppConstant.title) + " id cannot be empty", Toast.LENGTH_LONG).show();
                             return;

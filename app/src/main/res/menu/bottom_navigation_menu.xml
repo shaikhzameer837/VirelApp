@@ -4,10 +4,11 @@
         android:id="@+id/game_slot"
         android:icon="@drawable/home"
         android:title="Home" />
-<!--    <item-->
+<!--&lt;!&ndash;    <item&ndash;&gt;-->
 <!--        android:id="@+id/team"-->
 <!--        android:icon="@drawable/ic_team"-->
 <!--        android:title="My Team" />-->
+
     <item
         android:id="@+id/tournament"
         android:icon="@drawable/trophy_outline"
@@ -22,6 +23,6 @@
         android:title="history" />
     <item
         android:id="@+id/profile"
-        android:icon="@drawable/cog"
-        android:title="setting" />
+        android:icon="@drawable/account_box"
+        android:title="profile" />
 </menu>

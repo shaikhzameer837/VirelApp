@@ -1,12 +1,19 @@
 package com.intelj.y_ral_gaming.Utils;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.provider.Settings;
+import android.text.InputType;
+import android.widget.EditText;
+
+import androidx.appcompat.app.AlertDialog;
 
 import com.google.firebase.database.DataSnapshot;
 import com.intelj.y_ral_gaming.AppController;
+import com.intelj.y_ral_gaming.PaymentActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -141,7 +148,30 @@ public class AppConstant {
         sharedPreferences.edit().putString(package_id, packageId).apply();
         sharedPreferences.edit().putString(expiry_date, expiryDate).apply();
     }
+    public void addMoney(Context mContext){
+        EditText amountText = new EditText(mContext);
+        amountText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_NUMBER_FLAG_SIGNED);
+        AlertDialog.Builder builder;
+        builder = new AlertDialog.Builder(mContext).
+                setMessage("Enter the amount").
+                setPositiveButton("Add Money", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(!amountText.getText().toString().trim().equals("")) {
+                            dialog.dismiss();
+//                            String user_id = new AppConstant(mContext).getUserId();
+//                            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://y-ral-gaming.com/paytm/paytm-main/pgRedirect.php?amount="+amountText.getText().toString()+"&&user_id="+user_id));
+//                            mContext.startActivity(browserIntent);
 
+                            Intent intent = new Intent(mContext, PaymentActivity.class);
+                            intent.putExtra("amount",amountText.getText().toString());
+                            mContext.startActivity(intent);
+                        }
+                    }
+                }).
+                setView(amountText);
+        builder.create().show();
+    }
     public void saveUserInfo(Context context, DataSnapshot childDataSnap) {
         SharedPreferences sharedpreferences = context.getSharedPreferences(childDataSnap.getKey(), Context.MODE_PRIVATE);
         SharedPreferences.Editor editors = sharedpreferences.edit();
