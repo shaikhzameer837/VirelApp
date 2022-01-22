@@ -96,7 +96,7 @@ public class SigninActivity extends AppCompatActivity {
                             return;
                         }
 
-                        // Get new FCM registration token
+                        // Get new FCM registratiupion token
                         token = task.getResult();
 
 
