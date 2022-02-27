@@ -387,7 +387,8 @@ public class SigninActivity extends AppCompatActivity {
                             if (obj.getBoolean("success")) {
                                 String package_id = obj.getString("package_id");
                                 String expiry_date = obj.getString("expiry_date");
-                                appConstant.savePackage(package_id, expiry_date);
+                                String uniqueId = obj.getString("id");
+                                appConstant.savePackage(package_id, expiry_date,uniqueId);
                                 Intent intent = new Intent(SigninActivity.this, MainActivity.class);//UserInfoCheck.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
@@ -411,6 +412,7 @@ public class SigninActivity extends AppCompatActivity {
                 Map<String, String> params = new HashMap<>();
                 params.put("token", token);
                 params.put("uniqueId", AppController.getInstance().userId);
+                params.put("phoneNumber", _phoneNumber);
                 return params;
             }
 

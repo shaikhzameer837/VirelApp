@@ -15,6 +15,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.intelj.y_ral_gaming.AppController;
 import com.intelj.y_ral_gaming.PaymentActivity;
 
+import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Map;
@@ -28,6 +29,8 @@ public class AppConstant {
             login = "login",
             phoneNumber = "phoneNumber",
             userId = "userId",
+            id = "id",
+            amount = "amount",
             ad_mobs = "ca-app-pub-4340305355612346/9283952361",
             google_ad_mobs = "ca-app-pub-3940256099942544/2247696110",
             applyMatches = "applyMatches",
@@ -114,7 +117,15 @@ public class AppConstant {
     }
     public static boolean isProduction = false;
     public static SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss aa");
+    static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    static SecureRandom rnd = new SecureRandom();
 
+    public String randomString(int len){
+        StringBuilder sb = new StringBuilder(len);
+        for(int i = 0; i < len; i++)
+            sb.append(AB.charAt(rnd.nextInt(AB.length())));
+        return sb.toString();
+    }
     public AppConstant(Context _context) {
         this._context = _context;
         setSharedPref();
@@ -142,11 +153,12 @@ public class AppConstant {
         myInfo.edit().putString(phoneNumber, _phoneNumber).apply();
     }
 
-    public void savePackage(String packageId, String expiryDate) {
+    public void savePackage(String packageId, String expiryDate, String uniqueId) {
         setSharedPref();
         myInfo = _context.getSharedPreferences(userId, Context.MODE_PRIVATE);
         sharedPreferences.edit().putString(package_id, packageId).apply();
         sharedPreferences.edit().putString(expiry_date, expiryDate).apply();
+        sharedPreferences.edit().putString(id, uniqueId).apply();
     }
     public void addMoney(Context mContext){
         EditText amountText = new EditText(mContext);
@@ -234,6 +246,10 @@ public class AppConstant {
     public String getUserId() {
         setSharedPref();
         return sharedPreferences.getString(userId, "");
+    }
+   public String getId() {
+        setSharedPref();
+        return sharedPreferences.getString(id, "");
     }
 
     public String getPhoneNumber() {

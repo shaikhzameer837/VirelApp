@@ -37,6 +37,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class AppController extends Application implements Application.ActivityLifecycleCallbacks {
@@ -59,6 +60,9 @@ public class AppController extends Application implements Application.ActivityLi
     AlertDialog.Builder builder;
     public boolean isFirstTime = false;
     public String subscription_package = "";
+    public int amount = 0;
+    public List<GameItem> movieList = new ArrayList<>();
+    public GameItem gameItem;
     @Override
     public void onCreate() {
         super.onCreate();

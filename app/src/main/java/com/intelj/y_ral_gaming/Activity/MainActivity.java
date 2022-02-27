@@ -67,6 +67,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import com.android.volley.AuthFailureError;
@@ -87,6 +88,7 @@ import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -104,6 +106,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -112,12 +115,17 @@ import com.intelj.y_ral_gaming.Adapter.MemberListAdapter;
 import com.intelj.y_ral_gaming.Adapter.PayMentAdapter;
 import com.intelj.y_ral_gaming.Adapter.RankAdapter;
 import com.intelj.y_ral_gaming.AppController;
+import com.intelj.y_ral_gaming.BuildConfig;
 import com.intelj.y_ral_gaming.ComingSoon;
 import com.intelj.y_ral_gaming.CustomPagerAdapter;
 import com.intelj.y_ral_gaming.DatabaseHelper;
+import com.intelj.y_ral_gaming.FirebaseFCMServices;
 import com.intelj.y_ral_gaming.Fragment.BottomSheetDilogFragment;
 import com.intelj.y_ral_gaming.Fragment.OneFragment;
+import com.intelj.y_ral_gaming.GameItem;
+import com.intelj.y_ral_gaming.MatchAdapter;
 import com.intelj.y_ral_gaming.NotificationAdapter;
+import com.intelj.y_ral_gaming.PaidScrims;
 import com.intelj.y_ral_gaming.R;
 import com.intelj.y_ral_gaming.SigninActivity;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
@@ -150,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager gameViewpager;
     BottomNavigationView bottomNavigation;
     private TabLayout tabLayout;
-    TextView timeLeft, coin, textView;
+    TextView timeLeft, textView, coins;
     EditText ign, igid;
     private RecyclerView recyclerView;
     View inflated;
@@ -194,15 +202,32 @@ public class MainActivity extends AppCompatActivity {
             invalidateOptionsMenu();
         }
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        viewPager.setAdapter(new CustomPagerAdapter(this));
+        FirebaseDatabase.getInstance().getReference("poster").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(final DataSnapshot dataSnapshot) {
+                ArrayList<String> dataSnapshots = new ArrayList<>();
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
+                    dataSnapshots.add(0, child.getValue(String.class));
+                }
+                viewPager.setAdapter(new CustomPagerAdapter(MainActivity.this,dataSnapshots));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+
+            }
+        });
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            public void onPageScrollStateChanged(int state) {}
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+            public void onPageScrollStateChanged(int state) {
+            }
+
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
 
             public void onPageSelected(int position) {
-                 if(position == 2){
-                   //  addviewDisplay();
-                 }
+                if (position == 2) {
+                    //  addviewDisplay();
+                }
             }
         });
         DisplayMetrics displayMetrics = new DisplayMetrics();
@@ -222,7 +247,8 @@ public class MainActivity extends AppCompatActivity {
                 showSupport();
             }
         });
-        findViewById(R.id.coins).setOnClickListener(new View.OnClickListener() {
+        coins = findViewById(R.id.coins);
+        coins.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showCoins();
@@ -358,7 +384,7 @@ public class MainActivity extends AppCompatActivity {
                                 return true;
                             case R.id.rank:
                                 inflateView(R.layout.rank);
-                                showRank();
+                                //showRank();
                                 return true;
 //                            case R.id.team:
 //                                inflateView(R.layout.bottom_sheet_dialog);
@@ -375,22 +401,22 @@ public class MainActivity extends AppCompatActivity {
                                 inflateView(R.layout.edit_profile);
                                 imgProfile = inflated.findViewById(R.id.imgs);
                                 package_name = inflated.findViewById(R.id.amount);
-                                inflated.findViewById(R.id.withdraw).setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        showPopDialog();
-                                    }
-                                });
-                                getUserAmount();
-                                //setPackagename();
-                                imgProfile.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        ActivityCompat.requestPermissions(MainActivity.this,
-                                                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                                                1);
-                                    }
-                                });
+//                                inflated.findViewById(R.id.withdraw).setOnClickListener(new View.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(View v) {
+//                                        showPopDialog();
+//                                    }
+//                                });
+//                                getUserAmount();
+//                                //setPackagename();
+//                                imgProfile.setOnClickListener(new View.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(View v) {
+//                                        ActivityCompat.requestPermissions(MainActivity.this,
+//                                                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+//                                                1);
+//                                    }
+//                                });
 
                                 Glide.with(MainActivity.this).load(AppController.getInstance().mySnapShort.child(AppConstant.myPicUrl).getValue() + "").placeholder(R.drawable.profile_icon).apply(new RequestOptions().circleCrop()).into(imgProfile);
                                 playerName = inflated.findViewById(R.id.name);
@@ -436,6 +462,7 @@ public class MainActivity extends AppCompatActivity {
 //
 //
 //        }, 5000);
+
     }
 
     public void WidthDrawAmount(View view) {
@@ -460,14 +487,19 @@ public class MainActivity extends AppCompatActivity {
         bottomSheetDialog.findViewById(R.id.btn_next).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!new AppConstant(MainActivity.this).checkLogin()) {
+                    showBottomSheetDialog();
+                    return;
+                }
                 if (wAmount.equals("")) {
                     Toast.makeText(MainActivity.this, "Please any amount to withdraw", Toast.LENGTH_LONG).show();
                     return;
                 }
-                if (Integer.parseInt(wAmount) <= Integer.parseInt(amount)) {
+                if (Integer.parseInt(wAmount) <= AppController.getInstance().amount) {
                     EditText upi = bottomSheetDialog.findViewById(R.id.upi);
                     if (upi.getText().toString().trim().equals("")) {
                         upi.setError("Upi id cannot be empty");
+                        upi.requestFocus();
                         return;
                     }
                     requestMoney(upi.getText().toString());
@@ -515,8 +547,8 @@ public class MainActivity extends AppCompatActivity {
                                     .setNegativeButton(android.R.string.no, null)
                                     .setIcon(android.R.drawable.ic_dialog_alert)
                                     .show();
-                            showNotification();
-                        } catch (Exception e) {
+                            bottomNavigation.findViewById(R.id.status).performClick();
+                         } catch (Exception e) {
                             Log.e("logMess", e.getMessage());
 
                         }
@@ -1276,24 +1308,41 @@ public class MainActivity extends AppCompatActivity {
         ign = inflated.findViewById(R.id.ign);
         igid = inflated.findViewById(R.id.igid);
         edit = inflated.findViewById(R.id.edit);
-        coin = inflated.findViewById(R.id.coin);
-        coin.setText(new AppConstant(this).getCoins() + " Coin");
         tabLayout.setupWithViewPager(gameViewpager);
         textView = inflated.findViewById(R.id.subscription);
         textView.setSelected(true);
         ArrayList<String> titleList = new ArrayList<>();
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        if (AppController.getInstance().gameNameHashmap.size() > 0) {
-            for (Map.Entry<String, Boolean> entry : AppController.getInstance().gameNameHashmap.entrySet()) {
-                adapter.addFragment(new OneFragment(entry.getKey(), entry.getValue()), entry.getKey());
-                titleList.add(entry.getKey());
-                // do something with key and/or tab
+        FirebaseDatabase.getInstance().getReference("masters").child("gameList").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                FirebaseDatabase.getInstance().getReference("masters").keepSynced(true);
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Log.e("index", (long) snapshot.getValue() + " " + snapshot.getKey());
+                    titleList.add(snapshot.getKey());
+                    adapter.addFragment((long) snapshot.getValue(), new OneFragment(snapshot.getKey(), (long) snapshot.getValue()), snapshot.getKey());
+                    // adapter.addFragment(new PaidScrims(snapshot.getKey(), (boolean) snapshot.getValue()), snapshot.getKey());
+                }
+                gameViewpager.setAdapter(adapter);
+                Intent intent = new Intent("custom-event-name");
+                if (titleList.size() > 1)
+                    intent.putExtra(AppConstant.title, titleList.get(0));
+                LocalBroadcastManager.getInstance(MainActivity.this).sendBroadcast(intent);
             }
-            gameViewpager.setAdapter(adapter);
-            Intent intent = new Intent("custom-event-name");
-            intent.putExtra(AppConstant.title, titleList.get(0));
-            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-        }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+
+            }
+        });
+//        if (AppController.getInstance().gameNameHashmap.size() > 0) {
+//            for (Map.Entry<String, Boolean> entry : AppController.getInstance().gameNameHashmap.entrySet()) {
+//                adapter.addFragment(new PaidScrims(entry.getKey(), entry.getValue()), entry.getKey());
+//                titleList.add(entry.getKey());
+//                // do something with key and/or tab
+//            }
+//
+//        }
         gameViewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             public void onPageScrollStateChanged(int state) {
             }
@@ -1368,9 +1417,9 @@ public class MainActivity extends AppCompatActivity {
             return mFragmentList.size();
         }
 
-        public void addFragment(Fragment fragment, String title) {
-            mFragmentList.add(fragment);
-            mFragmentTitleList.add(title);
+        public void addFragment(Long index, Fragment fragment, String title) {
+            mFragmentList.add(index.intValue() != 0 ? 0 : mFragmentList.size(), fragment);
+            mFragmentTitleList.add(index.intValue() != 0 ? 0 : mFragmentTitleList.size(), title);
         }
 
         @Override
@@ -1443,6 +1492,10 @@ public class MainActivity extends AppCompatActivity {
                 showBottomSheetDialog();
                 return;
             }
+            if (intent.getBooleanExtra(AppConstant.amount, false)) {
+                coins.setText(AppController.getInstance().amount + "");
+                return;
+            }
             if (intent.getBooleanExtra(AppConstant.teamMember, false)) {
                 Set<String> myList = (Set<String>) getIntent().getSerializableExtra("teammeber");
                 BottomSheetDilogFragment bottomSheetFragment = new BottomSheetDilogFragment(myList);
@@ -1450,10 +1503,10 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
             SharedPreferences sharedPreferences = getSharedPreferences(AppConstant.AppName, 0);
-            ign.setHint(intent.getStringExtra(AppConstant.title) + " in game name");
-            igid.setHint(intent.getStringExtra(AppConstant.title) + " id");
-            ign.setText(sharedPreferences.getString(intent.getStringExtra(AppConstant.title), ""));
-            igid.setText(sharedPreferences.getString(intent.getStringExtra(AppConstant.title) + "_" + AppConstant.userName, ""));
+            // ign.setHint(intent.getStringExtra(AppConstant.title) + " in game name");
+            // igid.setHint(intent.getStringExtra(AppConstant.title) + " id");
+            // ign.setText(sharedPreferences.getString(intent.getStringExtra(AppConstant.title), ""));
+            // igid.setText(sharedPreferences.getString(intent.getStringExtra(AppConstant.title) + "_" + AppConstant.userName, ""));
             inflated.findViewById(R.id.edit).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

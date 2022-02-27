@@ -90,6 +90,7 @@
             android:theme="@style/AppThemes" />
         <activity android:name=".Activity.GroupProfile" />
         <activity android:name=".PaymentActivity" />
+        <activity android:name=".ResultActivity" />
 
         <service
             android:name=".FirebaseFCMServices"

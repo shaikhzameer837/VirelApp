@@ -37,11 +37,15 @@
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/drawable/background_with_shadow.xml" value="0.23697916666666666" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/drawable/border.xml" value="0.23697916666666666" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/drawable/cash.xml" value="0.23697916666666666" />
+        <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/drawable/check.xml" value="0.156" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/drawable/currency.xml" value="0.23697916666666666" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/drawable/discord.xml" value="0.12395833333333334" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/drawable/help.xml" value="0.23697916666666666" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/drawable/ic_coin.xml" value="0.23697916666666666" />
+        <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/drawable/info.xml" value="0.1835" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/drawable/instagram.xml" value="0.23697916666666666" />
+        <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/drawable/more.xml" value="0.1" />
+        <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/drawable/round.xml" value="0.1835" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/drawable/status.xml" value="0.23697916666666666" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/drawable/support.xml" value="0.12239583333333333" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/drawable/trophy.xml" value="0.12395833333333334" />
@@ -52,10 +56,12 @@
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/layout/activity_main.xml" value="0.15353260869565216" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/layout/activity_payment.xml" value="0.1408514492753623" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/layout/bootmsheetdialog_fragment.xml" value="0.15353260869565216" />
+        <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/layout/bottom_sheet.xml" value="0.13858695652173914" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/layout/bottom_sheet_dialog.xml" value="0.17753623188405798" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/layout/dummy.xml" value="0.12228260869565218" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/layout/edit_profile.xml" value="0.25" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/layout/fragment_claim_now.xml" value="0.18" />
+        <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/layout/fragment_home.xml" value="0.1453804347826087" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/layout/fragment_one.xml" value="0.17617753623188406" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/layout/gallery_row.xml" value="0.15806159420289856" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/layout/gallery_selection.xml" value="0.15806159420289856" />
@@ -71,6 +77,8 @@
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/layout/payment.xml" value="0.161231884057971" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/layout/payment_row.xml" value="0.16621376811594202" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/layout/rank.xml" value="0.13134057971014493" />
+        <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/layout/register_match.xml" value="0.13858695652173914" />
+        <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/layout/result.xml" value="0.18" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/layout/search_friend_view.xml" value="0.10625" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/layout/signin.xml" value="0.11145833333333334" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/layout/splashscreen.xml" value="0.13541666666666666" />

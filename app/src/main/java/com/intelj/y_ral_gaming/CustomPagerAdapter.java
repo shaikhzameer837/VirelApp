@@ -25,12 +25,16 @@ import com.google.android.gms.ads.nativead.NativeAdOptions;
 import com.intelj.y_ral_gaming.Activity.MainActivity;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 
+import java.util.ArrayList;
+
 public class CustomPagerAdapter extends PagerAdapter {
     AdView v = null;
     private Context mContext;
+    ArrayList<String> dataSnapshots;
 
-    public CustomPagerAdapter(Context context) {
+    public CustomPagerAdapter(Context context, ArrayList<String> dataSnapshots) {
         mContext = context;
+        this.dataSnapshots = dataSnapshots;
     }
 
     @Override
@@ -38,60 +42,60 @@ public class CustomPagerAdapter extends PagerAdapter {
         LayoutInflater inflater = LayoutInflater.from(mContext);
         ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.img_swipe, collection, false);
         ImageView imgs = layout.findViewById(R.id.imgs);
-        if (position == 1) {
-            imgs.setVisibility(View.GONE);
-            MobileAds.initialize(mContext, new OnInitializationCompleteListener() {
-                @Override
-                public void onInitializationComplete(InitializationStatus initializationStatus) {
-                }
-            });
-            AdView mAdView = layout.findViewById(R.id.adView);
-            AdRequest adRequest = new AdRequest.Builder().build();
-            mAdView.loadAd(adRequest);
-
-            mAdView.setAdListener(new AdListener() {
-                @Override
-                public void onAdLoaded() {
-                    // Code to be executed when an ad finishes loading.
-                    super.onAdLoaded();
-                    Toast.makeText(mContext, "Add loaded", Toast.LENGTH_LONG).show();
-                }
-
-                @Override
-                public void onAdFailedToLoad(LoadAdError adError) {
-                    // Code to be executed when an ad request fails.
-                    super.onAdFailedToLoad(adError);
-                    mAdView.loadAd(adRequest);
-                }
-
-                @Override
-                public void onAdOpened() {
-                    // Code to be executed when an ad opens an overlay that
-                    // covers the screen.
-                    super.onAdOpened();
-                }
-
-                @Override
-                public void onAdClicked() {
-                    // Code to be executed when the user clicks on an ad.
-                    super.onAdClicked();
-                }
-
-                @Override
-                public void onAdClosed() {
-                    // Code to be executed when the user is about to return
-                    // to the app after tapping on an ad.
-//            super.onAdClosed();
-                }
-            });
-        } else {
+//        if (position == 1) {
+//            imgs.setVisibility(View.GONE);
+//            MobileAds.initialize(mContext, new OnInitializationCompleteListener() {
+//                @Override
+//                public void onInitializationComplete(InitializationStatus initializationStatus) {
+//                }
+//            });
+//            AdView mAdView = layout.findViewById(R.id.adView);
+//            AdRequest adRequest = new AdRequest.Builder().build();
+//            mAdView.loadAd(adRequest);
+//
+//            mAdView.setAdListener(new AdListener() {
+//                @Override
+//                public void onAdLoaded() {
+//                    // Code to be executed when an ad finishes loading.
+//                    super.onAdLoaded();
+//                    Toast.makeText(mContext, "Add loaded", Toast.LENGTH_LONG).show();
+//                }
+//
+//                @Override
+//                public void onAdFailedToLoad(LoadAdError adError) {
+//                    // Code to be executed when an ad request fails.
+//                    super.onAdFailedToLoad(adError);
+//                    mAdView.loadAd(adRequest);
+//                }
+//
+//                @Override
+//                public void onAdOpened() {
+//                    // Code to be executed when an ad opens an overlay that
+//                    // covers the screen.
+//                    super.onAdOpened();
+//                }
+//
+//                @Override
+//                public void onAdClicked() {
+//                    // Code to be executed when the user clicks on an ad.
+//                    super.onAdClicked();
+//                }
+//
+//                @Override
+//                public void onAdClosed() {
+//                    // Code to be executed when the user is about to return
+//                    // to the app after tapping on an ad.
+////            super.onAdClosed();
+//                }
+//            });
+//        } else {
             imgs.setVisibility(View.VISIBLE);
             Glide.with(mContext)
-                    .load("https://cdn.cloudflare.steamstatic.com/steam/apps/578080/capsule_616x353.jpg?t=1642587532")
+                    .load(dataSnapshots.get(position))
                     .placeholder(R.drawable.game_avatar)
                     .into(imgs);
             collection.addView(layout);
-        }
+      //  }
         return layout;
     }
 

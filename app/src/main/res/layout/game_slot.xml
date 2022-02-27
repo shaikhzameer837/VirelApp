@@ -42,8 +42,8 @@
             android:layout_width="0dp"
             android:layout_height="45dp"
             android:layout_weight="1"
+            android:text="Daily Free Giveaway matches"
             android:background="@android:color/transparent"
-            android:drawableLeft="@drawable/ic_ign"
             android:drawablePadding="5dp"
             android:enabled="false"
             android:imeOptions="actionDone"
@@ -61,6 +61,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="5dp"
+            android:visibility="gone"
             android:src="@drawable/ic_edit" />
     </LinearLayout>
 

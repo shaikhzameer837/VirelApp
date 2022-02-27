@@ -35,6 +35,14 @@
             android:background="@drawable/outline"
             android:onClick="WidthDrawAmount"
             android:padding="15dp"
+            android:text="20"
+            android:textColor="@color/black" />
+       <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/outline"
+            android:onClick="WidthDrawAmount"
+            android:padding="15dp"
             android:text="50"
             android:textColor="@color/black" />
 
@@ -87,7 +95,6 @@
             android:id="@+id/upi"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:enabled="false"
             android:hint="Enter payment number/ upi id"
             android:textSize="14sp" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -108,13 +115,13 @@
             android:onClick="sendNumber"
             android:scaleType="centerCrop"
             android:text="Add money"
+            android:visibility="gone"
             android:textColor="#000000" />
 
         <Button
             android:id="@+id/btn_next"
             android:layout_width="0dp"
             android:layout_height="45dp"
-            android:layout_marginLeft="5dp"
             android:layout_marginTop="25dp"
             android:layout_weight="1"
             android:backgroundTint="#000000"

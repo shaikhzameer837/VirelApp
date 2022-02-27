@@ -104,7 +104,7 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
                         try {
                             JSONObject obj = new JSONObject(response);
                             if (obj.getBoolean(AppConstant.success)) {
-                                new AppConstant(mContext).savePackage(packageList.get(position).getPackage_id(), expiry_date);
+                               // new AppConstant(mContext).savePackage(packageList.get(position).getPackage_id(), expiry_date);
                                 Toast.makeText(mContext,"Suscription Purchases",Toast.LENGTH_LONG).show();
                                 notifyDataSetChanged();
                             } else {
