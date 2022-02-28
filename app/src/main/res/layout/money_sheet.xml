@@ -95,7 +95,7 @@
             android:id="@+id/upi"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Enter payment number/ upi id"
+            android:hint="Enter paytm number/ upi id"
             android:textSize="14sp" />
     </com.google.android.material.textfield.TextInputLayout>
 

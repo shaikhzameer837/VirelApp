@@ -209,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
                     dataSnapshots.add(0, child.getValue(String.class));
                 }
-                viewPager.setAdapter(new CustomPagerAdapter(MainActivity.this,dataSnapshots));
+                viewPager.setAdapter(new CustomPagerAdapter(MainActivity.this, dataSnapshots));
             }
 
             @Override
@@ -492,7 +492,7 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
                 if (wAmount.equals("")) {
-                    Toast.makeText(MainActivity.this, "Please any amount to withdraw", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, "Please Select amount to withdraw", Toast.LENGTH_LONG).show();
                     return;
                 }
                 if (Integer.parseInt(wAmount) <= AppController.getInstance().amount) {
@@ -502,8 +502,13 @@ public class MainActivity extends AppCompatActivity {
                         upi.requestFocus();
                         return;
                     }
-                    requestMoney(upi.getText().toString());
-                    bottomSheetDialog.dismiss();
+                    if (upi.getText().toString().trim().contains("@") || android.text.TextUtils.isDigitsOnly(upi.getText().toString())) {
+                        requestMoney(upi.getText().toString());
+                        bottomSheetDialog.dismiss();
+                    } else {
+                        upi.setError("Invalid upi id / paytm number");
+                        upi.requestFocus();
+                    }
                 } else {
                     Toast.makeText(MainActivity.this, "Insufficient Balance", Toast.LENGTH_LONG).show();
                 }
@@ -529,11 +534,16 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         Log.e("onClick3", response);
+
                         progressDialog.cancel();
                         try {
+                            JSONObject obj = new JSONObject(response);
+                            if (!obj.getBoolean("success"))
+                                return;
+
                             new AlertDialog.Builder(MainActivity.this)
                                     .setTitle("success")
-                                    .setMessage("Payment requested you will recieve payment in 24hrs")
+                                    .setMessage("Payment requested you will recieve payment in 24hrs \n You Ticked id is " + obj.getString("ticked_id") + "\n click on status to check your payment request status")
 
                                     // Specifying a listener allows you to take an action before dismissing the dialog.
                                     // The dialog is automatically dismissed when a dialog button is clicked.
@@ -548,7 +558,7 @@ public class MainActivity extends AppCompatActivity {
                                     .setIcon(android.R.drawable.ic_dialog_alert)
                                     .show();
                             bottomNavigation.findViewById(R.id.status).performClick();
-                         } catch (Exception e) {
+                        } catch (Exception e) {
                             Log.e("logMess", e.getMessage());
 
                         }
@@ -566,6 +576,7 @@ public class MainActivity extends AppCompatActivity {
                 params.put("userid", new AppConstant(MainActivity.this).getUserId());
                 params.put("amount", wAmount);
                 params.put("time", (System.currentTimeMillis()) + "");
+                params.put("userName", AppController.getInstance().mySnapShort.child(AppConstant.userName).getValue() == null ? "player" : AppController.getInstance().mySnapShort.child(AppConstant.userName).getValue() + "");
                 return params;
             }
 
@@ -1680,7 +1691,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        this.moveTaskToBack(true);
+        Intent startMain = new Intent(Intent.ACTION_MAIN);
+        startMain.addCategory(Intent.CATEGORY_HOME);
+        startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(startMain);
     }
 
     private void setClipboard(String text) {

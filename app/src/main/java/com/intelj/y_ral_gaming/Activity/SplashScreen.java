@@ -70,6 +70,12 @@ public class SplashScreen extends AppCompatActivity {
                                 Log.d("SUBSCRIBED","SUCCESS");
                             }
                         });
+                        FirebaseMessaging.getInstance().subscribeToTopic("tournament").addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Log.d("SUBSCRIBED tournament", "SUCCESS");
+                            }
+                        });
                     }
                 });
         Intent intent = null;

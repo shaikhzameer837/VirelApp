@@ -109,7 +109,7 @@ public class FirebaseFCMServices extends FirebaseMessagingService {
                     public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                         bitmap[0] = resource;
                         String url = "";
-                        if (subject.equals("notification"))
+                        if (subject.equals("yt_videos"))
                            url = imageUrl.split("/")[4];
                         // TODO Do some work: pass this bitmap
                         showNotification(msg, title, bitmap[0], url);
@@ -193,7 +193,7 @@ public class FirebaseFCMServices extends FirebaseMessagingService {
         FirebaseMessaging.getInstance().subscribeToTopic("tournament").addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Log.d("SUBSCRIBED", "SUCCESS");
+                Log.d("SUBSCRIBED tournament", "SUCCESS");
             }
         });
     }
