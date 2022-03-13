@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -63,6 +64,7 @@ public class AppController extends Application implements Application.ActivityLi
     public int amount = 0;
     public List<GameItem> movieList = new ArrayList<>();
     public GameItem gameItem;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -77,54 +79,68 @@ public class AppController extends Application implements Application.ActivityLi
     }
 
     public String getSubscription_package() {
-        return subscription_package.equals("") ? new AppConstant(this).getDataFromShared(AppConstant.package_info,"") : subscription_package;
+        return subscription_package.equals("") ? new AppConstant(this).getDataFromShared(AppConstant.package_info, "") : subscription_package;
     }
+
     public void getReadyForCheckin() {
         appConstant = new AppConstant(this);
         if (new AppConstant(this).checkLogin()) {
             userId = appConstant.getUserId();
+            Log.e("userId",userId);
             getUserInfo();
         }
     }
+
     int x = 0;
+
     private void getUserInfo() {
         x = 0;
-        mDatabase = FirebaseDatabase.getInstance().getReference(AppConstant.users).child(userId).child(AppConstant.pinfo);
+        Log.e("userId1",userId);
+        mDatabase = FirebaseDatabase.getInstance().getReference(AppConstant.users).child(userId);
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                mySnapShort = dataSnapshot;
+                mySnapShort = dataSnapshot.child(AppConstant.pinfo);
                 userInfoList = new ArrayList<>();
-
-                for (DataSnapshot child : mySnapShort.child(AppConstant.team).getChildren()) {
-                    DocumentReference docRef = FirebaseFirestore.getInstance().collection(AppConstant.team)
-                            .document(child.getKey()+"");
-                    docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            x++;
-                            if (task.isSuccessful()) {
-                                DocumentSnapshot document = task.getResult();
-                                if (document.exists()) {
-                                    ArrayList<String> list = (ArrayList<String>) document.get(AppConstant.teamMember);
-                                    Set<String> hashSet = new HashSet<>(list);
-                                    SharedPreferences sharedpreferences = getSharedPreferences(child.getKey(), Context.MODE_PRIVATE);
-                                    SharedPreferences.Editor editors = sharedpreferences.edit();
-                                    editors.putString(AppConstant.teamName, document.getString(AppConstant.teamName));
-                                    editors.putStringSet(AppConstant.teamMember, hashSet);
-                                    editors.putString(AppConstant.myPicUrl, document.getString(AppConstant.myPicUrl)+"");
-                                    editors.apply();
-                                }
-                            }
-
-                        }
-                    });
+                if(!dataSnapshot.exists()) {
+                    new AppConstant(AppController.this).logout();
+                    return;
                 }
+                if (!dataSnapshot.child(AppConstant.realTime).child(AppConstant.deviceId).getValue(String.class).equals(Settings.Secure.getString(getContentResolver(),
+                        Settings.Secure.ANDROID_ID))) {
+                    Log.e("statusLog","Logout");
+                    new AppConstant(AppController.this).logout();
+                    return;
+                }
+//                for (DataSnapshot child : mySnapShort.child(AppConstant.team).getChildren()) {
+//                    DocumentReference docRef = FirebaseFirestore.getInstance().collection(AppConstant.team)
+//                            .document(child.getKey() + "");
+//                    docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                            x++;
+//                            if (task.isSuccessful()) {
+//                                DocumentSnapshot document = task.getResult();
+//                                if (document.exists()) {
+//                                    ArrayList<String> list = (ArrayList<String>) document.get(AppConstant.teamMember);
+//                                    Set<String> hashSet = new HashSet<>(list);
+//                                    SharedPreferences sharedpreferences = getSharedPreferences(child.getKey(), Context.MODE_PRIVATE);
+//                                    SharedPreferences.Editor editors = sharedpreferences.edit();
+//                                    editors.putString(AppConstant.teamName, document.getString(AppConstant.teamName));
+//                                    editors.putStringSet(AppConstant.teamMember, hashSet);
+//                                    editors.putString(AppConstant.myPicUrl, document.getString(AppConstant.myPicUrl) + "");
+//                                    editors.apply();
+//                                }
+//                            }
+//
+//                        }
+//                    });
+//                }
 
                 if (progressDialog != null) {
                     progressDialog.cancel();
                     progressDialog = null;
-                    startToRunActivity();
+                 //   startToRunActivity();
                 }
 
             }
@@ -147,7 +163,7 @@ public class AppController extends Application implements Application.ActivityLi
 
     public void getGameName() {
         gameNameHashmap.clear();
-        String game_name = remoteConfig.getString(AppConstant.gameStreaming).equals("") ? new AppConstant(this).getDataFromShared(AppConstant.gameStreaming,"") : remoteConfig.getString(AppConstant.gameStreaming);
+        String game_name = remoteConfig.getString(AppConstant.gameStreaming).equals("") ? new AppConstant(this).getDataFromShared(AppConstant.gameStreaming, "") : remoteConfig.getString(AppConstant.gameStreaming);
         Log.e("game_name_cont", game_name);
         try {
             JSONObject jsonObject = new JSONObject(game_name);
@@ -264,7 +280,7 @@ public class AppController extends Application implements Application.ActivityLi
 
     public void getTournamentTime() {
         timeArray.clear();
-        String game_name = remoteConfig.getString(AppConstant.game_slot).equals("") ? new AppConstant(this).getDataFromShared(AppConstant.game_slot,"") : remoteConfig.getString(AppConstant.game_slot);
+        String game_name = remoteConfig.getString(AppConstant.game_slot).equals("") ? new AppConstant(this).getDataFromShared(AppConstant.game_slot, "") : remoteConfig.getString(AppConstant.game_slot);
         try {
             JSONObject jsonObject = new JSONObject(game_name);
             JSONArray keys = jsonObject.names();

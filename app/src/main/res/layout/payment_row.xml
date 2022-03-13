@@ -10,30 +10,33 @@
         android:scaleType="centerCrop"
         android:src="@mipmap/app_logo"
         android:layout_height="50dp"/>
+
     <RelativeLayout
         android:layout_width="match_parent"
-        android:orientation="vertical"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
         android:layout_toRightOf="@+id/imgs"
-        android:layout_height="wrap_content">
+        android:orientation="vertical">
+
         <TextView
+            android:id="@+id/ticket_id"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
             android:padding="2dp"
             android:text="ticket id:-"
-            android:id="@+id/ticket_id"
-            android:textSize="14sp"
             android:textColor="@color/black"
-            android:gravity="center_vertical"
-            android:layout_height="wrap_content"/>
-       <TextView
-            android:layout_width="wrap_content"
-            android:padding="2dp"
+            android:textSize="14sp" />
+
+        <TextView
             android:id="@+id/pinfo"
-            android:textSize="12sp"
-           android:layout_alignParentRight="true"
-            android:textColor="@color/black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
             android:gravity="center_vertical"
-            android:layout_height="wrap_content"/>
+            android:padding="2dp"
+            android:textColor="@color/black"
+            android:textSize="12sp" />
         <!--<View
             android:layout_width="match_parent"
             android:background="#c0c0c0"
@@ -59,7 +62,7 @@
                 android:text="All transcation are made confidential and cannot be reversed or transfered to any other accounts"
                 android:layout_height="wrap_content"/>
         </LinearLayout>-->
-<!--
+        <!--
         <View
             android:layout_width="match_parent"
             android:background="#c0c0c0"
@@ -67,16 +70,16 @@
             android:layout_height="1dp"/>
 -->
         <TextView
-            android:layout_width="wrap_content"
-            android:padding="2dp"
-            android:textSize="12sp"
-            android:layout_below="@+id/pinfo"
-            android:textColor="@color/textcolor"
-            android:gravity="center_vertical"
             android:id="@+id/transaction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/pinfo"
+            android:gravity="center_vertical"
+            android:padding="2dp"
             android:text="transaction id:- "
-            android:layout_height="wrap_content"/>
-<!--
+            android:textColor="@color/textcolor"
+            android:textSize="12sp" />
+        <!--
         <View
             android:layout_width="match_parent"
             android:background="#c0c0c0"
@@ -84,15 +87,15 @@
             android:layout_height="1dp"/>
 -->
         <TextView
-            android:layout_width="wrap_content"
-            android:padding="2dp"
-            android:gravity="center_vertical"
             android:id="@+id/amount"
-            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/pinfo"
             android:layout_alignParentRight="true"
-            android:textSize="15sp"
+            android:gravity="center_vertical"
+            android:padding="2dp"
             android:textColor="@color/colorPrimaryDark"
-            android:layout_height="wrap_content"/>
+            android:textSize="15sp"
+            android:textStyle="bold" />
     </RelativeLayout>
 </RelativeLayout>

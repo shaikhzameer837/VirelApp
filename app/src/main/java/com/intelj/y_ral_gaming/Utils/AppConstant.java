@@ -7,11 +7,16 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.provider.Settings;
 import android.text.InputType;
+import android.util.Log;
 import android.widget.EditText;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.intelj.y_ral_gaming.AppController;
 import com.intelj.y_ral_gaming.PaymentActivity;
 
@@ -227,7 +232,10 @@ public class AppConstant {
         setSharedPref();
         return sharedPreferences.getBoolean(login, false);
     }
-
+    public void logout() {
+        sharedPreferences = _context.getSharedPreferences(AppName, Context.MODE_PRIVATE);
+        sharedPreferences.edit().putBoolean(login, false).apply();
+    }
     public int getCoins() {
         myInfo = _context.getSharedPreferences(AppController.getInstance().userId, Context.MODE_PRIVATE);
         return myInfo.getInt(coin, 0);
@@ -261,7 +269,31 @@ public class AppConstant {
         myInfo = _context.getSharedPreferences(AppController.getInstance().userId, Context.MODE_PRIVATE);
         return myInfo.getBoolean(friends, false);
     }
-
+    public static void setSubscription(){
+        FirebaseMessaging.getInstance().subscribeToTopic("FreeFire").addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d("SUBSCRIBED", "SUCCESS Free Fire");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("SUBSCRIBED--1", e.getMessage());
+            }
+        });
+       FirebaseMessaging.getInstance().subscribeToTopic("push_yt").addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d("SUBSCRIBED", "SUCCESS");
+            }
+        });
+        FirebaseMessaging.getInstance().subscribeToTopic("tournament").addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d("SUBSCRIBED tournament", "SUCCESS");
+            }
+        });
+    }
     public String getDateFromMilli(long milliSeconds, String dateFormat)
     {
         // Create a DateFormatter object for displaying date in specified format.

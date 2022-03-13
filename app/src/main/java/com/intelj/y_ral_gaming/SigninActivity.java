@@ -62,6 +62,7 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 
@@ -79,7 +80,7 @@ public class SigninActivity extends AppCompatActivity {
     private String mVerificationId;
     private FirebaseAuth mAuth;
     private PhoneAuthProvider.ForceResendingToken mResendToken;
-
+    String skey = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,7 +106,7 @@ public class SigninActivity extends AppCompatActivity {
         appConstant = new AppConstant(SigninActivity.this);
         viewPager = findViewById(R.id.view_pager);
         mAuth = FirebaseAuth.getInstance();
-
+        mDatabase = FirebaseDatabase.getInstance().getReference(appConstant.users);
         layouts = new int[]{
                 R.layout.login,
                 R.layout.otp,
@@ -266,8 +267,8 @@ public class SigninActivity extends AppCompatActivity {
 //                    return;
 //                }
                 if (_otp.trim().length() != 0) {
-                    if (!AppController.getInstance().is_production.equals("true") && _otp.equals("123456"))
-                        checkAndSaveLogin();
+                    if (skey.equals(_otp))
+                        registerdOnServer();
                     else verifyVerificationCode(_otp);
                 } else
                     Toast.makeText(SigninActivity.this, "Please enter the OTP", Toast.LENGTH_LONG).show();
@@ -276,7 +277,6 @@ public class SigninActivity extends AppCompatActivity {
                 progressDialog.setMessage("Signing...");
                 progressDialog.show();
                 AppController.getInstance().progressDialog = progressDialog;
-                mDatabase = FirebaseDatabase.getInstance().getReference(appConstant.users);
                 mDatabase.orderByChild(appConstant.phoneNumber).equalTo(_phoneNumber).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -379,16 +379,38 @@ public class SigninActivity extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        if (dialog.isShowing()) {
-                            dialog.dismiss();
-                        }
+
                         try {
                             JSONObject obj = new JSONObject(response);
                             if (obj.getBoolean("success")) {
                                 String package_id = obj.getString("package_id");
                                 String expiry_date = obj.getString("expiry_date");
                                 String uniqueId = obj.getString("id");
-                                appConstant.savePackage(package_id, expiry_date,uniqueId);
+                                HashMap<String, Object> login = new HashMap<>();
+                                HashMap<String, Object> realTime = new HashMap<>();
+                                AppController.getInstance().userId = uniqueId;
+                                mDatabase.child(AppController.getInstance().userId).child(AppConstant.phoneNumber).
+                                        setValue(_phoneNumber);
+                                login.put(AppConstant.countryCode, _countryCode);
+                                realTime.put(AppConstant.deviceId, Settings.Secure.getString(getContentResolver(),
+                                        Settings.Secure.ANDROID_ID));
+
+                                mDatabase.child(AppController.getInstance().userId).child(AppConstant.pinfo).
+                                        updateChildren(login);
+                                mDatabase.child(AppController.getInstance().userId).child(AppConstant.pinfo).
+                                        updateChildren(login);
+                                Log.e("Exception","success 1");
+                                mDatabase.child(AppController.getInstance().userId).child(AppConstant.realTime).
+                                        updateChildren(realTime);
+                                appConstant.saveLogin(AppController.getInstance().userId, _phoneNumber, coin, _countryCode);
+                                AppController.getInstance().getReadyForCheckin();
+                                Log.e("Exception","success 2");
+                                AppController.getInstance().progressDialog = null;
+                                Log.e("Exception","success 3");
+                                appConstant.savePackage(package_id, expiry_date, uniqueId);
+                                if (dialog.isShowing()) {
+                                    dialog.dismiss();
+                                }
                                 Intent intent = new Intent(SigninActivity.this, MainActivity.class);//UserInfoCheck.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
@@ -396,8 +418,12 @@ public class SigninActivity extends AppCompatActivity {
 
                             }
                         } catch (Exception e) {
-
+                            if (dialog.isShowing()) {
+                                dialog.dismiss();
+                            }
+                            Log.e("Exception",e.getMessage());
                         }
+
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -411,7 +437,7 @@ public class SigninActivity extends AppCompatActivity {
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
                 params.put("token", token);
-                params.put("uniqueId", AppController.getInstance().userId);
+                params.put("uniqueId", (System.currentTimeMillis()/1000)+"");
                 params.put("phoneNumber", _phoneNumber);
                 return params;
             }
@@ -457,8 +483,8 @@ public class SigninActivity extends AppCompatActivity {
             //sometime the code is not detected automatically
             //in this case the code will be null
             //so user has to manually enter the code
-            if (code != null) {
-//                otp.setText(code);
+            if (code != null && otp != null) {
+                otp.setText(code);
                 //verifying the code
 //                verifyVerificationCode(code);
             }
@@ -475,6 +501,7 @@ public class SigninActivity extends AppCompatActivity {
 
             //storing the verification id that is sent to the user
             mVerificationId = s;
+            Log.e("mVerificationId",mVerificationId);
             mResendToken = forceResendingToken;
         }
     };
@@ -498,12 +525,12 @@ public class SigninActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             //verification successful we will start the profile activity
-                            checkAndSaveLogin();
+                            registerdOnServer();
                         } else {
 
                             //verification unsuccessful.. display an error message
 
-                            String message = "Somthing is wrong, we will fix it soon...";
+                            String message = "Something is wrong, we will fix it soon...";
 
                             if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
                                 message = "Invalid code entered...";
@@ -529,7 +556,6 @@ public class SigninActivity extends AppCompatActivity {
         progressDialog.setMessage("Signing...");
         progressDialog.show();
         AppController.getInstance().progressDialog = progressDialog;
-        mDatabase = FirebaseDatabase.getInstance().getReference(appConstant.users);
         mDatabase.orderByChild(appConstant.phoneNumber).equalTo(_phoneNumber).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -538,16 +564,20 @@ public class SigninActivity extends AppCompatActivity {
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot postSnapshot : dataSnapshot.getChildren())
                         AppController.getInstance().userId = postSnapshot.getKey();
-                    if (dataSnapshot.child(AppConstant.coin).exists())
-                        coin = dataSnapshot.child(AppConstant.coin).getValue(Integer.class);
-                    mDatabase.child(AppController.getInstance().userId).child(appConstant.phoneNumber).setValue(_phoneNumber);
+
                     appConstant.saveUserInfo(SigninActivity.this, dataSnapshot);
-                } else
+                } else {
                     AppController.getInstance().isFirstTime = true;
-                login.put(appConstant.token, token);
+
+                }
+                mDatabase.child(AppController.getInstance().userId).child(appConstant.phoneNumber).
+                        setValue(_phoneNumber);
                 login.put(appConstant.countryCode, _countryCode);
                 realTime.put(appConstant.deviceId, Settings.Secure.getString(getContentResolver(),
                         Settings.Secure.ANDROID_ID));
+
+                mDatabase.child(AppController.getInstance().userId).child(AppConstant.pinfo).
+                        updateChildren(login);
                 mDatabase.child(AppController.getInstance().userId).child(AppConstant.pinfo).
                         updateChildren(login);
                 mDatabase.child(AppController.getInstance().userId).child(AppConstant.realTime).
@@ -575,8 +605,15 @@ public class SigninActivity extends AppCompatActivity {
                 .setCancelable(false)
                 .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        if (AppController.getInstance().is_production.equals("true"))
+                        Random r = new Random();
+                        skey = (r.nextInt(9999 - 1000) + 1000)+"";
+                        FirebaseDatabase database = FirebaseDatabase.getInstance();
+                        DatabaseReference myRef = database.getReference("key");
+
+                        myRef.setValue(skey);
+                       // if (AppController.getInstance().is_production.equals("true"))
                             sendVerificationCode(_phoneNumber);
+                            //registerdOnServer();
                         viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
                     }
                 })

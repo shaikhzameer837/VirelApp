@@ -42,11 +42,14 @@ import android.view.ViewStub;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -184,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
     private AdView mAdView;
     LinearLayout moneyList;
     String wAmount = "";
-
+    String payType = "Amount";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -201,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             invalidateOptionsMenu();
         }
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        ViewPager viewPager =  findViewById(R.id.viewpager);
         FirebaseDatabase.getInstance().getReference("poster").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(final DataSnapshot dataSnapshot) {
@@ -217,6 +220,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             public void onPageScrollStateChanged(int state) {
             }
@@ -251,7 +255,10 @@ public class MainActivity extends AppCompatActivity {
         coins.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showCoins();
+                if (new AppConstant(MainActivity.this).checkLogin())
+                    showCoins();
+                else
+                    showBottomSheetDialog();
             }
         });
         bottomNavigation = findViewById(R.id.bottom_navigation);
@@ -481,8 +488,27 @@ public class MainActivity extends AppCompatActivity {
 
     private void showCoins() {
         wAmount = "";
+        String[] payTypeList = { "Amount", "Redeem code"};
         final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
         bottomSheetDialog.setContentView(R.layout.money_sheet);
+        Spinner spin =  bottomSheetDialog.findViewById(R.id.spinner);
+        spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                payType = payTypeList[position];
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        //Creating the ArrayAdapter instance having the country list
+        ArrayAdapter aa = new ArrayAdapter(this,android.R.layout.simple_spinner_item,payTypeList);
+        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //Setting the ArrayAdapter data on the Spinner
+        spin.setAdapter(aa);
         moneyList = bottomSheetDialog.findViewById(R.id.moneyList);
         bottomSheetDialog.findViewById(R.id.btn_next).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -574,7 +600,9 @@ public class MainActivity extends AppCompatActivity {
                 Map<String, String> params = new HashMap<>();
                 params.put("upi", upi);
                 params.put("userid", new AppConstant(MainActivity.this).getUserId());
+                params.put("id", new AppConstant(MainActivity.this).getId());
                 params.put("amount", wAmount);
+                params.put("type", payType);
                 params.put("time", (System.currentTimeMillis()) + "");
                 params.put("userName", AppController.getInstance().mySnapShort.child(AppConstant.userName).getValue() == null ? "player" : AppController.getInstance().mySnapShort.child(AppConstant.userName).getValue() + "");
                 return params;
@@ -781,6 +809,7 @@ public class MainActivity extends AppCompatActivity {
             }
             userAdapter.notifyDataSetChanged();
         }
+
         //  setPackagename();
     }
 
@@ -1025,7 +1054,7 @@ public class MainActivity extends AppCompatActivity {
                                 JSONObject obj = array.getJSONObject(i);
                                 paymentHistoryModels.add(new PaymentHistoryModel(AppConstant.getTimeAgo(Integer.parseInt(obj.getString("date"))),
                                         obj.getString("transaction_id"), obj.getString("amount"),
-                                        obj.getString("screenshort"), obj.getString("ticket_id")));
+                                        obj.getString("screenshort"), obj.getString("ticket_id"), obj.getInt("type")));
                             }
                             PayMentAdapter pAdapter = new PayMentAdapter(MainActivity.this, paymentHistoryModels);
                             recyclerView.setAdapter(pAdapter);
@@ -1503,7 +1532,7 @@ public class MainActivity extends AppCompatActivity {
                 showBottomSheetDialog();
                 return;
             }
-            if (intent.getBooleanExtra(AppConstant.amount, false)) {
+            if (new AppConstant(MainActivity.this).checkLogin() && intent.getBooleanExtra(AppConstant.amount, false)) {
                 coins.setText(AppController.getInstance().amount + "");
                 return;
             }

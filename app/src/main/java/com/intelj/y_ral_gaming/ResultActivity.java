@@ -125,7 +125,6 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     private void showBottomSheetDialog() {
-
         bottomSheetDialog = new BottomSheetDialog(mContext);
         bottomSheetDialog.setContentView(R.layout.register_match);
         TextView textView = bottomSheetDialog.findViewById(R.id.integer_number);

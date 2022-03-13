@@ -141,6 +141,8 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MyViewHolder
         bottomSheetDialog = new BottomSheetDialog(mContext);
         bottomSheetDialog.setContentView(R.layout.register_match);
         TextView textView = bottomSheetDialog.findViewById(R.id.integer_number);
+        TextView rules = bottomSheetDialog.findViewById(R.id.rules);
+        rules.setText(AppController.getInstance().remoteConfig.getString("rules"));
         TextView infos = bottomSheetDialog.findViewById(R.id.infos);
         Button btn_next = bottomSheetDialog.findViewById(R.id.btn_next);
         LinearLayout lin = bottomSheetDialog.findViewById(R.id.lin);

@@ -2,6 +2,8 @@ package com.intelj.y_ral_gaming.Adapter;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,11 +61,25 @@ public class PayMentAdapter extends RecyclerView.Adapter<PayMentAdapter.MyViewHo
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         holder.pinfo.setText(paymentHistoryModel.get(position).getDate());
         holder.transaction.append(paymentHistoryModel.get(position).getTransaction());
-        holder.amount.setText(paymentHistoryModel.get(position).getAmount());
-        holder.ticket_id.append(paymentHistoryModel.get(position).getTicket_id());
+        holder.amount.setText("\u20B9 " + paymentHistoryModel.get(position).getAmount());
+        if(paymentHistoryModel.get(position).getType() ==3){
+            holder.amount.
+                    setTextColor(Color.BLACK);
+            Drawable img = mContext.getResources().getDrawable(R.drawable.hold);
+            holder.amount.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
+            holder.ticket_id.append(paymentHistoryModel.get(position).getTicket_id());
+        }else {
+            holder.amount.
+                    setTextColor(paymentHistoryModel.get(position).getType() == 1 ?
+                            Color.parseColor("#ff0000") : Color.parseColor("#097969"));
+            Drawable img = paymentHistoryModel.get(position).getType() == 1 ? mContext.getResources().getDrawable(R.drawable.debit) :
+                    mContext.getResources().getDrawable(R.drawable.credit);
+            holder.amount.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
+            holder.ticket_id.append(paymentHistoryModel.get(position).getTicket_id());
+        }
         Glide.with(mContext)
                 .load(paymentHistoryModel.get(position).getImg_url())
-                .placeholder(R.drawable.game_avatar)
+                .placeholder(R.mipmap.app_logo)
                 .into(holder.imgs);
         holder.imgs.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,7 +88,7 @@ public class PayMentAdapter extends RecyclerView.Adapter<PayMentAdapter.MyViewHo
                 // image.setImageResource(R.drawable.YOUR_IMAGE_ID);
                 Glide.with(mContext)
                         .load(paymentHistoryModel.get(position).getImg_url())
-                        .placeholder(R.drawable.game_avatar)
+                        .placeholder(R.mipmap.app_logo)
                         .into(image);
                 AlertDialog.Builder builder =
                         new AlertDialog.Builder(mContext).

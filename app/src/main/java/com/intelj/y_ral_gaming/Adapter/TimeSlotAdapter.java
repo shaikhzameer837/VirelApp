@@ -24,7 +24,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
@@ -36,26 +35,15 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.firebase.crashlytics.FirebaseCrashlytics;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.intelj.y_ral_gaming.Activity.DemoActivity;
-import com.intelj.y_ral_gaming.Activity.GameInfo;
 import com.intelj.y_ral_gaming.AppController;
 import com.intelj.y_ral_gaming.Fragment.OneFragment;
 import com.intelj.y_ral_gaming.GameItem;
 import com.intelj.y_ral_gaming.R;
 import com.intelj.y_ral_gaming.ResultActivity;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
-import com.intelj.y_ral_gaming.Utils.RecyclerTouchListener;
-import com.intelj.y_ral_gaming.model.UserListModel;
-import com.intelj.y_ral_gaming.model.UserModel;
-import com.intelj.y_ral_gaming.project.BottomSheetFragment;
 
 import org.json.JSONObject;
 
-import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -64,14 +52,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyViewHolder> {
     Context mContext;
     AppConstant appConstant;
     String title = "";
     int cost = 0;
-    public List<GameItem> movieList;
+    public List<GameItem> gameItem;
     BottomSheetDialog bottomSheetDialog;
     SharedPreferences sharedPreferences;
 
@@ -90,9 +77,9 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
     }
 
 
-    public TimeSlotAdapter(Context mContext, ArrayList<GameItem> movieList, String title) {
+    public TimeSlotAdapter(Context mContext, ArrayList<GameItem> gameItem, String title) {
         this.mContext = mContext;
-        this.movieList = movieList;
+        this.gameItem = gameItem;
         this.title = title;
         sharedPreferences =
                 mContext.getSharedPreferences
@@ -111,10 +98,10 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        holder.title.setText(movieList.get(position).getTime());
+        holder.title.setText(gameItem.get(position).getTime());
 //        String strDate = title + " " + date + " " + movieList.get(position).getTime().replace("pm", ":00:00 pm")
 //                .replace("am", ":00:00 am");
-        switch (Integer.parseInt(movieList.get(position).getType())) {
+        switch (Integer.parseInt(gameItem.get(position).getType())) {
             case 1:
                 holder.type.setText("[Solo]");
                 break;
@@ -125,20 +112,26 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
                 holder.type.setText("[Squad]");
                 break;
         }
-        holder.count.setText(movieList.get(position).getCount() + "/" + movieList.get(position).getMax());
+        holder.count.setText(gameItem.get(position).getCount() + "/" + gameItem.get(position).getMax());
        // holder.reg.setImageResource(movieList.get(position).getIsexist().equals("1") ? R.drawable.check : R.drawable.arrow);
-        holder.info.setText(movieList.get(position).getIsexist().equals("0") ? "Join now" : "Aready Joined");
-        holder.info.setTextColor(movieList.get(position).getIsexist().equals("0") ? Color.parseColor("#7e241c") : Color.parseColor("#097969"));
+        holder.info.setText(gameItem.get(position).getIsexist().equals("0") ? "Join now" : "Aready Joined");
+        holder.info.setTextColor(gameItem.get(position).getIsexist().equals("0") ? Color.parseColor("#7e241c") : Color.parseColor("#097969"));
         holder.reg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AppController.getInstance().gameItem = movieList.get(position);
+                if (!new AppConstant(mContext).checkLogin()) {
+                    Intent intent = new Intent("custom-event-name");
+                    intent.putExtra(AppConstant.AppName, true);
+                    LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);
+                    return;
+                }
+                AppController.getInstance().gameItem = gameItem.get(position);
                 Intent intent = new Intent(mContext, ResultActivity.class);
                 intent.putExtra("title",title);
                 mContext.startActivity(intent);
             }
         });
-        if (movieList.get(position).getIsexist().equals("1")) {
+        if (gameItem.get(position).getIsexist().equals("1")) {
             //holder.reg.setBackgroundResource(0);
             holder.info.setOnClickListener(null);
         } else {
@@ -180,7 +173,6 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
     }
 
     private void showBottomSheetDialog(int position) {
-
         bottomSheetDialog = new BottomSheetDialog(mContext);
         bottomSheetDialog.setContentView(R.layout.register_match);
         TextView textView = bottomSheetDialog.findViewById(R.id.integer_number);
@@ -233,7 +225,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
         bottomSheetDialog.findViewById(R.id.increase).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Integer.parseInt(textView.getText().toString()) == Integer.parseInt(movieList.get(position).getType())) {
+                if (Integer.parseInt(textView.getText().toString()) == Integer.parseInt(gameItem.get(position).getType())) {
                     return;
                 }
                 textView.setText((Integer.parseInt(textView.getText().toString()) + 1) + "");
@@ -258,7 +250,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
     }
 
     private void setViews(TextView infos, Button btn_next, int position, TextView textView, Button add_money) {
-        cost = Integer.parseInt(textView.getText().toString()) * Integer.parseInt(movieList.get(position).getEntryFees());
+        cost = Integer.parseInt(textView.getText().toString()) * Integer.parseInt(gameItem.get(position).getEntryFees());
 //        if (cost > amount) {
 //            btn_next.setVisibility(View.GONE);
 //          //  add_money.setText("ADD Money (" + (cost - amount) + ")");
@@ -267,7 +259,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
         //  btn_next.setText("NEXT");
         //  add_money.setText("ADD Money");
         // }
-        if (Integer.parseInt(movieList.get(position).getType()) != 1) {
+        if (Integer.parseInt(gameItem.get(position).getType()) != 1) {
             bottomSheetDialog.findViewById(R.id.rel_increment).setVisibility(View.VISIBLE);
             switch (Integer.parseInt(textView.getText().toString())) {
                 case 2:
@@ -303,8 +295,8 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
                                 AppController.getInstance().amount = AppController.getInstance().amount - json.getInt("entryFees");
                                 Intent intent = new Intent("custom-event-name");
                                 LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);
-                                movieList.get(position).setIsexist(movieList.get(position).getIsexist().equals("1") ? "0" : "1");
-                                movieList.get(position).setCount(player_count+"");
+                                gameItem.get(position).setIsexist(gameItem.get(position).getIsexist().equals("1") ? "0" : "1");
+                                gameItem.get(position).setCount(player_count+"");
                                 notifyDataSetChanged();
                                 bottomSheetDialog.dismiss();
                             }else
@@ -323,14 +315,14 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put("entry", movieList.get(position).getEntryFees());
+                params.put("entry", gameItem.get(position).getEntryFees());
                 params.put("userId", new AppConstant(mContext).getId());
                 Date c = Calendar.getInstance().getTime();
                 SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
                 String formattedDate = df.format(c);
                 params.put("date", formattedDate);
                 Log.e("formattedDate", formattedDate);
-                params.put("time", movieList.get(position).getTime());
+                params.put("time", gameItem.get(position).getTime());
                 params.put("userJson", userJson);
                 params.put("count", totalPlayer);
                 params.put("entryFees", "entryFees = 0");
@@ -640,7 +632,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
 
     @Override
     public int getItemCount() {
-        return movieList.size();
+        return gameItem.size();
     }
 
     class MyPageAdapter extends FragmentPagerAdapter {

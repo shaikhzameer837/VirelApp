@@ -54,6 +54,7 @@ public class SplashScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splashscreen);
+        AppConstant.setSubscription();
         FirebaseMessaging.getInstance().getToken()
                 .addOnCompleteListener(new OnCompleteListener<String>() {
                     @Override
@@ -64,18 +65,7 @@ public class SplashScreen extends AppCompatActivity {
                         }
                         String token = task.getResult();
                         Log.d("Tokens",token);
-                         FirebaseMessaging.getInstance().subscribeToTopic("push_yt").addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Log.d("SUBSCRIBED","SUCCESS");
-                            }
-                        });
-                        FirebaseMessaging.getInstance().subscribeToTopic("tournament").addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Log.d("SUBSCRIBED tournament", "SUCCESS");
-                            }
-                        });
+
                     }
                 });
         Intent intent = null;

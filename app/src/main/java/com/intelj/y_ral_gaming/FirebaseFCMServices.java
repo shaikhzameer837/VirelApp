@@ -184,18 +184,7 @@ public class FirebaseFCMServices extends FirebaseMessagingService {
         super.onNewToken(s);
         if (new AppConstant(FirebaseFCMServices.this).checkLogin())
             updateFcm(s);
-        FirebaseMessaging.getInstance().subscribeToTopic("push_yt").addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Log.d("SUBSCRIBED", "SUCCESS");
-            }
-        });
-        FirebaseMessaging.getInstance().subscribeToTopic("tournament").addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Log.d("SUBSCRIBED tournament", "SUCCESS");
-            }
-        });
+        AppConstant.setSubscription();
     }
 
     public void updateFcm(String token) {

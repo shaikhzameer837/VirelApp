@@ -42,7 +42,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -52,15 +51,13 @@ public class OneFragment extends Fragment {
     private ImageView imageView;
     View rootView;
     private TimeSlotAdapter mAdapter;
-    public ArrayList<GameItem> movieList = new ArrayList<>();
+    public ArrayList<GameItem> GameItem = new ArrayList<>();
     private SwipeRefreshLayout mSwipeRefreshLayout;
     ShimmerFrameLayout shimmerFrameLayout;
     String title;
     String key;
     long show_listview = 0;
     String date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
-    Date resultDate;
-
     public OneFragment() {
         // Required empty public constructor
     }
@@ -135,10 +132,10 @@ public class OneFragment extends Fragment {
                             if (json.getBoolean("success") && !json.has("msg")) {
                                 AppController.getInstance().amount = Integer.parseInt(json.getString("amount"));
                                 JSONArray ja_data = json.getJSONArray("match_info");
-                                movieList.clear();
+                                GameItem.clear();
                                 for (int i = 0; i < ja_data.length(); i++) {
                                     JSONObject jObj = ja_data.getJSONObject(i);
-                                    movieList.add(new GameItem("BGMI match " + (1 + i),
+                                    GameItem.add(new GameItem("BGMI match " + (1 + i),
                                             jObj.getString("status"), jObj.getString("perKill"), jObj.getString("entryFees"),
                                             jObj.getString("type"), jObj.getString("map"),
                                             jObj.getString("time"), jObj.getString("isExist")
@@ -152,7 +149,7 @@ public class OneFragment extends Fragment {
 //                                            .setTime(jObj.getString("time")).setuniqueDate(date + "/" + title + "/" + jObj.getString("time")).userModelBuilder();
 
                                 }
-                                Log.e("titlessss",movieList.size() + " " + title);
+                                Log.e("titlessss", GameItem.size() + " " + title);
                                 Intent intent = new Intent("custom-event-name");
                                 intent.putExtra(AppConstant.amount, true);
                                 LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
@@ -245,7 +242,7 @@ public class OneFragment extends Fragment {
     }
 
     private void initializedata() {
-        mAdapter = new TimeSlotAdapter(getActivity(), movieList, title);
+        mAdapter = new TimeSlotAdapter(getActivity(), GameItem, title);
         recyclerView.setAdapter(mAdapter);
     }
 
