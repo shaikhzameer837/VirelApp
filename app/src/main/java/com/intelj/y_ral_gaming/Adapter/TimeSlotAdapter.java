@@ -2,11 +2,13 @@ package com.intelj.y_ral_gaming.Adapter;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,6 +36,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.intelj.y_ral_gaming.AppController;
 import com.intelj.y_ral_gaming.Fragment.OneFragment;
@@ -64,13 +67,14 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView title, info, type, count;
-        ImageView reg;
+        ImageView reg,imgs;
 
         public MyViewHolder(View view) {
             super(view);
             title = view.findViewById(R.id.title);
             count = view.findViewById(R.id.count);
             reg = view.findViewById(R.id.reg);
+            imgs = view.findViewById(R.id.imgs);
             info = view.findViewById(R.id.info);
             type = view.findViewById(R.id.type);
         }
@@ -92,7 +96,6 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.list_row, parent, false);
-
         return new MyViewHolder(itemView);
     }
 
@@ -101,15 +104,40 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
         holder.title.setText(gameItem.get(position).getTime());
 //        String strDate = title + " " + date + " " + movieList.get(position).getTime().replace("pm", ":00:00 pm")
 //                .replace("am", ":00:00 am");
+        Glide.with(mContext).load(gameItem.get(position).getYt_url().equals("") ? AppConstant.defaultImg  : "https://i.ytimg.com/vi/"+gameItem.get(position).getYt_url()+"/hqdefault_live.jpg").placeholder(R.mipmap.app_logo).into(holder.imgs);
+        holder.imgs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(gameItem.get(position).getYt_url().equals("")){
+                    Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/c/YRALGaming"));
+                    Intent webIntent = new Intent(Intent.ACTION_VIEW,
+                            Uri.parse("https://www.youtube.com/c/YRALGaming"));
+                    try {
+                        mContext.startActivity(appIntent);
+                    } catch (ActivityNotFoundException ex) {
+                        mContext.startActivity(webIntent);
+                    }
+                }else{
+                    Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + gameItem.get(position).getYt_url()));
+                    Intent webIntent = new Intent(Intent.ACTION_VIEW,
+                            Uri.parse("http://www.youtube.com/watch?v=" + gameItem.get(position).getYt_url()));
+                    try {
+                        mContext.startActivity(appIntent);
+                    } catch (ActivityNotFoundException ex) {
+                        mContext.startActivity(webIntent);
+                    }
+                }
+            }
+        });
         switch (Integer.parseInt(gameItem.get(position).getType())) {
             case 1:
-                holder.type.setText("[Solo]");
+                holder.type.setText(" [Solo]");
                 break;
             case 2:
-                holder.type.setText("[Duo]");
+                holder.type.setText(" [Duo]");
                 break;
             case 4:
-                holder.type.setText("[Squad]");
+                holder.type.setText(" [Squad]");
                 break;
         }
         holder.count.setText(gameItem.get(position).getCount() + "/" + gameItem.get(position).getMax());
@@ -199,6 +227,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
                             JSONObject obj = new JSONObject();
                             obj.put("ingName", editText.getText().toString());
                             obj.put("count", i == 0 ? textView.getText().toString() : 0);
+                            obj.put("kill",  0);
                             obj1.put(i == 0 ? new AppConstant(mContext).getId() : new AppConstant(mContext).randomString(5) + "", obj);
                         }
                     }

@@ -101,7 +101,7 @@ public class OneFragment extends Fragment {
             recyclerView.setVisibility(View.GONE);
             tv_coming_soon.setVisibility(View.VISIBLE);
             imageView.setVisibility(View.VISIBLE);
-            rootView.findViewById(R.id.entry).setVisibility(View.GONE);
+        //    rootView.findViewById(R.id.entry).setVisibility(View.GONE);
         }
 //        for (String s : AppController.getInstance().timeArray) {
 //            if (AppController.getInstance().userId != null) {

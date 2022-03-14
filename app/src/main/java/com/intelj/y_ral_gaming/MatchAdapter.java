@@ -164,6 +164,7 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MyViewHolder
                             JSONObject obj = new JSONObject();
                             obj.put("ingName", editText.getText().toString());
                             obj.put("count", i == 0 ? textView.getText().toString() : 0);
+                            obj.put("kill",  0);
                             obj1.put(i == 0 ? new AppConstant(mContext).getId() : new AppConstant(mContext).randomString(5) + "", obj);
                         }
                     }

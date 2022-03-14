@@ -46,7 +46,7 @@ import java.util.Locale;
 import java.util.Map;
 
 public class ResultActivity extends AppCompatActivity {
-    ImageView result;
+    ImageView result,yt;
     TextView title, pk, entry, type, map, time, count, id, password;
     AppCompatButton join;
     LinearLayout idp;
@@ -67,6 +67,7 @@ public class ResultActivity extends AppCompatActivity {
         }
         title = findViewById(R.id.title);
         pk = findViewById(R.id.pk);
+        yt = findViewById(R.id.yt);
         entry = findViewById(R.id.entry);
         type = findViewById(R.id.type);
         map = findViewById(R.id.map);
@@ -91,6 +92,31 @@ public class ResultActivity extends AppCompatActivity {
                 type.setText("Type \n Squad");
                 break;
         }
+        Glide.with(mContext).load(AppController.getInstance().gameItem.getYt_url().equals("") ? AppConstant.defaultImg  : "https://i.ytimg.com/vi/"+AppController.getInstance().gameItem.getYt_url()+"/hqdefault_live.jpg").placeholder(R.mipmap.app_logo).into(yt);
+        yt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(AppController.getInstance().gameItem.getYt_url().equals("")){
+                    Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/c/YRALGaming"));
+                    Intent webIntent = new Intent(Intent.ACTION_VIEW,
+                            Uri.parse("https://www.youtube.com/c/YRALGaming"));
+                    try {
+                        mContext.startActivity(appIntent);
+                    } catch (ActivityNotFoundException ex) {
+                        mContext.startActivity(webIntent);
+                    }
+                }else{
+                    Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + AppController.getInstance().gameItem.getYt_url()));
+                    Intent webIntent = new Intent(Intent.ACTION_VIEW,
+                            Uri.parse("http://www.youtube.com/watch?v=" + AppController.getInstance().gameItem.getYt_url()));
+                    try {
+                        mContext.startActivity(appIntent);
+                    } catch (ActivityNotFoundException ex) {
+                        mContext.startActivity(webIntent);
+                    }
+                }
+            }
+        });
         map.setText("Map \n " + AppController.getInstance().gameItem.getMap());
         time.setText("Time \n " + AppController.getInstance().gameItem.getTime());
         count.setText(AppController.getInstance().gameItem.getCount() + "/100 players");
@@ -151,6 +177,7 @@ public class ResultActivity extends AppCompatActivity {
                             JSONObject obj = new JSONObject();
                             obj.put("ingName", editText.getText().toString());
                             obj.put("count", i == 0 ? textView.getText().toString() : 0);
+                            obj.put("kill",  0);
                             obj1.put(i == 0 ? new AppConstant(mContext).getId() : new AppConstant(mContext).randomString(5) + "", obj);
                         }
                     }

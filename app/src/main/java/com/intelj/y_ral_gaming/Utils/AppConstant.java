@@ -84,6 +84,7 @@ public class AppConstant {
             splashscreen = "splashscreen",
             userName = "userName",
             bookingid = "bookingid",
+            defaultImg = "https://yt3.ggpht.com/QqynpcFTpxocimFedssJVvoqGQppiMZRH5SUbIZdX3_BZH4zrlBMrWApGFUusYNziMGLdC9DpA=w2120-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj",
             username_search = "username";
     private static final int SECOND_MILLIS = 1000;
     private static final int MINUTE_MILLIS = 60 * SECOND_MILLIS;
@@ -120,17 +121,19 @@ public class AppConstant {
             return diff / DAY_MILLIS + " days ago";
         }
     }
+
     public static boolean isProduction = false;
     public static SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss aa");
     static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     static SecureRandom rnd = new SecureRandom();
 
-    public String randomString(int len){
+    public String randomString(int len) {
         StringBuilder sb = new StringBuilder(len);
-        for(int i = 0; i < len; i++)
+        for (int i = 0; i < len; i++)
             sb.append(AB.charAt(rnd.nextInt(AB.length())));
         return sb.toString();
     }
+
     public AppConstant(Context _context) {
         this._context = _context;
         setSharedPref();
@@ -165,7 +168,8 @@ public class AppConstant {
         sharedPreferences.edit().putString(expiry_date, expiryDate).apply();
         sharedPreferences.edit().putString(id, uniqueId).apply();
     }
-    public void addMoney(Context mContext){
+
+    public void addMoney(Context mContext) {
         EditText amountText = new EditText(mContext);
         amountText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_NUMBER_FLAG_SIGNED);
         AlertDialog.Builder builder;
@@ -174,14 +178,14 @@ public class AppConstant {
                 setPositiveButton("Add Money", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if(!amountText.getText().toString().trim().equals("")) {
+                        if (!amountText.getText().toString().trim().equals("")) {
                             dialog.dismiss();
 //                            String user_id = new AppConstant(mContext).getUserId();
 //                            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://y-ral-gaming.com/paytm/paytm-main/pgRedirect.php?amount="+amountText.getText().toString()+"&&user_id="+user_id));
 //                            mContext.startActivity(browserIntent);
 
                             Intent intent = new Intent(mContext, PaymentActivity.class);
-                            intent.putExtra("amount",amountText.getText().toString());
+                            intent.putExtra("amount", amountText.getText().toString());
                             mContext.startActivity(intent);
                         }
                     }
@@ -189,6 +193,7 @@ public class AppConstant {
                 setView(amountText);
         builder.create().show();
     }
+
     public void saveUserInfo(Context context, DataSnapshot childDataSnap) {
         SharedPreferences sharedpreferences = context.getSharedPreferences(childDataSnap.getKey(), Context.MODE_PRIVATE);
         SharedPreferences.Editor editors = sharedpreferences.edit();
@@ -232,10 +237,12 @@ public class AppConstant {
         setSharedPref();
         return sharedPreferences.getBoolean(login, false);
     }
+
     public void logout() {
         sharedPreferences = _context.getSharedPreferences(AppName, Context.MODE_PRIVATE);
         sharedPreferences.edit().putBoolean(login, false).apply();
     }
+
     public int getCoins() {
         myInfo = _context.getSharedPreferences(AppController.getInstance().userId, Context.MODE_PRIVATE);
         return myInfo.getInt(coin, 0);
@@ -255,7 +262,8 @@ public class AppConstant {
         setSharedPref();
         return sharedPreferences.getString(userId, "");
     }
-   public String getId() {
+
+    public String getId() {
         setSharedPref();
         return sharedPreferences.getString(id, "");
     }
@@ -269,7 +277,8 @@ public class AppConstant {
         myInfo = _context.getSharedPreferences(AppController.getInstance().userId, Context.MODE_PRIVATE);
         return myInfo.getBoolean(friends, false);
     }
-    public static void setSubscription(){
+
+    public static void setSubscription() {
         FirebaseMessaging.getInstance().subscribeToTopic("FreeFire").addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -281,7 +290,7 @@ public class AppConstant {
                 Log.d("SUBSCRIBED--1", e.getMessage());
             }
         });
-       FirebaseMessaging.getInstance().subscribeToTopic("push_yt").addOnSuccessListener(new OnSuccessListener<Void>() {
+        FirebaseMessaging.getInstance().subscribeToTopic("push_yt").addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 Log.d("SUBSCRIBED", "SUCCESS");
@@ -294,8 +303,8 @@ public class AppConstant {
             }
         });
     }
-    public String getDateFromMilli(long milliSeconds, String dateFormat)
-    {
+
+    public String getDateFromMilli(long milliSeconds, String dateFormat) {
         // Create a DateFormatter object for displaying date in specified format.
         SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
 
