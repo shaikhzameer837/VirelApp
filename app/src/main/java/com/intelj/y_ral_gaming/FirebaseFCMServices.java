@@ -100,7 +100,6 @@ public class FirebaseFCMServices extends FirebaseMessagingService {
     private void getBitmapAsyncAndDoWork(String msg, String title, String imageUrl) {
 
         final Bitmap[] bitmap = {null};
-
         Glide.with(getApplicationContext())
                 .asBitmap()
                 .load(imageUrl)

@@ -66,13 +66,14 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
     SharedPreferences sharedPreferences;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView title, info, type, count;
+        public TextView title, info, type, count,prizepool;
         ImageView reg,imgs;
 
         public MyViewHolder(View view) {
             super(view);
             title = view.findViewById(R.id.title);
             count = view.findViewById(R.id.count);
+            prizepool = view.findViewById(R.id.prizepool);
             reg = view.findViewById(R.id.reg);
             imgs = view.findViewById(R.id.imgs);
             info = view.findViewById(R.id.info);
@@ -102,6 +103,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         holder.title.setText(gameItem.get(position).getTime());
+        holder.prizepool.setText("Per Kill \u20B9" + gameItem.get(position).getPerKill());
 //        String strDate = title + " " + date + " " + movieList.get(position).getTime().replace("pm", ":00:00 pm")
 //                .replace("am", ":00:00 am");
         Glide.with(mContext).load(gameItem.get(position).getYt_url().equals("") ? AppConstant.defaultImg  : "https://i.ytimg.com/vi/"+gameItem.get(position).getYt_url()+"/hqdefault_live.jpg").placeholder(R.mipmap.app_logo).into(holder.imgs);

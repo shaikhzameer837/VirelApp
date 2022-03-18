@@ -9,14 +9,14 @@
     android:clickable="true"
     android:focusable="true"
     android:orientation="vertical"
-    android:padding="5dp">
+    android:padding="3dp">
 
     <ImageView
         android:id="@+id/imgs"
-        android:layout_width="75dp"
-        android:scaleType="centerCrop"
+        android:layout_width="80dp"
+        android:layout_height="55dp"
         android:layout_marginRight="10dp"
-        android:layout_height="40dp" />
+        android:scaleType="centerCrop" />
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
@@ -24,8 +24,8 @@
         android:layout_alignParentTop="true"
         android:text="8am"
         android:layout_toRightOf="@+id/imgs"
-        android:textColor="#555555"
-        android:textSize="16dp"
+        android:textColor="#000000"
+        android:textSize="15sp"
         android:textStyle="bold" />
 
     <TextView
@@ -39,29 +39,55 @@
         android:drawableLeft="@drawable/account"
         android:layout_toRightOf="@+id/title"
         android:text="Solo"
-        android:textColor="#c0c0c0"
         android:textSize="12dp"
         android:textStyle="bold" />
+    <TextView
+        android:id="@+id/entry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/type"
+        android:text=" Entre Free"
+        android:layout_marginLeft="5dp"
+        android:drawableLeft="@drawable/star"
+        android:layout_marginTop="2dp"
+        android:textSize="11sp" />
+
 
     <TextView
-        android:id="@+id/count"
+        android:id="@+id/prizepool"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/title"
         android:layout_toRightOf="@+id/imgs"
         android:text="56/100"
+        android:layout_marginTop="2dp"
+        android:textColor="@color/darkgreen"
+        android:textSize="11sp" />
+
+
+   <TextView
+        android:id="@+id/count"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_below="@id/prizepool"
+        android:layout_toRightOf="@+id/imgs"
+        android:text="56/100"
+        android:gravity="bottom"
+        android:layout_marginTop="2dp"
         android:textColor="@color/appColor"
         android:textSize="11sp" />
+
     <TextView
         android:id="@+id/info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/title"
-        android:layout_toRightOf="@+id/count"
-        android:text="Register now"
+        android:layout_below="@id/prizepool"
         android:layout_marginLeft="10dp"
+        android:layout_alignParentRight="true"
+        android:text="Register now"
+        android:layout_marginTop="5dp"
         android:textColor="@color/appColor"
-        android:textSize="11sp"
+        android:textSize="13sp"
         android:textStyle="bold" />
 
 

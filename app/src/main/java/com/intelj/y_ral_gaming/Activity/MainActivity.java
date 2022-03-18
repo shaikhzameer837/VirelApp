@@ -1,10 +1,17 @@
 package com.intelj.y_ral_gaming.Activity;
 
+import static android.app.Notification.DEFAULT_SOUND;
+import static android.app.Notification.DEFAULT_VIBRATE;
+
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.BroadcastReceiver;
@@ -60,6 +67,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -188,6 +196,7 @@ public class MainActivity extends AppCompatActivity {
     LinearLayout moneyList;
     String wAmount = "";
     String payType = "Amount";
+    String paymentType = "Google Pay";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -489,9 +498,28 @@ public class MainActivity extends AppCompatActivity {
     private void showCoins() {
         wAmount = "";
         String[] payTypeList = { "Amount", "Redeem code"};
+        String[] paymentTypeList = { "Google Pay", "PhonePe","paytm"};
         final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
         bottomSheetDialog.setContentView(R.layout.money_sheet);
         Spinner spin =  bottomSheetDialog.findViewById(R.id.spinner);
+        Spinner payment_system =  bottomSheetDialog.findViewById(R.id.payment_system);
+        payment_system.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                paymentType = paymentTypeList[position];
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        ArrayAdapter paymentAdp = new ArrayAdapter(this,android.R.layout.simple_spinner_item,paymentTypeList);
+        paymentAdp.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        payment_system.setAdapter(paymentAdp);
+
+
+
         spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -503,12 +531,11 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
-        //Creating the ArrayAdapter instance having the country list
-        ArrayAdapter aa = new ArrayAdapter(this,android.R.layout.simple_spinner_item,payTypeList);
+        ArrayAdapter aa = new ArrayAdapter(this, android.R.layout.simple_spinner_item, payTypeList);
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        //Setting the ArrayAdapter data on the Spinner
         spin.setAdapter(aa);
+
+
         moneyList = bottomSheetDialog.findViewById(R.id.moneyList);
         bottomSheetDialog.findViewById(R.id.btn_next).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -603,6 +630,7 @@ public class MainActivity extends AppCompatActivity {
                 params.put("id", new AppConstant(MainActivity.this).getId());
                 params.put("amount", wAmount);
                 params.put("type", payType);
+                params.put("paymentType", paymentType);
                 params.put("time", (System.currentTimeMillis()) + "");
                 params.put("userName", AppController.getInstance().mySnapShort.child(AppConstant.userName).getValue() == null ? "player" : AppController.getInstance().mySnapShort.child(AppConstant.userName).getValue() + "");
                 return params;
@@ -1396,9 +1424,7 @@ public class MainActivity extends AppCompatActivity {
                 LocalBroadcastManager.getInstance(MainActivity.this).sendBroadcast(intent);
             }
         });
-
     }
-
     public void getUserAmount() {
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = "http://y-ral-gaming.com/admin/api/get_amount.php";
