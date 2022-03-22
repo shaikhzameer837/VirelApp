@@ -38,6 +38,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.intelj.y_ral_gaming.Activity.GameInfo;
 import com.intelj.y_ral_gaming.AppController;
 import com.intelj.y_ral_gaming.Fragment.OneFragment;
 import com.intelj.y_ral_gaming.GameItem;
@@ -330,6 +331,8 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
                                 gameItem.get(position).setCount(player_count+"");
                                 notifyDataSetChanged();
                                 bottomSheetDialog.dismiss();
+                                GameInfo BottomSheetFragment = new GameInfo();
+                                BottomSheetFragment.show(((AppCompatActivity) mContext).getSupportFragmentManager(), "");
                             }else
                                 Toast.makeText(mContext,json.getString("msg"),Toast.LENGTH_LONG).show();
                         } catch (Exception e) {

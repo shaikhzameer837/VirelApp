@@ -38,10 +38,13 @@ import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.text.ClipboardManager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -417,6 +420,13 @@ public class MainActivity extends AppCompatActivity {
                                 inflateView(R.layout.edit_profile);
                                 imgProfile = inflated.findViewById(R.id.imgs);
                                 package_name = inflated.findViewById(R.id.amount);
+                                EditText referal = inflated.findViewById(R.id.referal);
+                                referal.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+
+                                    }
+                                });
 //                                inflated.findViewById(R.id.withdraw).setOnClickListener(new View.OnClickListener() {
 //                                    @Override
 //                                    public void onClick(View v) {
@@ -437,10 +447,11 @@ public class MainActivity extends AppCompatActivity {
                                 Glide.with(MainActivity.this).load(AppController.getInstance().mySnapShort.child(AppConstant.myPicUrl).getValue() + "").placeholder(R.drawable.profile_icon).apply(new RequestOptions().circleCrop()).into(imgProfile);
                                 playerName = inflated.findViewById(R.id.name);
                                 discordId = inflated.findViewById(R.id.discordId);
+                                referal.setText("YRAL"+appConstant.getId());
                                 TextInputEditText phoneNumber = inflated.findViewById(R.id.phoneNumber);
                                 saveProf = inflated.findViewById(R.id.save);
                                 playerName.setText(AppController.getInstance().mySnapShort.child(AppConstant.userName).getValue() == null ? "" : AppController.getInstance().mySnapShort.child(AppConstant.userName).getValue() + "");
-                                phoneNumber.setText(new AppConstant(MainActivity.this).getPhoneNumber());
+                                phoneNumber.setText(appConstant.getPhoneNumber());
                                 discordId.setText(AppController.getInstance().mySnapShort.child(AppConstant.discordId).exists() ? AppController.getInstance().mySnapShort.child(AppConstant.discordId).getValue() + "" : "");
                                 saveProf.setOnClickListener(new View.OnClickListener() {
                                     @Override
@@ -497,12 +508,29 @@ public class MainActivity extends AppCompatActivity {
 
     private void showCoins() {
         wAmount = "";
-        String[] payTypeList = { "Amount", "Redeem code"};
+        String[] payTypeList = { "Redeem Amount"};
         String[] paymentTypeList = { "Google Pay", "PhonePe","paytm"};
         final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
         bottomSheetDialog.setContentView(R.layout.money_sheet);
-        Spinner spin =  bottomSheetDialog.findViewById(R.id.spinner);
+        EditText upi = bottomSheetDialog.findViewById(R.id.upi);
         Spinner payment_system =  bottomSheetDialog.findViewById(R.id.payment_system);
+        upi.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+
+            }
+        });
+        Spinner spin =  bottomSheetDialog.findViewById(R.id.spinner);
         payment_system.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -517,9 +545,6 @@ public class MainActivity extends AppCompatActivity {
         ArrayAdapter paymentAdp = new ArrayAdapter(this,android.R.layout.simple_spinner_item,paymentTypeList);
         paymentAdp.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         payment_system.setAdapter(paymentAdp);
-
-
-
         spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -549,7 +574,6 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
                 if (Integer.parseInt(wAmount) <= AppController.getInstance().amount) {
-                    EditText upi = bottomSheetDialog.findViewById(R.id.upi);
                     if (upi.getText().toString().trim().equals("")) {
                         upi.setError("Upi id cannot be empty");
                         upi.requestFocus();

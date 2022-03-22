@@ -23,6 +23,9 @@ public class GameInfo extends BottomSheetDialogFragment {
     public GameInfo(String dateTime) {
         this.dateTime = dateTime;
     }
+   public GameInfo() {
+
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -34,7 +37,7 @@ public class GameInfo extends BottomSheetDialogFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.game_info, container, false);
-        ((TextView) rootView.findViewById(R.id.title)).setText("Id password for the game will be given on Youtube's Live chat at " + dateTime);
+        ((TextView) rootView.findViewById(R.id.title)).setText("Id password for the game will be given on Youtube's Live chat ");
         rootView.findViewById(R.id.yt).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 String url = "https://www.youtube.com/c/YRALGaming";

@@ -34,8 +34,15 @@
     </LinearLayout>
     <TextView android:id="@+id/rules"
         android:layout_width="match_parent"
-        android:layout_margin="5dp"
-        android:text="* Follow all the rules displayed on youtube"
+        android:layout_margin="7dp"
+        android:textSize="12sp"
+        android:text="* ONLY SOLO ENTRY ALLOWED\n *
+SQUAD, DUO OR TRIO ENTRY NOT ALLOWED\n*
+PC PLAYER NOT ALLOWED\n*
+DON'T ABUSE ON LIVE CHAT AND CUSTOM CHAT\n*
+NOTE: Y-RAL CAN GIVE YOU BAN WITHOUT ANY REASON\n
+*YOU HAVE TO FOLLOW ALL THE RULES DISPLAYED ON Y-RAL YOUTUBE LIVE\n\n*
+BY CLICKING NEXT YOU AGREE THE ABOVE TERMS AND CONDTION"
         android:layout_height="wrap_content"/>
     <RelativeLayout android:id="@+id/rel_increment"
         android:layout_width="match_parent"
@@ -110,7 +117,7 @@
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="45dp"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="13dp"
             android:background="#000000"
             android:onClick="sendNumber"
             android:scaleType="centerCrop"
