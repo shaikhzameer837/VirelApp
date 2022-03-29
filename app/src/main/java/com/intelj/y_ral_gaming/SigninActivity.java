@@ -74,7 +74,7 @@ public class SigninActivity extends AppCompatActivity {
     TextInputEditText phoneNumber, otp;
     EditText pgUsername;
     CountryCodePicker ccp;
-    TextView et_countdown, resend_btn;
+    TextView et_countdown, resend_btn,referal;
     String _phoneNumber = "", _otp = "", token = "", _pgUsername = "", _countryCode = "+91";
     DatabaseReference mDatabase;
     private String mVerificationId;
@@ -204,6 +204,7 @@ public class SigninActivity extends AppCompatActivity {
         public void checkError() {
             if (viewPager.getCurrentItem() == 0) {
                 phoneNumber = layout_view.get(0).findViewById(R.id.phoneNumber);
+                referal = layout_view.get(0).findViewById(R.id.referal);
                 ccp = layout_view.get(0).findViewById(R.id.ccp);
                 _phoneNumber = phoneNumber.getText().toString();
                 if (_phoneNumber.length() != 10) {
@@ -385,6 +386,7 @@ public class SigninActivity extends AppCompatActivity {
                             if (obj.getBoolean("success")) {
                                 String package_id = obj.getString("package_id");
                                 String expiry_date = obj.getString("expiry_date");
+                                String referal = obj.getString("referal");
                                 String uniqueId = obj.getString("id");
                                 HashMap<String, Object> login = new HashMap<>();
                                 HashMap<String, Object> realTime = new HashMap<>();
@@ -407,7 +409,7 @@ public class SigninActivity extends AppCompatActivity {
                                 Log.e("Exception","success 2");
                                 AppController.getInstance().progressDialog = null;
                                 Log.e("Exception","success 3");
-                                appConstant.savePackage(package_id, expiry_date, uniqueId);
+                                appConstant.savePackage(package_id, expiry_date, uniqueId,referal);
                                 if (dialog.isShowing()) {
                                     dialog.dismiss();
                                 }
@@ -439,6 +441,7 @@ public class SigninActivity extends AppCompatActivity {
                 params.put("token", token);
                 params.put("uniqueId", (System.currentTimeMillis()/1000)+"");
                 params.put("phoneNumber", _phoneNumber);
+                params.put("referal", referal.getText().toString());
                 return params;
             }
 

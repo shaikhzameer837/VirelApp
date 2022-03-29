@@ -231,11 +231,13 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
                             obj.put("ingName", editText.getText().toString());
                             obj.put("count", i == 0 ? textView.getText().toString() : 0);
                             obj.put("kill",  0);
+                            if(!new AppConstant(mContext).getReferal().equals(""))
+                                obj.put("referal",  new AppConstant(mContext).getReferal());
                             obj1.put(i == 0 ? new AppConstant(mContext).getId() : new AppConstant(mContext).randomString(5) + "", obj);
                         }
                     }
-                    Log.e("jsoobject", obj1.toString());
-                    Log.e("jsoobject", new AppConstant(mContext).getId());
+                    Log.e("jsonObject", obj1.toString());
+                    Log.e("jsonObject", new AppConstant(mContext).getId());
                     saveUserInfo(position, obj1.toString(), textView.getText().toString(),childCount);
                 } catch (Exception e) {
 
@@ -313,12 +315,12 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
         progressDialog.setTitle("loading...");
         progressDialog.show();
         RequestQueue queue = Volley.newRequestQueue(mContext);
-        String url = "http://y-ral-gaming.com/admin/api/join_game.php";
+        String url = "http://y-ral-gaming.com/admin/api/join.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.e("onClick3", response);
+                        Log.v("onClick3", response);
                         progressDialog.cancel();
                         try {
                             JSONObject json = new JSONObject(response);
@@ -329,6 +331,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
                                 LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);
                                 gameItem.get(position).setIsexist(gameItem.get(position).getIsexist().equals("1") ? "0" : "1");
                                 gameItem.get(position).setCount(player_count+"");
+                                new AppConstant(mContext).setReferal();
                                 notifyDataSetChanged();
                                 bottomSheetDialog.dismiss();
                                 GameInfo BottomSheetFragment = new GameInfo();
@@ -337,7 +340,6 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
                                 Toast.makeText(mContext,json.getString("msg"),Toast.LENGTH_LONG).show();
                         } catch (Exception e) {
                             Log.e("logMess", e.getMessage());
-
                         }
                     }
                 }, new Response.ErrorListener() {
@@ -349,18 +351,19 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put("entry", gameItem.get(position).getEntryFees());
-                params.put("userId", new AppConstant(mContext).getId());
-                Date c = Calendar.getInstance().getTime();
-                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-                String formattedDate = df.format(c);
-                params.put("date", formattedDate);
-                Log.e("formattedDate", formattedDate);
-                params.put("time", gameItem.get(position).getTime());
+                //params.put("entry", gameItem.get(position).getEntryFees());
+               // params.put("userId", new AppConstant(mContext).getId());
+//                Date c = Calendar.getInstance().getTime();
+//                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+//                String formattedDate = df.format(c);
+                //params.put("date", formattedDate);
+                //Log.e("formattedDate", formattedDate);
+                //params.put("time", gameItem.get(position).getTime());
                 params.put("userJson", userJson);
+                params.put("gameId", gameItem.get(position).getGameId());
                 params.put("count", totalPlayer);
-                params.put("entryFees", "entryFees = 0");
-                params.put("game_type", title);
+                //params.put("entryFees", "entryFees = 0");
+               // params.put("game_type", title);
                 params.put("player_count", childCount+"");
                 return params;
             }

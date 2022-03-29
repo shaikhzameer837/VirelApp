@@ -79,6 +79,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -111,6 +112,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerFragment;
@@ -127,6 +129,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.intelj.y_ral_gaming.Adapter.MemberListAdapter;
 import com.intelj.y_ral_gaming.Adapter.PayMentAdapter;
+import com.intelj.y_ral_gaming.Adapter.PopularAdapter;
 import com.intelj.y_ral_gaming.Adapter.RankAdapter;
 import com.intelj.y_ral_gaming.AppController;
 import com.intelj.y_ral_gaming.BuildConfig;
@@ -140,6 +143,7 @@ import com.intelj.y_ral_gaming.GameItem;
 import com.intelj.y_ral_gaming.MatchAdapter;
 import com.intelj.y_ral_gaming.NotificationAdapter;
 import com.intelj.y_ral_gaming.PaidScrims;
+import com.intelj.y_ral_gaming.PopularModel;
 import com.intelj.y_ral_gaming.R;
 import com.intelj.y_ral_gaming.SigninActivity;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
@@ -148,6 +152,7 @@ import com.intelj.y_ral_gaming.VolleyMultipartRequest;
 import com.intelj.y_ral_gaming.model.NotificationModel;
 import com.intelj.y_ral_gaming.model.PaymentHistoryModel;
 import com.intelj.y_ral_gaming.model.UserListModel;
+import com.intelj.y_ral_gaming.project.MoviesAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -161,6 +166,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -174,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     TextView timeLeft, textView, coins;
     EditText ign, igid;
-    private RecyclerView recyclerView;
+    private RecyclerView recyclerView, rv_popular;
     View inflated;
     int RESULT_LOAD_IMAGE = 9;
     int PROFILE_IMAGE = 11;
@@ -200,6 +206,10 @@ public class MainActivity extends AppCompatActivity {
     String wAmount = "";
     String payType = "Amount";
     String paymentType = "Google Pay";
+    List<PopularModel> popularModels = new ArrayList<>();
+    PopularAdapter popularAdapter;
+    private ShimmerFrameLayout shimmerFrameLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -216,36 +226,44 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             invalidateOptionsMenu();
         }
-        ViewPager viewPager =  findViewById(R.id.viewpager);
-        FirebaseDatabase.getInstance().getReference("poster").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(final DataSnapshot dataSnapshot) {
-                ArrayList<String> dataSnapshots = new ArrayList<>();
-                for (DataSnapshot child : dataSnapshot.getChildren()) {
-                    dataSnapshots.add(0, child.getValue(String.class));
-                }
-                viewPager.setAdapter(new CustomPagerAdapter(MainActivity.this, dataSnapshots));
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-
-            }
-        });
-
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            public void onPageScrollStateChanged(int state) {
-            }
-
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            }
-
-            public void onPageSelected(int position) {
-                if (position == 2) {
-                    //  addviewDisplay();
-                }
-            }
-        });
+        rv_popular = findViewById(R.id.rv_popular);
+        shimmerFrameLayout = findViewById(R.id.shimmer_layout);
+        getPopularFace();
+        popularAdapter = new PopularAdapter(this, popularModels);
+        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 1, GridLayoutManager.HORIZONTAL, false);
+        rv_popular.setLayoutManager(mLayoutManager);
+        rv_popular.setItemAnimator(new DefaultItemAnimator());
+        rv_popular.setAdapter(popularAdapter);
+//        ViewPager viewPager =  findViewById(R.id.viewpager);
+//        FirebaseDatabase.getInstance().getReference("poster").addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(final DataSnapshot dataSnapshot) {
+//                ArrayList<String> dataSnapshots = new ArrayList<>();
+//                for (DataSnapshot child : dataSnapshot.getChildren()) {
+//                    dataSnapshots.add(0, child.getValue(String.class));
+//                }
+//                viewPager.setAdapter(new CustomPagerAdapter(MainActivity.this, dataSnapshots));
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError error) {
+//
+//            }
+//        });
+//
+//        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+//            public void onPageScrollStateChanged(int state) {
+//            }
+//
+//            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+//            }
+//
+//            public void onPageSelected(int position) {
+//                if (position == 2) {
+//                    //  addviewDisplay();
+//                }
+//            }
+//        });
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int Dheight = displayMetrics.heightPixels;
@@ -420,11 +438,19 @@ public class MainActivity extends AppCompatActivity {
                                 inflateView(R.layout.edit_profile);
                                 imgProfile = inflated.findViewById(R.id.imgs);
                                 package_name = inflated.findViewById(R.id.amount);
-                                EditText referal = inflated.findViewById(R.id.referal);
+                                TextInputEditText referal = inflated.findViewById(R.id.referal);
                                 referal.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-
+                                        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
+                                            android.text.ClipboardManager clipboard = (android.text.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                                            clipboard.setText(referal.getText().toString());
+                                        } else {
+                                            android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                                            android.content.ClipData clip = android.content.ClipData.newPlainText("Copied Text", referal.getText().toString());
+                                            clipboard.setPrimaryClip(clip);
+                                        }
+                                        Toast.makeText(MainActivity.this, "Referal code copied", Toast.LENGTH_LONG).show();
                                     }
                                 });
 //                                inflated.findViewById(R.id.withdraw).setOnClickListener(new View.OnClickListener() {
@@ -447,7 +473,7 @@ public class MainActivity extends AppCompatActivity {
                                 Glide.with(MainActivity.this).load(AppController.getInstance().mySnapShort.child(AppConstant.myPicUrl).getValue() + "").placeholder(R.drawable.profile_icon).apply(new RequestOptions().circleCrop()).into(imgProfile);
                                 playerName = inflated.findViewById(R.id.name);
                                 discordId = inflated.findViewById(R.id.discordId);
-                                referal.setText("YRAL"+appConstant.getId());
+                                referal.setText("YRAL" + appConstant.getId());
                                 TextInputEditText phoneNumber = inflated.findViewById(R.id.phoneNumber);
                                 saveProf = inflated.findViewById(R.id.save);
                                 playerName.setText(AppController.getInstance().mySnapShort.child(AppConstant.userName).getValue() == null ? "" : AppController.getInstance().mySnapShort.child(AppConstant.userName).getValue() + "");
@@ -492,6 +518,54 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void getPopularFace() {
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = "http://y-ral-gaming.com/admin/api/popular.php";
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.e("onClicks3", response);
+                        shimmerFrameLayout.hideShimmer();
+                        shimmerFrameLayout.setVisibility(View.GONE);
+                        try {
+                            JSONObject json = new JSONObject(response);
+                            JSONArray ja_data = json.getJSONArray("info");
+                            for (int i = 0; i < ja_data.length(); i++) {
+                                JSONObject jObj = ja_data.getJSONObject(i);
+                                popularModels.add(new PopularModel(jObj.getString("url"), jObj.getString("name"), jObj.getString("amount")));
+                            }
+                            popularAdapter.notifyDataSetChanged();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //  progressDialog.cancel();
+                shimmerFrameLayout.hideShimmer();
+                shimmerFrameLayout.setVisibility(View.GONE);
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                return new HashMap<>();
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Content-Type", "application/x-www-form-urlencoded");
+                return params;
+            }
+        };
+
+        queue.add(stringRequest);
+    }
+
     public void WidthDrawAmount(View view) {
         TextView selected = ((TextView) view);
         selected.setBackgroundColor(Color.parseColor("#000000"));
@@ -508,16 +582,17 @@ public class MainActivity extends AppCompatActivity {
 
     private void showCoins() {
         wAmount = "";
-        String[] payTypeList = { "Redeem Amount"};
-        String[] paymentTypeList = { "Google Pay", "PhonePe","paytm"};
+        String[] payTypeList = {"Redeem Amount"};
+        String[] paymentTypeList = {"Google Pay", "PhonePe", "paytm"};
         final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
         bottomSheetDialog.setContentView(R.layout.money_sheet);
         EditText upi = bottomSheetDialog.findViewById(R.id.upi);
-        Spinner payment_system =  bottomSheetDialog.findViewById(R.id.payment_system);
+        Spinner payment_system = bottomSheetDialog.findViewById(R.id.payment_system);
         upi.addTextChangedListener(new TextWatcher() {
 
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+            }
 
             @Override
             public void beforeTextChanged(CharSequence s, int start,
@@ -530,7 +605,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        Spinner spin =  bottomSheetDialog.findViewById(R.id.spinner);
+        Spinner spin = bottomSheetDialog.findViewById(R.id.spinner);
         payment_system.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -542,7 +617,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        ArrayAdapter paymentAdp = new ArrayAdapter(this,android.R.layout.simple_spinner_item,paymentTypeList);
+        ArrayAdapter paymentAdp = new ArrayAdapter(this, android.R.layout.simple_spinner_item, paymentTypeList);
         paymentAdp.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         payment_system.setAdapter(paymentAdp);
         spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -1449,6 +1524,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
     public void getUserAmount() {
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = "http://y-ral-gaming.com/admin/api/get_amount.php";

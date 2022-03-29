@@ -51,17 +51,17 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
         android:layout_marginTop="10dp"
-        android:visibility="visible"
         android:layout_below="@+id/lin"
         android:id="@+id/ref"
         android:layout_toRightOf="@+id/imgs"
         android:layout_marginRight="15dp">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/referal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:enabled="false"
+            android:enabled="true"
+            android:editable="false"
+            android:id="@+id/referal"
             android:layout_marginLeft="15dp"
             android:drawableRight="@drawable/content_copy"
             android:hint=" Referal Id"
@@ -73,9 +73,9 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/ref"
         android:layout_marginLeft="30dp"
-        android:visibility="gone"
+        android:textSize="12sp"
         android:layout_toRightOf="@+id/imgs"
-        android:text="Invite friends and win 50rs per invite" />
+        android:text="Invite friends and win 25rs per invite" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -71,6 +71,7 @@ public class AppConstant {
             nextCoinTime = "nextCoinTime",
             myPicUrl = "myPicUrl",
             users = "users",
+            referal_id = "referal_id",
             count_win = "winner",
             package_info = "package_info",
             game_slot = "game_slot",
@@ -161,11 +162,12 @@ public class AppConstant {
         myInfo.edit().putString(phoneNumber, _phoneNumber).apply();
     }
 
-    public void savePackage(String packageId, String expiryDate, String uniqueId) {
+    public void savePackage(String packageId, String expiryDate, String uniqueId, String referal) {
         setSharedPref();
         myInfo = _context.getSharedPreferences(userId, Context.MODE_PRIVATE);
         sharedPreferences.edit().putString(package_id, packageId).apply();
         sharedPreferences.edit().putString(expiry_date, expiryDate).apply();
+        sharedPreferences.edit().putString(referal_id, referal).apply();
         sharedPreferences.edit().putString(id, uniqueId).apply();
     }
 
@@ -220,6 +222,14 @@ public class AppConstant {
     public Long getbooking() {
         setSharedPref();
         return sharedPreferences.getLong(bookingid, 0);
+    }
+   public String getReferal() {
+        setSharedPref();
+        return sharedPreferences.getString(referal_id, "");
+    }
+    public void setReferal() {
+        setSharedPref();
+        sharedPreferences.edit().putString(referal_id, "").apply();
     }
 
 

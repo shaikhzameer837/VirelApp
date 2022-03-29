@@ -116,13 +116,13 @@ public class PaymentActivity extends AppCompatActivity {
                                 AppController.getInstance().movieList.clear();
                                 for (int i = 0; i < ja_data.length(); i++) {
                                     JSONObject jObj = ja_data.getJSONObject(i);
-                                    AppController.getInstance().movieList.add(new GameItem("BGMI match " + (1 + i),
-                                            jObj.getString("status"), jObj.getString("perKill"), jObj.getString("entryFees"),
-                                            jObj.getString("type"), jObj.getString("map"),
-                                            jObj.getString("time"), jObj.getString("isExist")
-                                            , jObj.getString("total"), jObj.getString("id").equals("") ? "****" : jObj.getString("id")
-                                            , jObj.getString("password").equals("") ? "****" : jObj.getString("password"),
-                                            jObj.getString("result_url"), jObj.getInt("max"), jObj.getString("yt_url")));
+//                                    AppController.getInstance().movieList.add(new GameItem("BGMI match " + (1 + i),
+//                                            jObj.getString("status"), jObj.getString("perKill"), jObj.getString("entryFees"),
+//                                            jObj.getString("type"), jObj.getString("map"),
+//                                            jObj.getString("time"), jObj.getString("isExist")
+//                                            , jObj.getString("total"), jObj.getString("id").equals("") ? "****" : jObj.getString("id")
+//                                            , jObj.getString("password").equals("") ? "****" : jObj.getString("password"),
+//                                            jObj.getString("result_url"), jObj.getInt("max"), jObj.getString("yt_url")));
                                 }
                                 Intent intent = new Intent("custom-event-name");
                                 LocalBroadcastManager.getInstance(PaymentActivity.this).sendBroadcast(intent);

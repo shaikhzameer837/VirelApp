@@ -132,7 +132,7 @@ public class OneFragment extends Fragment {
                             if (json.getBoolean("success") && !json.has("msg")) {
                                 AppController.getInstance().amount = Integer.parseInt(json.getString("amount"));
                                 JSONArray ja_data = json.getJSONArray("match_info");
-                                GameItem.clear();
+                                 GameItem.clear();
                                 for (int i = 0; i < ja_data.length(); i++) {
                                     JSONObject jObj = ja_data.getJSONObject(i);
                                     GameItem.add(new GameItem("BGMI match " + (1 + i),
@@ -142,7 +142,7 @@ public class OneFragment extends Fragment {
                                             , jObj.getString("total"),
                                             jObj.getString("id").equals("") ? "****" : jObj.getString("id")
                                             , jObj.getString("password").equals("") ? "****" : jObj.getString("password"),
-                                            jObj.getString("result_url"), jObj.getInt("max"), jObj.getString("yt_url")));
+                                            jObj.getString("result_url"), jObj.getInt("max"), jObj.getString("yt_url"), jObj.getString("gId")));
 //                                    UserModel userModel = new UserModel()
 //                                            .setRegisterd(false)
 //                                            .setTotalCount(0)
@@ -191,6 +191,10 @@ public class OneFragment extends Fragment {
                                         })
                                         .setIcon(android.R.drawable.ic_dialog_alert)
                                         .show();
+                                AppController.getInstance().amount = 0;
+                                Intent intent = new Intent("custom-event-name");
+                                intent.putExtra(AppConstant.amount, true);
+                                LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
                             }
                         } catch (Exception e) {
                             Log.e("logMess", e.getMessage());

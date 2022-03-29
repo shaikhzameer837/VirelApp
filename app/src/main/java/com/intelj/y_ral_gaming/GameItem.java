@@ -1,7 +1,7 @@
 package com.intelj.y_ral_gaming;
 
 public class GameItem {
-    private String title, PrizePool, perKill, entryFees, map, type,time,id,password,isexist,count="0",result_url,yt_url;
+    private String title, PrizePool, perKill, entryFees, map, type,time,id,password,isexist,count="0",result_url,yt_url,gameId;
     private boolean isActive = false;
     private  int max;
     public GameItem() {
@@ -15,7 +15,7 @@ public class GameItem {
                     String entryFees, String type, String map,
                     String time, String isexist,
                     String count, String id, String password,
-                    String result_url,int max,String yt_url) {
+                    String result_url,int max,String yt_url,String gameId) {
         this.title = title;
         this.PrizePool = PrizePool;
         this.perKill = perKill;
@@ -30,6 +30,7 @@ public class GameItem {
         this.result_url = result_url;
         this.max = max;
         this.yt_url = yt_url;
+        this.gameId = gameId;
     }
 
     public String getYt_url() {
@@ -138,6 +139,14 @@ public class GameItem {
 
     public String getPrizePool() {
         return PrizePool;
+    }
+
+    public String getGameId() {
+        return gameId;
+    }
+
+    public void setGameId(String gameId) {
+        this.gameId = gameId;
     }
 
     public void setPrizePool(String prizePool) {

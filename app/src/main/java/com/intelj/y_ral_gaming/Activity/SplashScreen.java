@@ -37,6 +37,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.intelj.y_ral_gaming.AppController;
 import com.intelj.y_ral_gaming.R;
+import com.intelj.y_ral_gaming.SigninActivity;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 
 import org.json.JSONObject;
@@ -46,8 +47,6 @@ import java.util.Map;
 
 public class SplashScreen extends AppCompatActivity {
     private static final int IMMEDIATE_APP_UPDATE_REQ_CODE = 222222;
-    private AppUpdateManager appUpdateManager;
-    private ReviewManager reviewManager;
     private ProgressBar progress;
 
     @Override
@@ -68,19 +67,19 @@ public class SplashScreen extends AppCompatActivity {
 
                     }
                 });
-        Intent intent = null;
+        Intent intent = new Intent(this, MainActivity.class);
 
-         if (!AppController.getInstance().userId.isEmpty() && !new AppConstant(this).getFriendCheck())
-            intent = new Intent(this, MainActivity.class); //UserInfoCheck.class);
-        else if (!AppController.getInstance().remoteConfig.getString("subscription_package").equals(""))
-            intent = new Intent(this, MainActivity.class);
-        if (intent != null) {
+//         if (!AppController.getInstance().userId.isEmpty() && !new AppConstant(this).getFriendCheck())
+//            intent = new Intent(this, MainActivity.class); //UserInfoCheck.class);
+//        else if (!AppController.getInstance().remoteConfig.getString("subscription_package").equals(""))
+//            intent = new Intent(this, MainActivity.class);
+//        if (intent != null) {
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
             return;
-        }
-        progress = findViewById(R.id.progress);
-        serviceForData();
+        //}
+//        progress = findViewById(R.id.progress);
+//        serviceForData();
 //        appUpdateManager = AppUpdateManagerFactory.create(getApplicationContext());
 //        reviewManager = ReviewManagerFactory.create(this);
     //    showRateApp();
@@ -145,46 +144,46 @@ public class SplashScreen extends AppCompatActivity {
     }
 
     private void checkUpdate() {
-        com.google.android.play.core.tasks.Task<AppUpdateInfo> appUpdateInfoTask = appUpdateManager.getAppUpdateInfo();
-        appUpdateInfoTask.addOnSuccessListener(appUpdateInfo -> {
-            if (appUpdateInfo.updateAvailability() == UPDATE_AVAILABLE
-                    && appUpdateInfo.isUpdateTypeAllowed(IMMEDIATE)) {
-                startUpdateFlow(appUpdateInfo);
-            } else if (appUpdateInfo.updateAvailability() == DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
-                startUpdateFlow(appUpdateInfo);
-            }
-        });
+//        com.google.android.play.core.tasks.Task<AppUpdateInfo> appUpdateInfoTask = appUpdateManager.getAppUpdateInfo();
+//        appUpdateInfoTask.addOnSuccessListener(appUpdateInfo -> {
+//            if (appUpdateInfo.updateAvailability() == UPDATE_AVAILABLE
+//                    && appUpdateInfo.isUpdateTypeAllowed(IMMEDIATE)) {
+//                startUpdateFlow(appUpdateInfo);
+//            } else if (appUpdateInfo.updateAvailability() == DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
+//                startUpdateFlow(appUpdateInfo);
+//            }
+//        });
     }
 
     private void startUpdateFlow(AppUpdateInfo appUpdateInfo) {
-        try {
-            appUpdateManager.startUpdateFlowForResult(appUpdateInfo, IMMEDIATE, this, IMMEDIATE_APP_UPDATE_REQ_CODE);
-        } catch (IntentSender.SendIntentException e) {
-            e.printStackTrace();
-            FirebaseCrashlytics.getInstance().recordException(e);
-        }
+//        try {
+//            appUpdateManager.startUpdateFlowForResult(appUpdateInfo, IMMEDIATE, this, IMMEDIATE_APP_UPDATE_REQ_CODE);
+//        } catch (IntentSender.SendIntentException e) {
+//            e.printStackTrace();
+//            FirebaseCrashlytics.getInstance().recordException(e);
+//        }
     }
 
-    public void showRateApp() {
-        com.google.android.play.core.tasks.Task<ReviewInfo> request = reviewManager.requestReviewFlow();
-        request.addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                // We can get the ReviewInfo object
-                ReviewInfo reviewInfo = task.getResult();
-
-                com.google.android.play.core.tasks.Task<Void> flow = reviewManager.launchReviewFlow(this, reviewInfo);
-                flow.addOnCompleteListener(task1 -> {
-                    // The flow has finished. The API does not indicate whether the user
-                    // reviewed or not, or even whether the review dialog was shown. Thus, no
-                    // matter the result, we continue our app flow.
-                });
-            } else {
-                // There was some problem, continue regardless of the result.
-                // show native rate app dialog on error
-                showRateAppFallbackDialog();
-            }
-        });
-    }
+//    public void showRateApp() {
+//        com.google.android.play.core.tasks.Task<ReviewInfo> request = reviewManager.requestReviewFlow();
+//        request.addOnCompleteListener(task -> {
+//            if (task.isSuccessful()) {
+//                // We can get the ReviewInfo object
+//                ReviewInfo reviewInfo = task.getResult();
+//
+//                com.google.android.play.core.tasks.Task<Void> flow = reviewManager.launchReviewFlow(this, reviewInfo);
+//                flow.addOnCompleteListener(task1 -> {
+//                    // The flow has finished. The API does not indicate whether the user
+//                    // reviewed or not, or even whether the review dialog was shown. Thus, no
+//                    // matter the result, we continue our app flow.
+//                });
+//            } else {
+//                // There was some problem, continue regardless of the result.
+//                // show native rate app dialog on error
+//                showRateAppFallbackDialog();
+//            }
+//        });
+//    }
 
     private void showRateAppFallbackDialog() {
         new MaterialAlertDialogBuilder(this)
