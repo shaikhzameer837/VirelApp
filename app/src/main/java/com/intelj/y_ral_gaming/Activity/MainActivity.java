@@ -190,8 +190,8 @@ public class MainActivity extends AppCompatActivity {
     private Uri filePath = null;
     private DatabaseHelper db;
     AlertDialog dialog;
-    private NavigationView navigationView;
-    private DrawerLayout drawer;
+    //private NavigationView navigationView;
+    //private DrawerLayout drawer;
     public static final int PERMISSIONS_REQUEST_READ_CONTACTS = 15;
     FirebaseStorage storage;
     StorageReference storageReference;
@@ -218,11 +218,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         AppController.getInstance().getGameName();
         AppController.getInstance().getTournamentTime();
-        drawer = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.nav_view_drawer);
+        //drawer = findViewById(R.id.drawer_layout);
+        //navigationView = findViewById(R.id.nav_view_drawer);
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
                 new IntentFilter("custom-event-name"));
-        setUpNavigationView();
+        //setUpNavigationView();
         if (savedInstanceState == null) {
             invalidateOptionsMenu();
         }
@@ -461,14 +461,14 @@ public class MainActivity extends AppCompatActivity {
 //                                });
 //                                getUserAmount();
 //                                //setPackagename();
-//                                imgProfile.setOnClickListener(new View.OnClickListener() {
-//                                    @Override
-//                                    public void onClick(View v) {
-//                                        ActivityCompat.requestPermissions(MainActivity.this,
-//                                                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-//                                                1);
-//                                    }
-//                                });
+                                imgProfile.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        ActivityCompat.requestPermissions(MainActivity.this,
+                                                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                                                1);
+                                    }
+                                });
 
                                 Glide.with(MainActivity.this).load(AppController.getInstance().mySnapShort.child(AppConstant.myPicUrl).getValue() + "").placeholder(R.drawable.profile_icon).apply(new RequestOptions().circleCrop()).into(imgProfile);
                                 playerName = inflated.findViewById(R.id.name);
@@ -491,7 +491,7 @@ public class MainActivity extends AppCompatActivity {
                                         if (picturePath == null)
                                             saveToProfile(null);
                                         else
-                                            uploadFiles();
+                                            uploadProfile();
                                     }
                                 });
                                 return true;
@@ -908,7 +908,6 @@ public class MainActivity extends AppCompatActivity {
         if (imageUrl != null) {
             FirebaseDatabase.getInstance().getReference(AppConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.myPicUrl).setValue(imageUrl);
             editor.putString(AppConstant.myPicUrl, imageUrl);
-            progressDialog.dismiss();
             picturePath = null;
         }
         editor.apply();
@@ -1332,10 +1331,10 @@ public class MainActivity extends AppCompatActivity {
 
         if (requestCode == PROFILE_IMAGE && resultCode == RESULT_OK
                 && null != data) {
-            Uri selectedImage = data.getData();
+            Uri selectedImg = data.getData();
             filePath = data.getData();
             String[] filePathColumn = {MediaStore.Images.Media.DATA};
-            Cursor cursor = getContentResolver().query(selectedImage,
+            Cursor cursor = getContentResolver().query(selectedImg,
                     filePathColumn, null, null, null);
 
             if (cursor == null || cursor.getCount() < 1) {
@@ -1349,9 +1348,13 @@ public class MainActivity extends AppCompatActivity {
                 return; // DO YOUR ERROR HANDLING
 
             picturePath = cursor.getString(columnIndex);
-
             cursor.close();
-            Glide.with(this).load(picturePath).apply(new RequestOptions().circleCrop()).into(imgProfile);
+            try {
+                selectedImage = getBitmapFromUri(data.getData());
+                Glide.with(this).load(picturePath).apply(new RequestOptions().circleCrop()).into(imgProfile);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } else if (resultCode == RESULT_OK && requestCode == RESULT_LOAD_IMAGE) {
             try {
                 selectedImage = getBitmapFromUri(data.getData());
@@ -1384,6 +1387,56 @@ public class MainActivity extends AppCompatActivity {
             width = (int) (height * bitmapRatio);
         }
         return Bitmap.createScaledBitmap(image, width, height, true);
+    }
+
+    private void uploadProfile() {
+        ProgressDialog dialog = new ProgressDialog(MainActivity.this);
+        dialog.setMessage("Uploading file, please wait.");
+        dialog.show();
+        VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST,
+                "http://y-ral-gaming.com/admin/api/profile_pic.php?" +
+                        "userid=" + appConstant.getId() + "&&name=" + playerName.getText().toString()
+                ,
+                new Response.Listener<NetworkResponse>() {
+                    @Override
+                    public void onResponse(NetworkResponse response) {
+                        if (dialog.isShowing())
+                            dialog.dismiss();
+                        saveToProfile(new String(response.data));
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        if (dialog.isShowing()) {
+                            dialog.dismiss();
+                        }
+                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                            @Override
+                            public void run() {
+                            }
+                        });
+                        // Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
+                        Log.e("GotError", "" + error.getMessage());
+                    }
+                }) {
+
+            //            @Override
+//            protected Map<String, String> getParams() throws AuthFailureError {
+//                Map<String, String> params = new HashMap<>();
+//                params.put("tags", tags);
+//                return params;
+//            }
+            @Override
+            protected Map<String, DataPart> getByteData() {
+                Map<String, DataPart> params = new HashMap<>();
+                params.put("uploaded_file", new DataPart(appConstant.getId() + ".png", getFileDataFromDrawable()));
+                // params.put("userId", new DataPart("1605435786512"));
+                return params;
+            }
+        };
+        //adding the request to volley
+        Volley.newRequestQueue(this).add(volleyMultipartRequest);
     }
 
     private void uploadBitmap() {
@@ -1927,105 +1980,105 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void setUpNavigationView() {
-        //Setting Navigation View Item Selected Listener to handle the item click of the navigation menu
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-
-            // This method will trigger on item Click of navigation menu
-            @Override
-            public boolean onNavigationItemSelected(MenuItem menuItem) {
-
-                //Check to see which item was being clicked and perform appropriate action
-                switch (menuItem.getItemId()) {
-                    //Replacing the main content with ContentFragment Which is our Inbox View;
-                    case R.id.nav_aboutus:
-                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.tcs.com/")));
-                        drawer.closeDrawers();
-                        return true;
-
-                    case R.id.nav_privacypolicy:
-                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.tcs.com/privacy-policy")));
-                        drawer.closeDrawers();
-                        return true;
-
-                    case R.id.nav_tt:
-                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.tcs.com/legal-disclaimer")));
-                        drawer.closeDrawers();
-                        return true;
-
-                    case R.id.nav_facebook:
-                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/Kakelious/")));
-                        drawer.closeDrawers();
-                        return true;
-
-                    case R.id.nav_discord:
-                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://discord.gg/uygzekRnhE")));
-                        drawer.closeDrawers();
-                        return true;
-
-                    case R.id.nav_youtube:
-                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://youtube.com/channel/UCt3oqOC4xYAQBzWIhiupLBg"));
-                        startActivity(intent);
-                        drawer.closeDrawers();
-                        return true;
-                    /*case R.id.nav_notifications:
-                        navItemIndex = 3;
-                        CURRENT_TAG = TAG_NOTIFICATIONS;
-                        break;
-                    case R.id.nav_settings:
-
-
-                        break;
-                    case R.id.nav_about_us:
-                        // launch new intent instead of loading fragment
-                        startActivity(new Intent(MainActivity.this, AboutUsActivity.class));
-                        drawer.closeDrawers();
-                        return true;
-                    case R.id.nav_privacy_policy:
-                        // launch new intent instead of loading fragment
-                        startActivity(new Intent(MainActivity.this, PrivacyPolicyActivity.class));
-                        drawer.closeDrawers();
-                        return true;
-                    default:
-                        navItemIndex = 0;*/
-                }
-
-                //Checking if the item is in checked state or not, if not make it in checked state
-                if (menuItem.isChecked()) {
-                    menuItem.setChecked(false);
-                } else {
-                    menuItem.setChecked(true);
-                }
-                menuItem.setChecked(true);
-
-//                loadHomeFragment();
-
-                return true;
-            }
-        });
-
-
-        /*ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.openDrawer, R.string.closeDrawer) {
-
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                // Code here will be triggered once the drawer closes as we dont want anything to happen so we leave this blank
-                super.onDrawerClosed(drawerView);
-            }
-
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                // Code here will be triggered once the drawer open as we dont want anything to happen so we leave this blank
-                super.onDrawerOpened(drawerView);
-            }
-        };
-
-        //Setting the actionbarToggle to drawer layout
-        drawer.setDrawerListener(actionBarDrawerToggle);
-
-        //calling sync state is necessary or else your hamburger icon wont show up
-        actionBarDrawerToggle.syncState();*/
-    }
+//    private void setUpNavigationView() {
+//        //Setting Navigation View Item Selected Listener to handle the item click of the navigation menu
+//        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+//
+//            // This method will trigger on item Click of navigation menu
+//            @Override
+//            public boolean onNavigationItemSelected(MenuItem menuItem) {
+//
+//                //Check to see which item was being clicked and perform appropriate action
+//                switch (menuItem.getItemId()) {
+//                    //Replacing the main content with ContentFragment Which is our Inbox View;
+//                    case R.id.nav_aboutus:
+//                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.tcs.com/")));
+//                        //drawer.closeDrawers();
+//                        return true;
+//
+//                    case R.id.nav_privacypolicy:
+//                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.tcs.com/privacy-policy")));
+//                       // drawer.closeDrawers();
+//                        return true;
+//
+//                    case R.id.nav_tt:
+//                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.tcs.com/legal-disclaimer")));
+//                       // drawer.closeDrawers();
+//                        return true;
+//
+//                    case R.id.nav_facebook:
+//                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/Kakelious/")));
+//                     //   drawer.closeDrawers();
+//                        return true;
+//
+//                    case R.id.nav_discord:
+//                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://discord.gg/uygzekRnhE")));
+//                     //   drawer.closeDrawers();
+//                        return true;
+//
+//                    case R.id.nav_youtube:
+//                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://youtube.com/channel/UCt3oqOC4xYAQBzWIhiupLBg"));
+//                        startActivity(intent);
+//                    //    drawer.closeDrawers();
+//                        return true;
+//                    /*case R.id.nav_notifications:
+//                        navItemIndex = 3;
+//                        CURRENT_TAG = TAG_NOTIFICATIONS;
+//                        break;
+//                    case R.id.nav_settings:
+//
+//
+//                        break;
+//                    case R.id.nav_about_us:
+//                        // launch new intent instead of loading fragment
+//                        startActivity(new Intent(MainActivity.this, AboutUsActivity.class));
+//                        drawer.closeDrawers();
+//                        return true;
+//                    case R.id.nav_privacy_policy:
+//                        // launch new intent instead of loading fragment
+//                        startActivity(new Intent(MainActivity.this, PrivacyPolicyActivity.class));
+//                        drawer.closeDrawers();
+//                        return true;
+//                    default:
+//                        navItemIndex = 0;*/
+//                }
+//
+//                //Checking if the item is in checked state or not, if not make it in checked state
+//                if (menuItem.isChecked()) {
+//                    menuItem.setChecked(false);
+//                } else {
+//                    menuItem.setChecked(true);
+//                }
+//                menuItem.setChecked(true);
+//
+////                loadHomeFragment();
+//
+//                return true;
+//            }
+//        });
+//
+//
+//        /*ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.openDrawer, R.string.closeDrawer) {
+//
+//            @Override
+//            public void onDrawerClosed(View drawerView) {
+//                // Code here will be triggered once the drawer closes as we dont want anything to happen so we leave this blank
+//                super.onDrawerClosed(drawerView);
+//            }
+//
+//            @Override
+//            public void onDrawerOpened(View drawerView) {
+//                // Code here will be triggered once the drawer open as we dont want anything to happen so we leave this blank
+//                super.onDrawerOpened(drawerView);
+//            }
+//        };
+//
+//        //Setting the actionbarToggle to drawer layout
+//        drawer.setDrawerListener(actionBarDrawerToggle);
+//
+//        //calling sync state is necessary or else your hamburger icon wont show up
+//        actionBarDrawerToggle.syncState();*/
+//    }
 
     public void requestContactPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

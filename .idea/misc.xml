@@ -42,11 +42,12 @@
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/drawable/content_copy.xml" value="0.1465" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/drawable/credit.xml" value="0.1465" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/drawable/currency.xml" value="0.23697916666666666" />
+        <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/drawable/curved_white.xml" value="0.1" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/drawable/debit.xml" value="0.1465" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/drawable/discord.xml" value="0.12395833333333334" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/drawable/help.xml" value="0.23697916666666666" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/drawable/hold.xml" value="0.1465" />
-        <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/drawable/ic_coin.xml" value="0.23697916666666666" />
+        <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/drawable/ic_coin.xml" value="0.14666666666666667" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/drawable/info.xml" value="0.1835" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/drawable/instagram.xml" value="0.23697916666666666" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/drawable/more.xml" value="0.1" />
@@ -80,6 +81,7 @@
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/layout/main_bottom_sheet_dialoglayout.xml" value="0.15715579710144928" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/layout/money_sheet.xml" value="0.13360507246376813" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/layout/movie_list_row.xml" value="0.16077898550724637" />
+        <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/layout/nav_header_main.xml" value="0.1" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/layout/note_list_row.xml" value="0.13134057971014493" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/layout/payment.xml" value="0.161231884057971" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/layout/payment_row.xml" value="0.16621376811594202" />
