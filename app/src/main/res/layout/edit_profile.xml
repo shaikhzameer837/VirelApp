@@ -45,14 +45,36 @@
         android:layout_marginLeft="15dp"
         android:layout_marginTop="10dp"
         android:src="@drawable/profile_icon" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_below="@+id/lin"
+        android:id="@+id/ref"
+        android:visibility="gone"
+        android:layout_toRightOf="@+id/imgs"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="15dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/bio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:hint="Bio"
+            android:textSize="14sp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
     <com.google.android.material.textfield.TextInputLayout
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
         android:layout_marginTop="10dp"
+        android:visibility="gone"
         android:layout_below="@+id/lin"
-        android:id="@+id/ref"
         android:layout_toRightOf="@+id/imgs"
         android:layout_marginRight="15dp">
 
@@ -62,6 +84,8 @@
             android:enabled="true"
             android:editable="false"
             android:id="@+id/referal"
+            android:singleLine="false"
+            android:textColor="#aaaaaa"
             android:layout_marginLeft="15dp"
             android:drawableRight="@drawable/content_copy"
             android:hint=" Referal Id"
@@ -72,10 +96,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/ref"
+        android:visibility="gone"
         android:layout_marginLeft="30dp"
-        android:textSize="12sp"
         android:layout_toRightOf="@+id/imgs"
-        android:text="Invite friends and win 25rs per invite" />
+        android:text="Invite friends and win 25rs per invite"
+        android:textSize="12sp" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -96,7 +121,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:enabled="false"
-                android:hint="your Name"
+                android:hint="Name"
                 android:textSize="14sp" />
         </com.google.android.material.textfield.TextInputLayout>
 

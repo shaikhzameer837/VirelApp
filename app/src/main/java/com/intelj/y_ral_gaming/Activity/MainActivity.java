@@ -489,7 +489,7 @@ public class MainActivity extends AppCompatActivity {
                                             return;
                                         }
                                         if (picturePath == null)
-                                            saveToProfile(null);
+                                            updateName();
                                         else
                                             uploadProfile();
                                     }
@@ -1238,6 +1238,46 @@ public class MainActivity extends AppCompatActivity {
         }*/
     }
 
+    private void updateName() {
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Updating...");
+        progressDialog.show();
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = "http://y-ral-gaming.com/admin/api/profile_update.php";
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.e("response",response);
+                        progressDialog.cancel();
+                        saveToProfile(null);
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                  progressDialog.cancel();
+                Toast.makeText(MainActivity.this, "Something went wrong try again later ", Toast.LENGTH_SHORT).show();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("user_id", new AppConstant(MainActivity.this).getId());
+                params.put("name", playerName.getText().toString() + "");
+                params.put("discord", discordId.getText().toString() + "");
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Content-Type", "application/x-www-form-urlencoded");
+                return params;
+            }
+        };
+
+        queue.add(stringRequest);
+    }
 
     private void uploadFiles() {
         storage = FirebaseStorage.getInstance();
@@ -1351,6 +1391,7 @@ public class MainActivity extends AppCompatActivity {
             cursor.close();
             try {
                 selectedImage = getBitmapFromUri(data.getData());
+                edit.setImageResource(R.drawable.ic_check);
                 Glide.with(this).load(picturePath).apply(new RequestOptions().circleCrop()).into(imgProfile);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -1395,7 +1436,7 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
         VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST,
                 "http://y-ral-gaming.com/admin/api/profile_pic.php?" +
-                        "userid=" + appConstant.getId() + "&&name=" + playerName.getText().toString()
+                        "userid=" + appConstant.getId() + "&&name=" + playerName.getText().toString()+ "&&discordId=" + discordId.getText().toString()
                 ,
                 new Response.Listener<NetworkResponse>() {
                     @Override
