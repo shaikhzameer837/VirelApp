@@ -68,6 +68,12 @@
             android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemes" />
+       <activity
+            android:name=".Activity.EditProfile"
+            android:label="@string/app_name"
+            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemes" />
         <activity
             android:name=".SigninActivity"
             android:screenOrientation="portrait"

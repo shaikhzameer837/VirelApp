@@ -20,7 +20,7 @@
             android:enabled="false"
             android:gravity="center_vertical"
             android:padding="10dp"
-            android:text="Profile setting"
+            android:text="My Profile"
             android:textColor="@color/black"
             android:textColorHint="@color/grey_black"
             android:textSize="14sp"
@@ -28,8 +28,8 @@
 
         <ImageView
             android:id="@+id/save"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="21dp"
+            android:layout_height="18dp"
             android:layout_gravity="center"
             android:layout_margin="5dp"
             android:gravity="center_vertical"
@@ -101,6 +101,7 @@
         android:layout_toRightOf="@+id/imgs"
         android:text="Invite friends and win 25rs per invite"
         android:textSize="12sp" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -147,9 +148,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
+            android:visibility="gone"
             android:layout_marginTop="10dp"
-            android:layout_marginRight="15dp"
-            android:visibility="gone">
+            android:layout_marginRight="15dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/phoneNumber"
@@ -161,4 +162,13 @@
         </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="match_parent"
+        android:text="Done"
+        android:id="@+id/done"
+        android:visibility="gone"
+        android:textColor="@color/colorPrimary"
+        android:background="@color/colorPrimaryDark"
+        android:layout_alignParentBottom="true"
+        android:layout_height="wrap_content"/>
 </RelativeLayout>

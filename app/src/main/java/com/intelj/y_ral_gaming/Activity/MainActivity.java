@@ -164,6 +164,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -209,12 +211,18 @@ public class MainActivity extends AppCompatActivity {
     List<PopularModel> popularModels = new ArrayList<>();
     PopularAdapter popularAdapter;
     private ShimmerFrameLayout shimmerFrameLayout;
+    SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        appConstant = new AppConstant(this);
         // requestWindowFeature(Window.FEATURE_NO_TITLE);
         //this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        sharedPreferences = getSharedPreferences(appConstant.getId(), 0);
+        if (appConstant.checkLogin() && sharedPreferences.getString(AppConstant.userName, "").equals("")) {
+            startActivity(new Intent(MainActivity.this, EditProfile.class));
+        }
         setContentView(R.layout.activity_main);
         AppController.getInstance().getGameName();
         AppController.getInstance().getTournamentTime();
@@ -294,7 +302,6 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigation = findViewById(R.id.bottom_navigation);
         final ViewStub stub = findViewById(R.id.layout_stub);
         stub.setLayoutResource(R.layout.game_slot);
-        appConstant = new AppConstant(this);
         Log.e("appCon", appConstant.getUserId());
         db = new DatabaseHelper(this, "notifications");
         inflated = stub.inflate();
@@ -470,15 +477,15 @@ public class MainActivity extends AppCompatActivity {
                                     }
                                 });
 
-                                Glide.with(MainActivity.this).load(AppController.getInstance().mySnapShort.child(AppConstant.myPicUrl).getValue() + "").placeholder(R.drawable.profile_icon).apply(new RequestOptions().circleCrop()).into(imgProfile);
                                 playerName = inflated.findViewById(R.id.name);
                                 discordId = inflated.findViewById(R.id.discordId);
                                 referal.setText("YRAL" + appConstant.getId());
                                 TextInputEditText phoneNumber = inflated.findViewById(R.id.phoneNumber);
                                 saveProf = inflated.findViewById(R.id.save);
-                                playerName.setText(AppController.getInstance().mySnapShort.child(AppConstant.userName).getValue() == null ? "" : AppController.getInstance().mySnapShort.child(AppConstant.userName).getValue() + "");
+                                playerName.setText(sharedPreferences.getString(AppConstant.userName, "Player"));
                                 phoneNumber.setText(appConstant.getPhoneNumber());
-                                discordId.setText(AppController.getInstance().mySnapShort.child(AppConstant.discordId).exists() ? AppController.getInstance().mySnapShort.child(AppConstant.discordId).getValue() + "" : "");
+                                Glide.with(MainActivity.this).load(sharedPreferences.getString(AppConstant.myPicUrl, "")).placeholder(R.drawable.profile_icon).apply(new RequestOptions().circleCrop()).into(imgProfile);
+                                discordId.setText(sharedPreferences.getString(AppConstant.discordId, ""));
                                 saveProf.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
@@ -535,6 +542,20 @@ public class MainActivity extends AppCompatActivity {
                                 JSONObject jObj = ja_data.getJSONObject(i);
                                 popularModels.add(new PopularModel(jObj.getString("url"), jObj.getString("name"), jObj.getString("amount")));
                             }
+                            Log.e("popularModels-//",popularModels.size()+"");
+                            Collections.sort(popularModels, new Comparator<PopularModel>() {
+                                @Override
+                                public int compare(PopularModel o1, PopularModel o2) {
+                                    return Integer.compare(Integer.parseInt(o2.getTotal_coins()), Integer.parseInt(o1.getTotal_coins()));
+                                }
+                            });
+                            Log.e("popularModels-/-/",popularModels.size()+"");
+//                            if(popularModels.size() > 10) {
+//                                 for (int i = 0; i < popularModels.size(); i++) {
+//                                     popularModels.remove(popularModels.get(i));
+//                                     Log.e("popularModels//",popularModels.size()+"");
+//                                 }
+//                             }
                             popularAdapter.notifyDataSetChanged();
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -731,7 +752,7 @@ public class MainActivity extends AppCompatActivity {
                 params.put("type", payType);
                 params.put("paymentType", paymentType);
                 params.put("time", (System.currentTimeMillis()) + "");
-                params.put("userName", AppController.getInstance().mySnapShort.child(AppConstant.userName).getValue() == null ? "player" : AppController.getInstance().mySnapShort.child(AppConstant.userName).getValue() + "");
+                params.put("userName", sharedPreferences.getString(AppConstant.userName, ""));
                 return params;
             }
 
@@ -899,14 +920,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void saveToProfile(String imageUrl) {
-        FirebaseDatabase.getInstance().getReference(AppConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.userName).setValue(playerName.getText().toString());
-        FirebaseDatabase.getInstance().getReference(AppConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.discordId).setValue(discordId.getText().toString());
-        SharedPreferences sharedPreferences = getSharedPreferences(AppConstant.AppName, 0);
+        SharedPreferences sharedPreferences = getSharedPreferences(new AppConstant(this).getId(), 0);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(AppConstant.userName, playerName.getText().toString());
         editor.putString(AppConstant.discordId, discordId.getText().toString());
         if (imageUrl != null) {
-            FirebaseDatabase.getInstance().getReference(AppConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.myPicUrl).setValue(imageUrl);
+//            FirebaseDatabase.getInstance().getReference(AppConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.myPicUrl).setValue(imageUrl);
             editor.putString(AppConstant.myPicUrl, imageUrl);
             picturePath = null;
         }
@@ -924,17 +943,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (AppController.getInstance().mySnapShort != null && recyclerviewTeam != null) {
-            teamModel.clear();
-            for (DataSnapshot snapshot : AppController.getInstance().mySnapShort.child(AppConstant.team).getChildren()) {
-                SharedPreferences prefs = getSharedPreferences(snapshot.getKey(), Context.MODE_PRIVATE);
-                teamModel.add(new UserListModel(prefs.getString(AppConstant.teamName, null),
-                        prefs.getString(AppConstant.myPicUrl, null),
-                        snapshot.getKey(),
-                        prefs.getStringSet(AppConstant.teamMember, null)));
-            }
-            userAdapter.notifyDataSetChanged();
-        }
+//        if (AppController.getInstance().mySnapShort != null && recyclerviewTeam != null) {
+//            teamModel.clear();
+//            for (DataSnapshot snapshot : AppController.getInstance().mySnapShort.child(AppConstant.team).getChildren()) {
+//                SharedPreferences prefs = getSharedPreferences(snapshot.getKey(), Context.MODE_PRIVATE);
+//                teamModel.add(new UserListModel(prefs.getString(AppConstant.teamName, null),
+//                        prefs.getString(AppConstant.myPicUrl, null),
+//                        snapshot.getKey(),
+//                        prefs.getStringSet(AppConstant.teamMember, null)));
+//            }
+//            userAdapter.notifyDataSetChanged();
+//        }
 
         //  setPackagename();
     }
@@ -1248,14 +1267,14 @@ public class MainActivity extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.e("response",response);
+                        Log.e("response", response);
                         progressDialog.cancel();
                         saveToProfile(null);
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                  progressDialog.cancel();
+                progressDialog.cancel();
                 Toast.makeText(MainActivity.this, "Something went wrong try again later ", Toast.LENGTH_SHORT).show();
             }
         }) {
@@ -1391,7 +1410,7 @@ public class MainActivity extends AppCompatActivity {
             cursor.close();
             try {
                 selectedImage = getBitmapFromUri(data.getData());
-                edit.setImageResource(R.drawable.ic_check);
+                saveProf.setImageResource(R.drawable.ic_check);
                 Glide.with(this).load(picturePath).apply(new RequestOptions().circleCrop()).into(imgProfile);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -1436,7 +1455,7 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
         VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST,
                 "http://y-ral-gaming.com/admin/api/profile_pic.php?" +
-                        "userid=" + appConstant.getId() + "&&name=" + playerName.getText().toString()+ "&&discordId=" + discordId.getText().toString()
+                        "userid=" + appConstant.getId() + "&&name=" + playerName.getText().toString() + "&&discordId=" + discordId.getText().toString()
                 ,
                 new Response.Listener<NetworkResponse>() {
                     @Override
@@ -1487,12 +1506,10 @@ public class MainActivity extends AppCompatActivity {
         VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST,
                 "http://y-ral-gaming.com/admin/api/upload.php?" +
                         "userid=" + appConstant.getUserId() + "&&time=" + et_datetime.getText().toString() +
-                        "&&profile=" + AppController.getInstance().mySnapShort.child(AppConstant.myPicUrl).getValue() +
+                        "&&profile=" + sharedPreferences.getString(AppConstant.myPicUrl, "") +
                         "&&upi=" + upi.getText().toString() +
-                        "&&discord=" + AppController.getInstance().mySnapShort.child(AppConstant.discordId).getValue()
-                        + "&&name=" + AppController.getInstance().mySnapShort.child(AppConstant.userName).getValue()
-
-                ,
+                        "&&discord=" + sharedPreferences.getString(AppConstant.discordId, "")
+                        + "&&name=" + sharedPreferences.getString(AppConstant.userName, ""),
                 new Response.Listener<NetworkResponse>() {
                     @Override
                     public void onResponse(NetworkResponse response) {
@@ -1939,7 +1956,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
         Intent startMain = new Intent(Intent.ACTION_MAIN);
         startMain.addCategory(Intent.CATEGORY_HOME);
         startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

@@ -38,7 +38,7 @@ public class ProFileActivity extends AppCompatActivity {
         setContentView(R.layout.profile_activity);
         FillCustomGradient(findViewById(R.id.imgs));
         txt = findViewById(R.id.info);
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        recyclerView =  findViewById(R.id.recycler_view);
         mAdapter = new ytModelsAdapter(this,ytModelList);
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 1, GridLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(mLayoutManager);

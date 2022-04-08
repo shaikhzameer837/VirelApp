@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
@@ -371,6 +372,10 @@ public class SigninActivity extends AppCompatActivity {
     }
 
     private void registerdOnServer() {
+        if(token.equals("")){
+            Toast.makeText(SigninActivity.this,"Something went wrong try again later",Toast.LENGTH_LONG).show();
+            return;
+        }
         ProgressDialog dialog = new ProgressDialog(this);
         dialog.setMessage("Registering for App, please wait.");
         dialog.show();
@@ -387,7 +392,16 @@ public class SigninActivity extends AppCompatActivity {
                                 String package_id = obj.getString("package_id");
                                 String expiry_date = obj.getString("expiry_date");
                                 String referal = obj.getString("referal");
+                                String discord = obj.getString("discord");
+                                String name = obj.getString("name");
+                                String profile = obj.getString("profile");
                                 String uniqueId = obj.getString("id");
+                                SharedPreferences sharedPreferences = getSharedPreferences(uniqueId, 0);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putString(AppConstant.userName, name);
+                                editor.putString(AppConstant.discordId, discord);
+                                editor.putString(AppConstant.myPicUrl, profile);
+                                editor.apply();
                                 HashMap<String, Object> login = new HashMap<>();
                                 HashMap<String, Object> realTime = new HashMap<>();
                                 AppController.getInstance().userId = uniqueId;
