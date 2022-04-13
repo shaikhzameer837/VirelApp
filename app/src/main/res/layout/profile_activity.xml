@@ -1,33 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-<ImageView android:id="@+id/profPic"
-    android:layout_width="match_parent"
-    android:src="@drawable/d"
-    android:scaleType="centerCrop"
-    android:layout_height="match_parent"/>
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <ImageView android:id="@+id/imgs"
+    <LinearLayout
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:src="@drawable/grad"
+        android:layout_height="45dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+        <ImageView android:id="@+id/back"
+            android:layout_width="wrap_content"
+            android:src="@drawable/arrow"
+            android:rotation="-180"
+            android:layout_height="wrap_content"/>
+        <TextView android:text="Profile"
+            android:layout_width="match_parent"
+            android:textColor="@color/black"
+            android:layout_marginLeft="20dp"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/profPic"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:layout_marginTop="10dp"
+        android:contentDescription="image_desc"
+        android:layout_gravity="center_horizontal"
         android:scaleType="centerCrop"
-        android:layout_height="match_parent"/>
-    <TextView android:id="@+id/info"
+        android:src="@drawable/game_avatar"
+        android:transitionName="fade" />
+    <TextView android:id="@+id/name"
         android:layout_width="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:textColor="@color/colorPrimary"
         android:textStyle="bold"
-        android:layout_marginLeft="10dp"
-        android:layout_above="@+id/recycler_view"
-        android:textSize="21sp"
+        android:text=""
+        android:layout_gravity="center_horizontal"
+        android:textColor="@color/black"
+        android:layout_marginTop="10dp"
         android:layout_height="wrap_content"/>
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
-        android:layout_width="match_parent"
-        android:layout_alignParentBottom="true"
-        android:layout_height="wrap_content"
-        android:scrollbars="vertical" />
+   <TextView android:id="@+id/bio"
+        android:layout_width="wrap_content"
+         android:text=""
+        android:layout_gravity="center_horizontal"
+        android:textColor="@color/black"
+        android:layout_marginTop="10dp"
+        android:layout_height="wrap_content"/>
 
-</RelativeLayout>
+    <TextView android:id="@+id/edit_profile"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginStart="10dp"
+        android:visibility="gone"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/border_round"
+        android:gravity="center"
+        android:text="Edit Profile"
+        android:textColor="@color/black" />
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="match_parent"
+        android:layout_marginTop="10dp"
+        android:layout_height="40dp"/>
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</LinearLayout>

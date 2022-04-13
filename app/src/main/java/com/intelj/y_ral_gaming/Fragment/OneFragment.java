@@ -215,6 +215,7 @@ public class OneFragment extends Fragment {
                 params.put("user_id", new AppConstant(getActivity()).getId());
                 int versionCode = BuildConfig.VERSION_CODE;
                 params.put("version", versionCode + "");
+                params.put("debug", BuildConfig.DEBUG+"");
                 params.put("match_id", date);
                 params.put("game_type", title);
                 return params;

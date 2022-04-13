@@ -44,7 +44,7 @@
         android:layout_below="@+id/lin"
         android:layout_marginLeft="15dp"
         android:layout_marginTop="10dp"
-        android:src="@drawable/profile_icon" />
+        android:src="@drawable/game_avatar" />
 
     <com.google.android.material.textfield.TextInputLayout
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -59,11 +59,11 @@
         android:layout_marginRight="15dp">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/bio"
+            android:id="@+id/bios"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:enabled="false"
-            android:hint="Bio"
+            android:hint="Bios"
             android:textSize="14sp" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -148,16 +148,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
-            android:visibility="gone"
             android:layout_marginTop="10dp"
             android:layout_marginRight="15dp">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/phoneNumber"
+                android:id="@+id/bio"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:enabled="false"
-                android:hint="your Name"
+                android:hint="Bio (About Me)"
                 android:textSize="14sp" />
         </com.google.android.material.textfield.TextInputLayout>
 

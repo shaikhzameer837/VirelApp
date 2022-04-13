@@ -1,10 +1,14 @@
 package com.intelj.y_ral_gaming.Utils;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Build;
+import android.provider.ContactsContract;
 import android.provider.Settings;
 import android.text.InputType;
 import android.util.Log;
@@ -41,6 +45,7 @@ public class AppConstant {
             applyMatches = "applyMatches",
             title = "title",
             user = "user",
+            contact = "contact",
             package_id = "package_id",
             package_name = "package_name",
             expiry_date = "expiry_date",
@@ -80,6 +85,7 @@ public class AppConstant {
             realTime = "realTime",
             paymentHistory = "phist",
             discordId = "discordId",
+            bio = "bio",
             pubgId = "pubgId",
             youtubeApiKey = "AIzaSyBQiqtYCe51DtHvGhJOjO20Vv9Y_uzRyks",
             splashscreen = "splashscreen",
@@ -152,19 +158,49 @@ public class AppConstant {
         }
     }
 
-    public void saveLogin(String user_id, String _phoneNumber, int _coin, String _countryCode) {
+    public void saveLogin(String user_id) {
         setSharedPref();
-        myInfo = _context.getSharedPreferences(userId, Context.MODE_PRIVATE);
         sharedPreferences.edit().putBoolean(login, true).apply();
         sharedPreferences.edit().putString(userId, user_id).apply();
-        myInfo.edit().putInt(coin, _coin).apply();
-        myInfo.edit().putString(countryCode, _countryCode).apply();
-        myInfo.edit().putString(phoneNumber, _phoneNumber).apply();
+    }
+
+    public String getCountryCode() {
+        myInfo = _context.getSharedPreferences(getId(), Context.MODE_PRIVATE);
+        return myInfo.getString(countryCode, "");
+    }
+
+    public void saveUserInfo(String phoneNum, String userid, String profile, String name, String _countryCode) {
+        SharedPreferences userInfo = _context.getSharedPreferences(userid, Context.MODE_PRIVATE);
+        userInfo.edit().putString(id, userid).apply();
+        userInfo.edit().putString(myPicUrl, profile).apply();
+        userInfo.edit().putString(phoneNumber, phoneNum).apply();
+        if (name != null)
+            userInfo.edit().putString(userName, name).apply();
+        userInfo.edit().putString(countryCode, _countryCode).apply();
+    }
+
+    public String getContactName(String phoneNumber) {
+        ContentResolver cr = _context.getContentResolver();
+        Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
+        Cursor cursor = cr.query(uri, new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME}, null, null, null);
+        if (cursor == null) {
+            return null;
+        }
+        String contactName = phoneNumber;
+        if (cursor.moveToFirst()) {
+            contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
+        }
+
+        if (cursor != null && !cursor.isClosed()) {
+            cursor.close();
+        }
+
+        return contactName;
     }
 
     public void savePackage(String packageId, String expiryDate, String uniqueId, String referal) {
         setSharedPref();
-        myInfo = _context.getSharedPreferences(userId, Context.MODE_PRIVATE);
+        myInfo = _context.getSharedPreferences(getId(), Context.MODE_PRIVATE);
         sharedPreferences.edit().putString(package_id, packageId).apply();
         sharedPreferences.edit().putString(expiry_date, expiryDate).apply();
         sharedPreferences.edit().putString(referal_id, referal).apply();
@@ -195,43 +231,6 @@ public class AppConstant {
                 setView(amountText);
         builder.create().show();
     }
-
-    public void saveUserInfo(Context context, DataSnapshot childDataSnap) {
-        SharedPreferences sharedpreferences = context.getSharedPreferences(childDataSnap.getKey(), Context.MODE_PRIVATE);
-        SharedPreferences.Editor editors = sharedpreferences.edit();
-        editors.putString(AppConstant.userName, childDataSnap.child(AppConstant.pinfo).child(AppConstant.userName).getValue() + "");
-        editors.putString(AppConstant.phoneNumber, childDataSnap.child(AppConstant.phoneNumber).getValue() + "");
-        editors.putString(AppConstant.myPicUrl, childDataSnap.child(AppConstant.pinfo).child(AppConstant.myPicUrl).getValue() + "");
-        editors.putString(AppConstant.discordId, childDataSnap.child(AppConstant.pinfo).child(AppConstant.discordId).getValue() + "");
-        for (Map.Entry<String, Boolean> entry : AppController.getInstance().gameNameHashmap.entrySet()) {
-            editors.putString(entry.getKey(), childDataSnap.child(AppConstant.pinfo).child(entry.getKey()).getValue() + "");
-        }
-        editors.apply();
-    }
-
-    public void saveSlot(String _uniqueId) {
-        setSharedPref();
-        sharedPreferences.edit().putString(saveYTid, _uniqueId).apply();
-    }
-
-    public void savebooking(long booking) {
-        setSharedPref();
-        sharedPreferences.edit().putLong(bookingid, booking).apply();
-    }
-
-    public Long getbooking() {
-        setSharedPref();
-        return sharedPreferences.getLong(bookingid, 0);
-    }
-   public String getReferal() {
-        setSharedPref();
-        return sharedPreferences.getString(referal_id, "");
-    }
-    public void setReferal() {
-        setSharedPref();
-        sharedPreferences.edit().putString(referal_id, "").apply();
-    }
-
 
     public String getDataFromShared(String param, String value) {
         setSharedPref();
@@ -279,8 +278,13 @@ public class AppConstant {
     }
 
     public String getPhoneNumber() {
-        myInfo = _context.getSharedPreferences(AppController.getInstance().userId, Context.MODE_PRIVATE);
+        myInfo = _context.getSharedPreferences(getId(), Context.MODE_PRIVATE);
         return myInfo.getString(phoneNumber, "");
+    }
+
+    public void setPhoneNumber(String phoneN) {
+        myInfo = _context.getSharedPreferences(getId(), Context.MODE_PRIVATE);
+        myInfo.edit().putString(phoneNumber, phoneN).apply();
     }
 
     public boolean getFriendCheck() {

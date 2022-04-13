@@ -1,21 +1,15 @@
 package com.intelj.y_ral_gaming.Activity;
 
-import static android.app.Notification.DEFAULT_SOUND;
-import static android.app.Notification.DEFAULT_VIBRATE;
-
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -26,8 +20,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -35,22 +27,22 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.ParcelFileDescriptor;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.text.ClipboardManager;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.transition.Fade;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.ViewStub;
 import android.view.Window;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -70,10 +62,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityOptionsCompat;
-import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
@@ -82,7 +72,6 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import com.android.volley.AuthFailureError;
@@ -103,16 +92,13 @@ import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerFragment;
@@ -121,8 +107,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -132,17 +118,12 @@ import com.intelj.y_ral_gaming.Adapter.PayMentAdapter;
 import com.intelj.y_ral_gaming.Adapter.PopularAdapter;
 import com.intelj.y_ral_gaming.Adapter.RankAdapter;
 import com.intelj.y_ral_gaming.AppController;
-import com.intelj.y_ral_gaming.BuildConfig;
 import com.intelj.y_ral_gaming.ComingSoon;
-import com.intelj.y_ral_gaming.CustomPagerAdapter;
+import com.intelj.y_ral_gaming.ContactListModel;
 import com.intelj.y_ral_gaming.DatabaseHelper;
-import com.intelj.y_ral_gaming.FirebaseFCMServices;
 import com.intelj.y_ral_gaming.Fragment.BottomSheetDilogFragment;
 import com.intelj.y_ral_gaming.Fragment.OneFragment;
-import com.intelj.y_ral_gaming.GameItem;
-import com.intelj.y_ral_gaming.MatchAdapter;
 import com.intelj.y_ral_gaming.NotificationAdapter;
-import com.intelj.y_ral_gaming.PaidScrims;
 import com.intelj.y_ral_gaming.PopularModel;
 import com.intelj.y_ral_gaming.R;
 import com.intelj.y_ral_gaming.SigninActivity;
@@ -152,7 +133,6 @@ import com.intelj.y_ral_gaming.VolleyMultipartRequest;
 import com.intelj.y_ral_gaming.model.NotificationModel;
 import com.intelj.y_ral_gaming.model.PaymentHistoryModel;
 import com.intelj.y_ral_gaming.model.UserListModel;
-import com.intelj.y_ral_gaming.project.MoviesAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -166,9 +146,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -180,27 +159,24 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager gameViewpager;
     BottomNavigationView bottomNavigation;
     private TabLayout tabLayout;
-    TextView timeLeft, textView, coins;
+    TextView textView, coins;
     EditText ign, igid;
-    private RecyclerView recyclerView, rv_popular;
+    private RecyclerView recyclerView, rv_popular, rv_contact;
     View inflated;
     int RESULT_LOAD_IMAGE = 9;
     int PROFILE_IMAGE = 11;
     ImageView imgProfile, saveProf, edit;
     String picturePath = null;
-    TextInputEditText playerName, discordId;
+    TextView playerName;
+    TextInputEditText discordId;
     private Uri filePath = null;
-    private DatabaseHelper db;
     AlertDialog dialog;
-    //private NavigationView navigationView;
-    //private DrawerLayout drawer;
     public static final int PERMISSIONS_REQUEST_READ_CONTACTS = 15;
     FirebaseStorage storage;
     StorageReference storageReference;
     ProgressDialog progressDialog;
     int oldId;
     String amount = "0";
-    private TextView package_name;
     ImageView imageView;
     private EditText et_datetime, upi;
     private AdView mAdView;
@@ -212,6 +188,15 @@ public class MainActivity extends AppCompatActivity {
     PopularAdapter popularAdapter;
     private ShimmerFrameLayout shimmerFrameLayout;
     SharedPreferences sharedPreferences;
+    ArrayList<UserListModel> teamModel;
+    ArrayList<ContactListModel> contactModel;
+    MemberListAdapter userAdapter;
+    ContactListAdapter contactListAdapter;
+    RecyclerView recyclerviewTeam;
+    private static final int REQUEST = 112;
+    HashMap<String, String> contactArrayList = new HashMap<>();
+    SharedPreferences shd;
+    HashSet<String> originalContact = new HashSet<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -222,12 +207,23 @@ public class MainActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences(appConstant.getId(), 0);
         if (appConstant.checkLogin() && sharedPreferences.getString(AppConstant.userName, "").equals("")) {
             startActivity(new Intent(MainActivity.this, EditProfile.class));
+            return;
         }
         setContentView(R.layout.activity_main);
+        imgProfile = findViewById(R.id.imgs);
+        Fade fade = new Fade();
+        View decor = getWindow().getDecorView();
+
+        fade.excludeTarget(decor.findViewById(R.id.action_bar_container), true);
+        fade.excludeTarget(android.R.id.statusBarBackground, true);
+        fade.excludeTarget(android.R.id.navigationBarBackground, true);
+
+        getWindow().setEnterTransition(fade);
+
+        getWindow().setExitTransition(fade);
         AppController.getInstance().getGameName();
         AppController.getInstance().getTournamentTime();
-        //drawer = findViewById(R.id.drawer_layout);
-        //navigationView = findViewById(R.id.nav_view_drawer);
+
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
                 new IntentFilter("custom-event-name"));
         //setUpNavigationView();
@@ -303,7 +299,6 @@ public class MainActivity extends AppCompatActivity {
         final ViewStub stub = findViewById(R.id.layout_stub);
         stub.setLayoutResource(R.layout.game_slot);
         Log.e("appCon", appConstant.getUserId());
-        db = new DatabaseHelper(this, "notifications");
         inflated = stub.inflate();
 //        MobileAds.initialize(this, new OnInitializationCompleteListener() {
 //            @Override
@@ -399,7 +394,6 @@ public class MainActivity extends AppCompatActivity {
 //        getGameName();
 //        openTopSheetDialog(roomPassword);
         setFirstView();
-        timeLeft = findViewById(R.id.timeLeft);
         oldId = bottomNavigation.getSelectedItemId();
         BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -441,25 +435,83 @@ public class MainActivity extends AppCompatActivity {
                                 inflateView(R.layout.history);
                                 showHistory(inflated);
                                 return true;
-                            case R.id.profile:
-                                inflateView(R.layout.edit_profile);
-                                imgProfile = inflated.findViewById(R.id.imgs);
-                                package_name = inflated.findViewById(R.id.amount);
-                                TextInputEditText referal = inflated.findViewById(R.id.referal);
-                                referal.setOnClickListener(new View.OnClickListener() {
+                            case R.id.chat:
+                                inflateView(R.layout.contacts);
+                                shd = getSharedPreferences(AppConstant.userId, MODE_PRIVATE);
+                                rv_contact = inflated.findViewById(R.id.rv_contact);
+//                                inflated.findViewById(R.id.refresh).setOnClickListener(new View.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(View v) {
+//                                        if (Build.VERSION.SDK_INT >= 23) {
+//                                            String[] PERMISSIONS = {android.Manifest.permission.READ_CONTACTS};
+//                                            if (!hasPermissions(MainActivity.this, PERMISSIONS)) {
+//                                                ActivityCompat.requestPermissions(MainActivity.this, PERMISSIONS, REQUEST);
+//                                            } else {
+//                                                new readContactTask().execute();
+//                                            }
+//                                        } else {
+//                                            new readContactTask().execute();
+//                                        }
+//                                    }
+//                                });
+//                                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(MainActivity.this);
+//                                rv_contact.setLayoutManager(mLayoutManager);
+//                                contactModel = new ArrayList<>();
+//                                Set<String> set = shd.getStringSet(AppConstant.contact, null);
+//                                if (set != null) {
+//                                    for (String s : set) {
+//                                        SharedPreferences userInfo = getSharedPreferences(s, Context.MODE_PRIVATE);
+//                                        contactModel.add(new ContactListModel(userInfo.getString(AppConstant.myPicUrl, ""),appConstant.getContactName(userInfo.getString(AppConstant.phoneNumber, "")),  userInfo.getString(AppConstant.id, "")));
+//                                    }
+//                                    inflated.findViewById(R.id.la_contact).setVisibility(View.GONE);
+//                                }else{
+//                                    if (Build.VERSION.SDK_INT >= 23) {
+//                                        String[] PERMISSIONS = {android.Manifest.permission.READ_CONTACTS};
+//                                        if (!hasPermissions(MainActivity.this, PERMISSIONS)) {
+//                                            ActivityCompat.requestPermissions(MainActivity.this, PERMISSIONS, REQUEST);
+//                                        } else {
+//                                            new readContactTask().execute();
+//                                        }
+//                                    } else {
+//                                        new readContactTask().execute();
+//                                    }
+//                                }
+                                contactListAdapter = new ContactListAdapter(MainActivity.this, contactModel);
+                                rv_contact.setAdapter(contactListAdapter);
+                                rv_contact.addOnItemTouchListener(new RecyclerTouchListener(MainActivity.this, recyclerviewTeam, new RecyclerTouchListener.ClickListener() {
                                     @Override
-                                    public void onClick(View v) {
-                                        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
-                                            android.text.ClipboardManager clipboard = (android.text.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                                            clipboard.setText(referal.getText().toString());
-                                        } else {
-                                            android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                                            android.content.ClipData clip = android.content.ClipData.newPlainText("Copied Text", referal.getText().toString());
-                                            clipboard.setPrimaryClip(clip);
-                                        }
-                                        Toast.makeText(MainActivity.this, "Referal code copied", Toast.LENGTH_LONG).show();
+                                    public void onClick(View view, int position) {
+                                        Intent intent  = new Intent(MainActivity.this, ProFileActivity.class);
+                                        String transitionName = "fade";
+                                        View transitionView = view.findViewById(R.id.profile);
+                                        ViewCompat.setTransitionName(transitionView, transitionName);
+
+                                        ActivityOptionsCompat options = ActivityOptionsCompat.
+                                                makeSceneTransitionAnimation(MainActivity.this, transitionView, transitionName);
+                                        intent.putExtra("userid", contactModel.get(position).getUserid());
+                                        startActivity(intent, options.toBundle());
                                     }
-                                });
+
+                                    @Override
+                                    public void onLongClick(View view, int position) {
+
+                                    }
+                                }));
+//                                TextInputEditText referal = inflated.findViewById(R.id.referal);
+//                                referal.setOnClickListener(new View.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(View v) {
+//                                        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
+//                                            android.text.ClipboardManager clipboard = (android.text.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+//                                            clipboard.setText(referal.getText().toString());
+//                                        } else {
+//                                            android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+//                                            android.content.ClipData clip = android.content.ClipData.newPlainText("Copied Text", referal.getText().toString());
+//                                            clipboard.setPrimaryClip(clip);
+//                                        }
+//                                        Toast.makeText(MainActivity.this, "Referal code copied", Toast.LENGTH_LONG).show();
+//                                    }
+//                                });
 //                                inflated.findViewById(R.id.withdraw).setOnClickListener(new View.OnClickListener() {
 //                                    @Override
 //                                    public void onClick(View v) {
@@ -468,39 +520,27 @@ public class MainActivity extends AppCompatActivity {
 //                                });
 //                                getUserAmount();
 //                                //setPackagename();
-                                imgProfile.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        ActivityCompat.requestPermissions(MainActivity.this,
-                                                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                                                1);
-                                    }
-                                });
 
-                                playerName = inflated.findViewById(R.id.name);
-                                discordId = inflated.findViewById(R.id.discordId);
-                                referal.setText("YRAL" + appConstant.getId());
-                                TextInputEditText phoneNumber = inflated.findViewById(R.id.phoneNumber);
-                                saveProf = inflated.findViewById(R.id.save);
-                                playerName.setText(sharedPreferences.getString(AppConstant.userName, "Player"));
-                                phoneNumber.setText(appConstant.getPhoneNumber());
-                                Glide.with(MainActivity.this).load(sharedPreferences.getString(AppConstant.myPicUrl, "")).placeholder(R.drawable.profile_icon).apply(new RequestOptions().circleCrop()).into(imgProfile);
-                                discordId.setText(sharedPreferences.getString(AppConstant.discordId, ""));
-                                saveProf.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        if (!discordId.isEnabled()) {
-                                            discordId.setEnabled(true);
-                                            playerName.setEnabled(true);
-                                            saveProf.setImageResource(R.drawable.check);
-                                            return;
-                                        }
-                                        if (picturePath == null)
-                                            updateName();
-                                        else
-                                            uploadProfile();
-                                    }
-                                });
+//                                discordId = inflated.findViewById(R.id.discordId);
+//                                TextInputEditText phoneNumber = inflated.findViewById(R.id.phoneNumber);
+//                                saveProf = inflated.findViewById(R.id.save);
+//                                phoneNumber.setText(appConstant.getPhoneNumber());
+//                                discordId.setText(sharedPreferences.getString(AppConstant.discordId, ""));
+//                                saveProf.setOnClickListener(new View.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(View v) {
+//                                        if (!discordId.isEnabled()) {
+//                                            discordId.setEnabled(true);
+//                                            playerName.setEnabled(true);
+//                                            saveProf.setImageResource(R.drawable.check);
+//                                            return;
+//                                        }
+//                                        if (picturePath == null)
+//                                            updateName();
+//                                        else
+//                                            uploadProfile();
+//                                    }
+//                                });
                                 return true;
                         }
                         return false;
@@ -525,6 +565,126 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    class readContactTask extends AsyncTask<Void, Integer, String> {
+        String TAG = getClass().getSimpleName();
+
+        protected void onPreExecute() {
+            super.onPreExecute();
+            contactModel.clear();
+            Log.d(TAG + " PreExceute", "On pre Exceute......");
+        }
+
+        protected String doInBackground(Void... arg0) {
+            readContacts();
+            return "You are at PostExecute";
+        }
+
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            returnPhone = 0;
+            originalContact.clear();
+            for (String phoneNo : contactArrayList.keySet()) {
+                serverContact(phoneNo, contactArrayList.get(phoneNo));
+            }
+            inflated.findViewById(R.id.la_contact).setVisibility(View.GONE);
+        }
+    }
+    int returnPhone = 0;
+    public void serverContact(String number, String original) {
+        Log.e("userNum",number);
+        DatabaseReference mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        Query query = mFirebaseDatabaseReference.child("users").orderByChild("phoneNumber").equalTo(number);
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                returnPhone++;
+                if (dataSnapshot != null) {
+                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                        Log.e("number//", original);
+                        Log.e("number//---", postSnapshot.getKey());
+                        originalContact.add(postSnapshot.getKey());
+                        appConstant.saveUserInfo(original, postSnapshot.getKey(), "http://y-ral-gaming.com/admin/api/images/" + postSnapshot.getKey() + ".png?u=" + (System.currentTimeMillis() / 1000), null,"");
+                        contactModel.add(new ContactListModel("http://y-ral-gaming.com/admin/api/images/" + postSnapshot.getKey() + ".png?u=" + (System.currentTimeMillis() / 1000),appConstant.getContactName(postSnapshot.child(AppConstant.phoneNumber).getValue(String.class)),  postSnapshot.getKey()));
+                        contactListAdapter.notifyDataSetChanged();
+                    }
+                }
+                if(contactArrayList.size() == returnPhone){
+                    SharedPreferences.Editor setEditor = shd.edit();
+                    setEditor.putStringSet(AppConstant.contact, originalContact);
+                    setEditor.apply();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+
+    public void readContacts() {
+        contactArrayList.clear();
+        ContentResolver cr = getContentResolver();
+        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
+                null, null, null, null);
+        if ((cur != null ? cur.getCount() : 0) > 0) {
+            while (cur != null && cur.moveToNext()) {
+                String id = cur.getString(
+                        cur.getColumnIndex(ContactsContract.Contacts._ID));
+                String name = cur.getString(cur.getColumnIndex(
+                        ContactsContract.Contacts.DISPLAY_NAME));
+
+                if (cur.getInt(cur.getColumnIndex(
+                        ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0) {
+                    Cursor pCur = cr.query(
+                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                            null,
+                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
+                            new String[]{id}, null);
+                    while (pCur.moveToNext()) {
+                        String phoneNo = pCur.getString(pCur.getColumnIndex(
+                                ContactsContract.CommonDataKinds.Phone.NUMBER)).replace(" ", "");
+                        if (phoneNo.length() > 8) {
+                            String original = phoneNo;
+                            if (phoneNo.startsWith("0"))
+                                phoneNo = phoneNo.substring(1);
+                            if (!phoneNo.startsWith("+"))
+                                phoneNo = appConstant.getCountryCode() + phoneNo;
+                            Log.i("Phone Number: ", appConstant.getCountryCode());
+                            contactArrayList.put(phoneNo, original);
+                        }
+
+                    }
+                    pCur.close();
+                }
+            }
+        }
+        if (cur != null) {
+            cur.close();
+        }
+    }
+
+
+
+    public static boolean isNumeric(String str) {
+        for (char c : str.toCharArray()) {
+            if (!Character.isDigit(c)) return false;
+        }
+        return true;
+    }
+
+    private static boolean hasPermissions(Context context, String... permissions) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     private void getPopularFace() {
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = "http://y-ral-gaming.com/admin/api/popular.php";
@@ -540,16 +700,15 @@ public class MainActivity extends AppCompatActivity {
                             JSONArray ja_data = json.getJSONArray("info");
                             for (int i = 0; i < ja_data.length(); i++) {
                                 JSONObject jObj = ja_data.getJSONObject(i);
-                                popularModels.add(new PopularModel(jObj.getString("url"), jObj.getString("name"), jObj.getString("amount")));
+                                appConstant.saveUserInfo("",jObj.getString("userid"), "http://y-ral-gaming.com/admin/api/images/" + jObj.getString("userid") + ".png?u=" + (System.currentTimeMillis() / 1000), jObj.getString("name"),"");
+                                popularModels.add(new PopularModel(jObj.getString("url"), jObj.getString("name"), jObj.getString("amount"), jObj.getString("userid")));
                             }
-                            Log.e("popularModels-//",popularModels.size()+"");
                             Collections.sort(popularModels, new Comparator<PopularModel>() {
                                 @Override
                                 public int compare(PopularModel o1, PopularModel o2) {
                                     return Integer.compare(Integer.parseInt(o2.getTotal_coins()), Integer.parseInt(o1.getTotal_coins()));
                                 }
                             });
-                            Log.e("popularModels-/-/",popularModels.size()+"");
 //                            if(popularModels.size() > 10) {
 //                                 for (int i = 0; i < popularModels.size(); i++) {
 //                                     popularModels.remove(popularModels.get(i));
@@ -794,40 +953,40 @@ public class MainActivity extends AppCompatActivity {
         bottomSheetDialog.show();
     }
 
-    private void playYTVideo() {
-        SharedPreferences prefs = getSharedPreferences(AppConstant.AppName, MODE_PRIVATE);
-        String url = prefs.getString("url", "");
-        YouTubePlayerFragment youtubeFragment = (YouTubePlayerFragment)
-                getFragmentManager().findFragmentById(R.id.youtubeFragment);
-        youtubeFragment.initialize(AppConstant.youtubeApiKey,
-                new YouTubePlayer.OnInitializedListener() {
-                    @Override
-                    public void onInitializationSuccess(YouTubePlayer.Provider provider,
-                                                        YouTubePlayer youTubePlayer, boolean b) {
-                        System.out.println("susccess " + url);
-                        Thread thread = new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (!b) {
-                                    if (url.equals("")) {
-                                        youTubePlayer.loadPlaylist("PLFSCz7rRk_hVFGD9d25S_789spdVYLLj_");
-                                    } else {
-                                        youTubePlayer.loadVideo(url);
-                                    }
-                                }
-                            }
-                        });
-                        thread.start();
-
-                    }
-
-                    @Override
-                    public void onInitializationFailure(YouTubePlayer.Provider provider,
-                                                        YouTubeInitializationResult youTubeInitializationResult) {
-                        Log.d("onInitianFailure: ", youTubeInitializationResult.toString());
-                    }
-                });
-    }
+//    private void playYTVideo() {
+//        SharedPreferences prefs = getSharedPreferences(AppConstant.AppName, MODE_PRIVATE);
+//        String url = prefs.getString("url", "");
+//        YouTubePlayerFragment youtubeFragment = (YouTubePlayerFragment)
+//                getFragmentManager().findFragmentById(R.id.youtubeFragment);
+//        youtubeFragment.initialize(AppConstant.youtubeApiKey,
+//                new YouTubePlayer.OnInitializedListener() {
+//                    @Override
+//                    public void onInitializationSuccess(YouTubePlayer.Provider provider,
+//                                                        YouTubePlayer youTubePlayer, boolean b) {
+//                        System.out.println("susccess " + url);
+//                        Thread thread = new Thread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                if (!b) {
+//                                    if (url.equals("")) {
+//                                        youTubePlayer.loadPlaylist("PLFSCz7rRk_hVFGD9d25S_789spdVYLLj_");
+//                                    } else {
+//                                        youTubePlayer.loadVideo(url);
+//                                    }
+//                                }
+//                            }
+//                        });
+//                        thread.start();
+//
+//                    }
+//
+//                    @Override
+//                    public void onInitializationFailure(YouTubePlayer.Provider provider,
+//                                                        YouTubeInitializationResult youTubeInitializationResult) {
+//                        Log.d("onInitianFailure: ", youTubeInitializationResult.toString());
+//                    }
+//                });
+//    }
 
     Dialog Pdialog;
 
@@ -933,17 +1092,28 @@ public class MainActivity extends AppCompatActivity {
         discordId.setEnabled(false);
         playerName.setEnabled(false);
         saveProf.setImageResource(R.drawable.ic_edit);
-        Toast.makeText(MainActivity.this, "Profile Updated Susccessfully", Toast.LENGTH_LONG).show();
+        Toast.makeText(MainActivity.this, "Profile Updated Successfully", Toast.LENGTH_LONG).show();
     }
-
-    ArrayList<UserListModel> teamModel;
-    MemberListAdapter userAdapter;
-    RecyclerView recyclerviewTeam;
 
     @Override
     protected void onResume() {
         super.onResume();
-//        if (AppController.getInstance().mySnapShort != null && recyclerviewTeam != null) {
+        if (appConstant.checkLogin()) {
+            Glide.with(MainActivity.this).load(sharedPreferences.getString(AppConstant.myPicUrl, "")).placeholder(R.drawable.game_avatar).apply(new RequestOptions().circleCrop()).into(imgProfile);
+            playerName = findViewById(R.id.playerName);
+            playerName.setText(sharedPreferences.getString(AppConstant.userName, "Player"));
+        }
+        imgProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!appConstant.checkLogin()) {
+                    showBottomSheetDialog();
+                    return;
+                }
+               wayToProfile();
+            }
+        });
+        //        if (AppController.getInstance().mySnapShort != null && recyclerviewTeam != null) {
 //            teamModel.clear();
 //            for (DataSnapshot snapshot : AppController.getInstance().mySnapShort.child(AppConstant.team).getChildren()) {
 //                SharedPreferences prefs = getSharedPreferences(snapshot.getKey(), Context.MODE_PRIVATE);
@@ -958,6 +1128,14 @@ public class MainActivity extends AppCompatActivity {
         //  setPackagename();
     }
 
+    private void wayToProfile() {
+        Intent intent = new Intent(MainActivity.this, ProFileActivity.class);
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                MainActivity.this, imgProfile, ViewCompat.getTransitionName(imgProfile));
+        intent.putExtra("userid", appConstant.getId());
+        startActivity(intent, options.toBundle());
+    }
+
     private void showTeam() {
         inflated.findViewById(R.id.newTeam).setVisibility(View.GONE);
         inflated.findViewById(R.id.bott_button).setVisibility(View.GONE);
@@ -969,25 +1147,21 @@ public class MainActivity extends AppCompatActivity {
         userAdapter = new MemberListAdapter(this, teamModel, AppConstant.applyMatches);
         onResume();
         recyclerviewTeam.setAdapter(userAdapter);
-        recyclerviewTeam.addOnItemTouchListener(new RecyclerTouchListener(this, recyclerviewTeam, new RecyclerTouchListener.ClickListener() {
-            @Override
-            public void onClick(View view, int position) {
-                Intent intent = new Intent(MainActivity.this, GroupProfile.class);
-                intent.putExtra(AppConstant.team, teamModel.get(position).getTeamId());
-                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                        MainActivity.this, view.findViewById(R.id.imgs), ViewCompat.getTransitionName(view.findViewById(R.id.imgs)));
-                startActivity(intent, options.toBundle());
-            }
-
-            @Override
-            public void onLongClick(View view, int position) {
-
-            }
-        }));
+//        recyclerviewTeam.addOnItemTouchListener(new RecyclerTouchListener(this, recyclerviewTeam, new RecyclerTouchListener.ClickListener() {
+//            @Override
+//            public void onClick(View view, int position) {
+//                wayToProfile();
+//            }
+//
+//            @Override
+//            public void onLongClick(View view, int position) {
+//
+//            }
+//        }));
         inflated.findViewById(R.id.create_team).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                requestContactPermission();
+                //requestContactPermission();
             }
         });
     }
@@ -1379,6 +1553,13 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(this, "You have disabled a contacts permission", Toast.LENGTH_LONG).show();
                 }
                 break;
+            case REQUEST:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    new readContactTask().execute();
+                } else {
+                    Toast.makeText(this, "The app was not allowed to read your contact", Toast.LENGTH_LONG).show();
+                }
+                break;
         }
     }
 
@@ -1636,44 +1817,44 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void getUserAmount() {
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://y-ral-gaming.com/admin/api/get_amount.php";
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.e("tokenResponse", response);
-                        amount = response;
-                        package_name.setText("Rs " + response);
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-/*                shimmer_container.hideShimmer();
-                shimmer_container.setVisibility(View.GONE);*/
-                error.printStackTrace();
-                FirebaseCrashlytics.getInstance().recordException(error);
-            }
-        }) {
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put("user_id", appConstant.getUserId());
-                return params;
-            }
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-                params.put("Content-Type", "application/x-www-form-urlencoded");
-                return params;
-            }
-        };
-
-        queue.add(stringRequest);
-
-    }
+//    public void getUserAmount() {
+//        RequestQueue queue = Volley.newRequestQueue(this);
+//        String url = "http://y-ral-gaming.com/admin/api/get_amount.php";
+//        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+//                new Response.Listener<String>() {
+//                    @Override
+//                    public void onResponse(String response) {
+//                        Log.e("tokenResponse", response);
+//                        amount = response;
+//                        package_name.setText("Rs " + response);
+//                    }
+//                }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+///*                shimmer_container.hideShimmer();
+//                shimmer_container.setVisibility(View.GONE);*/
+//                error.printStackTrace();
+//                FirebaseCrashlytics.getInstance().recordException(error);
+//            }
+//        }) {
+//            @Override
+//            protected Map<String, String> getParams() {
+//                Map<String, String> params = new HashMap<>();
+//                params.put("user_id", appConstant.getUserId());
+//                return params;
+//            }
+//
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                Map<String, String> params = new HashMap<>();
+//                params.put("Content-Type", "application/x-www-form-urlencoded");
+//                return params;
+//            }
+//        };
+//
+//        queue.add(stringRequest);
+//
+//    }
 
 
     class ViewPagerAdapter extends FragmentStatePagerAdapter {
@@ -1779,47 +1960,47 @@ public class MainActivity extends AppCompatActivity {
                 bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
                 return;
             }
-            SharedPreferences sharedPreferences = getSharedPreferences(AppConstant.AppName, 0);
+         //   SharedPreferences sharedPreferences = getSharedPreferences(AppConstant.AppName, 0);
             // ign.setHint(intent.getStringExtra(AppConstant.title) + " in game name");
             // igid.setHint(intent.getStringExtra(AppConstant.title) + " id");
             // ign.setText(sharedPreferences.getString(intent.getStringExtra(AppConstant.title), ""));
             // igid.setText(sharedPreferences.getString(intent.getStringExtra(AppConstant.title) + "_" + AppConstant.userName, ""));
-            inflated.findViewById(R.id.edit).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (!new AppConstant(context).checkLogin()) {
-                        showBottomSheetDialog();
-                        return;
-                    }
-
-                    if (ign.isEnabled()) {
-                        // if (igid.getText().toString().trim().equals("") || ign.getText().toString().trim().equals("")) {
-                        if (ign.getText().toString().trim().equals("")) {
-                            Toast.makeText(MainActivity.this, intent.getStringExtra(AppConstant.title) + " id cannot be empty", Toast.LENGTH_LONG).show();
-                            return;
-                        }
-                        ign.setEnabled(false);
-                        igid.setEnabled(false);
-                        ign.clearFocus();
-                        edit.setImageResource(R.drawable.ic_edit);
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putString(intent.getStringExtra(AppConstant.title), ign.getText().toString());
-                        editor.putString(intent.getStringExtra(AppConstant.title) + "_" + AppConstant.userName, igid.getText().toString());
-                        editor.apply();
-                        Toast.makeText(MainActivity.this, "Id updated", Toast.LENGTH_LONG).show();
-                        FirebaseDatabase.getInstance().getReference(AppConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(intent.getStringExtra(AppConstant.title)).setValue(ign.getText().toString());
-                        FirebaseDatabase.getInstance().getReference(AppConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(intent.getStringExtra(AppConstant.title) + "_" + AppConstant.userName).setValue(igid.getText().toString());
-                    } else {
-                        edit.setImageResource(R.drawable.ic_check);
-                        ign.setEnabled(true);
-                        igid.setEnabled(true);
-                        igid.requestFocus();
-                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.showSoftInput(igid, InputMethodManager.SHOW_IMPLICIT);
-                        ign.setSelection(ign.getText().length());
-                    }
-                }
-            });
+//            inflated.findViewById(R.id.edit).setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    if (!new AppConstant(context).checkLogin()) {
+//                        showBottomSheetDialog();
+//                        return;
+//                    }
+//
+//                    if (ign.isEnabled()) {
+//                        // if (igid.getText().toString().trim().equals("") || ign.getText().toString().trim().equals("")) {
+//                        if (ign.getText().toString().trim().equals("")) {
+//                            Toast.makeText(MainActivity.this, intent.getStringExtra(AppConstant.title) + " id cannot be empty", Toast.LENGTH_LONG).show();
+//                            return;
+//                        }
+//                        ign.setEnabled(false);
+//                        igid.setEnabled(false);
+//                        ign.clearFocus();
+//                        edit.setImageResource(R.drawable.ic_edit);
+//                        SharedPreferences.Editor editor = sharedPreferences.edit();
+//                        editor.putString(intent.getStringExtra(AppConstant.title), ign.getText().toString());
+//                        editor.putString(intent.getStringExtra(AppConstant.title) + "_" + AppConstant.userName, igid.getText().toString());
+//                        editor.apply();
+//                        Toast.makeText(MainActivity.this, "Id updated", Toast.LENGTH_LONG).show();
+//                        FirebaseDatabase.getInstance().getReference(AppConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(intent.getStringExtra(AppConstant.title)).setValue(ign.getText().toString());
+//                        FirebaseDatabase.getInstance().getReference(AppConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(intent.getStringExtra(AppConstant.title) + "_" + AppConstant.userName).setValue(igid.getText().toString());
+//                    } else {
+//                        edit.setImageResource(R.drawable.ic_check);
+//                        ign.setEnabled(true);
+//                        igid.setEnabled(true);
+//                        igid.requestFocus();
+//                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+//                        imm.showSoftInput(igid, InputMethodManager.SHOW_IMPLICIT);
+//                        ign.setSelection(ign.getText().length());
+//                    }
+//                }
+//            });
 
 
             // game_id.setText(intent.getStringExtra(AppConstant.title));
@@ -1854,105 +2035,105 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private void setRoomVideo(final String roomPlan) {
-        AppController.getInstance().uploadUrl = AppConstant.live_stream + "/" + AppController.getInstance().channelId + "/" + roomPlan + "/";
-        mDatabase = FirebaseDatabase.getInstance().getReference(AppController.getInstance().uploadUrl + "room/");
-        mDatabase.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(final DataSnapshot dataSnapshot) {
-
-                Log.e("dataSnapshotss", dataSnapshot.child(AppConstant.stopTime).exists() + "");
-                if (dataSnapshot.exists()) {
-                    if (dataSnapshot.child(AppConstant.stopTime).exists()) {
-//                        Intent intent = new Intent(MainActivity.this, HelloService.class);
-//                        intent.putExtra("stopTiming", dataSnapshot.child(AppConstant.stopTime).getValue() + "");
-//                        intent.setAction(HelloService.ACTION_STOP_FOREGROUND_SERVICE);
-//                        startService(intent);
-                        try {
-                            appConstant.saveSlot("XYZ");
-                        } catch (Exception e) {
-                            e.getLocalizedMessage();
-                            FirebaseCrashlytics.getInstance().recordException(e);
-                        }
-                    } else {
-                        appConstant.saveSlot(dataSnapshot.child(AppConstant.youtubeId).getValue() + "");
-                        // if (db.getNotesCount(dataSnapshot.child(AppConstant.youtubeId).getValue() + "") == 0)
-                        //createNote(roomPlan, dataSnapshot.child(AppConstant.youtubeId).getValue() + "");
-//                        Intent intent = new Intent(MainActivity.this, HelloService.class);
-//                        intent.putExtra("roomPlan", roomPlan);
-//                        intent.setAction(HelloService.ACTION_START_FOREGROUND_SERVICE);
-//                        startService(intent);
-                        if (dataSnapshot.child(AppConstant.backgroundData).child(AppController.getInstance().userId).exists()) {
-                            HashMap<String, Object> allBackground = new HashMap<>();
-//                            for (Note allNote : backgroundDB.getAllNotes()) {
-//                                if (allNote.getNote() != null)
-//                                    allBackground.put(System.currentTimeMillis() + "", allNote.getNote());
-//                                Log.e("backgroundDB", allNote.getTimestamp());
-//                            }
-                            mDatabase.child("backgroundData").child(AppController.getInstance().userId).setValue(allBackground);
-                        }
-                    }
-//                    roomId.setText("Room Id:- " + dataSnapshot.child("roomId").getValue() + "");
-//                    roomPassword.setText("Password:- " + dataSnapshot.child("password").getValue() + "");
-//                    roomId.setVisibility(View.VISIBLE);
-//                    roomPassword.setVisibility(View.VISIBLE);
-//                    roomId.setOnTouchListener(new View.OnTouchListener() {
-//                        @Override
-//                        public boolean onTouch(View v, MotionEvent event) {
-//                            final int DRAWABLE_LEFT = 0;
-//                            if (event.getAction() == MotionEvent.ACTION_UP) {
-//                                Log.e("copyClip", roomId.getText().toString());
-//                                if (event.getRawX() >= (roomId.getLeft() - roomId.getCompoundDrawables()[DRAWABLE_LEFT].getBounds().width())) {
-//                                    setClipboard(roomId.getText().toString());
-//                                    return true;
-//                                }
-//                            }
-//                            return false;
+//    private void setRoomVideo(final String roomPlan) {
+//        AppController.getInstance().uploadUrl = AppConstant.live_stream + "/" + AppController.getInstance().channelId + "/" + roomPlan + "/";
+//        mDatabase = FirebaseDatabase.getInstance().getReference(AppController.getInstance().uploadUrl + "room/");
+//        mDatabase.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(final DataSnapshot dataSnapshot) {
+//
+//                Log.e("dataSnapshotss", dataSnapshot.child(AppConstant.stopTime).exists() + "");
+//                if (dataSnapshot.exists()) {
+//                    if (dataSnapshot.child(AppConstant.stopTime).exists()) {
+////                        Intent intent = new Intent(MainActivity.this, HelloService.class);
+////                        intent.putExtra("stopTiming", dataSnapshot.child(AppConstant.stopTime).getValue() + "");
+////                        intent.setAction(HelloService.ACTION_STOP_FOREGROUND_SERVICE);
+////                        startService(intent);
+//                        try {
+//                            appConstant.saveSlot("XYZ");
+//                        } catch (Exception e) {
+//                            e.getLocalizedMessage();
+//                            FirebaseCrashlytics.getInstance().recordException(e);
 //                        }
-//                    });
-//                    roomPassword.setOnTouchListener(new View.OnTouchListener() {
-//                        @Override
-//                        public boolean onTouch(View v, MotionEvent event) {
-//                            final int DRAWABLE_LEFT = 0;
-//                            if (event.getAction() == MotionEvent.ACTION_UP) {
-//                                Log.e("copyClip", roomPassword.getText().toString());
-//                                if (event.getRawX() >= (roomId.getLeft() - roomId.getCompoundDrawables()[DRAWABLE_LEFT].getBounds().width())) {
-//                                    setClipboard(roomPassword.getText().toString());
-//                                    return true;
-//                                }
-//                            }
-//                            return false;
+//                    } else {
+//                        appConstant.saveSlot(dataSnapshot.child(AppConstant.youtubeId).getValue() + "");
+//                        // if (db.getNotesCount(dataSnapshot.child(AppConstant.youtubeId).getValue() + "") == 0)
+//                        //createNote(roomPlan, dataSnapshot.child(AppConstant.youtubeId).getValue() + "");
+////                        Intent intent = new Intent(MainActivity.this, HelloService.class);
+////                        intent.putExtra("roomPlan", roomPlan);
+////                        intent.setAction(HelloService.ACTION_START_FOREGROUND_SERVICE);
+////                        startService(intent);
+//                        if (dataSnapshot.child(AppConstant.backgroundData).child(AppController.getInstance().userId).exists()) {
+//                            HashMap<String, Object> allBackground = new HashMap<>();
+////                            for (Note allNote : backgroundDB.getAllNotes()) {
+////                                if (allNote.getNote() != null)
+////                                    allBackground.put(System.currentTimeMillis() + "", allNote.getNote());
+////                                Log.e("backgroundDB", allNote.getTimestamp());
+////                            }
+//                            mDatabase.child("backgroundData").child(AppController.getInstance().userId).setValue(allBackground);
 //                        }
-//                    });
-                    YouTubePlayerFragment youtubeFragment = (YouTubePlayerFragment)
-                            getFragmentManager().findFragmentById(R.id.youtubeFragment);
-                    youtubeFragment.initialize(AppConstant.youtubeApiKey,
-                            new YouTubePlayer.OnInitializedListener() {
-                                @Override
-                                public void onInitializationSuccess(YouTubePlayer.Provider provider,
-                                                                    YouTubePlayer youTubePlayer, boolean b) {
-                                    // do any work here to cue video, play video, etc.
-                                    if (!b) {
-                                        youTubePlayer.loadVideo(dataSnapshot.child(AppConstant.youtubeId).getValue() + "");
-                                    }
-                                    // youTubePlayer.cueVideo(dataSnapshot.child(AppConstant.youtubeId).getValue() + "",1);
-                                }
-
-                                @Override
-                                public void onInitializationFailure(YouTubePlayer.Provider provider,
-                                                                    YouTubeInitializationResult youTubeInitializationResult) {
-                                    Log.d("onInitianFailure: ", youTubeInitializationResult.toString());
-                                }
-                            });
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-
-            }
-        });
-    }
+//                    }
+////                    roomId.setText("Room Id:- " + dataSnapshot.child("roomId").getValue() + "");
+////                    roomPassword.setText("Password:- " + dataSnapshot.child("password").getValue() + "");
+////                    roomId.setVisibility(View.VISIBLE);
+////                    roomPassword.setVisibility(View.VISIBLE);
+////                    roomId.setOnTouchListener(new View.OnTouchListener() {
+////                        @Override
+////                        public boolean onTouch(View v, MotionEvent event) {
+////                            final int DRAWABLE_LEFT = 0;
+////                            if (event.getAction() == MotionEvent.ACTION_UP) {
+////                                Log.e("copyClip", roomId.getText().toString());
+////                                if (event.getRawX() >= (roomId.getLeft() - roomId.getCompoundDrawables()[DRAWABLE_LEFT].getBounds().width())) {
+////                                    setClipboard(roomId.getText().toString());
+////                                    return true;
+////                                }
+////                            }
+////                            return false;
+////                        }
+////                    });
+////                    roomPassword.setOnTouchListener(new View.OnTouchListener() {
+////                        @Override
+////                        public boolean onTouch(View v, MotionEvent event) {
+////                            final int DRAWABLE_LEFT = 0;
+////                            if (event.getAction() == MotionEvent.ACTION_UP) {
+////                                Log.e("copyClip", roomPassword.getText().toString());
+////                                if (event.getRawX() >= (roomId.getLeft() - roomId.getCompoundDrawables()[DRAWABLE_LEFT].getBounds().width())) {
+////                                    setClipboard(roomPassword.getText().toString());
+////                                    return true;
+////                                }
+////                            }
+////                            return false;
+////                        }
+////                    });
+//                    YouTubePlayerFragment youtubeFragment = (YouTubePlayerFragment)
+//                            getFragmentManager().findFragmentById(R.id.youtubeFragment);
+//                    youtubeFragment.initialize(AppConstant.youtubeApiKey,
+//                            new YouTubePlayer.OnInitializedListener() {
+//                                @Override
+//                                public void onInitializationSuccess(YouTubePlayer.Provider provider,
+//                                                                    YouTubePlayer youTubePlayer, boolean b) {
+//                                    // do any work here to cue video, play video, etc.
+//                                    if (!b) {
+//                                        youTubePlayer.loadVideo(dataSnapshot.child(AppConstant.youtubeId).getValue() + "");
+//                                    }
+//                                    // youTubePlayer.cueVideo(dataSnapshot.child(AppConstant.youtubeId).getValue() + "",1);
+//                                }
+//
+//                                @Override
+//                                public void onInitializationFailure(YouTubePlayer.Provider provider,
+//                                                                    YouTubeInitializationResult youTubeInitializationResult) {
+//                                    Log.d("onInitianFailure: ", youTubeInitializationResult.toString());
+//                                }
+//                            });
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError error) {
+//
+//            }
+//        });
+//    }
 
     @Override
     public void onBackPressed() {
@@ -2137,54 +2318,54 @@ public class MainActivity extends AppCompatActivity {
 //        actionBarDrawerToggle.syncState();*/
 //    }
 
-    public void requestContactPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                        Manifest.permission.READ_CONTACTS)) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setTitle("Read Contacts permission");
-                    builder.setPositiveButton(android.R.string.ok, null);
-                    builder.setMessage("Please enable access to contacts.");
-                    builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                        @TargetApi(Build.VERSION_CODES.M)
-                        @Override
-                        public void onDismiss(DialogInterface dialog) {
-                            requestPermissions(
-                                    new String[]
-                                            {Manifest.permission.READ_CONTACTS}
-                                    , PERMISSIONS_REQUEST_READ_CONTACTS);
-                        }
-                    });
-                    builder.show();
-                } else {
-                    ActivityCompat.requestPermissions(this,
-                            new String[]{Manifest.permission.READ_CONTACTS},
-                            PERMISSIONS_REQUEST_READ_CONTACTS);
-                }
-            } else {
-                Intent intent = new Intent(MainActivity.this, SearchFriendActivity.class);
-                startActivity(intent);
-            }
-        } else {
-            Intent intent = new Intent(MainActivity.this, SearchFriendActivity.class);
-            startActivity(intent);
-        }
-    }
+//    public void requestContactPermission() {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+//                if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+//                        Manifest.permission.READ_CONTACTS)) {
+//                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//                    builder.setTitle("Read Contacts permission");
+//                    builder.setPositiveButton(android.R.string.ok, null);
+//                    builder.setMessage("Please enable access to contacts.");
+//                    builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+//                        @TargetApi(Build.VERSION_CODES.M)
+//                        @Override
+//                        public void onDismiss(DialogInterface dialog) {
+//                            requestPermissions(
+//                                    new String[]
+//                                            {Manifest.permission.READ_CONTACTS}
+//                                    , PERMISSIONS_REQUEST_READ_CONTACTS);
+//                        }
+//                    });
+//                    builder.show();
+//                } else {
+//                    ActivityCompat.requestPermissions(this,
+//                            new String[]{Manifest.permission.READ_CONTACTS},
+//                            PERMISSIONS_REQUEST_READ_CONTACTS);
+//                }
+//            } else {
+//                Intent intent = new Intent(MainActivity.this, SearchFriendActivity.class);
+//                startActivity(intent);
+//            }
+//        } else {
+//            Intent intent = new Intent(MainActivity.this, SearchFriendActivity.class);
+//            startActivity(intent);
+//        }
+//    }
 
-    private void setPackagename() {
-        if (package_name != null) {
-            try {
-                JSONObject jsnobject = new JSONObject(AppController.getInstance().getSubscription_package());
-                JSONArray jsonArray = jsnobject.getJSONArray("package");
-                JSONObject explrObject = jsonArray.getJSONObject(Integer.parseInt(new AppConstant(MainActivity.this)
-                        .getDataFromShared(AppConstant.package_id, "0")));
-                // package_name.setText(explrObject.getString(AppConstant.package_name));
-            } catch (Exception e) {
-                Log.e("My App", "Could not parse malformed JSON:" + e.getMessage());
-            }
-        }
-    }
+//    private void setPackagename() {
+//        if (package_name != null) {
+//            try {
+//                JSONObject jsnobject = new JSONObject(AppController.getInstance().getSubscription_package());
+//                JSONArray jsonArray = jsnobject.getJSONArray("package");
+//                JSONObject explrObject = jsonArray.getJSONObject(Integer.parseInt(new AppConstant(MainActivity.this)
+//                        .getDataFromShared(AppConstant.package_id, "0")));
+//                // package_name.setText(explrObject.getString(AppConstant.package_name));
+//            } catch (Exception e) {
+//                Log.e("My App", "Could not parse malformed JSON:" + e.getMessage());
+//            }
+//        }
+//    }
 
     private void addviewDisplay() {
         MobileAds.initialize(this, new OnInitializationCompleteListener() {

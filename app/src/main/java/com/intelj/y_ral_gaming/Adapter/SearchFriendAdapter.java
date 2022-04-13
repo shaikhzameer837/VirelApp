@@ -59,7 +59,7 @@ public class SearchFriendAdapter extends RecyclerView.Adapter<SearchFriendAdapte
 //        holder.desc.setText(dataSnapshots.get(position).child(AppConstant.pinfo).child("pubg").getValue()+"");
         holder.name.setText(dataSnapshots.get(position).child(AppConstant.username_search).getValue()  == null ? "User" : dataSnapshots.get(position).child(AppConstant.username_search).getValue()+"");
         holder.count_win.setText(dataSnapshots.get(position).child(AppConstant.count_win).getValue() == null ? "0" :dataSnapshots.get(position).child(AppConstant.count_win).getValue()+"");
-        Glide.with(mContext).load(dataSnapshots.get(position).child(AppConstant.pinfo).child(AppConstant.myPicUrl).getValue()+"").placeholder(R.drawable.profile_icon).circleCrop().into(holder.imgs);
+        Glide.with(mContext).load(dataSnapshots.get(position).child(AppConstant.pinfo).child(AppConstant.myPicUrl).getValue()+"").placeholder(R.drawable.game_avatar).circleCrop().into(holder.imgs);
         holder.relative_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

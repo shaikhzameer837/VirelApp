@@ -20,7 +20,7 @@
         android:layout_width="140dp"
         android:layout_height="140dp"
         android:visibility="invisible"
-        android:src="@drawable/profile_icon"
+        android:src="@drawable/game_avatar"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         android:layout_gravity="center_horizontal"/>

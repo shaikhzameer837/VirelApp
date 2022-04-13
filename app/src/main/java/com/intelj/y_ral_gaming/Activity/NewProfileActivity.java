@@ -32,8 +32,8 @@ public class NewProfileActivity extends AppCompatActivity {
         btn_invite = findViewById(R.id.invite);
         firestore = FirebaseFirestore.getInstance();
 
-        Glide.with(NewProfileActivity.this).load(AppController.getInstance().dataSnapshot.child(AppConstant.pinfo).child(AppConstant.myPicUrl).getValue() + "").placeholder(R.drawable.profile_icon).circleCrop().into(image1);
-        Glide.with(NewProfileActivity.this).load(AppController.getInstance().dataSnapshot.child(AppConstant.pinfo).child(AppConstant.myPicUrl).getValue() + "").placeholder(R.drawable.profile_icon).circleCrop().into(image2);
+        Glide.with(NewProfileActivity.this).load(AppController.getInstance().dataSnapshot.child(AppConstant.pinfo).child(AppConstant.myPicUrl).getValue() + "").placeholder(R.drawable.game_avatar).circleCrop().into(image1);
+        Glide.with(NewProfileActivity.this).load(AppController.getInstance().dataSnapshot.child(AppConstant.pinfo).child(AppConstant.myPicUrl).getValue() + "").placeholder(R.drawable.game_avatar).circleCrop().into(image2);
         username.setText(AppController.getInstance().dataSnapshot.child(AppConstant.username_search).getValue() + "");
         setfollow();
 

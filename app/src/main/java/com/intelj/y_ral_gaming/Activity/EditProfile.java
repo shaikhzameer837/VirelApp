@@ -38,6 +38,8 @@ import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.intelj.y_ral_gaming.AppController;
 import com.intelj.y_ral_gaming.R;
 import com.intelj.y_ral_gaming.SigninActivity;
@@ -57,9 +59,9 @@ public class EditProfile extends AppCompatActivity {
     Bitmap selectedImage;
     AppConstant appConstant;
     ProgressDialog progressDialog;
-    TextInputEditText playerName, discordId;
+    TextInputEditText playerName, discordId,bio;
     AppCompatButton done;
-
+    DatabaseReference mDatabase;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         appConstant = new AppConstant(this);
@@ -67,11 +69,13 @@ public class EditProfile extends AppCompatActivity {
         imgProfile = findViewById(R.id.imgs);
         playerName = findViewById(R.id.name);
         discordId = findViewById(R.id.discordId);
+        bio = findViewById(R.id.bio);
         done = findViewById(R.id.done);
         discordId.setEnabled(true);
         playerName.setEnabled(true);
         done.setVisibility(View.VISIBLE);
         findViewById(R.id.save).setVisibility(View.GONE);
+        mDatabase = FirebaseDatabase.getInstance().getReference(appConstant.users);
         done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -89,6 +93,7 @@ public class EditProfile extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences(new AppConstant(EditProfile.this).getId(), 0);
         discordId.setText(sharedPreferences.getString(AppConstant.discordId, ""));
         playerName.setText(sharedPreferences.getString(AppConstant.userName, "Player"));
+        bio.setText(sharedPreferences.getString(AppConstant.bio, "Player"));
         imgProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,7 +102,7 @@ public class EditProfile extends AppCompatActivity {
                         1);
             }
         });
-        Glide.with(this).load(sharedPreferences.getString(AppConstant.myPicUrl, "")).placeholder(R.drawable.profile_icon).placeholder(R.drawable.profile_icon).apply(new RequestOptions().circleCrop()).into(imgProfile);
+        Glide.with(this).load(sharedPreferences.getString(AppConstant.myPicUrl, "")).placeholder(R.drawable.game_avatar).apply(new RequestOptions().circleCrop()).into(imgProfile);
 
     }
 
@@ -219,16 +224,17 @@ public class EditProfile extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(AppConstant.userName, playerName.getText().toString());
         editor.putString(AppConstant.discordId, discordId.getText().toString());
+        editor.putString(AppConstant.bio, bio.getText().toString());
         if (imageUrl != null) {
 //            FirebaseDatabase.getInstance().getReference(AppConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.myPicUrl).setValue(imageUrl);
             editor.putString(AppConstant.myPicUrl, imageUrl);
             picturePath = null;
         }
         editor.apply();
-        discordId.setEnabled(false);
-        playerName.setEnabled(false);
-        Toast.makeText(EditProfile.this, "Profile Updated Susccessfully", Toast.LENGTH_LONG).show();
-        startActivity(new Intent(EditProfile.this, MainActivity.class));
+        mDatabase.child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.bio).
+                setValue(bio.getText().toString());
+        Toast.makeText(EditProfile.this, "Profile Updated Successfully", Toast.LENGTH_LONG).show();
+        finish();
     }
 
     @Override

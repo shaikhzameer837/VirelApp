@@ -406,7 +406,7 @@ public class SigninActivity extends AppCompatActivity {
                                 HashMap<String, Object> realTime = new HashMap<>();
                                 AppController.getInstance().userId = uniqueId;
                                 mDatabase.child(AppController.getInstance().userId).child(AppConstant.phoneNumber).
-                                        setValue(_phoneNumber);
+                                        setValue(_countryCode+_phoneNumber);
                                 login.put(AppConstant.countryCode, _countryCode);
                                 realTime.put(AppConstant.deviceId, Settings.Secure.getString(getContentResolver(),
                                         Settings.Secure.ANDROID_ID));
@@ -418,7 +418,8 @@ public class SigninActivity extends AppCompatActivity {
                                 Log.e("Exception","success 1");
                                 mDatabase.child(AppController.getInstance().userId).child(AppConstant.realTime).
                                         updateChildren(realTime);
-                                appConstant.saveLogin(AppController.getInstance().userId, _phoneNumber, coin, _countryCode);
+                                appConstant.saveLogin(AppController.getInstance().userId);
+                                appConstant.saveUserInfo(_phoneNumber, AppController.getInstance().userId, "http://y-ral-gaming.com/admin/api/images/" + AppController.getInstance().userId + ".png?u=" + (System.currentTimeMillis() / 1000), name,_countryCode);
                                 AppController.getInstance().getReadyForCheckin();
                                 Log.e("Exception","success 2");
                                 AppController.getInstance().progressDialog = null;
@@ -566,56 +567,6 @@ public class SigninActivity extends AppCompatActivity {
                     }
                 });
     }
-
-    private void checkAndSaveLogin() {
-        AppController.getInstance().userId = System.currentTimeMillis() + "";
-        final ProgressDialog progressDialog = new ProgressDialog(SigninActivity.this);
-        progressDialog.setMessage("Signing...");
-        progressDialog.show();
-        AppController.getInstance().progressDialog = progressDialog;
-        mDatabase.orderByChild(appConstant.phoneNumber).equalTo(_phoneNumber).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                HashMap<String, Object> login = new HashMap<>();
-                HashMap<String, Object> realTime = new HashMap<>();
-                if (dataSnapshot.exists()) {
-                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren())
-                        AppController.getInstance().userId = postSnapshot.getKey();
-
-                    appConstant.saveUserInfo(SigninActivity.this, dataSnapshot);
-                } else {
-                    AppController.getInstance().isFirstTime = true;
-
-                }
-                mDatabase.child(AppController.getInstance().userId).child(appConstant.phoneNumber).
-                        setValue(_phoneNumber);
-                login.put(appConstant.countryCode, _countryCode);
-                realTime.put(appConstant.deviceId, Settings.Secure.getString(getContentResolver(),
-                        Settings.Secure.ANDROID_ID));
-
-                mDatabase.child(AppController.getInstance().userId).child(AppConstant.pinfo).
-                        updateChildren(login);
-                mDatabase.child(AppController.getInstance().userId).child(AppConstant.pinfo).
-                        updateChildren(login);
-                mDatabase.child(AppController.getInstance().userId).child(AppConstant.realTime).
-                        updateChildren(realTime);
-                appConstant.saveLogin(AppController.getInstance().userId, _phoneNumber, coin, _countryCode);
-                AppController.getInstance().mySnapShort = dataSnapshot;
-                AppController.getInstance().progressDialog = null;
-                progressDialog.cancel();
-                AppController.getInstance().getReadyForCheckin();
-                registerdOnServer();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                AppController.getInstance().progressDialog = null;
-                progressDialog.cancel();
-                Toast.makeText(SigninActivity.this, "Something went wrong try again later...", Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-
     private void mobileConfirmationPopup() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(PhoneNumberUtils.formatNumber(_countryCode + _phoneNumber, "IN"))

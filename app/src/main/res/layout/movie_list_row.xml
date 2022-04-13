@@ -10,16 +10,19 @@
 
     <ImageView
         android:id="@+id/imgs"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:src="@drawable/img" />
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:transitionName="fade"
+        android:src="@drawable/game_avatar" />
 
     <TextView
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/imgs"
+        android:layout_marginTop="5dp"
         android:textColor="#333333"
+        android:textSize="13sp"
         android:gravity="center_horizontal"
         android:text="title" />
 
@@ -28,7 +31,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:textSize="12sp"
+        android:textSize="11sp"
+        android:layout_marginTop="5dp"
         android:drawableLeft="@drawable/ic_coin"
         android:gravity="center_horizontal"
         android:text="title" />

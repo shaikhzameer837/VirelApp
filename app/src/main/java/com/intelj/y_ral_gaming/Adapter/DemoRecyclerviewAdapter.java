@@ -59,7 +59,7 @@ public class DemoRecyclerviewAdapter extends RecyclerView.Adapter<DemoRecyclervi
         holder.gameId.setText(movie.getGameId());
         holder.discordId.setText(movie.getDiscordId());
         holder.gameName.setText(movie.getGameName());
-        Glide.with(context).load(movie.getImage()).placeholder(R.drawable.profile_icon).into(holder.imgView);
+        Glide.with(context).load(movie.getImage()).placeholder(R.drawable.game_avatar).into(holder.imgView);
     }
 
     @Override

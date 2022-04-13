@@ -67,8 +67,8 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
     SharedPreferences sharedPreferences;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView title, info, type, count,prizepool;
-        ImageView reg,imgs;
+        public TextView title, info, type, count, prizepool;
+        ImageView reg, imgs;
 
         public MyViewHolder(View view) {
             super(view);
@@ -107,11 +107,11 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
         holder.prizepool.setText("Per Kill \u20B9" + gameItem.get(position).getPerKill());
 //        String strDate = title + " " + date + " " + movieList.get(position).getTime().replace("pm", ":00:00 pm")
 //                .replace("am", ":00:00 am");
-        Glide.with(mContext).load(gameItem.get(position).getYt_url().equals("") ? AppConstant.defaultImg  : "https://i.ytimg.com/vi/"+gameItem.get(position).getYt_url()+"/hqdefault_live.jpg").placeholder(R.mipmap.app_logo).into(holder.imgs);
+        Glide.with(mContext).load(gameItem.get(position).getYt_url().equals("") ? AppConstant.defaultImg : "https://i.ytimg.com/vi/" + gameItem.get(position).getYt_url() + "/hqdefault_live.jpg").placeholder(R.mipmap.app_logo).into(holder.imgs);
         holder.imgs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(gameItem.get(position).getYt_url().equals("")){
+                if (gameItem.get(position).getYt_url().equals("")) {
                     Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/c/YRALGaming"));
                     Intent webIntent = new Intent(Intent.ACTION_VIEW,
                             Uri.parse("https://www.youtube.com/c/YRALGaming"));
@@ -120,7 +120,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
                     } catch (ActivityNotFoundException ex) {
                         mContext.startActivity(webIntent);
                     }
-                }else{
+                } else {
                     Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + gameItem.get(position).getYt_url()));
                     Intent webIntent = new Intent(Intent.ACTION_VIEW,
                             Uri.parse("http://www.youtube.com/watch?v=" + gameItem.get(position).getYt_url()));
@@ -144,7 +144,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
                 break;
         }
         holder.count.setText(gameItem.get(position).getCount() + "/" + gameItem.get(position).getMax());
-       // holder.reg.setImageResource(movieList.get(position).getIsexist().equals("1") ? R.drawable.check : R.drawable.arrow);
+        // holder.reg.setImageResource(movieList.get(position).getIsexist().equals("1") ? R.drawable.check : R.drawable.arrow);
         holder.info.setText(gameItem.get(position).getIsexist().equals("0") ? "Join now" : "Aready Joined");
         holder.info.setTextColor(gameItem.get(position).getIsexist().equals("0") ? Color.parseColor("#7e241c") : Color.parseColor("#097969"));
         holder.reg.setOnClickListener(new View.OnClickListener() {
@@ -158,7 +158,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
                 }
                 AppController.getInstance().gameItem = gameItem.get(position);
                 Intent intent = new Intent(mContext, ResultActivity.class);
-                intent.putExtra("title",title);
+                intent.putExtra("title", title);
                 mContext.startActivity(intent);
             }
         });
@@ -166,7 +166,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
             //holder.reg.setBackgroundResource(0);
             holder.info.setOnClickListener(null);
         } else {
-           // holder.reg.setBackgroundResource(R.drawable.round_drawable);
+            // holder.reg.setBackgroundResource(R.drawable.round_drawable);
             holder.info.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -211,7 +211,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
         AppCompatButton btn_next = bottomSheetDialog.findViewById(R.id.btn_next);
         LinearLayout lin = bottomSheetDialog.findViewById(R.id.lin);
         EditText gamename = bottomSheetDialog.findViewById(R.id.ingameName);
-        gamename.setHint("Enter your "+title+" player 1 in game name");
+        gamename.setHint("Enter your " + title + " player 1 in game name");
         AppCompatButton add_money = bottomSheetDialog.findViewById(R.id.add_money);
         setViews(infos, btn_next, position, textView, add_money);
         btn_next.setOnClickListener(new View.OnClickListener() {
@@ -230,15 +230,13 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
                             JSONObject obj = new JSONObject();
                             obj.put("ingName", editText.getText().toString());
                             obj.put("count", i == 0 ? textView.getText().toString() : 0);
-                            obj.put("kill",  0);
-                            if(!new AppConstant(mContext).getReferal().equals(""))
-                                obj.put("referal",  new AppConstant(mContext).getReferal());
+                            obj.put("kill", 0);
                             obj1.put(i == 0 ? new AppConstant(mContext).getId() : new AppConstant(mContext).randomString(5) + "", obj);
                         }
                     }
                     Log.e("jsonObject", obj1.toString());
                     Log.e("jsonObject", new AppConstant(mContext).getId());
-                    saveUserInfo(position, obj1.toString(), textView.getText().toString(),childCount);
+                    saveUserInfo(position, obj1.toString(), textView.getText().toString(), childCount);
                 } catch (Exception e) {
 
                 }
@@ -268,7 +266,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
                 et.setLayoutParams(p);
                 et.setSingleLine(true);
                 et.setTextSize(14);
-                et.setHint("Enter your "+title+" player "+ textView.getText().toString() +" in game name");
+                et.setHint("Enter your " + title + " player " + textView.getText().toString() + " in game name");
                 et.setId(Integer.parseInt(textView.getText().toString()));
                 lin.addView(et);
                 setViews(infos, btn_next, position, textView, add_money);
@@ -294,7 +292,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
         //  add_money.setText("ADD Money");
         // }
         if (Integer.parseInt(gameItem.get(position).getType()) != 1) {
-            bottomSheetDialog.findViewById(R.id.rel_increment).setVisibility(View.VISIBLE);
+           // bottomSheetDialog.findViewById(R.id.rel_increment).setVisibility(View.VISIBLE);
             switch (Integer.parseInt(textView.getText().toString())) {
                 case 2:
                     infos.setText("Play as Duo");
@@ -310,7 +308,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
             bottomSheetDialog.findViewById(R.id.rel_increment).setVisibility(View.GONE);
     }
 
-    private void saveUserInfo(int position, String userJson, String totalPlayer,int childCount) {
+    private void saveUserInfo(int position, String userJson, String totalPlayer, int childCount) {
         ProgressDialog progressDialog = new ProgressDialog(mContext);
         progressDialog.setTitle("loading...");
         progressDialog.show();
@@ -330,14 +328,13 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
                                 Intent intent = new Intent("custom-event-name");
                                 LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);
                                 gameItem.get(position).setIsexist(gameItem.get(position).getIsexist().equals("1") ? "0" : "1");
-                                gameItem.get(position).setCount(player_count+"");
-                                new AppConstant(mContext).setReferal();
+                                gameItem.get(position).setCount(player_count + "");
                                 notifyDataSetChanged();
                                 bottomSheetDialog.dismiss();
                                 GameInfo BottomSheetFragment = new GameInfo();
                                 BottomSheetFragment.show(((AppCompatActivity) mContext).getSupportFragmentManager(), "");
-                            }else
-                                Toast.makeText(mContext,json.getString("msg"),Toast.LENGTH_LONG).show();
+                            } else
+                                Toast.makeText(mContext, json.getString("msg"), Toast.LENGTH_LONG).show();
                         } catch (Exception e) {
                             Log.e("logMess", e.getMessage());
                         }
@@ -352,7 +349,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
                 //params.put("entry", gameItem.get(position).getEntryFees());
-               // params.put("userId", new AppConstant(mContext).getId());
+                // params.put("userId", new AppConstant(mContext).getId());
 //                Date c = Calendar.getInstance().getTime();
 //                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 //                String formattedDate = df.format(c);
@@ -363,8 +360,8 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
                 params.put("gameId", gameItem.get(position).getGameId());
                 params.put("count", totalPlayer);
                 //params.put("entryFees", "entryFees = 0");
-               // params.put("game_type", title);
-                params.put("player_count", childCount+"");
+                // params.put("game_type", title);
+                params.put("player_count", childCount + "");
                 return params;
             }
 

@@ -44,11 +44,9 @@ import java.util.Set;
 public class AppController extends Application implements Application.ActivityLifecycleCallbacks {
     public static AppController instance;
     public String userId = "";
-    public String channelId = "O-1601351657084";
     AppConstant appConstant;
     DatabaseReference mDatabase;
     public ArrayList<String> timeArray = new ArrayList<>();
-    public DataSnapshot ytdataSnapshot;
     public DataSnapshot mySnapShort;
     public ArrayList<DataSnapshot> userInfoList;
     public HashMap<String, Boolean> gameNameHashmap = new HashMap<>();
@@ -112,37 +110,16 @@ public class AppController extends Application implements Application.ActivityLi
                     new AppConstant(AppController.this).logout();
                     return;
                 }
-//                for (DataSnapshot child : mySnapShort.child(AppConstant.team).getChildren()) {
-//                    DocumentReference docRef = FirebaseFirestore.getInstance().collection(AppConstant.team)
-//                            .document(child.getKey() + "");
-//                    docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//                        @Override
-//                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                            x++;
-//                            if (task.isSuccessful()) {
-//                                DocumentSnapshot document = task.getResult();
-//                                if (document.exists()) {
-//                                    ArrayList<String> list = (ArrayList<String>) document.get(AppConstant.teamMember);
-//                                    Set<String> hashSet = new HashSet<>(list);
-//                                    SharedPreferences sharedpreferences = getSharedPreferences(child.getKey(), Context.MODE_PRIVATE);
-//                                    SharedPreferences.Editor editors = sharedpreferences.edit();
-//                                    editors.putString(AppConstant.teamName, document.getString(AppConstant.teamName));
-//                                    editors.putStringSet(AppConstant.teamMember, hashSet);
-//                                    editors.putString(AppConstant.myPicUrl, document.getString(AppConstant.myPicUrl) + "");
-//                                    editors.apply();
-//                                }
-//                            }
-//
-//                        }
-//                    });
-//                }
-
-                if (progressDialog != null) {
-                    progressDialog.cancel();
-                    progressDialog = null;
-                 //   startToRunActivity();
+                if(mySnapShort.child(AppConstant.bio).getValue() != null){
+                    SharedPreferences sharedPreferences = getSharedPreferences(userId, 0);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString(AppConstant.bio, mySnapShort.child(AppConstant.bio).getValue().toString()).apply();
                 }
-
+                if(!dataSnapshot.child(AppConstant.phoneNumber).getValue(String.class).startsWith("+")){
+                    HashMap<String,Object> phoneNumberUpdate = new HashMap<>();
+                    phoneNumberUpdate.put(AppConstant.phoneNumber,appConstant.getCountryCode()+appConstant.getPhoneNumber());
+                    mDatabase.updateChildren(phoneNumberUpdate);
+                }
             }
 
             @Override
@@ -172,45 +149,13 @@ public class AppController extends Application implements Application.ActivityLi
                 String key = keys.getString(i); // Here's your key
                 boolean value = jsonObject.getBoolean(key);
                 gameNameHashmap.put(key, value);
-                /*if (value)
-                    gameNameArray.add(key);*/
-
             }
-//            if (gameViewpager != null)
-//                setupViewPager(gameViewpager);
 
         } catch (JSONException e) {
             e.printStackTrace();
             FirebaseCrashlytics.getInstance().recordException(e);
         }
     }
-
-//    public void setupViewPager(ViewPager viewPager) {
-//        ArrayList<String> titleList = new ArrayList<>();
-//        ViewPagerAdapter adapter = new ViewPagerAdapter(supportFragmentManager);
-//        if (gameNameHashmap.size() > 0) {
-//            for (Map.Entry<String, Boolean> entry : gameNameHashmap.entrySet()) {
-//                adapter.addFragment(new OneFragment(entry.getKey(), entry.getValue()), entry.getKey());
-//                titleList.add(entry.getKey());
-//                // do something with key and/or tab
-//            }
-//            viewPager.setAdapter(adapter);
-//            Intent intent = new Intent("custom-event-name");
-//            intent.putExtra(AppConstant.title, titleList.get(0));
-//            LocalBroadcastManager.getInstance(instance).sendBroadcast(intent);
-//        }
-//        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-//            public void onPageScrollStateChanged(int state) {}
-//            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
-//
-//            public void onPageSelected(int position) {
-//                Intent intent = new Intent("custom-event-name");
-//                intent.putExtra(AppConstant.title, titleList.get(position));
-//                LocalBroadcastManager.getInstance(instance).sendBroadcast(intent);
-//            }
-//        });
-//    }
-
     @Override
     public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState) {
 
@@ -248,36 +193,6 @@ public class AppController extends Application implements Application.ActivityLi
     public void onActivityDestroyed(@NonNull Activity activity) {
 
     }
-
-//    class ViewPagerAdapter extends FragmentPagerAdapter {
-//        private final List<Fragment> mFragmentList = new ArrayList<>();
-//        private final List<String> mFragmentTitleList = new ArrayList<>();
-//
-//        public ViewPagerAdapter(FragmentManager manager) {
-//            super(manager);
-//        }
-//
-//        @Override
-//        public Fragment getItem(int position) {
-//            return mFragmentList.get(position);
-//        }
-//
-//        @Override
-//        public int getCount() {
-//            return mFragmentList.size();
-//        }
-//
-//        public void addFragment(Fragment fragment, String title) {
-//            mFragmentList.add(fragment);
-//            mFragmentTitleList.add(title);
-//        }
-//
-//        @Override
-//        public CharSequence getPageTitle(int position) {
-//            return mFragmentTitleList.get(position);
-//        }
-//    }
-
     public void getTournamentTime() {
         timeArray.clear();
         String game_name = remoteConfig.getString(AppConstant.game_slot).equals("") ? new AppConstant(this).getDataFromShared(AppConstant.game_slot, "") : remoteConfig.getString(AppConstant.game_slot);
@@ -295,24 +210,6 @@ public class AppController extends Application implements Application.ActivityLi
             e.printStackTrace();
             FirebaseCrashlytics.getInstance().recordException(e);
         }
-/*      mDatabase = FirebaseDatabase.getInstance().getReference("gameSlot");
-        mDatabase.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                timeArray.clear();
-                if (dataSnapshot.exists()) {
-                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                        if ((boolean) postSnapshot.getValue())
-                            timeArray.add(postSnapshot.getKey());
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-
-            }
-        });*/
     }
 
     public static AppController getInstance() {

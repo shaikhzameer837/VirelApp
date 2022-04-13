@@ -85,7 +85,7 @@ public class UserInfoCheck extends AppCompatActivity {
                         1);
             }
         });
-        Glide.with(this).load(AppController.getInstance().mySnapShort.child(AppConstant.myPicUrl).getValue() == null ? "" : AppController.getInstance().mySnapShort.child(AppConstant.myPicUrl).getValue() + "").placeholder(R.drawable.profile_icon)
+        Glide.with(this).load(AppController.getInstance().mySnapShort.child(AppConstant.myPicUrl).getValue() == null ? "" : AppController.getInstance().mySnapShort.child(AppConstant.myPicUrl).getValue() + "").placeholder(R.drawable.game_avatar)
                 .apply(new RequestOptions().circleCrop()).into(profile);
         playerName.setText(AppController.getInstance().mySnapShort.child(AppConstant.userName).getValue() == null ? "" : AppController.getInstance().mySnapShort.child(AppConstant.userName).getValue() + "");
         discordId.setText(AppController.getInstance().mySnapShort.child(AppConstant.discordId).exists() ? AppController.getInstance().mySnapShort.child(AppConstant.discordId).getValue() + "" : "");
