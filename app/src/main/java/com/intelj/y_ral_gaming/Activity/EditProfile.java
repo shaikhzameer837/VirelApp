@@ -1,7 +1,6 @@
 package com.intelj.y_ral_gaming.Activity;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,16 +9,19 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -38,11 +40,15 @@ import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.intelj.y_ral_gaming.AppController;
+import com.intelj.y_ral_gaming.ContactListModel;
 import com.intelj.y_ral_gaming.R;
-import com.intelj.y_ral_gaming.SigninActivity;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 import com.intelj.y_ral_gaming.VolleyMultipartRequest;
 
@@ -59,22 +65,58 @@ public class EditProfile extends AppCompatActivity {
     Bitmap selectedImage;
     AppConstant appConstant;
     ProgressDialog progressDialog;
-    TextInputEditText playerName, discordId,bio;
+    TextInputEditText playerName, TI_userName,bio;
     AppCompatButton done;
+    String userName = "";
     DatabaseReference mDatabase;
+    AutoCompleteTextView tv_title;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         appConstant = new AppConstant(this);
         setContentView(R.layout.edit_profile);
         imgProfile = findViewById(R.id.imgs);
         playerName = findViewById(R.id.name);
-        discordId = findViewById(R.id.discordId);
+        TI_userName = findViewById(R.id.userName);
         bio = findViewById(R.id.bio);
         done = findViewById(R.id.done);
-        discordId.setEnabled(true);
+        TI_userName.setEnabled(true);
         playerName.setEnabled(true);
         done.setVisibility(View.VISIBLE);
         findViewById(R.id.save).setVisibility(View.GONE);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>
+                (this,android.R.layout.simple_list_item_1,AppConstant.player_title);
+        tv_title= findViewById(R.id.autoCompleteTextView1);
+        tv_title.setThreshold(0);//will start working from first character
+        tv_title.setAdapter(adapter);//setting the adapter data into the AutoCompleteTextView
+        SharedPreferences sharedPreferences = getSharedPreferences(new AppConstant(EditProfile.this).getId(), 0);
+        tv_title.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                final int DRAWABLE_RIGHT = 2;
+                tv_title.showDropDown();
+                if(event.getAction() == MotionEvent.ACTION_UP) {
+                    if(event.getRawX() >= (tv_title.getRight() - tv_title.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                        tv_title.setText("");
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+        TI_userName.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                final int DRAWABLE_RIGHT = 2;
+                if(event.getAction() == MotionEvent.ACTION_UP) {
+                    if(event.getRawX() >= (tv_title.getRight() - tv_title.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                        checkUserName();
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+        tv_title.setKeyListener(null);
         mDatabase = FirebaseDatabase.getInstance().getReference(appConstant.users);
         done.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,16 +126,48 @@ public class EditProfile extends AppCompatActivity {
                     playerName.setError("Player name cannot be empty");
                     return;
                 }
+                if (userName.equals("")) {
+                    TI_userName.requestFocus();
+                    TI_userName.setError("Click to check username availability", null);
+                    return;
+                }
                 if (picturePath == null)
                     updateName();
                 else
                     uploadProfile();
             }
         });
-        SharedPreferences sharedPreferences = getSharedPreferences(new AppConstant(EditProfile.this).getId(), 0);
-        discordId.setText(sharedPreferences.getString(AppConstant.discordId, ""));
-        playerName.setText(sharedPreferences.getString(AppConstant.userName, "Player"));
-        bio.setText(sharedPreferences.getString(AppConstant.bio, "Player"));
+        TI_userName.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(TI_userName.getText().toString().equals(sharedPreferences.getString(AppConstant.userId, ""))){
+                    userName = TI_userName.getText().toString();
+                    TI_userName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check, 0);
+                    TI_userName.setError(null);
+                    return;
+                }
+                TI_userName.setError("Click to check username availability", null);
+                userName = "";
+                TI_userName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.info, 0);
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+             }
+        });
+        playerName.setText(sharedPreferences.getString(AppConstant.name, "Player"));
+        bio.setText(sharedPreferences.getString(AppConstant.bio, ""));
+        tv_title.setText(sharedPreferences.getString(AppConstant.title, ""));
+        TI_userName.setText(sharedPreferences.getString(AppConstant.userId, ""));
+        TI_userName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check, 0);
+        userName = sharedPreferences.getString(AppConstant.userId, "");
         imgProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -104,6 +178,37 @@ public class EditProfile extends AppCompatActivity {
         });
         Glide.with(this).load(sharedPreferences.getString(AppConstant.myPicUrl, "")).placeholder(R.drawable.game_avatar).apply(new RequestOptions().circleCrop()).into(imgProfile);
 
+    }
+
+    private void checkUserName() {
+        DatabaseReference mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        Query query = mFirebaseDatabaseReference.child("users").orderByChild(AppConstant.userName).equalTo(TI_userName.getText().toString());
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() != null) {
+                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                        Log.e("number//---", postSnapshot.getKey());
+                        if(postSnapshot.getKey().equals(appConstant.getId())){
+                            Toast.makeText(EditProfile.this, "User name available ", Toast.LENGTH_SHORT).show();
+                            TI_userName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check, 0);
+                        }else{
+                            Toast.makeText(EditProfile.this, "User name unavailable ", Toast.LENGTH_SHORT).show();
+                            TI_userName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.close, 0);
+                        }
+                    }
+                }else{
+                    userName = TI_userName.getText().toString();
+                    Toast.makeText(EditProfile.this, "User name available ", Toast.LENGTH_SHORT).show();
+                    TI_userName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check, 0);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void updateName() {
@@ -132,7 +237,7 @@ public class EditProfile extends AppCompatActivity {
                 Map<String, String> params = new HashMap<>();
                 params.put("user_id", new AppConstant(EditProfile.this).getId());
                 params.put("name", playerName.getText().toString() + "");
-                params.put("discord", discordId.getText().toString() + "");
+                params.put("userName", TI_userName.getText().toString() + "");
                 return params;
             }
 
@@ -153,7 +258,7 @@ public class EditProfile extends AppCompatActivity {
         dialog.show();
         VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST,
                 "http://y-ral-gaming.com/admin/api/profile_pic.php?" +
-                        "userid=" + appConstant.getId() + "&&name=" + playerName.getText().toString() + "&&discordId=" + discordId.getText().toString()
+                        "userid=" + appConstant.getId() + "&&name=" + playerName.getText().toString() + "&&userName=" + TI_userName.getText().toString()
                 ,
                 new Response.Listener<NetworkResponse>() {
                     @Override
@@ -222,9 +327,10 @@ public class EditProfile extends AppCompatActivity {
     private void saveToProfile(String imageUrl) {
         SharedPreferences sharedPreferences = getSharedPreferences(new AppConstant(this).getId(), 0);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(AppConstant.userName, playerName.getText().toString());
-        editor.putString(AppConstant.discordId, discordId.getText().toString());
+        editor.putString(AppConstant.name, playerName.getText().toString());
+        editor.putString(AppConstant.userId, TI_userName.getText().toString());
         editor.putString(AppConstant.bio, bio.getText().toString());
+        editor.putString(AppConstant.title, tv_title.getText().toString());
         if (imageUrl != null) {
 //            FirebaseDatabase.getInstance().getReference(AppConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.myPicUrl).setValue(imageUrl);
             editor.putString(AppConstant.myPicUrl, imageUrl);
@@ -233,6 +339,10 @@ public class EditProfile extends AppCompatActivity {
         editor.apply();
         mDatabase.child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.bio).
                 setValue(bio.getText().toString());
+        mDatabase.child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.title).
+                setValue(tv_title.getText().toString());
+       mDatabase.child(AppController.getInstance().userId).child(AppConstant.userName).
+                setValue(TI_userName.getText().toString());
         Toast.makeText(EditProfile.this, "Profile Updated Successfully", Toast.LENGTH_LONG).show();
         finish();
     }

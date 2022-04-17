@@ -1,8 +1,6 @@
 package com.intelj.y_ral_gaming.Activity;
 
 import android.Manifest;
-import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -34,7 +32,6 @@ import android.text.ClipboardManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.transition.Fade;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -43,7 +40,6 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.ViewStub;
 import android.view.Window;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -99,9 +95,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.youtube.player.YouTubeInitializationResult;
-import com.google.android.youtube.player.YouTubePlayer;
-import com.google.android.youtube.player.YouTubePlayerFragment;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -120,7 +113,6 @@ import com.intelj.y_ral_gaming.Adapter.RankAdapter;
 import com.intelj.y_ral_gaming.AppController;
 import com.intelj.y_ral_gaming.ComingSoon;
 import com.intelj.y_ral_gaming.ContactListModel;
-import com.intelj.y_ral_gaming.DatabaseHelper;
 import com.intelj.y_ral_gaming.Fragment.BottomSheetDilogFragment;
 import com.intelj.y_ral_gaming.Fragment.OneFragment;
 import com.intelj.y_ral_gaming.NotificationAdapter;
@@ -205,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
         // requestWindowFeature(Window.FEATURE_NO_TITLE);
         //this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         sharedPreferences = getSharedPreferences(appConstant.getId(), 0);
-        if (appConstant.checkLogin() && sharedPreferences.getString(AppConstant.userName, "").equals("")) {
+        if (appConstant.checkLogin() && sharedPreferences.getString(AppConstant.name, "").equals("")) {
             startActivity(new Intent(MainActivity.this, EditProfile.class));
             return;
         }
@@ -233,11 +225,9 @@ public class MainActivity extends AppCompatActivity {
         rv_popular = findViewById(R.id.rv_popular);
         shimmerFrameLayout = findViewById(R.id.shimmer_layout);
         getPopularFace();
-        popularAdapter = new PopularAdapter(this, popularModels);
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 1, GridLayoutManager.HORIZONTAL, false);
-        rv_popular.setLayoutManager(mLayoutManager);
-        rv_popular.setItemAnimator(new DefaultItemAnimator());
-        rv_popular.setAdapter(popularAdapter);
+
+//
+//        rv_popular.setAdapter(popularAdapter);
 //        ViewPager viewPager =  findViewById(R.id.viewpager);
 //        FirebaseDatabase.getInstance().getReference("poster").addListenerForSingleValueEvent(new ValueEventListener() {
 //            @Override
@@ -268,11 +258,7 @@ public class MainActivity extends AppCompatActivity {
 //                }
 //            }
 //        });
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int Dheight = displayMetrics.heightPixels;
 
-        Log.e("allheight", Dheight + "");
         findViewById(R.id.lin).post(new Runnable() {
             @Override
             public void run() {
@@ -439,43 +425,43 @@ public class MainActivity extends AppCompatActivity {
                                 inflateView(R.layout.contacts);
                                 shd = getSharedPreferences(AppConstant.userId, MODE_PRIVATE);
                                 rv_contact = inflated.findViewById(R.id.rv_contact);
-//                                inflated.findViewById(R.id.refresh).setOnClickListener(new View.OnClickListener() {
-//                                    @Override
-//                                    public void onClick(View v) {
-//                                        if (Build.VERSION.SDK_INT >= 23) {
-//                                            String[] PERMISSIONS = {android.Manifest.permission.READ_CONTACTS};
-//                                            if (!hasPermissions(MainActivity.this, PERMISSIONS)) {
-//                                                ActivityCompat.requestPermissions(MainActivity.this, PERMISSIONS, REQUEST);
-//                                            } else {
-//                                                new readContactTask().execute();
-//                                            }
-//                                        } else {
-//                                            new readContactTask().execute();
-//                                        }
-//                                    }
-//                                });
-//                                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(MainActivity.this);
-//                                rv_contact.setLayoutManager(mLayoutManager);
-//                                contactModel = new ArrayList<>();
-//                                Set<String> set = shd.getStringSet(AppConstant.contact, null);
-//                                if (set != null) {
-//                                    for (String s : set) {
-//                                        SharedPreferences userInfo = getSharedPreferences(s, Context.MODE_PRIVATE);
-//                                        contactModel.add(new ContactListModel(userInfo.getString(AppConstant.myPicUrl, ""),appConstant.getContactName(userInfo.getString(AppConstant.phoneNumber, "")),  userInfo.getString(AppConstant.id, "")));
-//                                    }
-//                                    inflated.findViewById(R.id.la_contact).setVisibility(View.GONE);
-//                                }else{
-//                                    if (Build.VERSION.SDK_INT >= 23) {
-//                                        String[] PERMISSIONS = {android.Manifest.permission.READ_CONTACTS};
-//                                        if (!hasPermissions(MainActivity.this, PERMISSIONS)) {
-//                                            ActivityCompat.requestPermissions(MainActivity.this, PERMISSIONS, REQUEST);
-//                                        } else {
-//                                            new readContactTask().execute();
-//                                        }
-//                                    } else {
-//                                        new readContactTask().execute();
-//                                    }
-//                                }
+                                inflated.findViewById(R.id.refresh).setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        if (Build.VERSION.SDK_INT >= 23) {
+                                            String[] PERMISSIONS = {android.Manifest.permission.READ_CONTACTS};
+                                            if (!hasPermissions(MainActivity.this, PERMISSIONS)) {
+                                                ActivityCompat.requestPermissions(MainActivity.this, PERMISSIONS, REQUEST);
+                                            } else {
+                                                new readContactTask().execute();
+                                            }
+                                        } else {
+                                            new readContactTask().execute();
+                                        }
+                                    }
+                                });
+                                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(MainActivity.this);
+                                rv_contact.setLayoutManager(mLayoutManager);
+                                contactModel = new ArrayList<>();
+                                Set<String> set = shd.getStringSet(AppConstant.contact, null);
+                                if (set != null) {
+                                    for (String s : set) {
+                                        SharedPreferences userInfo = getSharedPreferences(s, Context.MODE_PRIVATE);
+                                        contactModel.add(new ContactListModel(userInfo.getString(AppConstant.myPicUrl, ""),appConstant.getContactName(userInfo.getString(AppConstant.phoneNumber, "")),  userInfo.getString(AppConstant.id, ""),  userInfo.getString(AppConstant.bio, "")));
+                                    }
+                                    inflated.findViewById(R.id.la_contact).setVisibility(View.GONE);
+                                }else{
+                                    if (Build.VERSION.SDK_INT >= 23) {
+                                        String[] PERMISSIONS = {android.Manifest.permission.READ_CONTACTS};
+                                        if (!hasPermissions(MainActivity.this, PERMISSIONS)) {
+                                            ActivityCompat.requestPermissions(MainActivity.this, PERMISSIONS, REQUEST);
+                                        } else {
+                                            new readContactTask().execute();
+                                        }
+                                    } else {
+                                        new readContactTask().execute();
+                                    }
+                                }
                                 contactListAdapter = new ContactListAdapter(MainActivity.this, contactModel);
                                 rv_contact.setAdapter(contactListAdapter);
                                 rv_contact.addOnItemTouchListener(new RecyclerTouchListener(MainActivity.this, recyclerviewTeam, new RecyclerTouchListener.ClickListener() {
@@ -603,8 +589,8 @@ public class MainActivity extends AppCompatActivity {
                         Log.e("number//", original);
                         Log.e("number//---", postSnapshot.getKey());
                         originalContact.add(postSnapshot.getKey());
-                        appConstant.saveUserInfo(original, postSnapshot.getKey(), "http://y-ral-gaming.com/admin/api/images/" + postSnapshot.getKey() + ".png?u=" + (System.currentTimeMillis() / 1000), null,"");
-                        contactModel.add(new ContactListModel("http://y-ral-gaming.com/admin/api/images/" + postSnapshot.getKey() + ".png?u=" + (System.currentTimeMillis() / 1000),appConstant.getContactName(postSnapshot.child(AppConstant.phoneNumber).getValue(String.class)),  postSnapshot.getKey()));
+                        appConstant.saveUserInfo(original, postSnapshot.getKey(), "http://y-ral-gaming.com/admin/api/images/" + postSnapshot.getKey() + ".png?u=" + (System.currentTimeMillis() / 1000), null,"",postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue() != null ? postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue().toString() :null,postSnapshot.child(AppConstant.userName).getValue() != null ? postSnapshot.child(AppConstant.userName).getValue().toString() : System.currentTimeMillis() + "");
+                        contactModel.add(new ContactListModel("http://y-ral-gaming.com/admin/api/images/" + postSnapshot.getKey() + ".png?u=" + (System.currentTimeMillis() / 1000),appConstant.getContactName(postSnapshot.child(AppConstant.phoneNumber).getValue(String.class)),  postSnapshot.getKey(),postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue() != null ? postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue().toString() : ""));
                         contactListAdapter.notifyDataSetChanged();
                     }
                 }
@@ -700,8 +686,10 @@ public class MainActivity extends AppCompatActivity {
                             JSONArray ja_data = json.getJSONArray("info");
                             for (int i = 0; i < ja_data.length(); i++) {
                                 JSONObject jObj = ja_data.getJSONObject(i);
-                                appConstant.saveUserInfo("",jObj.getString("userid"), "http://y-ral-gaming.com/admin/api/images/" + jObj.getString("userid") + ".png?u=" + (System.currentTimeMillis() / 1000), jObj.getString("name"),"");
+                                appConstant.saveUserInfo("",jObj.getString("userid"), "http://y-ral-gaming.com/admin/api/images/" + jObj.getString("userid") + ".png?u=" + (System.currentTimeMillis() / 1000), jObj.getString("name"),"",null,jObj.getString("userid"));
                                 popularModels.add(new PopularModel(jObj.getString("url"), jObj.getString("name"), jObj.getString("amount"), jObj.getString("userid")));
+                               // recyclerDataArrayList.add(new RecyclerData(jObj.getString("userid"),"http://y-ral-gaming.com/admin/api/images/" + jObj.getString("userid") + ".png?u=" + (System.currentTimeMillis() / 1000),jObj.getString("name")));
+//                                recyclerDataArrayList.add(new RecyclerData(jObj.getString("url"), jObj.getString("name"), jObj.getString("amount"), jObj.getString("userid")));
                             }
                             Collections.sort(popularModels, new Comparator<PopularModel>() {
                                 @Override
@@ -715,7 +703,14 @@ public class MainActivity extends AppCompatActivity {
 //                                     Log.e("popularModels//",popularModels.size()+"");
 //                                 }
 //                             }
-                            popularAdapter.notifyDataSetChanged();
+                            popularAdapter = new PopularAdapter(MainActivity.this, popularModels);
+                            GridLayoutManager mLayoutManager = new GridLayoutManager(MainActivity.this, 1, GridLayoutManager.HORIZONTAL, false);
+                            rv_popular.setLayoutManager(mLayoutManager);
+                            rv_popular.setAdapter(popularAdapter);
+//                             RecyclerViewAdapter adapter=new RecyclerViewAdapter(recyclerDataArrayList,MainActivity.this);
+//                            GridLayoutManager mLayoutManager = new GridLayoutManager(MainActivity.this, 1, GridLayoutManager.HORIZONTAL, false);
+//                            rv_popular.setLayoutManager(mLayoutManager);
+//                            rv_popular.setAdapter(adapter);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -911,7 +906,7 @@ public class MainActivity extends AppCompatActivity {
                 params.put("type", payType);
                 params.put("paymentType", paymentType);
                 params.put("time", (System.currentTimeMillis()) + "");
-                params.put("userName", sharedPreferences.getString(AppConstant.userName, ""));
+                params.put("userName", sharedPreferences.getString(AppConstant.name, ""));
                 return params;
             }
 
@@ -1081,7 +1076,7 @@ public class MainActivity extends AppCompatActivity {
     private void saveToProfile(String imageUrl) {
         SharedPreferences sharedPreferences = getSharedPreferences(new AppConstant(this).getId(), 0);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(AppConstant.userName, playerName.getText().toString());
+        editor.putString(AppConstant.name, playerName.getText().toString());
         editor.putString(AppConstant.discordId, discordId.getText().toString());
         if (imageUrl != null) {
 //            FirebaseDatabase.getInstance().getReference(AppConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.myPicUrl).setValue(imageUrl);
@@ -1101,7 +1096,7 @@ public class MainActivity extends AppCompatActivity {
         if (appConstant.checkLogin()) {
             Glide.with(MainActivity.this).load(sharedPreferences.getString(AppConstant.myPicUrl, "")).placeholder(R.drawable.game_avatar).apply(new RequestOptions().circleCrop()).into(imgProfile);
             playerName = findViewById(R.id.playerName);
-            playerName.setText(sharedPreferences.getString(AppConstant.userName, "Player"));
+            playerName.setText(sharedPreferences.getString(AppConstant.name, "Player"));
         }
         imgProfile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1690,7 +1685,7 @@ public class MainActivity extends AppCompatActivity {
                         "&&profile=" + sharedPreferences.getString(AppConstant.myPicUrl, "") +
                         "&&upi=" + upi.getText().toString() +
                         "&&discord=" + sharedPreferences.getString(AppConstant.discordId, "")
-                        + "&&name=" + sharedPreferences.getString(AppConstant.userName, ""),
+                        + "&&name=" + sharedPreferences.getString(AppConstant.name, ""),
                 new Response.Listener<NetworkResponse>() {
                     @Override
                     public void onResponse(NetworkResponse response) {
@@ -1937,8 +1932,8 @@ public class MainActivity extends AppCompatActivity {
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.e("onClick3: ", intent.getBooleanExtra(AppConstant.userName, false) + "");
-            if (intent.getBooleanExtra(AppConstant.userName, false)) {
+            Log.e("onClick3: ", intent.getBooleanExtra(AppConstant.name, false) + "");
+            if (intent.getBooleanExtra(AppConstant.name, false)) {
                 Log.e("onClick3: ", "set error");
                 ign.setEnabled(true);
                 ign.setError("Enter your BGMI in game name");

@@ -57,7 +57,6 @@ public class AppController extends Application implements Application.ActivityLi
     public DataSnapshot dataSnapshot;
     public String is_production;
     AlertDialog.Builder builder;
-    public boolean isFirstTime = false;
     public String subscription_package = "";
     public int amount = 0;
     public List<GameItem> movieList = new ArrayList<>();
@@ -84,7 +83,7 @@ public class AppController extends Application implements Application.ActivityLi
         appConstant = new AppConstant(this);
         if (new AppConstant(this).checkLogin()) {
             userId = appConstant.getUserId();
-            Log.e("userId",userId);
+            Log.e("userId", userId);
             getUserInfo();
         }
     }
@@ -93,31 +92,39 @@ public class AppController extends Application implements Application.ActivityLi
 
     private void getUserInfo() {
         x = 0;
-        Log.e("userId1",userId);
+        Log.e("userId1", userId);
         mDatabase = FirebaseDatabase.getInstance().getReference(AppConstant.users).child(userId);
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 mySnapShort = dataSnapshot.child(AppConstant.pinfo);
                 userInfoList = new ArrayList<>();
-                if(!dataSnapshot.exists()) {
+                if (!dataSnapshot.exists()) {
                     new AppConstant(AppController.this).logout();
                     return;
                 }
                 if (!dataSnapshot.child(AppConstant.realTime).child(AppConstant.deviceId).getValue(String.class).equals(Settings.Secure.getString(getContentResolver(),
                         Settings.Secure.ANDROID_ID))) {
-                    Log.e("statusLog","Logout");
+                    Log.e("statusLog", "Logout");
                     new AppConstant(AppController.this).logout();
                     return;
                 }
-                if(mySnapShort.child(AppConstant.bio).getValue() != null){
-                    SharedPreferences sharedPreferences = getSharedPreferences(userId, 0);
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                SharedPreferences sharedPreferences = getSharedPreferences(userId, 0);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                if (dataSnapshot.child(AppConstant.userName).getValue() == null){
+                    String userName = "Player"+System.currentTimeMillis();
+                    mDatabase.child(AppConstant.userName).setValue("Player"+System.currentTimeMillis());
+                    editor.putString(AppConstant.userId, userName).apply();
+                }
+                if (mySnapShort.child(AppConstant.bio).getValue() != null) {
                     editor.putString(AppConstant.bio, mySnapShort.child(AppConstant.bio).getValue().toString()).apply();
                 }
-                if(!dataSnapshot.child(AppConstant.phoneNumber).getValue(String.class).startsWith("+")){
-                    HashMap<String,Object> phoneNumberUpdate = new HashMap<>();
-                    phoneNumberUpdate.put(AppConstant.phoneNumber,appConstant.getCountryCode()+appConstant.getPhoneNumber());
+                if (mySnapShort.child(AppConstant.title).getValue() != null) {
+                    editor.putString(AppConstant.title, mySnapShort.child(AppConstant.title).getValue().toString()).apply();
+                }
+                if (!dataSnapshot.child(AppConstant.phoneNumber).getValue(String.class).startsWith("+")) {
+                    HashMap<String, Object> phoneNumberUpdate = new HashMap<>();
+                    phoneNumberUpdate.put(AppConstant.phoneNumber, appConstant.getCountryCode() + appConstant.getPhoneNumber());
                     mDatabase.updateChildren(phoneNumberUpdate);
                 }
             }
@@ -156,6 +163,7 @@ public class AppController extends Application implements Application.ActivityLi
             FirebaseCrashlytics.getInstance().recordException(e);
         }
     }
+
     @Override
     public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState) {
 
@@ -193,6 +201,7 @@ public class AppController extends Application implements Application.ActivityLi
     public void onActivityDestroyed(@NonNull Activity activity) {
 
     }
+
     public void getTournamentTime() {
         timeArray.clear();
         String game_name = remoteConfig.getString(AppConstant.game_slot).equals("") ? new AppConstant(this).getDataFromShared(AppConstant.game_slot, "") : remoteConfig.getString(AppConstant.game_slot);

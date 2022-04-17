@@ -87,7 +87,7 @@ public class UserInfoCheck extends AppCompatActivity {
         });
         Glide.with(this).load(AppController.getInstance().mySnapShort.child(AppConstant.myPicUrl).getValue() == null ? "" : AppController.getInstance().mySnapShort.child(AppConstant.myPicUrl).getValue() + "").placeholder(R.drawable.game_avatar)
                 .apply(new RequestOptions().circleCrop()).into(profile);
-        playerName.setText(AppController.getInstance().mySnapShort.child(AppConstant.userName).getValue() == null ? "" : AppController.getInstance().mySnapShort.child(AppConstant.userName).getValue() + "");
+        playerName.setText(AppController.getInstance().mySnapShort.child(AppConstant.name).getValue() == null ? "" : AppController.getInstance().mySnapShort.child(AppConstant.name).getValue() + "");
         discordId.setText(AppController.getInstance().mySnapShort.child(AppConstant.discordId).exists() ? AppController.getInstance().mySnapShort.child(AppConstant.discordId).getValue() + "" : "");
         findViewById(R.id.btn_next).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,7 +120,7 @@ public class UserInfoCheck extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences(AppConstant.AppName, 0);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         for (Map.Entry<String, Boolean> entry : AppController.getInstance().gameNameHashmap.entrySet()) {
-            editor.putString(entry.getKey()+ "_" + AppConstant.userName,AppController.getInstance().mySnapShort.child(entry.getKey()+ "_" + AppConstant.userName).getValue() == null ? "" : AppController.getInstance().mySnapShort.child(entry.getKey()+ "_" + AppConstant.userName).getValue()+"");
+            editor.putString(entry.getKey()+ "_" + AppConstant.name,AppController.getInstance().mySnapShort.child(entry.getKey()+ "_" + AppConstant.name).getValue() == null ? "" : AppController.getInstance().mySnapShort.child(entry.getKey()+ "_" + AppConstant.name).getValue()+"");
             editor.putString(entry.getKey()+"",AppController.getInstance().mySnapShort.child(entry.getKey()).getValue() == null ? "" : AppController.getInstance().mySnapShort.child(entry.getKey()).getValue()+"");
             Log.e(entry.getKey()+"",AppController.getInstance().mySnapShort.child(entry.getKey()).getValue()+"");
         }
@@ -143,11 +143,11 @@ public class UserInfoCheck extends AppCompatActivity {
     }
 
     private void saveAndExit() {
-        FirebaseDatabase.getInstance().getReference(AppConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.userName).setValue(playerName.getText().toString());
+        FirebaseDatabase.getInstance().getReference(AppConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.name).setValue(playerName.getText().toString());
         FirebaseDatabase.getInstance().getReference(AppConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.discordId).setValue(discordId.getText().toString());
         SharedPreferences sharedPreferences = getSharedPreferences(AppController.getInstance().userId, 0);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(AppConstant.userName, playerName.getText().toString());
+        editor.putString(AppConstant.name, playerName.getText().toString());
         editor.putBoolean(AppConstant.friends, true);
         editor.putString(AppConstant.discordId, discordId.getText().toString());
         editor.apply();
@@ -299,7 +299,7 @@ public class UserInfoCheck extends AppCompatActivity {
                         set.add(childDataSnap.getKey());
                         SharedPreferences sharedpreferences = getSharedPreferences(childDataSnap.getKey(), Context.MODE_PRIVATE);
                         SharedPreferences.Editor editors = sharedpreferences.edit();
-                        editors.putString(AppConstant.userName, childDataSnap.child(AppConstant.pinfo).child(AppConstant.userName).getValue() + "");
+                        editors.putString(AppConstant.name, childDataSnap.child(AppConstant.pinfo).child(AppConstant.name).getValue() + "");
                         editors.putString(AppConstant.phoneNumber, childDataSnap.child(AppConstant.phoneNumber).getValue() + "");
                         editors.putString(AppConstant.myPicUrl, childDataSnap.child(AppConstant.pinfo).child(AppConstant.myPicUrl).getValue() + "");
                         editors.putString(AppConstant.discordId, childDataSnap.child(AppConstant.pinfo).child(AppConstant.discordId).getValue() + "");

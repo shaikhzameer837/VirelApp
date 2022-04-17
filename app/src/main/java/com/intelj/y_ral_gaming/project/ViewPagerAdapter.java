@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,8 +15,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentActivity;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -39,7 +36,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.intelj.y_ral_gaming.Adapter.DemoRecyclerviewAdapter;
 import com.intelj.y_ral_gaming.Adapter.MemberListAdapter;
-import com.intelj.y_ral_gaming.Adapter.TimeSlotAdapter;
 import com.intelj.y_ral_gaming.AppController;
 import com.intelj.y_ral_gaming.R;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
@@ -49,7 +45,6 @@ import com.intelj.y_ral_gaming.model.UserListModel;
 
 import org.json.JSONObject;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -286,17 +281,17 @@ class ViewPagerAdapter extends PagerAdapter {
             Log.i("valuesofS",s);
             SharedPreferences sharedPreferences = context.getSharedPreferences(s, 0);
             if(sharedPreferences.getString(AppConstant.discordId, "").equals("")){
-                error = error + " Discord id not found for "+sharedPreferences.getString(AppConstant.userName, "") +"\n";
+                error = error + " Discord id not found for "+sharedPreferences.getString(AppConstant.name, "") +"\n";
             }
             if(sharedPreferences.getString(title, "").equals("")){
-                error = error + title + " Game id not found for "+sharedPreferences.getString(AppConstant.userName, "")+"\n";
+                error = error + title + " Game id not found for "+sharedPreferences.getString(AppConstant.name, "")+"\n";
             }
-            if(sharedPreferences.getString(title+ "_" + AppConstant.userName, "").equals("")){
-                error = error + title + " Game name not found for "+sharedPreferences.getString(AppConstant.userName, "")+"\n";
+            if(sharedPreferences.getString(title+ "_" + AppConstant.name, "").equals("")){
+                error = error + title + " Game name not found for "+sharedPreferences.getString(AppConstant.name, "")+"\n";
             }
             discordId.add(sharedPreferences.getString(AppConstant.discordId, ""));
             ign.add(sharedPreferences.getString(title, ""));
-            igid.add(sharedPreferences.getString(title + "_" + AppConstant.userName, ""));
+            igid.add(sharedPreferences.getString(title + "_" + AppConstant.name, ""));
         }
         if(!error.equals("")){
             showDialog(error);

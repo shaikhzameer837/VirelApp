@@ -4,37 +4,21 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.LinearGradient;
-import android.graphics.Shader;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
-import android.graphics.drawable.PaintDrawable;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.RectShape;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.provider.Settings;
 import android.transition.Fade;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.android.volley.AuthFailureError;
-import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -49,30 +33,25 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.intelj.y_ral_gaming.AppController;
 import com.intelj.y_ral_gaming.Fragment.OneFragment;
 import com.intelj.y_ral_gaming.R;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
-import com.intelj.y_ral_gaming.VolleyMultipartRequest;
 
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class ProFileActivity extends AppCompatActivity {
     private List<ytModel> ytModelList = new ArrayList<>();
-    private ytModelsAdapter mAdapter;
     TextView txt;
     String userid;
     SharedPreferences sharedPreferences;
-    ImageView imgProfile;
+    ImageView imgProfile,title_pic;
     TabLayout tabLayout;
     ViewPager viewPager;
     AppConstant appConstant;
-    TextView name,bio;
-
+    TextView name, bio,title,userName;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,7 +59,10 @@ public class ProFileActivity extends AppCompatActivity {
         //  FillCustomGradient(findViewById(R.id.imgs));
         txt = findViewById(R.id.info);
         imgProfile = findViewById(R.id.profPic);
+        userName = findViewById(R.id.userName);
         bio = findViewById(R.id.bio);
+        title_pic = findViewById(R.id.title_pic);
+        title = findViewById(R.id.title);
         Fade fade = new Fade();
         appConstant = new AppConstant(this);
         userid = getIntent().getStringExtra("userid");
@@ -90,7 +72,6 @@ public class ProFileActivity extends AppCompatActivity {
         fade.excludeTarget(android.R.id.navigationBarBackground, true);
         getWindow().setEnterTransition(fade);
         getWindow().setExitTransition(fade);
-        mAdapter = new ytModelsAdapter(this, ytModelList);
         tabLayout = findViewById(R.id.tabLayout);
         viewPager = findViewById(R.id.viewPager);
         findViewById(R.id.back).setOnClickListener(new View.OnClickListener() {
@@ -102,6 +83,7 @@ public class ProFileActivity extends AppCompatActivity {
         name = findViewById(R.id.name);
         tabLayout.addTab(tabLayout.newTab().setText("Post"));
         tabLayout.addTab(tabLayout.newTab().setText("Achievement"));
+        tabLayout.addTab(tabLayout.newTab().setText("Challenges"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         final MyAdapter adapter = new MyAdapter(this, getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(adapter);
@@ -117,7 +99,10 @@ public class ProFileActivity extends AppCompatActivity {
         mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.child(AppConstant.verified).getValue() != null)
+                    name.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.verified, 0);
                 bio.setText(dataSnapshot.child(AppConstant.bio).getValue(String.class));
+                title.setText(dataSnapshot.child(AppConstant.title).getValue(String.class));
                 SharedPreferences sharedPreferences = getSharedPreferences(userid, 0);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString(AppConstant.bio, bio.getText().toString()).apply();
@@ -146,7 +131,7 @@ public class ProFileActivity extends AppCompatActivity {
 
             }
         });
-       // getProfileInfo();
+        // getProfileInfo();
         //  prepareytModelData();
     }
 
@@ -155,11 +140,14 @@ public class ProFileActivity extends AppCompatActivity {
         super.onResume();
         sharedPreferences = getSharedPreferences(userid, 0);
         Glide.with(ProFileActivity.this).load(sharedPreferences.getString(AppConstant.myPicUrl, "")).apply(new RequestOptions().circleCrop()).placeholder(R.drawable.game_avatar).into(imgProfile);
+        Glide.with(ProFileActivity.this).load("https://yt3.ggpht.com/OlpmWQZZxLMk97J_2sXOKMFTEmbwiGH80EqRY45EMa5y5yyCf2QHJ2OfYGYfPcZWNN-Z0ohHrw=s900-c-k-c0x00ffffff-no-rj").placeholder(R.drawable.game_avatar).into(title_pic);
         if (userid.equals(appConstant.getId()))
-            name.setText(sharedPreferences.getString(AppConstant.userName, ""));
+            name.setText(sharedPreferences.getString(AppConstant.name, ""));
         else
-            name.setText(sharedPreferences.getString(AppConstant.phoneNumber, "").equals("") ? sharedPreferences.getString(AppConstant.userName, "") : appConstant.getContactName(sharedPreferences.getString(AppConstant.phoneNumber, "")));
-            bio.setText(sharedPreferences.getString(AppConstant.bio, ""));
+            name.setText(sharedPreferences.getString(AppConstant.phoneNumber, "").equals("") ? sharedPreferences.getString(AppConstant.name, "") : appConstant.getContactName(sharedPreferences.getString(AppConstant.phoneNumber, "")));
+        bio.setText(sharedPreferences.getString(AppConstant.bio, ""));
+        userName.setText("@"+sharedPreferences.getString(AppConstant.userId,"Player"+System.currentTimeMillis()+""));
+        title.setText(sharedPreferences.getString(AppConstant.title, ""));
     }
 
     public void getProfileInfo() {

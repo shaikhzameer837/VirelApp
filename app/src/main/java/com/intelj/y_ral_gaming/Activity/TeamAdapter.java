@@ -62,7 +62,7 @@ public class TeamAdapter extends RecyclerView.Adapter<TeamAdapter.MyViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull TeamAdapter.MyViewHolder holder, final int position) {
-        holder.title.setText(userInfoList.get(position).child(AppConstant.userName).getValue() + "");
+        holder.title.setText(userInfoList.get(position).child(AppConstant.name).getValue() + "");
         Glide.with(mContext)
                 .load(userInfoList.get(position).child(AppConstant.myPicUrl).getValue() + "")
                 .placeholder(R.drawable.game_avatar).circleCrop()

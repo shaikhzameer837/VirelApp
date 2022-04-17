@@ -19,7 +19,6 @@ import androidx.appcompat.app.AlertDialog;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.intelj.y_ral_gaming.AppController;
 import com.intelj.y_ral_gaming.PaymentActivity;
@@ -27,7 +26,6 @@ import com.intelj.y_ral_gaming.PaymentActivity;
 import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Map;
 
 public class AppConstant {
     public static String follow = "follow";
@@ -86,13 +84,16 @@ public class AppConstant {
             paymentHistory = "phist",
             discordId = "discordId",
             bio = "bio",
+            verified = "verified",
             pubgId = "pubgId",
             youtubeApiKey = "AIzaSyBQiqtYCe51DtHvGhJOjO20Vv9Y_uzRyks",
             splashscreen = "splashscreen",
-            userName = "userName",
+            name = "userName",
+            userName = "user_Name",
             bookingid = "bookingid",
             defaultImg = "https://yt3.ggpht.com/QqynpcFTpxocimFedssJVvoqGQppiMZRH5SUbIZdX3_BZH4zrlBMrWApGFUusYNziMGLdC9DpA=w2120-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj",
             username_search = "username";
+    public static final String[] player_title = {"Sniper","Noob","Sentinel","Camper","Pro","Smurf","Strategic"};
     private static final int SECOND_MILLIS = 1000;
     private static final int MINUTE_MILLIS = 60 * SECOND_MILLIS;
     private static final int HOUR_MILLIS = 60 * MINUTE_MILLIS;
@@ -169,14 +170,17 @@ public class AppConstant {
         return myInfo.getString(countryCode, "");
     }
 
-    public void saveUserInfo(String phoneNum, String userid, String profile, String name, String _countryCode) {
+    public void saveUserInfo(String phoneNum, String userid, String profile, String name, String _countryCode, String user_bio, String userName) {
         SharedPreferences userInfo = _context.getSharedPreferences(userid, Context.MODE_PRIVATE);
         userInfo.edit().putString(id, userid).apply();
         userInfo.edit().putString(myPicUrl, profile).apply();
         userInfo.edit().putString(phoneNumber, phoneNum).apply();
+        if (user_bio != null)
+            userInfo.edit().putString(bio, user_bio).apply();
         if (name != null)
-            userInfo.edit().putString(userName, name).apply();
+            userInfo.edit().putString(AppConstant.name, name).apply();
         userInfo.edit().putString(countryCode, _countryCode).apply();
+        userInfo.edit().putString(userId, userName).apply();
     }
 
     public String getContactName(String phoneNumber) {

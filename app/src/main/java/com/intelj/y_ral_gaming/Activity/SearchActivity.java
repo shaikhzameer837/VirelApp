@@ -51,7 +51,7 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void performSearch() {
-        mDatabase.orderByChild(AppConstant.userName).equalTo(search.getText().toString()).addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabase.orderByChild(AppConstant.name).equalTo(search.getText().toString()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {

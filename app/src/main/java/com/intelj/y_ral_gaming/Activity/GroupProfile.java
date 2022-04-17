@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -46,7 +45,6 @@ import com.intelj.y_ral_gaming.model.UserListModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -146,7 +144,7 @@ public class GroupProfile extends AppCompatActivity {
         for (String s : set) {
             SharedPreferences sharedpreferences = getSharedPreferences(s, Context.MODE_PRIVATE);
             userListModel.add(new UserListModel(sharedpreferences.getString(AppConstant.myPicUrl, ""),
-                    sharedpreferences.getString(AppConstant.userName, ""),
+                    sharedpreferences.getString(AppConstant.name, ""),
                     sharedpreferences.getString(AppConstant.phoneNumber, ""), s));
         }
 

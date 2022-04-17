@@ -48,7 +48,7 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.MyViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         holder.desc.setText("#"+(position +1)+" rank");
-        holder.name.setText(dataSnapshots.get(position).child(AppConstant.pinfo).child(AppConstant.userName).getValue()+"");
+        holder.name.setText(dataSnapshots.get(position).child(AppConstant.pinfo).child(AppConstant.name).getValue()+"");
         holder.count_win.setText(dataSnapshots.get(position).child(AppConstant.count_win).getValue() == null ? "0" :dataSnapshots.get(position).child(AppConstant.count_win).getValue()+"");
         Glide.with(mContext).load(dataSnapshots.get(position).child(AppConstant.pinfo).child(AppConstant.myPicUrl).getValue()+"").placeholder(R.drawable.game_avatar).circleCrop().into(holder.imgs);
     }

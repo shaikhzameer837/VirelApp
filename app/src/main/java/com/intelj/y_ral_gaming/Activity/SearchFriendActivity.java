@@ -190,7 +190,7 @@ public class SearchFriendActivity extends AppCompatActivity {
         for (String s : set) {
             SharedPreferences sharedpreferences = getSharedPreferences(s, Context.MODE_PRIVATE);
             userListModel.add(new UserListModel(sharedpreferences.getString(AppConstant.myPicUrl, ""),
-                    sharedpreferences.getString(AppConstant.userName, ""),
+                    sharedpreferences.getString(AppConstant.name, ""),
                     sharedpreferences.getString(AppConstant.phoneNumber, ""), s));
         }
         userListModel2.addAll(userListModel);
@@ -298,16 +298,16 @@ public class SearchFriendActivity extends AppCompatActivity {
                         set.add(childDataSnap.getKey());
                         SharedPreferences sharedpreferences = getSharedPreferences(childDataSnap.getKey(), Context.MODE_PRIVATE);
                         SharedPreferences.Editor editors = sharedpreferences.edit();
-                        editors.putString(AppConstant.userName, childDataSnap.child(AppConstant.pinfo).child(AppConstant.userName).getValue() + "");
+                        editors.putString(AppConstant.name, childDataSnap.child(AppConstant.pinfo).child(AppConstant.name).getValue() + "");
                         editors.putString(AppConstant.phoneNumber, childDataSnap.child(AppConstant.phoneNumber).getValue() + "");
                         editors.putString(AppConstant.myPicUrl, childDataSnap.child(AppConstant.pinfo).child(AppConstant.myPicUrl).getValue() + "");
                         editors.putString(AppConstant.discordId, childDataSnap.child(AppConstant.pinfo).child(AppConstant.discordId).getValue() + "");
                         for (Map.Entry<String, Boolean> entry : AppController.getInstance().gameNameHashmap.entrySet()) {
                             editors.putString(entry.getKey(), childDataSnap.child(AppConstant.pinfo).child(entry.getKey()).getValue() + "");
-                            editors.putString(entry.getKey()+ "_" + AppConstant.userName, childDataSnap.child(AppConstant.pinfo).child(entry.getKey()+ "_" + AppConstant.userName).getValue() == null ? "" : childDataSnap.child(AppConstant.pinfo).child(entry.getKey()+ "_" + AppConstant.userName).getValue() + "");
+                            editors.putString(entry.getKey()+ "_" + AppConstant.name, childDataSnap.child(AppConstant.pinfo).child(entry.getKey()+ "_" + AppConstant.name).getValue() == null ? "" : childDataSnap.child(AppConstant.pinfo).child(entry.getKey()+ "_" + AppConstant.name).getValue() + "");
                         }
                         editors.apply();
-                        Log.e("xyz123myPicUrl", childDataSnap.child(AppConstant.pinfo).child(AppConstant.userName).getValue() + "");
+                        Log.e("xyz123myPicUrl", childDataSnap.child(AppConstant.pinfo).child(AppConstant.name).getValue() + "");
                     }
                     if (contactList.size() == x) {
                         editor.putStringSet(AppConstant.users, set);

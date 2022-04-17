@@ -393,12 +393,13 @@ public class SigninActivity extends AppCompatActivity {
                                 String expiry_date = obj.getString("expiry_date");
                                 String referal = obj.getString("referal");
                                 String discord = obj.getString("discord");
+                                String userName = obj.getString("userName");
                                 String name = obj.getString("name");
                                 String profile = obj.getString("profile");
                                 String uniqueId = obj.getString("id");
                                 SharedPreferences sharedPreferences = getSharedPreferences(uniqueId, 0);
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                                editor.putString(AppConstant.userName, name);
+                                editor.putString(AppConstant.name, name);
                                 editor.putString(AppConstant.discordId, discord);
                                 editor.putString(AppConstant.myPicUrl, profile);
                                 editor.apply();
@@ -407,6 +408,8 @@ public class SigninActivity extends AppCompatActivity {
                                 AppController.getInstance().userId = uniqueId;
                                 mDatabase.child(AppController.getInstance().userId).child(AppConstant.phoneNumber).
                                         setValue(_countryCode+_phoneNumber);
+                                mDatabase.child(AppController.getInstance().userId).child(AppConstant.userName).
+                                        setValue(userName);
                                 login.put(AppConstant.countryCode, _countryCode);
                                 realTime.put(AppConstant.deviceId, Settings.Secure.getString(getContentResolver(),
                                         Settings.Secure.ANDROID_ID));
@@ -419,7 +422,7 @@ public class SigninActivity extends AppCompatActivity {
                                 mDatabase.child(AppController.getInstance().userId).child(AppConstant.realTime).
                                         updateChildren(realTime);
                                 appConstant.saveLogin(AppController.getInstance().userId);
-                                appConstant.saveUserInfo(_phoneNumber, AppController.getInstance().userId, "http://y-ral-gaming.com/admin/api/images/" + AppController.getInstance().userId + ".png?u=" + (System.currentTimeMillis() / 1000), name,_countryCode);
+                                appConstant.saveUserInfo(_phoneNumber, AppController.getInstance().userId, "http://y-ral-gaming.com/admin/api/images/" + AppController.getInstance().userId + ".png?u=" + (System.currentTimeMillis() / 1000), name,_countryCode,null,userName);
                                 AppController.getInstance().getReadyForCheckin();
                                 Log.e("Exception","success 2");
                                 AppController.getInstance().progressDialog = null;

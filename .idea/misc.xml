@@ -35,6 +35,7 @@
         <entry key="..\:/Android Projects/y-ral-gaming/app/src/main/res/menu/bottom_navigation_menu.xml" value="0.25416666666666665" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/drawable-v24/trophy_outline.xml" value="0.1" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/drawable/account.xml" value="0.1465" />
+        <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/drawable/arrow.xml" value="0.159" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/drawable/background_with_shadow.xml" value="0.23697916666666666" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/drawable/border.xml" value="0.23697916666666666" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/drawable/border_round.xml" value="0.1555" />
@@ -49,8 +50,10 @@
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/drawable/help.xml" value="0.23697916666666666" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/drawable/hold.xml" value="0.1465" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/drawable/ic_coin.xml" value="0.14666666666666667" />
+        <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/drawable/ic_ig_id.xml" value="0.159" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/drawable/info.xml" value="0.1835" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/drawable/instagram.xml" value="0.23697916666666666" />
+        <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/drawable/menu_down.xml" value="0.159" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/drawable/more.xml" value="0.1" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/drawable/refresh_circle.xml" value="0.1465" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/drawable/round.xml" value="0.1835" />
@@ -60,6 +63,7 @@
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/drawable/trophy.xml" value="0.12395833333333334" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/drawable/trophy_outline.xml" value="0.1" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/drawable/upload.xml" value="0.23697916666666666" />
+        <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/drawable/verified.xml" value="0.1" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/drawable/youtube.xml" value="0.12239583333333333" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/layout/activity_demo.xml" value="0.15715579710144928" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/layout/activity_main.xml" value="0.15353260869565216" />
@@ -90,7 +94,7 @@
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/layout/note_list_row.xml" value="0.13134057971014493" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/layout/payment.xml" value="0.161231884057971" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/layout/payment_row.xml" value="0.16621376811594202" />
-        <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/layout/profile_activity.xml" value="0.3333333333333333" />
+        <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/layout/profile_activity.xml" value="0.16666666666666666" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/layout/rank.xml" value="0.13134057971014493" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/layout/register_match.xml" value="0.13858695652173914" />
         <entry key="..\:/Desktop/y-ral-gaming/app/src/main/res/layout/result.xml" value="0.18" />

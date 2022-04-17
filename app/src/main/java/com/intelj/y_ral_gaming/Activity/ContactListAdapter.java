@@ -3,6 +3,7 @@ package com.intelj.y_ral_gaming.Activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,6 +54,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
     public void onBindViewHolder(MyViewHolder holder, int position) {
         holder.name.setText(contactModel.get(position).getName());
         //holder.lastMess.setText(contactModel.get(position).getUserid());
+        Log.e("contactModel",contactModel.get(position).getProfile());
         Glide.with(mContext).load(contactModel.get(position).getProfile()).placeholder(R.drawable.game_avatar).apply(new RequestOptions().circleCrop()).into(holder.iv_profile);
 //        holder.iv_profile.setOnClickListener(new View.OnClickListener() {
 //            @Override

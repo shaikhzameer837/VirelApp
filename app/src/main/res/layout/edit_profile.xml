@@ -47,16 +47,16 @@
         android:src="@drawable/game_avatar" />
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/ref"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
         android:layout_below="@+id/lin"
-        android:id="@+id/ref"
-        android:visibility="gone"
-        android:layout_toRightOf="@+id/imgs"
+        android:layout_marginLeft="15dp"
         android:layout_marginTop="10dp"
-        android:layout_marginRight="15dp">
+        android:layout_marginRight="15dp"
+        android:layout_toRightOf="@+id/imgs"
+        android:visibility="gone">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/bios"
@@ -71,24 +71,24 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/lin"
         android:layout_marginLeft="15dp"
         android:layout_marginTop="10dp"
-        android:visibility="gone"
-        android:layout_below="@+id/lin"
+        android:layout_marginRight="15dp"
         android:layout_toRightOf="@+id/imgs"
-        android:layout_marginRight="15dp">
+        android:visibility="gone">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/referal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:enabled="true"
-            android:editable="false"
-            android:id="@+id/referal"
-            android:singleLine="false"
-            android:textColor="#aaaaaa"
             android:layout_marginLeft="15dp"
             android:drawableRight="@drawable/content_copy"
+            android:editable="false"
+            android:enabled="true"
             android:hint=" Referal Id"
+            android:singleLine="false"
+            android:textColor="#aaaaaa"
             android:textSize="14sp" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -96,11 +96,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/ref"
-        android:visibility="gone"
         android:layout_marginLeft="30dp"
         android:layout_toRightOf="@+id/imgs"
         android:text="Invite friends and win 25rs per invite"
-        android:textSize="12sp" />
+        android:textSize="12sp"
+        android:visibility="gone" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -135,11 +135,11 @@
             android:layout_marginRight="15dp">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/discordId"
+                android:id="@+id/userName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:enabled="false"
-                android:hint="Discord Id"
+                android:hint="user name"
                 android:textSize="14sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -159,14 +159,35 @@
                 android:textSize="14sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="15dp">
+
+
+            <com.intelj.y_ral_gaming.Utils.TextInputAutoCompleteTextView
+                android:id="@+id/autoCompleteTextView1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableRight="@drawable/close"
+                android:padding="13dp"
+                android:textSize="13sp"
+                android:hint="Gaming Title"
+                android:text="" />
+        </com.google.android.material.textfield.TextInputLayout>
+
     </LinearLayout>
+
     <androidx.appcompat.widget.AppCompatButton
-        android:layout_width="match_parent"
-        android:text="Done"
         android:id="@+id/done"
-        android:visibility="gone"
-        android:textColor="@color/colorPrimary"
-        android:background="@color/colorPrimaryDark"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_height="wrap_content"/>
+        android:background="@color/colorPrimaryDark"
+        android:text="Done"
+        android:textColor="@color/colorPrimary"
+        android:visibility="gone" />
 </RelativeLayout>

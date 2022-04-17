@@ -11,6 +11,7 @@
         android:id="@+id/refresh"
         android:paddingLeft="15dp"
         android:gravity="center_vertical"
+        android:drawableRight="@drawable/refresh_circle"
         android:background="@drawable/curved_drawable"
         android:textColor="@color/black"
         android:layout_height="45dp"/>
