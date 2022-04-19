@@ -65,21 +65,13 @@ public class SplashScreenStory extends AppCompatActivity implements StoriesProgr
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         priceMoney = findViewById(R.id.priceMoney);
-        priceMoney.setText("collect 25 coins");
+        priceMoney.setText("collect 5 coins For Daily login");
         appConstant = new AppConstant(this);
         mDatabase = FirebaseDatabase.getInstance().getReference(appConstant.users);
         priceMoney.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (appConstant.checkLogin()) {
-                    long nextCoinTime = (System.currentTimeMillis() / 1000) + 86400;
-                    appConstant.setCoins(appConstant.getCoins() + 25, nextCoinTime);
-                    mDatabase.child(AppController.getInstance().userId).child(appConstant.coin).setValue(appConstant.getCoins());
-                    mDatabase.child(AppController.getInstance().userId).child(appConstant.nextCoinTime).setValue(nextCoinTime);
-                    priceMoney.setEnabled(false);
-                    Toast.makeText(SplashScreenStory.this, "50 coins collected ", Toast.LENGTH_LONG).show();
-                } else
-                    Toast.makeText(SplashScreenStory.this, "Please register to earn the coin ", Toast.LENGTH_LONG).show();
+
             }
         });
 
@@ -148,22 +140,23 @@ public class SplashScreenStory extends AppCompatActivity implements StoriesProgr
     public void onNext() {
         Glide.with(SplashScreenStory.this).load(posterImage.get(++counter)).into(image);
         desc.setText(imageText.size() > 0 ? imageText.get(counter) : "");
-        if (counter == 1 && appConstant.getNextCoinTime() < (System.currentTimeMillis() / 1000))
-            priceMoney.setVisibility(View.VISIBLE);
-        else
-            priceMoney.setVisibility(View.GONE);
+//        if (counter == 1 && appConstant.getNextCoinTime() < (System.currentTimeMillis() / 1000))
+//            priceMoney.setVisibility(View.VISIBLE);
+//        else
+//            priceMoney.setVisibility(View.GONE);
     }
 
     @Override
     public void onPrev() {
         if ((counter - 1) < 0) return;
         Glide.with(SplashScreenStory.this).load(posterImage.get(--counter)).into(image);
-        desc.setText(imageText.size() > 0 ? imageText.get(counter) : "");
+      //  desc.setText(imageText.size() > 0 ? imageText.get(counter) : "");
 
     }
 
     @Override
     public void onComplete() {
+
         AppController.getInstance().startToRunActivity();
     }
 

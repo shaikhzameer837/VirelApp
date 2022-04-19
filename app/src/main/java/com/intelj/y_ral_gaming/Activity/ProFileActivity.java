@@ -140,7 +140,7 @@ public class ProFileActivity extends AppCompatActivity {
         super.onResume();
         sharedPreferences = getSharedPreferences(userid, 0);
         Glide.with(ProFileActivity.this).load(sharedPreferences.getString(AppConstant.myPicUrl, "")).apply(new RequestOptions().circleCrop()).placeholder(R.drawable.game_avatar).into(imgProfile);
-        Glide.with(ProFileActivity.this).load("https://yt3.ggpht.com/OlpmWQZZxLMk97J_2sXOKMFTEmbwiGH80EqRY45EMa5y5yyCf2QHJ2OfYGYfPcZWNN-Z0ohHrw=s900-c-k-c0x00ffffff-no-rj").placeholder(R.drawable.game_avatar).into(title_pic);
+       // Glide.with(ProFileActivity.this).load("https://yt3.ggpht.com/OlpmWQZZxLMk97J_2sXOKMFTEmbwiGH80EqRY45EMa5y5yyCf2QHJ2OfYGYfPcZWNN-Z0ohHrw=s900-c-k-c0x00ffffff-no-rj").placeholder(R.drawable.game_avatar).into(title_pic);
         if (userid.equals(appConstant.getId()))
             name.setText(sharedPreferences.getString(AppConstant.name, ""));
         else

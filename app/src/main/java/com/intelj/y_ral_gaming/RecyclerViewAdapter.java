@@ -29,7 +29,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public RecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // Inflate Layout
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.movie_list_row, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.popular_list, parent, false);
         return new RecyclerViewHolder(view);
     }
 

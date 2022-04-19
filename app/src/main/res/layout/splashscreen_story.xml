@@ -45,7 +45,7 @@
         android:background="#80000000"
         android:gravity="center"
         android:padding="10dp"
-        android:text="asfewfwseagf"
+        android:text="Welcome to Y-ral Gaming"
         android:textColor="@color/colorPrimary" />
 
     <LinearLayout

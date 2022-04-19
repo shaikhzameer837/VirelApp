@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.intelj.y_ral_gaming.Activity.MainActivity;
 import com.intelj.y_ral_gaming.Activity.ProFileActivity;
 import com.intelj.y_ral_gaming.PopularModel;
 import com.intelj.y_ral_gaming.R;
@@ -28,7 +27,7 @@ public class PopularAdapter extends RecyclerView.Adapter<PopularAdapter.MyViewHo
     Context mContext;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView title, genre;
+        public TextView title, genre,count;
         ImageView imgs;
 
         public MyViewHolder(View view) {
@@ -36,6 +35,7 @@ public class PopularAdapter extends RecyclerView.Adapter<PopularAdapter.MyViewHo
             title = view.findViewById(R.id.title);
             genre = view.findViewById(R.id.genre);
             imgs = view.findViewById(R.id.imgs);
+            count = view.findViewById(R.id.count);
         }
     }
 
@@ -48,7 +48,7 @@ public class PopularAdapter extends RecyclerView.Adapter<PopularAdapter.MyViewHo
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.movie_list_row, parent, false);
+                .inflate(R.layout.popular_list, parent, false);
 
         return new MyViewHolder(itemView);
     }
@@ -58,6 +58,7 @@ public class PopularAdapter extends RecyclerView.Adapter<PopularAdapter.MyViewHo
         PopularModel movie = moviesList.get(position);
         holder.title.setText(movie.getImg_name());
         holder.genre.setText(movie.getTotal_coins() + "");
+        holder.count.setText("#"+(position + 1)+ "");
         holder.imgs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
