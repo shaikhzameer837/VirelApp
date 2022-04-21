@@ -75,22 +75,22 @@ public class SplashScreenStory extends AppCompatActivity implements StoriesProgr
             }
         });
 
-        String splashscreen = AppController.getInstance().remoteConfig.getString(AppConstant.splashscreen);
-        try {
-            JSONObject jsonObject = new JSONObject(splashscreen);
-            JSONArray keys = jsonObject.names();
-            for (int i = 0; i < keys.length(); i++) {
-                String key = keys.getString(i); // Here's your key
-                String value = jsonObject.getString(key);
-                posterImage.add(key);
-                imageText.add(value);
-            }
-
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-            FirebaseCrashlytics.getInstance().recordException(e);
-        }
+//        String splashscreen = AppController.getInstance().remoteConfig.getString(AppConstant.splashscreen);
+//        try {
+//            JSONObject jsonObject = new JSONObject(splashscreen);
+//            JSONArray keys = jsonObject.names();
+//            for (int i = 0; i < keys.length(); i++) {
+//                String key = keys.getString(i); // Here's your key
+//                String value = jsonObject.getString(key);
+//                posterImage.add(key);
+//                imageText.add(value);
+//            }
+//
+//
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//            FirebaseCrashlytics.getInstance().recordException(e);
+//        }
         storiesProgressView = findViewById(R.id.stories);
         storiesProgressView.setStoriesCount(PROGRESS_COUNT);
         storiesProgressView.setStoryDuration(3000L);
@@ -98,14 +98,13 @@ public class SplashScreenStory extends AppCompatActivity implements StoriesProgr
         storiesProgressView.startStories(counter);
         image = findViewById(R.id.image);
         desc = findViewById(R.id.desc);
-        if (posterImage.size() == 0) {
+      //  if (posterImage.size() == 0) {
             final String[] resources = new String[]{
                     "https://cdnb.artstation.com/p/assets/images/images/025/525/671/large/as-editor-pubg-poster.jpg?1586085669",
                     "https://www.thehindu.com/sci-tech/technology/w0t8kp/article33084076.ece/alternates/FREE_615/pubg-indiaJPG",
-                    "https://static.displate.com/857x1200/displate/2020-07-23/9deff3383d395493cdd7ea395cc7800b_ca0037f2de2d6f9aff59a7bd843df0b5.jpg",
-            };
+                    "https://m.media-amazon.com/images/M/MV5BNmNhM2NjMTgtNmIyZC00ZmVjLTk4YWItZmZjNGY2NThiNDhkXkEyXkFqcGdeQXVyODU4MDU1NjU@._V1_.jpg"};
             posterImage = Arrays.asList(resources);
-        }
+       // }
 
         Glide.with(SplashScreenStory.this).load(posterImage.get(0)).fitCenter().into(image);
         desc.setText(imageText.size() > 0 ? imageText.get(0) : "");

@@ -231,7 +231,7 @@ public class SigninActivity extends AppCompatActivity {
                     Toast.makeText(SigninActivity.this, "Please fill pubg id", Toast.LENGTH_LONG).show();
                     return;
                 }
-                mDatabase.orderByChild(appConstant.userId).equalTo(_pgUsername).addListenerForSingleValueEvent(new ValueEventListener() {
+                mDatabase.orderByChild(appConstant.getId()).equalTo(_pgUsername).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
@@ -247,7 +247,7 @@ public class SigninActivity extends AppCompatActivity {
                                 }
                             }
                         }
-                        mDatabase.child(AppController.getInstance().userId).child(appConstant.userId).
+                        mDatabase.child(AppController.getInstance().userId).child(appConstant.getId()).
                                 setValue(_pgUsername);
                         registerdOnServer();
 

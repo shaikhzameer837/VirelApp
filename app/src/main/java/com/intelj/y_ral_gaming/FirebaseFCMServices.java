@@ -208,7 +208,7 @@ public class FirebaseFCMServices extends FirebaseMessagingService {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put("user_id", new AppConstant(FirebaseFCMServices.this).getUserId());
+                params.put("user_id", new AppConstant(FirebaseFCMServices.this).getId());
                 params.put("token", token);
                 return params;
             }

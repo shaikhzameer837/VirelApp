@@ -56,6 +56,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class EditProfile extends AppCompatActivity {
@@ -141,7 +142,7 @@ public class EditProfile extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(TI_userName.getText().toString().equals(sharedPreferences.getString(AppConstant.userId, ""))){
+                if(TI_userName.getText().toString().equals(sharedPreferences.getString(AppConstant.userName, ""))){
                     userName = TI_userName.getText().toString();
                     TI_userName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check, 0);
                     TI_userName.setError(null);
@@ -165,9 +166,9 @@ public class EditProfile extends AppCompatActivity {
         playerName.setText(sharedPreferences.getString(AppConstant.name, "Player"));
         bio.setText(sharedPreferences.getString(AppConstant.bio, ""));
         tv_title.setText(sharedPreferences.getString(AppConstant.title, ""));
-        TI_userName.setText(sharedPreferences.getString(AppConstant.userId, ""));
+        userName = sharedPreferences.getString(AppConstant.userName, "");
+        TI_userName.setText(userName);
         TI_userName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check, 0);
-        userName = sharedPreferences.getString(AppConstant.userId, "");
         imgProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -192,6 +193,7 @@ public class EditProfile extends AppCompatActivity {
                         if(postSnapshot.getKey().equals(appConstant.getId())){
                             Toast.makeText(EditProfile.this, "User name available ", Toast.LENGTH_SHORT).show();
                             TI_userName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check, 0);
+                            TI_userName.setError(null);
                         }else{
                             Toast.makeText(EditProfile.this, "User name unavailable ", Toast.LENGTH_SHORT).show();
                             TI_userName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.close, 0);
@@ -201,6 +203,7 @@ public class EditProfile extends AppCompatActivity {
                     userName = TI_userName.getText().toString();
                     Toast.makeText(EditProfile.this, "User name available ", Toast.LENGTH_SHORT).show();
                     TI_userName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check, 0);
+                    TI_userName.setError(null);
                 }
             }
 
@@ -237,7 +240,7 @@ public class EditProfile extends AppCompatActivity {
                 Map<String, String> params = new HashMap<>();
                 params.put("user_id", new AppConstant(EditProfile.this).getId());
                 params.put("name", playerName.getText().toString() + "");
-                params.put("userName", TI_userName.getText().toString() + "");
+                params.put("userName", TI_userName.getText().toString().toLowerCase() + "");
                 return params;
             }
 
@@ -328,7 +331,7 @@ public class EditProfile extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences(new AppConstant(this).getId(), 0);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(AppConstant.name, playerName.getText().toString());
-        editor.putString(AppConstant.userId, TI_userName.getText().toString());
+        editor.putString(AppConstant.userName, TI_userName.getText().toString());
         editor.putString(AppConstant.bio, bio.getText().toString());
         editor.putString(AppConstant.title, tv_title.getText().toString());
         if (imageUrl != null) {
@@ -341,6 +344,8 @@ public class EditProfile extends AppCompatActivity {
                 setValue(bio.getText().toString());
         mDatabase.child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.title).
                 setValue(tv_title.getText().toString());
+       mDatabase.child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.name).
+                setValue(playerName.getText().toString());
        mDatabase.child(AppController.getInstance().userId).child(AppConstant.userName).
                 setValue(TI_userName.getText().toString());
         Toast.makeText(EditProfile.this, "Profile Updated Successfully", Toast.LENGTH_LONG).show();

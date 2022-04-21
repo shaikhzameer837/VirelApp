@@ -35,7 +35,7 @@ public class AppConstant {
     public static String AppName = "Y-Ral Gaming",
             login = "login",
             phoneNumber = "phoneNumber",
-            userId = "userId",
+           // userId = "userId",
             id = "id",
             amount = "amount",
             ad_mobs = "ca-app-pub-4340305355612346/9283952361",
@@ -89,7 +89,7 @@ public class AppConstant {
             youtubeApiKey = "AIzaSyBQiqtYCe51DtHvGhJOjO20Vv9Y_uzRyks",
             splashscreen = "splashscreen",
             name = "userName",
-            userName = "user_Name",
+            userName = "un",
             bookingid = "bookingid",
             defaultImg = "https://yt3.ggpht.com/QqynpcFTpxocimFedssJVvoqGQppiMZRH5SUbIZdX3_BZH4zrlBMrWApGFUusYNziMGLdC9DpA=w2120-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj",
             username_search = "username";
@@ -162,7 +162,7 @@ public class AppConstant {
     public void saveLogin(String user_id) {
         setSharedPref();
         sharedPreferences.edit().putBoolean(login, true).apply();
-        sharedPreferences.edit().putString(userId, user_id).apply();
+        sharedPreferences.edit().putString(id, user_id).apply();
     }
 
     public String getCountryCode() {
@@ -180,7 +180,7 @@ public class AppConstant {
         if (name != null)
             userInfo.edit().putString(AppConstant.name, name).apply();
         userInfo.edit().putString(countryCode, _countryCode).apply();
-        userInfo.edit().putString(userId, userName).apply();
+        userInfo.edit().putString(userName, userName).apply();
     }
 
     public String getContactName(String phoneNumber) {
@@ -271,9 +271,9 @@ public class AppConstant {
         return sharedPreferences.getLong(nextCoinTime, 0);
     }
 
-    public String getUserId() {
+    public String getUserName() {
         setSharedPref();
-        return sharedPreferences.getString(userId, "");
+        return sharedPreferences.getString(userName, "");
     }
 
     public String getId() {

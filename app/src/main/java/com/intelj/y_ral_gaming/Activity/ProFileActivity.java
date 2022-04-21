@@ -33,6 +33,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.intelj.y_ral_gaming.AppController;
 import com.intelj.y_ral_gaming.Fragment.OneFragment;
 import com.intelj.y_ral_gaming.R;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
@@ -87,14 +88,19 @@ public class ProFileActivity extends AppCompatActivity {
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         final MyAdapter adapter = new MyAdapter(this, getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(adapter);
-        if (userid.equals(appConstant.getId()))
+        if (userid.equals(appConstant.getId())) {
             findViewById(R.id.edit_profile).setVisibility(View.VISIBLE);
-        findViewById(R.id.edit_profile).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(ProFileActivity.this, EditProfile.class));
-            }
-        });
+            findViewById(R.id.edit_profile).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(ProFileActivity.this, EditProfile.class));
+                }
+            });
+        }else if(AppController.getInstance().popularList.get(userid) != null){
+            TextView popular = findViewById(R.id.popular);
+            popular.setVisibility(View.VISIBLE);
+            popular.setText("Popularity #" + (AppController.getInstance().popularList.get(userid)));
+        }
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference(AppConstant.users).child(userid).child(AppConstant.pinfo);
         mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -146,7 +152,7 @@ public class ProFileActivity extends AppCompatActivity {
         else
             name.setText(sharedPreferences.getString(AppConstant.phoneNumber, "").equals("") ? sharedPreferences.getString(AppConstant.name, "") : appConstant.getContactName(sharedPreferences.getString(AppConstant.phoneNumber, "")));
         bio.setText(sharedPreferences.getString(AppConstant.bio, ""));
-        userName.setText("@"+sharedPreferences.getString(AppConstant.userId,"Player"+System.currentTimeMillis()+""));
+        userName.setText("@"+sharedPreferences.getString(AppConstant.userName,"Player"+System.currentTimeMillis()+""));
         title.setText(sharedPreferences.getString(AppConstant.title, ""));
     }
 

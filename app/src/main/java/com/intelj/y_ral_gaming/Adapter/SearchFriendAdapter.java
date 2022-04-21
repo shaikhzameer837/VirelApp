@@ -1,8 +1,6 @@
 package com.intelj.y_ral_gaming.Adapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.database.DataSnapshot;
-import com.intelj.y_ral_gaming.Activity.NewProfileActivity;
-import com.intelj.y_ral_gaming.AppController;
 import com.intelj.y_ral_gaming.R;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 

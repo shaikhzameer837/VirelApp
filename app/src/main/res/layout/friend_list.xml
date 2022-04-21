@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="10dp"
+    android:layout_marginLeft="5dp"
     android:layout_marginTop="5dp"
     android:layout_marginRight="10dp"
     android:background="@color/colorPrimary"
@@ -13,17 +13,17 @@
 
     <ImageView
         android:id="@+id/profilePic"
-        android:layout_width="60dp"
-        android:layout_height="60dp" />
+        android:layout_width="50dp"
+        android:layout_height="50dp" />
 
     <TextView
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="4dp"
+        android:layout_marginLeft="5dp"
         android:layout_toRightOf="@+id/profilePic"
+        android:textColor="@color/black"
         android:text="Game starts at 8am"
-        android:textSize="16dp"
         android:textStyle="bold" />
 
     <TextView
@@ -31,13 +31,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/title"
-        android:layout_margin="5dp"
-        android:padding="5dp"
-        android:gravity="center"
-        android:textSize="12dp"
-        android:background="@color/grey"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
         android:layout_toRightOf="@+id/profilePic"
-        android:drawableLeft="@drawable/add"
+        android:background="@color/grey"
+        android:gravity="center"
+        android:padding="5dp"
         android:text="remove from team"
-        android:textColor="@color/textcolor" />
+        android:textColor="@color/textcolor"
+        android:textSize="12dp" />
 </RelativeLayout>

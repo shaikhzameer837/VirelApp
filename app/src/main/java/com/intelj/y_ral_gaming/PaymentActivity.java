@@ -45,7 +45,7 @@ public class PaymentActivity extends AppCompatActivity {
         setContentView(R.layout.payment);
         WebView webView = findViewById(R.id.webview);
         String amount = getIntent().getStringExtra("amount");
-        String user_id = new AppConstant(this).getUserId();
+        String user_id = new AppConstant(this).getId();
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setGeolocationEnabled(true);
@@ -177,7 +177,7 @@ public class PaymentActivity extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put("user_id", new AppConstant(PaymentActivity.this).getUserId());
+                params.put("user_id", new AppConstant(PaymentActivity.this).getId());
                 int versionCode = BuildConfig.VERSION_CODE;
                 params.put("version", versionCode + "");
                 params.put("match_id", date);

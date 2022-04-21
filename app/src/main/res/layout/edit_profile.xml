@@ -139,6 +139,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:enabled="false"
+                android:digits="abcdefghijklmnopqrstuvwxyz_.1234567890"
                 android:hint="user name"
                 android:textSize="14sp" />
         </com.google.android.material.textfield.TextInputLayout>

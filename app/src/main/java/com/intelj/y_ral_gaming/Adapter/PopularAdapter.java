@@ -59,6 +59,7 @@ public class PopularAdapter extends RecyclerView.Adapter<PopularAdapter.MyViewHo
         holder.title.setText(movie.getImg_name());
         holder.genre.setText(movie.getTotal_coins() + "");
         holder.count.setText("#"+(position + 1)+ "");
+        holder.imgs.setTag(position);
         holder.imgs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,7 +67,6 @@ public class PopularAdapter extends RecyclerView.Adapter<PopularAdapter.MyViewHo
                 String transitionName = "fade";
                 View transitionView = holder.imgs;
                 ViewCompat.setTransitionName(transitionView, transitionName);
-
                 ActivityOptionsCompat options = ActivityOptionsCompat.
                         makeSceneTransitionAnimation((Activity) mContext, transitionView, transitionName);
                 intent.putExtra("userid", moviesList.get(position).getUser_id());

@@ -1,7 +1,6 @@
 package com.intelj.y_ral_gaming.Adapter;
 
 import android.content.Context;
-import android.graphics.Movie;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,10 +10,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.intelj.y_ral_gaming.Activity.NewProfileActivity;
-import com.intelj.y_ral_gaming.AppController;
 import com.intelj.y_ral_gaming.R;
-import com.intelj.y_ral_gaming.Utils.AppConstant;
 import com.intelj.y_ral_gaming.model.DemoRecyclerviewModel;
 
 import java.util.List;

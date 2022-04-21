@@ -29,6 +29,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.intelj.y_ral_gaming.Activity.MainActivity;
+import com.intelj.y_ral_gaming.Activity.SearchActivity;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 
 import org.json.JSONArray;
@@ -39,6 +40,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 public class AppController extends Application implements Application.ActivityLifecycleCallbacks {
@@ -61,7 +63,7 @@ public class AppController extends Application implements Application.ActivityLi
     public int amount = 0;
     public List<GameItem> movieList = new ArrayList<>();
     public GameItem gameItem;
-
+    public HashMap<String,Integer> popularList = new HashMap<>();
     @Override
     public void onCreate() {
         super.onCreate();
@@ -82,8 +84,8 @@ public class AppController extends Application implements Application.ActivityLi
     public void getReadyForCheckin() {
         appConstant = new AppConstant(this);
         if (new AppConstant(this).checkLogin()) {
-            userId = appConstant.getUserId();
-            Log.e("userId", userId);
+            userId = appConstant.getId();
+            Log.e("userIdx", userId);
             getUserInfo();
         }
     }
@@ -92,7 +94,7 @@ public class AppController extends Application implements Application.ActivityLi
 
     private void getUserInfo() {
         x = 0;
-        Log.e("userId1", userId);
+        Log.e("userId1s", userId);
         mDatabase = FirebaseDatabase.getInstance().getReference(AppConstant.users).child(userId);
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
@@ -114,14 +116,16 @@ public class AppController extends Application implements Application.ActivityLi
                 if (dataSnapshot.child(AppConstant.userName).getValue() == null){
                     String userName = "Player"+System.currentTimeMillis();
                     mDatabase.child(AppConstant.userName).setValue("Player"+System.currentTimeMillis());
-                    editor.putString(AppConstant.userId, userName).apply();
-                }
+                    editor.putString(AppConstant.userName, userName).apply();
+                }else
+                    editor.putString(AppConstant.userName, dataSnapshot.child(AppConstant.userName).getValue(String.class)).apply();
                 if (mySnapShort.child(AppConstant.bio).getValue() != null) {
                     editor.putString(AppConstant.bio, mySnapShort.child(AppConstant.bio).getValue().toString()).apply();
                 }
                 if (mySnapShort.child(AppConstant.title).getValue() != null) {
                     editor.putString(AppConstant.title, mySnapShort.child(AppConstant.title).getValue().toString()).apply();
-                }
+                }else
+                    mDatabase.child(AppConstant.pinfo).child(AppConstant.title).setValue(AppConstant.player_title[new Random().nextInt(AppConstant.player_title.length)]);
                 if (!dataSnapshot.child(AppConstant.phoneNumber).getValue(String.class).startsWith("+")) {
                     HashMap<String, Object> phoneNumberUpdate = new HashMap<>();
                     phoneNumberUpdate.put(AppConstant.phoneNumber, appConstant.getCountryCode() + appConstant.getPhoneNumber());
@@ -139,8 +143,8 @@ public class AppController extends Application implements Application.ActivityLi
 
     public void startToRunActivity() {
         Intent intent = new Intent(this, MainActivity.class);
-        if (!userId.isEmpty() && !new AppConstant(this).getFriendCheck())
-            intent = new Intent(this, MainActivity.class);//UserInfoCheck.class);
+//        if (!userId.isEmpty() && !new AppConstant(this).getFriendCheck())
+//            intent = new Intent(this, SearchActivity.class);//UserInfoCheck.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
     }
