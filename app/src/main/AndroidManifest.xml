@@ -90,6 +90,7 @@
         <activity android:name=".Activity.GroupProfile" />
         <activity android:name=".PaymentActivity" />
         <activity android:name=".ResultActivity" />
+        <activity android:name=".Activity.EventInfo" />
 
         <service
             android:name=".FirebaseFCMServices"

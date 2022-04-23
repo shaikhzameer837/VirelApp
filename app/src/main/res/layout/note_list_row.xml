@@ -12,6 +12,7 @@
         android:id="@+id/images"
         android:layout_width="60dp"
         android:layout_height="90dp"
+        android:transitionName="fade"
         android:layout_marginRight="10dp"
         android:scaleType="centerCrop"
         android:src="@mipmap/app_logo" />

@@ -44,7 +44,6 @@ import java.util.List;
 import java.util.Map;
 
 public class ProFileActivity extends AppCompatActivity {
-    private List<ytModel> ytModelList = new ArrayList<>();
     TextView txt;
     String userid;
     SharedPreferences sharedPreferences;

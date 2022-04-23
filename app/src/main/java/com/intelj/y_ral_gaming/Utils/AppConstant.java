@@ -91,7 +91,6 @@ public class AppConstant {
             name = "userName",
             userName = "un",
             bookingid = "bookingid",
-            defaultImg = "https://yt3.ggpht.com/QqynpcFTpxocimFedssJVvoqGQppiMZRH5SUbIZdX3_BZH4zrlBMrWApGFUusYNziMGLdC9DpA=w2120-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj",
             username_search = "username";
     public static final String[] player_title = {"Sniper","Noob","Sentinel","Camper","Pro","Smurf","Strategic"};
     private static final int SECOND_MILLIS = 1000;

@@ -107,7 +107,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
         holder.prizepool.setText("Per Kill \u20B9" + gameItem.get(position).getPerKill());
 //        String strDate = title + " " + date + " " + movieList.get(position).getTime().replace("pm", ":00:00 pm")
 //                .replace("am", ":00:00 am");
-        Glide.with(mContext).load(gameItem.get(position).getYt_url().equals("") ? AppConstant.defaultImg : "https://i.ytimg.com/vi/" + gameItem.get(position).getYt_url() + "/hqdefault_live.jpg").placeholder(R.mipmap.app_logo).into(holder.imgs);
+        Glide.with(mContext).load(gameItem.get(position).getYt_url().equals("") ? R.drawable.placeholder : "https://i.ytimg.com/vi/" + gameItem.get(position).getYt_url() + "/hqdefault_live.jpg").placeholder(R.mipmap.app_logo).into(holder.imgs);
         holder.imgs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

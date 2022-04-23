@@ -108,14 +108,14 @@ import com.intelj.y_ral_gaming.AppController;
 import com.intelj.y_ral_gaming.ContactListModel;
 import com.intelj.y_ral_gaming.Fragment.BottomSheetDilogFragment;
 import com.intelj.y_ral_gaming.Fragment.OneFragment;
-import com.intelj.y_ral_gaming.NotificationAdapter;
+import com.intelj.y_ral_gaming.TournamentAdapter;
 import com.intelj.y_ral_gaming.PopularModel;
 import com.intelj.y_ral_gaming.R;
 import com.intelj.y_ral_gaming.SigninActivity;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 import com.intelj.y_ral_gaming.Utils.RecyclerTouchListener;
 import com.intelj.y_ral_gaming.VolleyMultipartRequest;
-import com.intelj.y_ral_gaming.model.NotificationModel;
+import com.intelj.y_ral_gaming.model.TournamentModel;
 import com.intelj.y_ral_gaming.model.PaymentHistoryModel;
 import com.intelj.y_ral_gaming.model.UserListModel;
 
@@ -759,15 +759,15 @@ public class MainActivity extends AppCompatActivity {
         }
         wAmount = selected.getText().toString();
     }
-
+    BottomSheetDialog paymentBottomSheet;
     private void showCoins() {
         wAmount = "";
         String[] payTypeList = {"Redeem Amount"};
         String[] paymentTypeList = {"Google Pay", "PhonePe", "paytm"};
-        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
-        bottomSheetDialog.setContentView(R.layout.money_sheet);
-        EditText upi = bottomSheetDialog.findViewById(R.id.upi);
-        Spinner payment_system = bottomSheetDialog.findViewById(R.id.payment_system);
+        paymentBottomSheet = new BottomSheetDialog(this);
+        paymentBottomSheet.setContentView(R.layout.money_sheet);
+        EditText upi = paymentBottomSheet.findViewById(R.id.upi);
+        Spinner payment_system = paymentBottomSheet.findViewById(R.id.payment_system);
         upi.addTextChangedListener(new TextWatcher() {
 
             @Override
@@ -785,7 +785,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        Spinner spin = bottomSheetDialog.findViewById(R.id.spinner);
+        Spinner spin = paymentBottomSheet.findViewById(R.id.spinner);
         payment_system.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -816,8 +816,8 @@ public class MainActivity extends AppCompatActivity {
         spin.setAdapter(aa);
 
 
-        moneyList = bottomSheetDialog.findViewById(R.id.moneyList);
-        bottomSheetDialog.findViewById(R.id.btn_next).setOnClickListener(new View.OnClickListener() {
+        moneyList = paymentBottomSheet.findViewById(R.id.moneyList);
+        paymentBottomSheet.findViewById(R.id.btn_next).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!new AppConstant(MainActivity.this).checkLogin()) {
@@ -836,7 +836,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                     if (upi.getText().toString().trim().contains("@") || android.text.TextUtils.isDigitsOnly(upi.getText().toString())) {
                         requestMoney(upi.getText().toString());
-                        bottomSheetDialog.dismiss();
                     } else {
                         upi.setError("Invalid upi id / paytm number");
                         upi.requestFocus();
@@ -846,13 +845,13 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        bottomSheetDialog.findViewById(R.id.add_money).setOnClickListener(new View.OnClickListener() {
+        paymentBottomSheet.findViewById(R.id.add_money).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 new AppConstant(MainActivity.this).addMoney(MainActivity.this);
             }
         });
-        bottomSheetDialog.show();
+        paymentBottomSheet.show();
     }
 
     private void requestMoney(String upi) {
@@ -868,6 +867,7 @@ public class MainActivity extends AppCompatActivity {
                         Log.e("onClick3", response);
 
                         progressDialog.cancel();
+                        paymentBottomSheet.dismiss();
                         try {
                             JSONObject obj = new JSONObject(response);
                             if (!obj.getBoolean("success"))
@@ -1153,7 +1153,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void showEvents() {
         inflateView(R.layout.rank);
-        List<NotificationModel> notificationModelList = new ArrayList<>();
+        List<TournamentModel> tournamentModelList = new ArrayList<>();
         TextView title = inflated.findViewById(R.id.title);
         title.setText("Tournament");
         recyclerView = inflated.findViewById(R.id.recycler_view);
@@ -1174,14 +1174,15 @@ public class MainActivity extends AppCompatActivity {
 
                             for (int i = 0; i < array.length(); i++) {
                                 JSONObject obj = array.getJSONObject(i);
-                                notificationModelList.add(new NotificationModel(obj.getString("name"),
+                                tournamentModelList.add(new TournamentModel(obj.getString("name"),
                                         obj.getString("game_name"),
                                         obj.getString("image_url"),
                                         obj.getString("date"),
                                         obj.getString("status"),
+                                        obj.getString("team_list"),
                                         obj.getString("discord_url")));
                             }
-                            NotificationAdapter pAdapter = new NotificationAdapter(MainActivity.this, notificationModelList, true);
+                            TournamentAdapter pAdapter = new TournamentAdapter(MainActivity.this, tournamentModelList, true);
                             recyclerView.setAdapter(pAdapter);
                         } catch (Exception e) {
                             Log.e("error Rec", e.getMessage());
@@ -1217,10 +1218,19 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
-                String url = notificationModelList.get(position).getDiscord_url();
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(url));
-                startActivity(i);
+//                String url = notificationModelList.get(position).getDiscord_url();
+//                Intent i = new Intent(Intent.ACTION_VIEW);
+//                i.setData(Uri.parse(url));
+//                startActivity(i);
+                Intent intent = new Intent(MainActivity.this, EventInfo.class);
+                String transitionName = "fade";
+                View transitionView = view.findViewById(R.id.images);
+                ViewCompat.setTransitionName(transitionView, transitionName);
+                ActivityOptionsCompat options = ActivityOptionsCompat.
+                        makeSceneTransitionAnimation(MainActivity.this, transitionView, transitionName);
+                //intent.putExtra("userid", moviesList.get(position).getUser_id());
+                AppController.getInstance().tournamentModel = tournamentModelList.get(position);
+               startActivity(intent, options.toBundle());
             }
 
             @Override
@@ -1232,7 +1242,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void showNotification() {
-        List<NotificationModel> notificationModelList = new ArrayList<>();
+        List<TournamentModel> tournamentModelList = new ArrayList<>();
         TextView title = inflated.findViewById(R.id.title);
         title.setText("Prize Claim History");
         recyclerView = inflated.findViewById(R.id.recycler_view);
@@ -1256,15 +1266,16 @@ public class MainActivity extends AppCompatActivity {
                             }
                             for (int i = 0; i < array.length(); i++) {
                                 JSONObject obj = array.getJSONObject(i);
-                                notificationModelList.add(
-                                        new NotificationModel(obj.getString("name"),
+                                tournamentModelList.add(
+                                        new TournamentModel(obj.getString("name"),
                                                 "",
                                                 obj.getString("image_url"),
                                                 obj.getString("date"),
                                                 obj.getString("status"),
+                                                obj.getString("status"),
                                                 obj.getString("comment")));
                             }
-                            NotificationAdapter pAdapter = new NotificationAdapter(MainActivity.this, notificationModelList, false);
+                            TournamentAdapter pAdapter = new TournamentAdapter(MainActivity.this, tournamentModelList, false);
                             recyclerView.setAdapter(pAdapter);
                         } catch (Exception e) {
                             Log.e("error Rec", e.getMessage());

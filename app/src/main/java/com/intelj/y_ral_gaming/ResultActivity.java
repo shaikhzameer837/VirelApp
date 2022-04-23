@@ -92,7 +92,7 @@ public class ResultActivity extends AppCompatActivity {
                 type.setText("Type \n Squad");
                 break;
         }
-        Glide.with(mContext).load(AppController.getInstance().gameItem.getYt_url().equals("") ? AppConstant.defaultImg  : "https://i.ytimg.com/vi/"+AppController.getInstance().gameItem.getYt_url()+"/hqdefault_live.jpg").placeholder(R.mipmap.app_logo).into(yt);
+        Glide.with(mContext).load(AppController.getInstance().gameItem.getYt_url().equals("") ? R.drawable.placeholder  : "https://i.ytimg.com/vi/"+AppController.getInstance().gameItem.getYt_url()+"/hqdefault_live.jpg").placeholder(R.mipmap.app_logo).into(yt);
         yt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
