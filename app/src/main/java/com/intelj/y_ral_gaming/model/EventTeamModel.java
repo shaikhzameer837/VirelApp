@@ -1,11 +1,11 @@
-package com.intelj.y_ral_gaming;
+package com.intelj.y_ral_gaming.model;
 
-public class PopularModel {
-    String img_url,user_name,total_coins,user_id;
-    public PopularModel(String img_url,String user_name,String total_coins,String user_id) {
+public class EventTeamModel {
+    String img_url,user_name, teamMember,user_id;
+    public EventTeamModel(String img_url, String user_name, String teamMember, String user_id) {
         this.img_url = img_url;
         this.user_name = user_name;
-        this.total_coins = total_coins;
+        this.teamMember = teamMember;
         this.user_id = user_id;
     }
 
@@ -33,11 +33,12 @@ public class PopularModel {
         this.user_name = user_name;
     }
 
-    public String getTotal_coins() {
-        return total_coins;
+    public String getTeamMember() {
+        return teamMember;
     }
 
-    public void setTotal_coins(String total_coins) {
-        this.total_coins = total_coins;
+    public void setTeamMember(String teamMember) {
+        this.teamMember = teamMember;
     }
 }
+

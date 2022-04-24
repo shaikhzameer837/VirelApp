@@ -415,7 +415,7 @@ public class MainActivity extends AppCompatActivity {
 //                                showTeam();
 //                                return true;
                             case R.id.tournament:
-                                showEvents();
+                                showTournament();
                                 return true;
                             case R.id.history:
                                 inflateView(R.layout.history);
@@ -1151,7 +1151,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void showEvents() {
+    private void showTournament() {
         inflateView(R.layout.rank);
         List<TournamentModel> tournamentModelList = new ArrayList<>();
         TextView title = inflated.findViewById(R.id.title);

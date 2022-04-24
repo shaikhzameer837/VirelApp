@@ -26,7 +26,8 @@ public class EventInfo extends AppCompatActivity {
     ImageView iv_cover_pic;
     TabLayout tabLayout;
     ViewPager viewPager;
-    TextView tv_title,tv_date;
+    TextView tv_title, tv_date;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,11 +52,31 @@ public class EventInfo extends AppCompatActivity {
         tabLayout.addTab(tabLayout.newTab().setText("Team"));
         tabLayout.addTab(tabLayout.newTab().setText("Prize Pool"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+
         final MyEventAdapter adapter = new MyEventAdapter(this, getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(adapter);
-        Glide.with(this).load(AppController.getInstance().tournamentModel.getImage_url()).placeholder(R.drawable.placeholder).into(iv_cover_pic);
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener(){
 
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+
+                viewPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+        Glide.with(this).load(AppController.getInstance().tournamentModel.getImage_url()).placeholder(R.drawable.placeholder).into(iv_cover_pic);
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
     }
+
     public class MyEventAdapter extends FragmentPagerAdapter {
 
         private Context myContext;
@@ -75,13 +96,12 @@ public class EventInfo extends AppCompatActivity {
                     TeamFragment homeFragment = new TeamFragment();
                     return homeFragment;
                 case 1:
-                    TeamFragment sportFragment = new TeamFragment();
-                    return sportFragment;
+                    return new TeamFragment();
                 case 2:
-                    TeamFragment movieFragment = new TeamFragment();
+                    OneFragment movieFragment = new OneFragment();
                     return movieFragment;
                 default:
-                    return null;
+                    return new TeamFragment();
             }
         }
 
