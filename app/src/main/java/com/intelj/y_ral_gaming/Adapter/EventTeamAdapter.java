@@ -18,6 +18,7 @@ import com.intelj.y_ral_gaming.ContactListModel;
 import com.intelj.y_ral_gaming.R;
 import com.intelj.y_ral_gaming.model.EventTeamModel;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -58,36 +59,42 @@ public class EventTeamAdapter extends RecyclerView.Adapter<EventTeamAdapter.MyVi
         EventTeamModel eventTeamModel = eventTeamModelList.get(position);
         holder.title.setText(eventTeamModel.getImg_name());
         holder.imgs.setTag(position);
-        holder.imgs.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(mContext);
-                bottomSheetDialog.setContentView(R.layout.contacts);
-                TextView title = bottomSheetDialog.findViewById(R.id.refresh);
-                title.setText(eventTeamModel.getImg_name());
-                bottomSheetDialog.findViewById(R.id.la_contact).setVisibility(View.GONE);
-                RecyclerView userRecyclerView = bottomSheetDialog.findViewById(R.id.rv_contact);
-                ArrayList<ContactListModel> contactModel = new ArrayList<>();
-                try {
-                    JSONObject jsonObject = new JSONObject(eventTeamModel.getTeamMember());
+        try {
+            JSONObject jsonObject = new JSONObject(eventTeamModel.getTeamMember());
+            holder.imgs.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(mContext);
+                    bottomSheetDialog.setContentView(R.layout.contacts);
+                    TextView title = bottomSheetDialog.findViewById(R.id.refresh);
+                    title.setText(eventTeamModel.getImg_name());
+                    title.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                    bottomSheetDialog.findViewById(R.id.la_contact).setVisibility(View.GONE);
+                    RecyclerView userRecyclerView = bottomSheetDialog.findViewById(R.id.rv_contact);
+                    ArrayList<ContactListModel> contactModel = new ArrayList<>();
                     Iterator<String> keys = jsonObject.keys();
                     while (keys.hasNext()) {
                         String key = keys.next();
-                        if (jsonObject.get(key) instanceof JSONObject) {
-                            Log.e("lcat teamObj", ((JSONObject) jsonObject.get(key)).getString("ingName"));
-                            contactModel.add(new ContactListModel("http://y-ral-gaming.com/admin/api/images/"+key+".png?u=" + (System.currentTimeMillis() / 1000), ((JSONObject) jsonObject.get(key)).getString("ingName"), key, ""));
+                        try {
+                            if (jsonObject.get(key) instanceof JSONObject) {
+                                Log.e("lcat teamObj", ((JSONObject) jsonObject.get(key)).getString("ingName"));
+                                contactModel.add(new ContactListModel("http://y-ral-gaming.com/admin/api/images/" + key + ".png?u=" + (System.currentTimeMillis() / 1000), ((JSONObject) jsonObject.get(key)).getString("ingName"), key, ""));
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
                     }
-                }catch (Exception e){
 
+                    ContactListAdapter userListAdapter = new ContactListAdapter(mContext, contactModel);
+                    RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext);
+                    userRecyclerView.setLayoutManager(mLayoutManager);
+                    userRecyclerView.setAdapter(userListAdapter);
+                    bottomSheetDialog.show();
                 }
-                ContactListAdapter userListAdapter = new ContactListAdapter(mContext, contactModel);
-                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext);
-                userRecyclerView.setLayoutManager(mLayoutManager);
-                userRecyclerView.setAdapter(userListAdapter);
-                bottomSheetDialog.show();
-            }
-        });
+            });
+        } catch (Exception e) {
+
+        }
         Glide.with(mContext).load(eventTeamModel.getImg_url()).placeholder(R.drawable.placeholder).into(holder.imgs);
     }
 

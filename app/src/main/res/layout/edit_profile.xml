@@ -139,6 +139,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:enabled="false"
+                android:inputType="text|textEmailAddress"
                 android:digits="abcdefghijklmnopqrstuvwxyz_.1234567890"
                 android:hint="user name"
                 android:textSize="14sp" />
@@ -167,17 +168,16 @@
             android:layout_marginLeft="15dp"
             android:layout_marginTop="10dp"
             android:layout_marginRight="15dp">
-
-
             <com.intelj.y_ral_gaming.Utils.TextInputAutoCompleteTextView
                 android:id="@+id/autoCompleteTextView1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:drawableRight="@drawable/close"
-                android:padding="13dp"
-                android:textSize="13sp"
                 android:hint="Gaming Title"
-                android:text="" />
+                android:padding="13dp"
+                android:text=""
+                android:textSize="13sp" />
+
         </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
@@ -191,4 +191,6 @@
         android:text="Done"
         android:textColor="@color/colorPrimary"
         android:visibility="gone" />
+
+
 </RelativeLayout>

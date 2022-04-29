@@ -91,6 +91,7 @@
         <activity android:name=".PaymentActivity" />
         <activity android:name=".ResultActivity" />
         <activity android:name=".Activity.EventInfo" />
+        <activity android:name=".Activity.NotificationActivity" />
 
         <service
             android:name=".FirebaseFCMServices"

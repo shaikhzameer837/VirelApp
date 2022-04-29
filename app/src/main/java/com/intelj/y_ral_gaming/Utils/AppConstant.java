@@ -29,13 +29,16 @@ import java.util.Calendar;
 
 public class AppConstant {
     public static String follow = "follow";
+    public static String following_count = "following_count";
+    public static String follower_count = "follower_count";
     private Context _context;
     private SharedPreferences sharedPreferences;
     private SharedPreferences myInfo;
     public static String AppName = "Y-Ral Gaming",
             login = "login",
+            profile = "profile",
             phoneNumber = "phoneNumber",
-           // userId = "userId",
+    // userId = "userId",
             id = "id",
             amount = "amount",
             ad_mobs = "ca-app-pub-4340305355612346/9283952361",
@@ -51,6 +54,7 @@ public class AppConstant {
             following = "following",
             success = "success",
             message = "message",
+            subject = "subject",
             uniqueId = "uniqueId",
             live_stream = "live_stream",
             friends = "friends",
@@ -80,6 +84,7 @@ public class AppConstant {
             game_slot = "game_slot",
             gameStreaming = "gameStreaming",
             pinfo = "pinfo",
+            noti = "noti",
             realTime = "realTime",
             paymentHistory = "phist",
             discordId = "discordId",
@@ -92,7 +97,7 @@ public class AppConstant {
             userName = "un",
             bookingid = "bookingid",
             username_search = "username";
-    public static final String[] player_title = {"Sniper","Noob","Sentinel","Camper","Pro","Smurf","Strategic"};
+    public static final String[] player_title = {"Sniper", "Noob", "Sentinel", "Camper", "Pro", "Smurf", "Strategic"};
     private static final int SECOND_MILLIS = 1000;
     private static final int MINUTE_MILLIS = 60 * SECOND_MILLIS;
     private static final int HOUR_MILLIS = 60 * MINUTE_MILLIS;
@@ -134,7 +139,7 @@ public class AppConstant {
     static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     static SecureRandom rnd = new SecureRandom();
 
-    public String randomString(int len) {
+    public static String randomString(int len) {
         StringBuilder sb = new StringBuilder(len);
         for (int i = 0; i < len; i++)
             sb.append(AB.charAt(rnd.nextInt(AB.length())));

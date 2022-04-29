@@ -1,5 +1,7 @@
 package com.intelj.y_ral_gaming;
 
+import static com.google.firebase.messaging.Constants.TAG;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Application;
@@ -15,12 +17,20 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Source;
+import com.google.firebase.firestore.model.Document;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.intelj.y_ral_gaming.Activity.MainActivity;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
@@ -33,6 +43,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class AppController extends Application implements Application.ActivityLifecycleCallbacks {
@@ -42,6 +53,7 @@ public class AppController extends Application implements Application.ActivityLi
     DatabaseReference mDatabase;
     public ArrayList<String> timeArray = new ArrayList<>();
     public DataSnapshot mySnapShort;
+    public DataSnapshot notification;
     public ArrayList<DataSnapshot> userInfoList;
     public HashMap<String, Boolean> gameNameHashmap = new HashMap<>();
     public ProgressDialog progressDialog = null;
@@ -56,7 +68,8 @@ public class AppController extends Application implements Application.ActivityLi
     public List<GameItem> movieList = new ArrayList<>();
     public GameItem gameItem;
     public TournamentModel tournamentModel;
-    public HashMap<String,Integer> popularList = new HashMap<>();
+    public HashMap<String, Integer> popularList = new HashMap<>();
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -89,6 +102,7 @@ public class AppController extends Application implements Application.ActivityLi
         x = 0;
         Log.e("userId1s", userId);
         mDatabase = FirebaseDatabase.getInstance().getReference(AppConstant.users).child(userId);
+        mDatabase.keepSynced(true);
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -106,24 +120,25 @@ public class AppController extends Application implements Application.ActivityLi
                 }
                 SharedPreferences sharedPreferences = getSharedPreferences(userId, 0);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                if (dataSnapshot.child(AppConstant.userName).getValue() == null){
-                    String userName = "Player"+System.currentTimeMillis();
-                    mDatabase.child(AppConstant.userName).setValue("Player"+System.currentTimeMillis());
+                if (dataSnapshot.child(AppConstant.userName).getValue() == null) {
+                    String userName = "Player" + System.currentTimeMillis();
+                    mDatabase.child(AppConstant.userName).setValue("Player" + System.currentTimeMillis());
                     editor.putString(AppConstant.userName, userName).apply();
-                }else
+                } else
                     editor.putString(AppConstant.userName, dataSnapshot.child(AppConstant.userName).getValue(String.class)).apply();
                 if (mySnapShort.child(AppConstant.bio).getValue() != null) {
                     editor.putString(AppConstant.bio, mySnapShort.child(AppConstant.bio).getValue().toString()).apply();
                 }
                 if (mySnapShort.child(AppConstant.title).getValue() != null) {
                     editor.putString(AppConstant.title, mySnapShort.child(AppConstant.title).getValue().toString()).apply();
-                }else
+                } else
                     mDatabase.child(AppConstant.pinfo).child(AppConstant.title).setValue(AppConstant.player_title[new Random().nextInt(AppConstant.player_title.length)]);
                 if (!dataSnapshot.child(AppConstant.phoneNumber).getValue(String.class).startsWith("+")) {
                     HashMap<String, Object> phoneNumberUpdate = new HashMap<>();
                     phoneNumberUpdate.put(AppConstant.phoneNumber, appConstant.getCountryCode() + appConstant.getPhoneNumber());
                     mDatabase.updateChildren(phoneNumberUpdate);
                 }
+                notification = dataSnapshot.child(AppConstant.realTime).child(AppConstant.noti);
             }
 
             @Override
@@ -133,11 +148,8 @@ public class AppController extends Application implements Application.ActivityLi
         });
     }
 
-
     public void startToRunActivity() {
         Intent intent = new Intent(this, MainActivity.class);
-//        if (!userId.isEmpty() && !new AppConstant(this).getFriendCheck())
-//            intent = new Intent(this, SearchActivity.class);//UserInfoCheck.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
     }

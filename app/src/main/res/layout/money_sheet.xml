@@ -36,6 +36,14 @@
             android:background="@drawable/outline"
             android:onClick="WidthDrawAmount"
             android:padding="15dp"
+            android:text="25"
+            android:textColor="@color/black" />
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/outline"
+            android:onClick="WidthDrawAmount"
+            android:padding="15dp"
             android:text="50"
             android:textColor="@color/black" />
 

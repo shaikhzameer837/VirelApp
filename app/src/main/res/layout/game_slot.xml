@@ -6,6 +6,7 @@
     android:background="@drawable/background_with_shadow"
     android:elevation="8dp"
     android:orientation="vertical"
+    android:layout_marginBottom="10dp"
     android:theme="@style/Theme.MaterialComponents.DayNight.DarkActionBar"
     app:behavior_hideable="false"
     app:behavior_peekHeight="356dp"
@@ -40,7 +41,7 @@
         <EditText
             android:id="@+id/ign"
             android:layout_width="0dp"
-            android:layout_height="45dp"
+            android:layout_height="40dp"
             android:layout_weight="1"
             android:text="Daily Free Giveaway matches"
             android:background="@android:color/transparent"
@@ -52,7 +53,7 @@
             android:singleLine="true"
             android:textColor="@color/black"
             android:textColorHint="@color/grey_black"
-            android:textSize="14sp"
+            android:textSize="12sp"
             android:textStyle="bold" />
 
         <ImageView
@@ -65,42 +66,7 @@
             android:src="@drawable/ic_edit" />
     </LinearLayout>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:background="@drawable/curved_drawable"
-        android:orientation="horizontal"
-        android:visibility="gone">
 
-        <TextView
-            android:id="@+id/coin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:background="@android:color/transparent"
-            android:drawableStart="@drawable/ic_coin"
-            android:gravity="center"
-            android:padding="10dp"
-            android:text=" coins"
-            android:textColor="@color/black"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/subscription"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:fadingEdge="horizontal"
-            android:gravity="center"
-            android:marqueeRepeatLimit="marquee_forever"
-            android:padding="10dp"
-            android:scrollHorizontally="true"
-            android:singleLine="true"
-            android:text="Buy Pro Subscription"
-            android:textColor="@color/black"
-            android:textStyle="bold" />
-    </RelativeLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -113,6 +79,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         app:tabGravity="fill"
+        android:background="@color/colorPrimary"
         app:tabIndicatorColor="@color/black"
         app:tabMode="scrollable" />
 

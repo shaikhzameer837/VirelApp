@@ -4,13 +4,17 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Html;
 import android.transition.Fade;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -27,12 +31,21 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 import com.intelj.y_ral_gaming.AppController;
 import com.intelj.y_ral_gaming.Fragment.OneFragment;
 import com.intelj.y_ral_gaming.R;
@@ -47,11 +60,15 @@ public class ProFileActivity extends AppCompatActivity {
     TextView txt;
     String userid;
     SharedPreferences sharedPreferences;
-    ImageView imgProfile,title_pic;
+    ImageView imgProfile, title_pic;
     TabLayout tabLayout;
     ViewPager viewPager;
     AppConstant appConstant;
-    TextView name, bio,title,userName;
+    TextView name, bio, title, userName, follower_count, following_count, edit_profile;
+    private FirebaseFirestore db;
+    long followers = 0;
+    long following = 0;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,7 +79,10 @@ public class ProFileActivity extends AppCompatActivity {
         userName = findViewById(R.id.userName);
         bio = findViewById(R.id.bio);
         title_pic = findViewById(R.id.title_pic);
+        follower_count = findViewById(R.id.follower_count);
+        following_count = findViewById(R.id.following_count);
         title = findViewById(R.id.title);
+        edit_profile = findViewById(R.id.edit_profile);
         Fade fade = new Fade();
         appConstant = new AppConstant(this);
         userid = getIntent().getStringExtra("userid");
@@ -74,6 +94,7 @@ public class ProFileActivity extends AppCompatActivity {
         getWindow().setExitTransition(fade);
         tabLayout = findViewById(R.id.tabLayout);
         viewPager = findViewById(R.id.viewPager);
+        db = FirebaseFirestore.getInstance();
         findViewById(R.id.back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,29 +109,72 @@ public class ProFileActivity extends AppCompatActivity {
         final MyAdapter adapter = new MyAdapter(this, getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(adapter);
         if (userid.equals(appConstant.getId())) {
-            findViewById(R.id.edit_profile).setVisibility(View.VISIBLE);
-            findViewById(R.id.edit_profile).setOnClickListener(new View.OnClickListener() {
+            edit_profile.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     startActivity(new Intent(ProFileActivity.this, EditProfile.class));
                 }
             });
-        }else if(AppController.getInstance().popularList.get(userid) != null){
+        }
+        if (AppController.getInstance().popularList.get(userid) != null) {
             TextView popular = findViewById(R.id.popular);
             popular.setVisibility(View.VISIBLE);
             popular.setText("Popularity #" + (AppController.getInstance().popularList.get(userid)));
         }
-        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference(AppConstant.users).child(userid).child(AppConstant.pinfo);
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference(AppConstant.users).child(userid);
         mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.child(AppConstant.verified).getValue() != null)
+            public void onDataChange(DataSnapshot snapshot) {
+                DataSnapshot dataSnapshot = snapshot.child(AppConstant.pinfo);
+                if (dataSnapshot.child(AppConstant.verified).getValue() != null)
                     name.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.verified, 0);
                 bio.setText(dataSnapshot.child(AppConstant.bio).getValue(String.class));
                 title.setText(dataSnapshot.child(AppConstant.title).getValue(String.class));
                 SharedPreferences sharedPreferences = getSharedPreferences(userid, 0);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString(AppConstant.bio, bio.getText().toString()).apply();
+                if (!userid.equals(appConstant.getId())) {
+                    if (!snapshot.child(AppConstant.profile).child(AppConstant.follower).child(appConstant.getId()).exists()) {
+                        edit_profile.setText("follow");
+                        edit_profile.setTextColor(Color.WHITE);
+                        edit_profile.setBackgroundResource(R.drawable.curved_blue);
+                    } else {
+                        edit_profile.setText("unfollow");
+                        edit_profile.setTextColor(Color.parseColor("#333333"));
+                        edit_profile.setBackgroundResource(R.drawable.curved_white);
+                    }
+                    edit_profile.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if(edit_profile.getText().toString().equals("follow")) {
+                                FirebaseDatabase.getInstance().getReference(AppConstant.users).child(userid).child(AppConstant.profile).child(AppConstant.follower).child(appConstant.getId()).setValue((System.currentTimeMillis() / 1000));
+                                FirebaseDatabase.getInstance().getReference(AppConstant.users).child(appConstant.getId()).child(AppConstant.profile).child(AppConstant.following).child(userid).setValue((System.currentTimeMillis() / 1000));
+                                HashMap<String,String> hashMap = new HashMap<>();
+                                hashMap.put(AppConstant.subject,"follow");
+                                hashMap.put(AppConstant.id,appConstant.getId());
+                                FirebaseDatabase.getInstance().getReference(AppConstant.users).child(userid).child(AppConstant.realTime).child(AppConstant.noti).child((System.currentTimeMillis() / 1000)+"").setValue(hashMap);
+                                followers = followers + 1;
+                                follower_count.setText(Html.fromHtml("<b><font size='14' color='#000000'>" + followers + "</font></b> <br/>Follower"));
+                                edit_profile.setText("unfollow");
+                                edit_profile.setTextColor(Color.parseColor("#333333"));
+                                edit_profile.setBackgroundResource(R.drawable.curved_white);
+                            }else{
+                                FirebaseDatabase.getInstance().getReference(AppConstant.users).child(userid).child(AppConstant.profile).child(AppConstant.follower).child(appConstant.getId()).removeValue();
+                                FirebaseDatabase.getInstance().getReference(AppConstant.users).child(appConstant.getId()).child(AppConstant.profile).child(AppConstant.following).child(userid).removeValue();
+                                followers = followers - 1;
+                                follower_count.setText(Html.fromHtml("<b><font size='14' color='#000000'>" + followers + "</font></b> <br/>Follower"));
+                                edit_profile.setText("follow");
+                                edit_profile.setTextColor(Color.WHITE);
+                                edit_profile.setBackgroundResource(R.drawable.curved_blue);
+                            }
+                        }
+                    });
+                }
+                followers = snapshot.child(AppConstant.profile).child(AppConstant.follower).getChildrenCount();
+                following = snapshot.child(AppConstant.profile).child(AppConstant.following).getChildrenCount();
+                follower_count.setText(Html.fromHtml("<b><font size='14' color='#000000'>" + followers + "</font></b> <br/>Follower"));
+                following_count.setText(Html.fromHtml("<b><font size='14' color='#000000'>" + following + "</font></b> <br/>Following"));
+
             }
 
             @Override
@@ -118,6 +182,9 @@ public class ProFileActivity extends AppCompatActivity {
 
             }
         });
+
+
+
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -145,13 +212,13 @@ public class ProFileActivity extends AppCompatActivity {
         super.onResume();
         sharedPreferences = getSharedPreferences(userid, 0);
         Glide.with(ProFileActivity.this).load(sharedPreferences.getString(AppConstant.myPicUrl, "")).apply(new RequestOptions().circleCrop()).placeholder(R.drawable.game_avatar).into(imgProfile);
-       // Glide.with(ProFileActivity.this).load("https://yt3.ggpht.com/OlpmWQZZxLMk97J_2sXOKMFTEmbwiGH80EqRY45EMa5y5yyCf2QHJ2OfYGYfPcZWNN-Z0ohHrw=s900-c-k-c0x00ffffff-no-rj").placeholder(R.drawable.game_avatar).into(title_pic);
+        // Glide.with(ProFileActivity.this).load("https://yt3.ggpht.com/OlpmWQZZxLMk97J_2sXOKMFTEmbwiGH80EqRY45EMa5y5yyCf2QHJ2OfYGYfPcZWNN-Z0ohHrw=s900-c-k-c0x00ffffff-no-rj").placeholder(R.drawable.game_avatar).into(title_pic);
         if (userid.equals(appConstant.getId()))
             name.setText(sharedPreferences.getString(AppConstant.name, ""));
         else
             name.setText(sharedPreferences.getString(AppConstant.phoneNumber, "").equals("") ? sharedPreferences.getString(AppConstant.name, "") : appConstant.getContactName(sharedPreferences.getString(AppConstant.phoneNumber, "")));
         bio.setText(sharedPreferences.getString(AppConstant.bio, ""));
-        userName.setText("@"+sharedPreferences.getString(AppConstant.userName,"Player"+System.currentTimeMillis()+""));
+        userName.setText("@" + sharedPreferences.getString(AppConstant.userName, "Player" + System.currentTimeMillis() + ""));
         title.setText(sharedPreferences.getString(AppConstant.title, ""));
     }
 

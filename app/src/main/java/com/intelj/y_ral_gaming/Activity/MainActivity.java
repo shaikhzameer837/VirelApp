@@ -32,6 +32,7 @@ import android.transition.Fade;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -141,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager gameViewpager;
     BottomNavigationView bottomNavigation;
     private TabLayout tabLayout;
-    TextView textView, coins;
+    TextView coins;
     EditText ign, igid;
     private RecyclerView recyclerView, rv_popular, rv_contact;
     View inflated;
@@ -149,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
     int PROFILE_IMAGE = 11;
     ImageView imgProfile, saveProf, edit;
     String picturePath = null;
-    TextView playerName;
+    TextView playerName, ncount;
     TextInputEditText discordId;
     private Uri filePath = null;
     AlertDialog dialog;
@@ -158,9 +159,7 @@ public class MainActivity extends AppCompatActivity {
     StorageReference storageReference;
     ProgressDialog progressDialog;
     int oldId;
-    String amount = "0";
     ImageView imageView;
-    private EditText et_datetime, upi;
     private AdView mAdView;
     LinearLayout moneyList;
     String wAmount = "";
@@ -183,6 +182,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        imgProfile = findViewById(R.id.imgs);
+        ncount = findViewById(R.id.ncount);
         appConstant = new AppConstant(this);
         // requestWindowFeature(Window.FEATURE_NO_TITLE);
         //this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -191,8 +193,6 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(MainActivity.this, EditProfile.class));
             return;
         }
-        setContentView(R.layout.activity_main);
-        imgProfile = findViewById(R.id.imgs);
         Fade fade = new Fade();
         View decor = getWindow().getDecorView();
 
@@ -215,55 +215,19 @@ public class MainActivity extends AppCompatActivity {
         rv_popular = findViewById(R.id.rv_popular);
         shimmerFrameLayout = findViewById(R.id.shimmer_layout);
         getPopularFace();
-        findViewById(R.id.offers).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.notification).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this,"Coming soon",Toast.LENGTH_LONG).show();
+                startActivity(new Intent(MainActivity.this,NotificationActivity.class));
             }
         });
-        findViewById(R.id.search).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.search).setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, SearchActivity.class));
-            }
-        });
-//
-//        rv_popular.setAdapter(popularAdapter);
-//        ViewPager viewPager =  findViewById(R.id.viewpager);
-//        FirebaseDatabase.getInstance().getReference("poster").addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(final DataSnapshot dataSnapshot) {
-//                ArrayList<String> dataSnapshots = new ArrayList<>();
-//                for (DataSnapshot child : dataSnapshot.getChildren()) {
-//                    dataSnapshots.add(0, child.getValue(String.class));
-//                }
-//                viewPager.setAdapter(new CustomPagerAdapter(MainActivity.this, dataSnapshots));
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError error) {
-//
-//            }
-//        });
-//
-//        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-//            public void onPageScrollStateChanged(int state) {
-//            }
-//
-//            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-//            }
-//
-//            public void onPageSelected(int position) {
-//                if (position == 2) {
-//                    //  addviewDisplay();
-//                }
-//            }
-//        });
-
-        findViewById(R.id.lin).post(new Runnable() {
-            @Override
-            public void run() {
-//                findViewById(R.id.bottom).getLayoutParams().height = Dheight - findViewById(R.id.lin).getHeight() - findViewById(R.id.bottom_navigation).getHeight();
+            public boolean onTouch(View v, MotionEvent event) {
+                Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+                return false;
             }
         });
         findViewById(R.id.showSupport).setOnClickListener(new View.OnClickListener() {
@@ -286,99 +250,6 @@ public class MainActivity extends AppCompatActivity {
         final ViewStub stub = findViewById(R.id.layout_stub);
         stub.setLayoutResource(R.layout.game_slot);
         inflated = stub.inflate();
-//        MobileAds.initialize(this, new OnInitializationCompleteListener() {
-//            @Override
-//            public void onInitializationComplete(InitializationStatus initializationStatus) {
-//            }
-//        });
-//        AdLoader adLoader = new AdLoader.Builder(this, AppConstant.google_ad_mobs)
-//                .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
-//                    @Override
-//                    public void onNativeAdLoaded(NativeAd NativeAd) {
-//                        // Show the ad.
-//                    }
-//                })
-//                .withAdListener(new AdListener() {
-//                    @Override
-//                    public void onAdFailedToLoad(LoadAdError adError) {
-//                        // Handle the failure by logging, altering the UI, and so on.
-//                    }
-//                })
-//                .withNativeAdOptions(new NativeAdOptions.Builder()
-//                        // Methods in the NativeAdOptions.Builder class can be
-//                        // used here to specify individual options settings.
-//                        .build())
-//                .build();
-//        adLoader.loadAd(new AdRequest.Builder().build());
-//        SwipeSelector swipeSelector = findViewById(R.id.swipeSelector);
-//        swipeSelector.setItems(
-//                // The first argument is the value for that item, and should in most cases be unique for the
-//                // current SwipeSelector, just as you would assign values to radio buttons.
-//                // You can use the value later on to check what the selected item was.
-//                // The value can be any Object, here we're using ints.
-//                new SwipeItem(0, "Silver", "Earn more on Every Chicken Dinner"),
-//                new SwipeItem(1, "Gold", "it is very easy to apply for subscription"),
-//                new SwipeItem(2, "Platinum", "Free coins")
-//        );
-//        findViewById(R.id.views).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                openSubscribe();claim_now
-//            }
-//        });
-//        findViewById(R.id.discord).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                String url = "https://discord.gg/KPXDCGsmem";
-//                Intent i = new Intent(Intent.ACTION_VIEW);
-//                i.setData(Uri.parse(url));
-//                startActivity(i);
-//            }
-//        });
-//        findViewById(R.id.insta).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                String url = "https://www.instagram.com/y_ral_gaming/";
-//                Intent i = new Intent(Intent.ACTION_VIEW);
-//                i.setData(Uri.parse(url));
-//                startActivity(i);
-//            }
-//        });
-//        findViewById(R.id.help).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                String url = "https://www.youtube.com/c/YRALGaming";
-//                Intent i = new Intent(Intent.ACTION_VIEW);
-//                i.setData(Uri.parse(url));
-//                startActivity(i);
-//            }
-//        });
-//        findViewById(R.id.claim_now).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (new AppConstant(MainActivity.this).checkLogin())
-//                    showPopDialog();
-//                else
-//                    showBottomSheetDialog();
-//            }
-//        });
-//        final Handler handler = new Handler();
-//        final int delay = 5000; // 1000 milliseconds == 1 second
-
-//        handler.postDelayed(new Runnable() {
-//            public void run() {
-//                SwipeItem selectedItem = swipeSelector.getSelectedItem();
-//                int current = (Integer) selectedItem.value;
-//                if (current == 2)
-//                    current = 0;
-//                else
-//                    ++current;
-//                swipeSelector.selectItemAt(current); // Do your work here
-//                handler.postDelayed(this, delay);
-//            }
-//        }, delay);
-//        getGameName();
-//        openTopSheetDialog(roomPassword);
         setFirstView();
         oldId = bottomNavigation.getSelectedItemId();
         BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
@@ -533,22 +404,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 };
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
-//        ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-//        NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-//        if (mWifi.isConnected()) {
-//
-//        }
-//        final Handler handler = new Handler();
-//        handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                // Do something after 5s = 5000ms
-//                playYTVideo();
-//            }
-//
-//
-//        }, 5000);
-
     }
 
     class readContactTask extends AsyncTask<Void, Integer, String> {
@@ -653,25 +508,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-    public static boolean isNumeric(String str) {
-        for (char c : str.toCharArray()) {
-            if (!Character.isDigit(c)) return false;
-        }
-        return true;
-    }
-
-    private static boolean hasPermissions(Context context, String... permissions) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
-            for (String permission : permissions) {
-                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
     private void getPopularFace() {
         AppController.getInstance().popularList.clear();
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -700,7 +536,7 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             });
                             for (PopularModel popularModel : popularModels) {
-                                AppController.getInstance().popularList.put(popularModel.getUser_id(),AppController.getInstance().popularList.size()+1);
+                                AppController.getInstance().popularList.put(popularModel.getUser_id(), AppController.getInstance().popularList.size() + 1);
                             }
 //                            if(popularModels.size() > 10) {
 //                                 for (int i = 0; i < popularModels.size(); i++) {
@@ -759,7 +595,9 @@ public class MainActivity extends AppCompatActivity {
         }
         wAmount = selected.getText().toString();
     }
+
     BottomSheetDialog paymentBottomSheet;
+
     private void showCoins() {
         wAmount = "";
         String[] payTypeList = {"Redeem Amount"};
@@ -875,17 +713,12 @@ public class MainActivity extends AppCompatActivity {
 
                             new AlertDialog.Builder(MainActivity.this)
                                     .setTitle("success")
-                                    .setMessage("Payment requested you will recieve payment in 24hrs \n You Ticked id is " + obj.getString("ticked_id") + "\n click on status to check your payment request status")
-
-                                    // Specifying a listener allows you to take an action before dismissing the dialog.
-                                    // The dialog is automatically dismissed when a dialog button is clicked.
+                                    .setMessage("Payment requested you will recieve payment in 24hrs \n Your Ticked id is " + obj.getString("ticked_id") + "\n click on status to check your payment request status")
                                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int which) {
                                             // Continue with delete operation
                                         }
                                     })
-
-                                    // A null listener allows the button to dismiss the dialog and take no further action.
                                     .setNegativeButton(android.R.string.no, null)
                                     .setIcon(android.R.drawable.ic_dialog_alert)
                                     .show();
@@ -1083,21 +916,25 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (appConstant.checkLogin()) {
-            Glide.with(MainActivity.this).load(sharedPreferences.getString(AppConstant.myPicUrl, "")).placeholder(R.drawable.game_avatar).apply(new RequestOptions().circleCrop()).into(imgProfile);
+        if (appConstant.checkLogin() && imgProfile != null) {
+            Glide.with(MainActivity.this).load(sharedPreferences.getString(AppConstant.myPicUrl, "") == null ? "" : sharedPreferences.getString(AppConstant.myPicUrl, "")).placeholder(R.drawable.game_avatar).apply(new RequestOptions().circleCrop()).into(imgProfile);
             playerName = findViewById(R.id.playerName);
             playerName.setText(sharedPreferences.getString(AppConstant.name, "Player"));
-        }
-        imgProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!appConstant.checkLogin()) {
-                    showBottomSheetDialog();
-                    return;
+            imgProfile.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!appConstant.checkLogin()) {
+                        showBottomSheetDialog();
+                        return;
+                    }
+                    wayToProfile();
                 }
-                wayToProfile();
-            }
-        });
+            });
+            if (AppController.getInstance().notification == null || AppController.getInstance().notification.getChildrenCount() == 0)
+                ncount.setVisibility(View.GONE);
+            else
+                ncount.setText(AppController.getInstance().notification.getChildrenCount() + "");
+        }
         //        if (AppController.getInstance().mySnapShort != null && recyclerviewTeam != null) {
 //            teamModel.clear();
 //            for (DataSnapshot snapshot : AppController.getInstance().mySnapShort.child(AppConstant.team).getChildren()) {
@@ -1179,8 +1016,11 @@ public class MainActivity extends AppCompatActivity {
                                         obj.getString("image_url"),
                                         obj.getString("date"),
                                         obj.getString("status"),
-                                        obj.getString("team_list"),
-                                        obj.getString("discord_url")));
+                                        obj.getString("discord_url"),
+                                        obj.getString("prize_pool"),
+                                        obj.getString("info"),
+                                        obj.getString("id")
+                                ));
                             }
                             TournamentAdapter pAdapter = new TournamentAdapter(MainActivity.this, tournamentModelList, true);
                             recyclerView.setAdapter(pAdapter);
@@ -1230,7 +1070,7 @@ public class MainActivity extends AppCompatActivity {
                         makeSceneTransitionAnimation(MainActivity.this, transitionView, transitionName);
                 //intent.putExtra("userid", moviesList.get(position).getUser_id());
                 AppController.getInstance().tournamentModel = tournamentModelList.get(position);
-               startActivity(intent, options.toBundle());
+                startActivity(intent, options.toBundle());
             }
 
             @Override
@@ -1272,8 +1112,7 @@ public class MainActivity extends AppCompatActivity {
                                                 obj.getString("image_url"),
                                                 obj.getString("date"),
                                                 obj.getString("status"),
-                                                obj.getString("status"),
-                                                obj.getString("comment")));
+                                                obj.getString("comment"), "", "", ""));
                             }
                             TournamentAdapter pAdapter = new TournamentAdapter(MainActivity.this, tournamentModelList, false);
                             recyclerView.setAdapter(pAdapter);
@@ -1764,8 +1603,6 @@ public class MainActivity extends AppCompatActivity {
         igid = inflated.findViewById(R.id.igid);
         edit = inflated.findViewById(R.id.edit);
         tabLayout.setupWithViewPager(gameViewpager);
-        textView = inflated.findViewById(R.id.subscription);
-        textView.setSelected(true);
         ArrayList<String> titleList = new ArrayList<>();
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         FirebaseDatabase.getInstance().getReference("masters").child("gameList").addValueEventListener(new ValueEventListener() {
@@ -1900,7 +1737,6 @@ public class MainActivity extends AppCompatActivity {
             throw new IllegalStateException("Inflated View has not a parent");
         }
     }
-
 
 
     @Override

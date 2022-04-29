@@ -101,7 +101,7 @@ public class SplashScreenStory extends AppCompatActivity implements StoriesProgr
       //  if (posterImage.size() == 0) {
             final String[] resources = new String[]{
                     "https://cdnb.artstation.com/p/assets/images/images/025/525/671/large/as-editor-pubg-poster.jpg?1586085669",
-                    "https://www.thehindu.com/sci-tech/technology/w0t8kp/article33084076.ece/alternates/FREE_615/pubg-indiaJPG",
+                    "https://cdn-products.eneba.com/resized-products/dEdZeooTmlzeNGBKPTKCbL7Ob_wvjzO4sNYvr1f-xYU_350x200_1x-0.jpg",
                     "https://m.media-amazon.com/images/M/MV5BNmNhM2NjMTgtNmIyZC00ZmVjLTk4YWItZmZjNGY2NThiNDhkXkEyXkFqcGdeQXVyODU4MDU1NjU@._V1_.jpg"};
             posterImage = Arrays.asList(resources);
        // }
