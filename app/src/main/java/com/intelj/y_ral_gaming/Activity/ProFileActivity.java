@@ -12,9 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -31,29 +29,21 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldValue;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.SetOptions;
 import com.intelj.y_ral_gaming.AppController;
+import com.intelj.y_ral_gaming.FollowActivity;
 import com.intelj.y_ral_gaming.Fragment.OneFragment;
+import com.intelj.y_ral_gaming.Fragment.PostFragment;
 import com.intelj.y_ral_gaming.R;
+import com.intelj.y_ral_gaming.SigninActivity;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class ProFileActivity extends AppCompatActivity {
@@ -65,7 +55,6 @@ public class ProFileActivity extends AppCompatActivity {
     ViewPager viewPager;
     AppConstant appConstant;
     TextView name, bio, title, userName, follower_count, following_count, edit_profile;
-    private FirebaseFirestore db;
     long followers = 0;
     long following = 0;
 
@@ -73,7 +62,6 @@ public class ProFileActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile_activity);
-        //  FillCustomGradient(findViewById(R.id.imgs));
         txt = findViewById(R.id.info);
         imgProfile = findViewById(R.id.profPic);
         userName = findViewById(R.id.userName);
@@ -94,7 +82,6 @@ public class ProFileActivity extends AppCompatActivity {
         getWindow().setExitTransition(fade);
         tabLayout = findViewById(R.id.tabLayout);
         viewPager = findViewById(R.id.viewPager);
-        db = FirebaseFirestore.getInstance();
         findViewById(R.id.back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -130,11 +117,19 @@ public class ProFileActivity extends AppCompatActivity {
                     name.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.verified, 0);
                 bio.setText(dataSnapshot.child(AppConstant.bio).getValue(String.class));
                 title.setText(dataSnapshot.child(AppConstant.title).getValue(String.class));
+                name.setText(dataSnapshot.child(AppConstant.name).getValue(String.class));
+                userName.setText("@" + snapshot.child(AppConstant.userName).getValue(String.class));
                 SharedPreferences sharedPreferences = getSharedPreferences(userid, 0);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString(AppConstant.bio, bio.getText().toString()).apply();
+                editor.putString(AppConstant.name, name.getText().toString()).apply();
+                editor.putString(AppConstant.userName, snapshot.child(AppConstant.userName).getValue(String.class)).apply();
                 if (!userid.equals(appConstant.getId())) {
-                    if (!snapshot.child(AppConstant.profile).child(AppConstant.follower).child(appConstant.getId()).exists()) {
+                    if (!appConstant.checkLogin()) {
+                        edit_profile.setText("Login to follow");
+                        edit_profile.setTextColor(Color.parseColor("#333333"));
+                        edit_profile.setBackgroundResource(R.drawable.curved_white);
+                    } else if (!snapshot.child(AppConstant.profile).child(AppConstant.follower).child(appConstant.getId()).exists()) {
                         edit_profile.setText("follow");
                         edit_profile.setTextColor(Color.WHITE);
                         edit_profile.setBackgroundResource(R.drawable.curved_blue);
@@ -146,19 +141,24 @@ public class ProFileActivity extends AppCompatActivity {
                     edit_profile.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if(edit_profile.getText().toString().equals("follow")) {
+                            if (!appConstant.checkLogin()) {
+                                startActivity(new Intent(ProFileActivity.this, SigninActivity.class));
+                                return;
+                            }
+                            if (edit_profile.getText().toString().equals("follow")) {
                                 FirebaseDatabase.getInstance().getReference(AppConstant.users).child(userid).child(AppConstant.profile).child(AppConstant.follower).child(appConstant.getId()).setValue((System.currentTimeMillis() / 1000));
                                 FirebaseDatabase.getInstance().getReference(AppConstant.users).child(appConstant.getId()).child(AppConstant.profile).child(AppConstant.following).child(userid).setValue((System.currentTimeMillis() / 1000));
-                                HashMap<String,String> hashMap = new HashMap<>();
-                                hashMap.put(AppConstant.subject,"follow");
-                                hashMap.put(AppConstant.id,appConstant.getId());
-                                FirebaseDatabase.getInstance().getReference(AppConstant.users).child(userid).child(AppConstant.realTime).child(AppConstant.noti).child((System.currentTimeMillis() / 1000)+"").setValue(hashMap);
+                                HashMap<String, String> hashMap = new HashMap<>();
+                                hashMap.put(AppConstant.subject, "follow");
+                                hashMap.put(AppConstant.id, appConstant.getId());
+                                hashMap.put(AppConstant.name, appConstant.getName());
+                                FirebaseDatabase.getInstance().getReference(AppConstant.users).child(userid).child(AppConstant.realTime).child(AppConstant.noti).child((System.currentTimeMillis() / 1000) + "").setValue(hashMap);
                                 followers = followers + 1;
                                 follower_count.setText(Html.fromHtml("<b><font size='14' color='#000000'>" + followers + "</font></b> <br/>Follower"));
                                 edit_profile.setText("unfollow");
                                 edit_profile.setTextColor(Color.parseColor("#333333"));
                                 edit_profile.setBackgroundResource(R.drawable.curved_white);
-                            }else{
+                            } else {
                                 FirebaseDatabase.getInstance().getReference(AppConstant.users).child(userid).child(AppConstant.profile).child(AppConstant.follower).child(appConstant.getId()).removeValue();
                                 FirebaseDatabase.getInstance().getReference(AppConstant.users).child(appConstant.getId()).child(AppConstant.profile).child(AppConstant.following).child(userid).removeValue();
                                 followers = followers - 1;
@@ -174,7 +174,24 @@ public class ProFileActivity extends AppCompatActivity {
                 following = snapshot.child(AppConstant.profile).child(AppConstant.following).getChildrenCount();
                 follower_count.setText(Html.fromHtml("<b><font size='14' color='#000000'>" + followers + "</font></b> <br/>Follower"));
                 following_count.setText(Html.fromHtml("<b><font size='14' color='#000000'>" + following + "</font></b> <br/>Following"));
-
+                follower_count.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        AppController.getInstance().follow = snapshot.child(AppConstant.profile).child(AppConstant.follower);
+                        Intent intent = new Intent(ProFileActivity.this, FollowActivity.class);
+                        intent.putExtra("title", "Follower");
+                        startActivity(intent);
+                    }
+                });
+                following_count.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        AppController.getInstance().follow = snapshot.child(AppConstant.profile).child(AppConstant.following);
+                        Intent intent = new Intent(ProFileActivity.this, FollowActivity.class);
+                        intent.putExtra("title", "Following");
+                        startActivity(intent);
+                    }
+                });
             }
 
             @Override
@@ -182,7 +199,6 @@ public class ProFileActivity extends AppCompatActivity {
 
             }
         });
-
 
 
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
@@ -212,7 +228,6 @@ public class ProFileActivity extends AppCompatActivity {
         super.onResume();
         sharedPreferences = getSharedPreferences(userid, 0);
         Glide.with(ProFileActivity.this).load(sharedPreferences.getString(AppConstant.myPicUrl, "")).apply(new RequestOptions().circleCrop()).placeholder(R.drawable.game_avatar).into(imgProfile);
-        // Glide.with(ProFileActivity.this).load("https://yt3.ggpht.com/OlpmWQZZxLMk97J_2sXOKMFTEmbwiGH80EqRY45EMa5y5yyCf2QHJ2OfYGYfPcZWNN-Z0ohHrw=s900-c-k-c0x00ffffff-no-rj").placeholder(R.drawable.game_avatar).into(title_pic);
         if (userid.equals(appConstant.getId()))
             name.setText(sharedPreferences.getString(AppConstant.name, ""));
         else
@@ -276,13 +291,13 @@ public class ProFileActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    OneFragment homeFragment = new OneFragment();
+                    PostFragment homeFragment = new PostFragment();
                     return homeFragment;
                 case 1:
-                    OneFragment sportFragment = new OneFragment();
+                    PostFragment sportFragment = new PostFragment();
                     return sportFragment;
                 case 2:
-                    OneFragment movieFragment = new OneFragment();
+                    PostFragment movieFragment = new PostFragment();
                     return movieFragment;
                 default:
                     return null;

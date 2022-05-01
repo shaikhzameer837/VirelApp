@@ -1,14 +1,23 @@
 package com.intelj.y_ral_gaming;
 
+import static android.app.Notification.DEFAULT_SOUND;
+import static android.app.Notification.DEFAULT_VIBRATE;
 import static com.google.firebase.messaging.Constants.TAG;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Application;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -16,6 +25,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -33,6 +43,8 @@ import com.google.firebase.firestore.Source;
 import com.google.firebase.firestore.model.Document;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.intelj.y_ral_gaming.Activity.MainActivity;
+import com.intelj.y_ral_gaming.Activity.NotificationActivity;
+import com.intelj.y_ral_gaming.Activity.NotificationModel;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 import com.intelj.y_ral_gaming.model.TournamentModel;
 
@@ -55,6 +67,7 @@ public class AppController extends Application implements Application.ActivityLi
     public DataSnapshot mySnapShort;
     public DataSnapshot notification;
     public ArrayList<DataSnapshot> userInfoList;
+    public DataSnapshot follow;
     public HashMap<String, Boolean> gameNameHashmap = new HashMap<>();
     public ProgressDialog progressDialog = null;
     public Intent mIntent;
@@ -62,7 +75,7 @@ public class AppController extends Application implements Application.ActivityLi
     public FirebaseRemoteConfig remoteConfig;
     public DataSnapshot dataSnapshot;
     public String is_production;
-    AlertDialog.Builder builder;
+    public AlertDialog.Builder builder;
     public String subscription_package = "";
     public int amount = 0;
     public List<GameItem> movieList = new ArrayList<>();
@@ -139,6 +152,14 @@ public class AppController extends Application implements Application.ActivityLi
                     mDatabase.updateChildren(phoneNumberUpdate);
                 }
                 notification = dataSnapshot.child(AppConstant.realTime).child(AppConstant.noti);
+                if (notification.getChildrenCount() != 0) {
+                    for (DataSnapshot dataSnapshots : notification.getChildren()) {
+                        String subtitle = "";
+                        if (dataSnapshots.child("subject").getValue(String.class).equals("follow"))
+                            subtitle = "Followed you";
+                        showNotification(subtitle, dataSnapshots.child(AppConstant.name).getValue(String.class), null, dataSnapshots.getKey());
+                    }
+                }
             }
 
             @Override
@@ -146,6 +167,39 @@ public class AppController extends Application implements Application.ActivityLi
 
             }
         });
+    }
+
+    public void showNotification(String msg, String title, Bitmap bitImage, String url) {
+
+        Intent intent = new Intent(AppController.this, NotificationActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this,
+                676, intent, PendingIntent.FLAG_ONE_SHOT);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            int importance = NotificationManager.IMPORTANCE_HIGH; //Important for heads-up notification
+            NotificationChannel channel = new NotificationChannel("1", "name", importance);
+            channel.setDescription(msg);
+            channel.setShowBadge(true);
+            channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "1")
+                .setSmallIcon(R.drawable.common_google_signin_btn_text_light_focused)
+                .setContentTitle(title)
+                .setContentText(msg)
+                .setContentIntent(pendingIntent)
+
+                .setDefaults(DEFAULT_SOUND | DEFAULT_VIBRATE) //Important for heads-up notification
+                .setPriority(Notification.PRIORITY_MAX);
+        if (bitImage != null) {
+            mBuilder.setLargeIcon(bitImage);
+            mBuilder.setStyle(new NotificationCompat.BigPictureStyle()
+                    .bigPicture(bitImage));
+        }
+        Notification buildNotification = mBuilder.build();
+        NotificationManager mNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        mNotifyMgr.notify((int) (System.currentTimeMillis() / 1000), buildNotification);
     }
 
     public void startToRunActivity() {

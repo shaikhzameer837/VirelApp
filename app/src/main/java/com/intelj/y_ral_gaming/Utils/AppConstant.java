@@ -284,6 +284,10 @@ public class AppConstant {
         setSharedPref();
         return sharedPreferences.getString(id, "");
     }
+   public String getName() {
+        SharedPreferences mysharedPreferences = _context.getSharedPreferences(getId(), 0);
+        return mysharedPreferences.getString(name, "");
+    }
 
     public String getPhoneNumber() {
         myInfo = _context.getSharedPreferences(getId(), Context.MODE_PRIVATE);

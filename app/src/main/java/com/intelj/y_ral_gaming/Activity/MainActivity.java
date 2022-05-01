@@ -218,7 +218,10 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.notification).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this,NotificationActivity.class));
+                if (new AppConstant(MainActivity.this).checkLogin())
+                    startActivity(new Intent(MainActivity.this, NotificationActivity.class));
+                else
+                    showBottomSheetDialog();
             }
         });
         findViewById(R.id.search).setOnTouchListener(new View.OnTouchListener() {
@@ -294,8 +297,8 @@ public class MainActivity extends AppCompatActivity {
                                 return true;
                             case R.id.chat:
                                 inflateView(R.layout.contacts);
-                                shd = getSharedPreferences(AppConstant.id, MODE_PRIVATE);
-                                rv_contact = inflated.findViewById(R.id.rv_contact);
+//                                shd = getSharedPreferences(AppConstant.id, MODE_PRIVATE);
+//                                rv_contact = inflated.findViewById(R.id.rv_contact);
 //                                inflated.findViewById(R.id.refresh).setOnClickListener(new View.OnClickListener() {
 //                                    @Override
 //                                    public void onClick(View v) {
@@ -354,56 +357,23 @@ public class MainActivity extends AppCompatActivity {
 //
 //                                    }
 //                                }));
-//                                TextInputEditText referal = inflated.findViewById(R.id.referal);
-//                                referal.setOnClickListener(new View.OnClickListener() {
-//                                    @Override
-//                                    public void onClick(View v) {
-//                                        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
-//                                            android.text.ClipboardManager clipboard = (android.text.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-//                                            clipboard.setText(referal.getText().toString());
-//                                        } else {
-//                                            android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-//                                            android.content.ClipData clip = android.content.ClipData.newPlainText("Copied Text", referal.getText().toString());
-//                                            clipboard.setPrimaryClip(clip);
-//                                        }
-//                                        Toast.makeText(MainActivity.this, "Referal code copied", Toast.LENGTH_LONG).show();
-//                                    }
-//                                });
-//                                inflated.findViewById(R.id.withdraw).setOnClickListener(new View.OnClickListener() {
-//                                    @Override
-//                                    public void onClick(View v) {
-//                                        showPopDialog();
-//                                    }
-//                                });
-//                                getUserAmount();
-//                                //setPackagename();
-
-//                                discordId = inflated.findViewById(R.id.discordId);
-//                                TextInputEditText phoneNumber = inflated.findViewById(R.id.phoneNumber);
-//                                saveProf = inflated.findViewById(R.id.save);
-//                                phoneNumber.setText(appConstant.getPhoneNumber());
-//                                discordId.setText(sharedPreferences.getString(AppConstant.discordId, ""));
-//                                saveProf.setOnClickListener(new View.OnClickListener() {
-//                                    @Override
-//                                    public void onClick(View v) {
-//                                        if (!discordId.isEnabled()) {
-//                                            discordId.setEnabled(true);
-//                                            playerName.setEnabled(true);
-//                                            saveProf.setImageResource(R.drawable.check);
-//                                            return;
-//                                        }
-//                                        if (picturePath == null)
-//                                            updateName();
-//                                        else
-//                                            uploadProfile();
-//                                    }
-//                                });
                                 return true;
                         }
                         return false;
                     }
                 };
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
+    }
+
+    private static boolean hasPermissions(Context context, String... permissions) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     class readContactTask extends AsyncTask<Void, Integer, String> {
@@ -932,8 +902,10 @@ public class MainActivity extends AppCompatActivity {
             });
             if (AppController.getInstance().notification == null || AppController.getInstance().notification.getChildrenCount() == 0)
                 ncount.setVisibility(View.GONE);
-            else
+            else {
                 ncount.setText(AppController.getInstance().notification.getChildrenCount() + "");
+                ncount.setVisibility(View.VISIBLE);
+            }
         }
         //        if (AppController.getInstance().mySnapShort != null && recyclerviewTeam != null) {
 //            teamModel.clear();

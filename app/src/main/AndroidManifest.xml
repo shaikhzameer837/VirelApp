@@ -92,6 +92,7 @@
         <activity android:name=".ResultActivity" />
         <activity android:name=".Activity.EventInfo" />
         <activity android:name=".Activity.NotificationActivity" />
+        <activity android:name=".FollowActivity" />
 
         <service
             android:name=".FirebaseFCMServices"

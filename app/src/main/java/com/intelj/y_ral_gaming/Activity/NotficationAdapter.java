@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.intelj.y_ral_gaming.R;
+import com.intelj.y_ral_gaming.Utils.AppConstant;
 
 import java.util.ArrayList;
 
@@ -49,8 +50,8 @@ public class NotficationAdapter extends RecyclerView.Adapter<NotficationAdapter.
     public void onBindViewHolder(NotficationAdapter.MyViewHolder holder, int position) {
         NotificationModel movie = notificationModelArrayList.get(position);
         holder.name.setText(movie.getName());
-        holder.sub_title.setText(movie.getSubtitle() + "");
-        holder.time.setText(movie.getTime() + "");
+        holder.sub_title.setText(movie.getSubtitle());
+        holder.time.setText(movie.getTime() == null ? "" : AppConstant.getTimeAgo(Long.parseLong(movie.getTime())) + "");
         Glide.with(mContext)
                 .load("http://y-ral-gaming.com/admin/api/images/" + movie.getUserId() + ".png?u=\" + (System.currentTimeMillis() / 1000)")
                 .apply(new RequestOptions().circleCrop()).placeholder(R.drawable.game_avatar).into(holder.profile);

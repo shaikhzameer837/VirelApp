@@ -47,6 +47,7 @@ import com.intelj.y_ral_gaming.Fragment.PrizePoolFragment;
 import com.intelj.y_ral_gaming.Fragment.RuleFragment;
 import com.intelj.y_ral_gaming.Fragment.TeamFragment;
 import com.intelj.y_ral_gaming.R;
+import com.intelj.y_ral_gaming.SigninActivity;
 import com.intelj.y_ral_gaming.TournamentAdapter;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 import com.intelj.y_ral_gaming.model.TournamentModel;
@@ -66,11 +67,13 @@ public class EventInfo extends AppCompatActivity {
     TextView join;
     EditText teamName;
     ArrayList<EditText> editTextList = new ArrayList<>();
+    AppConstant appConstant;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.event_info);
         iv_cover_pic = findViewById(R.id.cover_pic);
+        appConstant = new AppConstant(this);
         Fade fade = new Fade();
 //        appConstant = new AppConstant(this);
 //        userid = getIntent().getStringExtra("userid");
@@ -119,6 +122,7 @@ public class EventInfo extends AppCompatActivity {
     }
 
     private void addTeamList() {
+        editTextList.clear();
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(EventInfo.this);
         bottomSheetDialog.setContentView(R.layout.add_team_info);
         LinearLayout lin = bottomSheetDialog.findViewById(R.id.lin);
@@ -157,13 +161,21 @@ public class EventInfo extends AppCompatActivity {
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            boolean result = false;
             join.setVisibility(View.VISIBLE);
-            boolean result = intent.getBooleanExtra("message",false);
-            setButton(!result? " join " : " Already joined ",!result?R.drawable.curved_red:R.drawable.curved_white,!result?Color.WHITE:Color.RED);
+            if(!appConstant.checkLogin()){
+                setButton( " Login ",R.drawable.curved_white,Color.RED);
+            }else{ result = intent.getBooleanExtra("message",false);
+              setButton(!result? " Join " : " Already joined ",!result?R.drawable.curved_red:R.drawable.curved_white,!result?Color.WHITE:Color.RED);
+            }
             if(!result) {
                 join.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        if(!appConstant.checkLogin()){
+                            startActivity(new Intent(EventInfo.this, SigninActivity.class));
+                            return;
+                        }
                         addTeamList();
                     }
                 });

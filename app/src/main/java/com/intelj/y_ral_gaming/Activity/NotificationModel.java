@@ -10,6 +10,12 @@ public class NotificationModel {
         this.time = time;
         this.subtitle = subtitle;
     }
+   public NotificationModel(String userId, String name, String topic, String subtitle) {
+        this.userId = userId;
+        this.name = name;
+        this.topic = topic;
+        this.subtitle = subtitle;
+    }
 
     public String getSubtitle() {
         return subtitle;
