@@ -209,7 +209,7 @@ public class AppController extends Application implements Application.ActivityLi
     }
 
     public void startToRunActivity() {
-        Intent intent = new Intent(this, SearchActivity.class);
+        Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
     }

@@ -1,5 +1,6 @@
 package com.intelj.y_ral_gaming.Activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,6 +25,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.intelj.y_ral_gaming.Adapter.DemoRecyclerviewAdapter;
+import com.intelj.y_ral_gaming.AppController;
 import com.intelj.y_ral_gaming.R;
 import com.intelj.y_ral_gaming.RecyclerData;
 import com.intelj.y_ral_gaming.RecyclerViewAdapter;
@@ -90,6 +92,26 @@ public class SearchActivity extends AppCompatActivity {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(SearchActivity.this, 1, GridLayoutManager.HORIZONTAL, false);
         rv_suggest.setLayoutManager(gridLayoutManager);
         rv_suggest.setAdapter(adapter);
+        rv_suggest.addOnItemTouchListener(new RecyclerTouchListener(this, rv_suggest, new RecyclerTouchListener.ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                Intent intent = new Intent(SearchActivity.this, ProFileActivity.class);
+                String transitionName = "fade";
+                View transitionView = view.findViewById(R.id.idIVcourseIV);
+                ViewCompat.setTransitionName(transitionView, transitionName);
+                ActivityOptionsCompat options = ActivityOptionsCompat.
+                        makeSceneTransitionAnimation((Activity) SearchActivity.this, transitionView, transitionName);
+                intent.putExtra("userid", userIDs.get(position));
+                 startActivity(intent, options.toBundle());
+
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+
+            }
+        }));
+
         for (int i = 0; i < userIDs.size(); i++) {
             final int m = i;
             DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference(AppConstant.users)
