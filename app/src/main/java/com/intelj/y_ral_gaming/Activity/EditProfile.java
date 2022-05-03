@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -22,6 +23,8 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -41,6 +44,8 @@ import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.database.DataSnapshot;
@@ -51,6 +56,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.intelj.y_ral_gaming.AppController;
 import com.intelj.y_ral_gaming.ContactListModel;
 import com.intelj.y_ral_gaming.R;
@@ -72,11 +78,14 @@ public class EditProfile extends AppCompatActivity {
     Bitmap selectedImage;
     AppConstant appConstant;
     ProgressDialog progressDialog;
-    TextInputEditText playerName, TI_userName,bio;
+    TextInputEditText playerName, TI_userName, bio;
     AppCompatButton done;
     String userName = "";
     DatabaseReference mDatabase;
     AutoCompleteTextView tv_title;
+    LinearLayout gameList;
+    SharedPreferences prefs;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         appConstant = new AppConstant(this);
@@ -88,21 +97,23 @@ public class EditProfile extends AppCompatActivity {
         done = findViewById(R.id.done);
         TI_userName.setEnabled(true);
         playerName.setEnabled(true);
+        gameList = findViewById(R.id.gameList);
         done.setVisibility(View.VISIBLE);
         findViewById(R.id.save).setVisibility(View.GONE);
         ArrayAdapter<String> adapter = new ArrayAdapter<>
-                (this,android.R.layout.simple_list_item_1,AppConstant.player_title);
-        tv_title= findViewById(R.id.autoCompleteTextView1);
+                (this, android.R.layout.simple_list_item_1, AppConstant.player_title);
+        tv_title = findViewById(R.id.autoCompleteTextView1);
         tv_title.setThreshold(0);//will start working from first character
         tv_title.setAdapter(adapter);//setting the adapter data into the AutoCompleteTextView
         SharedPreferences sharedPreferences = getSharedPreferences(new AppConstant(EditProfile.this).getId(), 0);
+        prefs = getSharedPreferences(AppConstant.AppName, MODE_PRIVATE);
         tv_title.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 final int DRAWABLE_RIGHT = 2;
                 tv_title.showDropDown();
-                if(event.getAction() == MotionEvent.ACTION_UP) {
-                    if(event.getRawX() >= (tv_title.getRight() - tv_title.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    if (event.getRawX() >= (tv_title.getRight() - tv_title.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
                         tv_title.setText("");
                         return true;
                     }
@@ -110,12 +121,13 @@ public class EditProfile extends AppCompatActivity {
                 return false;
             }
         });
+
         TI_userName.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 final int DRAWABLE_RIGHT = 2;
-                if(event.getAction() == MotionEvent.ACTION_UP) {
-                    if(event.getRawX() >= (tv_title.getRight() - tv_title.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    if (event.getRawX() >= (tv_title.getRight() - tv_title.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
                         checkUserName();
                         return true;
                     }
@@ -138,6 +150,17 @@ public class EditProfile extends AppCompatActivity {
                     TI_userName.setError("Click to check username availability", null);
                     return;
                 }
+                boolean isSlected = false;
+                for (int i = 0; i < gameList.getChildCount(); i++) {
+                    TextView textView = (TextView) gameList.getChildAt(i);
+                    if (textView.getTag().toString().equals("1")) {
+                        isSlected = true;
+                    }
+                }
+                if (!isSlected) {
+                    Toast.makeText(EditProfile.this, "Please select the game you play", Toast.LENGTH_LONG).show();
+                    return;
+                }
                 if (picturePath == null)
                     updateName();
                 else
@@ -148,7 +171,7 @@ public class EditProfile extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(TI_userName.getText().toString().equals(sharedPreferences.getString(AppConstant.userName, ""))){
+                if (TI_userName.getText().toString().equals(sharedPreferences.getString(AppConstant.userName, ""))) {
                     userName = TI_userName.getText().toString();
                     TI_userName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check, 0);
                     TI_userName.setError(null);
@@ -167,7 +190,7 @@ public class EditProfile extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start,
                                       int before, int count) {
-             }
+            }
         });
         playerName.setText(sharedPreferences.getString(AppConstant.name, "Player"));
         bio.setText(sharedPreferences.getString(AppConstant.bio, ""));
@@ -184,7 +207,60 @@ public class EditProfile extends AppCompatActivity {
             }
         });
         Glide.with(this).load(sharedPreferences.getString(AppConstant.myPicUrl, "")).placeholder(R.drawable.game_avatar).apply(new RequestOptions().circleCrop()).into(imgProfile);
+        for (int i = 0; i < gameList.getChildCount(); i++) {
+            TextView textView = (TextView) gameList.getChildAt(i);
+            if (prefs.getString(textView.getText().toString(), "0").equals("0")) {
+                textView.setBackgroundResource(R.drawable.curved_drawable);
+                textView.setTextColor(Color.parseColor("#333333"));
+            } else {
+                textView.setBackgroundResource(R.drawable.curved_red);
+                textView.setTextColor(Color.parseColor("#ffffff"));
+            }
+            textView.setTag(prefs.getString(textView.getText().toString(), "0"));
+            textView.setPadding(13, 13, 13, 13);
+        }
+    }
 
+    public void subscribe(View view) {
+        TextView tv_view = (TextView) view;
+        if (tv_view.getTag().toString().equals("0")) {
+            tv_view.setTag("1");
+            tv_view.setBackgroundResource(R.drawable.curved_red);
+            tv_view.setTextColor(Color.parseColor("#ffffff"));
+        } else {
+            tv_view.setTag("0");
+            tv_view.setBackgroundResource(R.drawable.curved_drawable);
+            tv_view.setTextColor(Color.parseColor("#333333"));
+        }
+        tv_view.setPadding(13, 13, 13, 13);
+    }
+
+    public void SubscribeChannel(String topic) {
+        FirebaseMessaging.getInstance().subscribeToTopic(topic).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d("SUBSCRIBED", "SUCCESS Free Fire");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("SUBSCRIBED--1", e.getMessage());
+            }
+        });
+    }
+
+    public void unSubscribeChannel(String topic) {
+        FirebaseMessaging.getInstance().unsubscribeFromTopic(topic).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d("UNSUBSCRIBED", "SUCCESS Free Fire");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("UNSUBSCRIBED--1", e.getMessage());
+            }
+        });
     }
 
     private void checkUserName() {
@@ -196,16 +272,16 @@ public class EditProfile extends AppCompatActivity {
                 if (dataSnapshot.getValue() != null) {
                     for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                         Log.e("number//---", postSnapshot.getKey());
-                        if(postSnapshot.getKey().equals(appConstant.getId())){
+                        if (postSnapshot.getKey().equals(appConstant.getId())) {
                             Toast.makeText(EditProfile.this, "User name available ", Toast.LENGTH_SHORT).show();
                             TI_userName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check, 0);
                             TI_userName.setError(null);
-                        }else{
+                        } else {
                             Toast.makeText(EditProfile.this, "User name unavailable ", Toast.LENGTH_SHORT).show();
                             TI_userName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.close, 0);
                         }
                     }
-                }else{
+                } else {
                     userName = TI_userName.getText().toString();
                     Toast.makeText(EditProfile.this, "User name available ", Toast.LENGTH_SHORT).show();
                     TI_userName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check, 0);
@@ -350,10 +426,21 @@ public class EditProfile extends AppCompatActivity {
                 setValue(bio.getText().toString());
         mDatabase.child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.title).
                 setValue(tv_title.getText().toString());
-       mDatabase.child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.name).
+        mDatabase.child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.name).
                 setValue(playerName.getText().toString());
-       mDatabase.child(AppController.getInstance().userId).child(AppConstant.userName).
+        mDatabase.child(AppController.getInstance().userId).child(AppConstant.userName).
                 setValue(TI_userName.getText().toString());
+        for (int i = 0; i < gameList.getChildCount(); i++) {
+            TextView textView = (TextView) gameList.getChildAt(i);
+            SharedPreferences.Editor editors = getSharedPreferences(AppConstant.AppName, MODE_PRIVATE).edit();
+            editors.putString(textView.getText().toString(), textView.getTag().toString());
+            editors.apply();
+            if (textView.getTag().toString().equals("1")) {
+                SubscribeChannel(textView.getText().toString());
+            } else {
+                unSubscribeChannel(textView.getText().toString());
+            }
+        }
         Toast.makeText(EditProfile.this, "Profile Updated Successfully", Toast.LENGTH_LONG).show();
         finish();
     }

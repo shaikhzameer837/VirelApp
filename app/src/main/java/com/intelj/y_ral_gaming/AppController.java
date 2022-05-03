@@ -45,6 +45,7 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.intelj.y_ral_gaming.Activity.MainActivity;
 import com.intelj.y_ral_gaming.Activity.NotificationActivity;
 import com.intelj.y_ral_gaming.Activity.NotificationModel;
+import com.intelj.y_ral_gaming.Activity.SearchActivity;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 import com.intelj.y_ral_gaming.model.TournamentModel;
 
@@ -157,7 +158,13 @@ public class AppController extends Application implements Application.ActivityLi
                         String subtitle = "";
                         if (dataSnapshots.child("subject").getValue(String.class).equals("follow"))
                             subtitle = "Followed you";
-                        showNotification(subtitle, dataSnapshots.child(AppConstant.name).getValue(String.class), null, dataSnapshots.getKey());
+                        SharedPreferences notificationPref = getSharedPreferences("notificationPref", MODE_PRIVATE);
+                        SharedPreferences.Editor myEdit = notificationPref.edit();
+                        if (!notificationPref.getBoolean(dataSnapshots.getKey(), false)) {
+                            showNotification(subtitle, dataSnapshots.child(AppConstant.name).getValue(String.class), null, dataSnapshots.getKey());
+                            myEdit.putBoolean(dataSnapshots.getKey(), true);
+                            myEdit.apply();
+                        }
                     }
                 }
             }
@@ -170,7 +177,6 @@ public class AppController extends Application implements Application.ActivityLi
     }
 
     public void showNotification(String msg, String title, Bitmap bitImage, String url) {
-
         Intent intent = new Intent(AppController.this, NotificationActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(this,
@@ -203,7 +209,7 @@ public class AppController extends Application implements Application.ActivityLi
     }
 
     public void startToRunActivity() {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, SearchActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
     }

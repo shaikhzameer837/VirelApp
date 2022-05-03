@@ -991,7 +991,8 @@ public class MainActivity extends AppCompatActivity {
                                         obj.getString("discord_url"),
                                         obj.getString("prize_pool"),
                                         obj.getString("info"),
-                                        obj.getString("id")
+                                        obj.getString("id"),
+                                        obj.getInt("max")
                                 ));
                             }
                             TournamentAdapter pAdapter = new TournamentAdapter(MainActivity.this, tournamentModelList, true);
@@ -1084,7 +1085,7 @@ public class MainActivity extends AppCompatActivity {
                                                 obj.getString("image_url"),
                                                 obj.getString("date"),
                                                 obj.getString("status"),
-                                                obj.getString("comment"), "", "", ""));
+                                                obj.getString("comment"), "", "", "",0));
                             }
                             TournamentAdapter pAdapter = new TournamentAdapter(MainActivity.this, tournamentModelList, false);
                             recyclerView.setAdapter(pAdapter);

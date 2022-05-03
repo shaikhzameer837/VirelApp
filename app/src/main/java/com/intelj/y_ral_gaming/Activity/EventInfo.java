@@ -68,6 +68,8 @@ public class EventInfo extends AppCompatActivity {
     EditText teamName;
     ArrayList<EditText> editTextList = new ArrayList<>();
     AppConstant appConstant;
+    int teamCount = 0;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -134,7 +136,7 @@ public class EventInfo extends AppCompatActivity {
                 bottomSheetDialog.cancel();
             }
         });
-        for (int x = 0; x < 4 ; x++) {
+        for (int x = 0; x < 4; x++) {
             EditText editText = new EditText(EventInfo.this);
             editText.setTextSize(12);
             editText.setSingleLine(true);
@@ -151,7 +153,7 @@ public class EventInfo extends AppCompatActivity {
                     LinearLayout.LayoutParams.WRAP_CONTENT);
             textInputLayout.setLayoutParams(textInputLayoutParams);
             textInputLayout.addView(editText, editTextParams);
-            textInputLayout.setHint(x == 0 ? "Enter your ingame name" : "Enter Player " + (x+1) + " ingame name");
+            textInputLayout.setHint(x == 0 ? "Enter your ingame name" : "Enter Player " + (x + 1) + " ingame name");
             lin.addView(textInputLayout);
         }
         bottomSheetDialog.show();
@@ -163,38 +165,46 @@ public class EventInfo extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             boolean result = false;
             join.setVisibility(View.VISIBLE);
-            if(!appConstant.checkLogin()){
-                setButton( " Login ",R.drawable.curved_white,Color.RED);
-            }else{ result = intent.getBooleanExtra("message",false);
-              setButton(!result? " Join " : " Already joined ",!result?R.drawable.curved_red:R.drawable.curved_white,!result?Color.WHITE:Color.RED);
+            if (!appConstant.checkLogin()) {
+                setButton(" Login ", R.drawable.curved_white, Color.RED);
+            } else {
+                result = intent.getBooleanExtra("message", false);
+                teamCount = intent.getIntExtra("count", 0);
+                if (AppController.getInstance().tournamentModel.getMax() == teamCount && !result)
+                    setButton(" Closed ", R.drawable.curved_white, Color.BLACK);
+                else
+                    setButton(!result ? " Join " : " Already joined ", !result ? R.drawable.curved_red : R.drawable.curved_white, !result ? Color.WHITE : Color.RED);
             }
-            if(!result) {
+            if (!result) {
                 join.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(!appConstant.checkLogin()){
+                        if (!appConstant.checkLogin()) {
                             startActivity(new Intent(EventInfo.this, SigninActivity.class));
                             return;
                         }
-                        addTeamList();
+                        if (AppController.getInstance().tournamentModel.getMax() != teamCount)
+                            addTeamList();
                     }
                 });
             }
         }
         //TabLayout.Tab tab = tabLayout.getTabAt(1).setText("Teams (10)");
     };
-    private void setButton(String btnName,int drawables,int color) {
+
+    private void setButton(String btnName, int drawables, int color) {
         join.setText(btnName);
         join.setBackgroundResource(drawables);
         join.setTextColor(color);
     }
+
     private void joinEvent() {
-        String key = "@"+(System.currentTimeMillis()/1000);
+        String key = "@" + (System.currentTimeMillis() / 1000);
         JSONObject jsonRootObject = new JSONObject();
         JSONObject jsonRootObject2 = new JSONObject();
         JSONObject jsonRootObject3 = new JSONObject();
         try {
-            for (int x = 0; x < editTextList.size() ; x++) {
+            for (int x = 0; x < editTextList.size(); x++) {
                 JSONObject jsonRootObject4 = new JSONObject();
                 jsonRootObject4.put("ingName", editTextList.get(x).getText().toString());
                 jsonRootObject3.put(editTextList.get(x).getTag().toString(), jsonRootObject4);
@@ -202,7 +212,7 @@ public class EventInfo extends AppCompatActivity {
             jsonRootObject2.put("teams", jsonRootObject3);
             jsonRootObject2.put("teamName", teamName.getText().toString());
             jsonRootObject.put(key, jsonRootObject2);
-            Log.e("jsonRootObject",jsonRootObject.toString());
+            Log.e("jsonRootObject", jsonRootObject.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -213,17 +223,18 @@ public class EventInfo extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         Log.e("lcat_response", response);
-                        if(response.equals("success")){
-                            if(viewPager.getCurrentItem() != 3) {
+                        if (response.equals("success")) {
+                            if (viewPager.getCurrentItem() != 3) {
                                 Intent intent = new Intent("register_event");
                                 intent.putExtra("key", key);
                                 intent.putExtra("teamName", teamName.getText().toString());
                                 intent.putExtra("teams", jsonRootObject3.toString());
                                 LocalBroadcastManager.getInstance(EventInfo.this).sendBroadcast(intent);
                             }
-                            setButton("Already joined",R.drawable.curved_white,Color.RED);
-                            Toast.makeText(EventInfo.this,"Registration done successfully",Toast.LENGTH_LONG).show();
-                        }
+                            setButton("Already joined", R.drawable.curved_white, Color.RED);
+                            Toast.makeText(EventInfo.this, "Registration done successfully", Toast.LENGTH_LONG).show();
+                        } else
+                            Toast.makeText(EventInfo.this, response, Toast.LENGTH_LONG).show();
                     }
                 }, new Response.ErrorListener() {
             @Override

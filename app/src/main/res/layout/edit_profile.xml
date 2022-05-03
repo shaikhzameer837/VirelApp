@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-
     <LinearLayout
         android:id="@+id/lin"
         android:layout_width="match_parent"
@@ -138,10 +137,10 @@
                 android:id="@+id/userName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:enabled="false"
-                android:inputType="text|textEmailAddress"
                 android:digits="abcdefghijklmnopqrstuvwxyz_.1234567890"
+                android:enabled="false"
                 android:hint="user name"
+                android:inputType="text|textEmailAddress"
                 android:textSize="14sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -168,6 +167,7 @@
             android:layout_marginLeft="15dp"
             android:layout_marginTop="10dp"
             android:layout_marginRight="15dp">
+
             <com.intelj.y_ral_gaming.Utils.TextInputAutoCompleteTextView
                 android:id="@+id/autoCompleteTextView1"
                 android:layout_width="match_parent"
@@ -180,6 +180,61 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Games You play"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="5dp"
+            android:textStyle="bold" />
+
+        <LinearLayout android:id="@+id/gameList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:background="@drawable/curved_drawable"
+                android:onClick="subscribe"
+                android:tag="0"
+                android:padding="10dp"
+                android:text="FreeFire" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:background="@drawable/curved_drawable"
+                android:onClick="subscribe"
+                android:tag="0"
+                android:padding="10dp"
+                android:text="BGMI" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:background="@drawable/curved_drawable"
+                android:onClick="subscribe"
+                android:tag="0"
+                android:padding="10dp"
+                android:text="Valorant" />
+           <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:background="@drawable/curved_drawable"
+                android:onClick="subscribe"
+                android:tag="0"
+                android:padding="10dp"
+                android:text="Other Games" />
+
+
+        </LinearLayout>
     </LinearLayout>
 
     <androidx.appcompat.widget.AppCompatButton

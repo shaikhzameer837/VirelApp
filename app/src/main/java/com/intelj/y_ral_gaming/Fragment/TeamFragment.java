@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
@@ -42,6 +43,7 @@ import java.util.Map;
 public class TeamFragment extends Fragment {
     View rootView;
     RecyclerView rv_teamlist;
+    TextView team_count;
     EventTeamAdapter eventTeamAdapter;
     List<EventTeamModel> eventTeamList = new ArrayList<>();
 
@@ -56,24 +58,27 @@ public class TeamFragment extends Fragment {
         eventTeamList.clear();
         rootView = inflater.inflate(R.layout.team_list, container, false);
         rv_teamlist = rootView.findViewById(R.id.rv_teamlist);
+        team_count = rootView.findViewById(R.id.team_count);
         loadTeam();
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver,
                 new IntentFilter("register_event"));
         return rootView;
     }
+
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String key = intent.getStringExtra("key");
             String teamName = intent.getStringExtra("teamName");
             String teams = intent.getStringExtra("teams");
-            eventTeamList.add(new EventTeamModel("http://y-ral-gaming.com/admin/api/images/"+key+".png?u=" + (System.currentTimeMillis() / 1000), teamName, teams, key));
+            eventTeamList.add(new EventTeamModel("http://y-ral-gaming.com/admin/api/images/" + key + ".png?u=" + (System.currentTimeMillis() / 1000), teamName, teams, key));
             eventTeamAdapter.notifyDataSetChanged();
         }
     };
+
     private void loadTeam() {
         RequestQueue queue = Volley.newRequestQueue(getActivity());
-        String url = "http://y-ral-gaming.com/admin/api/test.php";
+        String url = "http://y-ral-gaming.com/admin/api/tournament_team.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
@@ -88,18 +93,20 @@ public class TeamFragment extends Fragment {
                                 if (jsonObject.get(key) instanceof JSONObject) {
                                     JSONObject teamJson = ((JSONObject) jsonObject.get(key));
                                     String teamName = teamJson.getString("teamName");
-                                    if (((JSONObject)teamJson.get("teams")).has(new AppConstant(getActivity()).getId())) {
+                                    if (((JSONObject) teamJson.get("teams")).has(new AppConstant(getActivity()).getId())) {
                                         joined_event = true;
                                     }
-                                    eventTeamList.add(new EventTeamModel("http://y-ral-gaming.com/admin/api/images/"+key+".png?u=" + (System.currentTimeMillis() / 1000), teamName, teamJson.getString("teams"), key));
+                                    eventTeamList.add(new EventTeamModel("http://y-ral-gaming.com/admin/api/images/" + key + ".png?u=" + (System.currentTimeMillis() / 1000), teamName, teamJson.getString("teams"), key));
                                 }
                             }
-
                         } catch (Exception e) {
-
+                            e.printStackTrace();
                         }
+                        if (eventTeamList.size() != 0)
+                            team_count.setText("Registered team " + eventTeamList.size() + " Slot Left " + (AppController.getInstance().tournamentModel.getMax() - eventTeamList.size()));
                         Intent intent = new Intent("joined_event");
                         intent.putExtra("message", joined_event);
+                        intent.putExtra("count", eventTeamList.size());
                         LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
                         eventTeamAdapter = new EventTeamAdapter(getActivity(), eventTeamList);
                         GridLayoutManager mLayoutManager = new GridLayoutManager(getActivity(), 3);
@@ -132,6 +139,7 @@ public class TeamFragment extends Fragment {
 
         queue.add(stringRequest);
     }
+
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
@@ -141,11 +149,9 @@ public class TeamFragment extends Fragment {
     }
 
 
-
     public TeamFragment() {
 
     }
-
 
 
 }

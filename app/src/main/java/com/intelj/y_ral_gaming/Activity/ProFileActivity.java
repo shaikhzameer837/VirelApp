@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -96,6 +97,7 @@ public class ProFileActivity extends AppCompatActivity {
         final MyAdapter adapter = new MyAdapter(this, getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(adapter);
         if (userid.equals(appConstant.getId())) {
+            findViewById(R.id.chat).setVisibility(View.GONE);
             edit_profile.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -103,6 +105,12 @@ public class ProFileActivity extends AppCompatActivity {
                 }
             });
         }
+        findViewById(R.id.chat).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(ProFileActivity.this,"Coming Soon",Toast.LENGTH_LONG).show();
+            }
+        });
         if (AppController.getInstance().popularList.get(userid) != null) {
             TextView popular = findViewById(R.id.popular);
             popular.setVisibility(View.VISIBLE);

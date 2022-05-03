@@ -86,6 +86,6 @@ public class NotificationActivity extends AppCompatActivity {
 
             }
         }));
-       // FirebaseDatabase.getInstance().getReference(AppConstant.users).child(new AppConstant(this).getId()).child(AppConstant.realTime).child(AppConstant.noti).removeValue();
+        FirebaseDatabase.getInstance().getReference(AppConstant.users).child(new AppConstant(this).getId()).child(AppConstant.realTime).child(AppConstant.noti).removeValue();
     }
 }

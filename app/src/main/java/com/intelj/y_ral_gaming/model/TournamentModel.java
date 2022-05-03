@@ -2,11 +2,12 @@ package com.intelj.y_ral_gaming.model;
 
 public class TournamentModel {
     String image_url, id,date, name, status, discord_url, game_name, prize_pool, info;
+    int max;
 
     public TournamentModel(String name, String game_name,
                            String image_url, String date, String status,
                            String discord_url,
-                           String prize_pool, String info, String id) {
+                           String prize_pool, String info, String id ,int max) {
         this.image_url = image_url;
         this.date = date;
         this.status = status;
@@ -16,6 +17,15 @@ public class TournamentModel {
         this.info = info;
         this.prize_pool = prize_pool;
         this.id = id;
+        this.max = max;
+    }
+
+    public int getMax() {
+        return max;
+    }
+
+    public void setMax(int max) {
+        this.max = max;
     }
 
     public String getPrize_pool() {
