@@ -44,22 +44,24 @@ public class FollowActivity extends AppCompatActivity {
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
         rv_noti.setLayoutManager(mLayoutManager);
         rv_noti.setAdapter(notficationAdapter);
-        for (DataSnapshot dataSnapshot : AppController.getInstance().follow.getChildren()) {
-            FirebaseDatabase.getInstance().getReference(AppConstant.users).child(dataSnapshot.getKey())
-                    .child(AppConstant.pinfo)
-           .addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    Log.e("dataSnapshot",dataSnapshot.getKey());
-                    followList.add(new NotificationModel(dataSnapshot.getKey(),snapshot.child(AppConstant.name).getValue(String.class), snapshot.child(AppConstant.bio).getValue(String.class), snapshot.child(AppConstant.bio).getValue(String.class)));
-                    notficationAdapter.notifyDataSetChanged();
-                }
+        if(AppController.getInstance().follow != null) {
+            for (DataSnapshot dataSnapshot : AppController.getInstance().follow.getChildren()) {
+                FirebaseDatabase.getInstance().getReference(AppConstant.users).child(dataSnapshot.getKey())
+                        .child(AppConstant.pinfo)
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                Log.e("dataSnapshot", dataSnapshot.getKey());
+                                followList.add(new NotificationModel(dataSnapshot.getKey(), snapshot.child(AppConstant.name).getValue() == null ? "Player" : snapshot.child(AppConstant.name).getValue(String.class), snapshot.child(AppConstant.bio).getValue(String.class), snapshot.child(AppConstant.bio).getValue(String.class)));
+                                notficationAdapter.notifyDataSetChanged();
+                            }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
 
-                }
-            });
+                            }
+                        });
+            }
         }
 //        if (AppController.getInstance().notification.getChildrenCount() == 0) {
 //            findViewById(R.id.pBar3).setVisibility(View.VISIBLE);

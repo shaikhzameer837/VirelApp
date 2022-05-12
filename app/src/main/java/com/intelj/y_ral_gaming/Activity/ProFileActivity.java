@@ -16,6 +16,8 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -37,6 +39,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.intelj.y_ral_gaming.AppController;
+import com.intelj.y_ral_gaming.ChatActivity;
 import com.intelj.y_ral_gaming.FollowActivity;
 import com.intelj.y_ral_gaming.Fragment.OneFragment;
 import com.intelj.y_ral_gaming.Fragment.PostFragment;
@@ -97,7 +100,7 @@ public class ProFileActivity extends AppCompatActivity {
         final MyAdapter adapter = new MyAdapter(this, getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(adapter);
         if (userid.equals(appConstant.getId())) {
-            findViewById(R.id.chat).setVisibility(View.GONE);
+           // findViewById(R.id.chat).setVisibility(View.GONE);
             edit_profile.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -108,7 +111,11 @@ public class ProFileActivity extends AppCompatActivity {
         findViewById(R.id.chat).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(ProFileActivity.this,"Coming Soon",Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(ProFileActivity.this, ChatActivity.class);
+                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                        ProFileActivity.this, imgProfile, ViewCompat.getTransitionName(imgProfile));
+                intent.putExtra(AppConstant.id, userid);
+                startActivity(intent, options.toBundle());
             }
         });
         if (AppController.getInstance().popularList.get(userid) != null) {
@@ -235,7 +242,7 @@ public class ProFileActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         sharedPreferences = getSharedPreferences(userid, 0);
-        Glide.with(ProFileActivity.this).load(sharedPreferences.getString(AppConstant.myPicUrl, "")).apply(new RequestOptions().circleCrop()).placeholder(R.drawable.game_avatar).into(imgProfile);
+        Glide.with(ProFileActivity.this).load("http://y-ral-gaming.com/admin/api/images/" + userid + ".png?u=" + AppConstant.imageExt()).apply(new RequestOptions().circleCrop()).placeholder(R.drawable.game_avatar).into(imgProfile);
         if (userid.equals(appConstant.getId()))
             name.setText(sharedPreferences.getString(AppConstant.name, ""));
         else

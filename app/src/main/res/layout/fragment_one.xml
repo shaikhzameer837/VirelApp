@@ -4,11 +4,15 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
-    <ImageView
-        android:id="@+id/imageview"
-        android:layout_gravity="center"
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/coming_soon"
         android:layout_width="165dp"
-        android:layout_height="165dp"/>
+        android:layout_height="165dp"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center"
+        app:lottie_fileName="soon.json"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"/>
     <TextView
         android:id="@+id/tv_coming_soon"
         android:text="Coming Soon"

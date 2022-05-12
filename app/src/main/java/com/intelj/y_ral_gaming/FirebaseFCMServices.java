@@ -104,10 +104,14 @@ public class FirebaseFCMServices extends FirebaseMessagingService {
         SharedPreferences.Editor myEdit = sharedPreferences.edit();
         myEdit.putString("url", url);
         myEdit.apply();
-
-
-        PendingIntent pendingIntent = PendingIntent.getActivity(this,
-                676, intent, PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent pendingIntent;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            pendingIntent =PendingIntent.getActivity(this,
+                    0, intent,PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        }else {
+            pendingIntent = PendingIntent.getActivity(this,
+                    0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             int importance = NotificationManager.IMPORTANCE_HIGH; //Important for heads-up notification
             NotificationChannel channel = new NotificationChannel("1", "name", importance);

@@ -16,6 +16,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.intelj.y_ral_gaming.Activity.ContactListAdapter;
 import com.intelj.y_ral_gaming.ContactListModel;
 import com.intelj.y_ral_gaming.R;
+import com.intelj.y_ral_gaming.Utils.AppConstant;
 import com.intelj.y_ral_gaming.model.EventTeamModel;
 
 import org.json.JSONException;
@@ -78,7 +79,7 @@ public class EventTeamAdapter extends RecyclerView.Adapter<EventTeamAdapter.MyVi
                         try {
                             if (jsonObject.get(key) instanceof JSONObject) {
                                 Log.e("lcat teamObj", ((JSONObject) jsonObject.get(key)).getString("ingName"));
-                                contactModel.add(new ContactListModel("http://y-ral-gaming.com/admin/api/images/" + key + ".png?u=" + (System.currentTimeMillis() / 1000), ((JSONObject) jsonObject.get(key)).getString("ingName"), key, ""));
+                                contactModel.add(new ContactListModel("http://y-ral-gaming.com/admin/api/images/" + key + ".png?u=" + AppConstant.imageExt(), ((JSONObject) jsonObject.get(key)).getString("ingName"), key, ""));
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();

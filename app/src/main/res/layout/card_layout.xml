@@ -2,10 +2,10 @@
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="110dp"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardCornerRadius="5dp"
-    android:layout_marginLeft="15dp"
+    android:layout_margin="3dp"
     app:cardElevation="5dp">
 
     <LinearLayout
@@ -29,17 +29,15 @@
             android:layout_gravity="center"
             android:singleLine="true"
             android:ellipsize="end"
-            android:drawableRight="@drawable/verified"
             android:layout_marginTop="3dp"
             android:textAlignment="center" />
 
-        <Button
+        <Button android:id="@+id/follow"
             android:text="follow"
             android:background="@drawable/curved_blue"
             android:textColor="@color/colorPrimary"
             android:layout_width="match_parent"
             android:layout_marginTop="3dp"
-            android:visibility="gone"
             android:textSize="12sp"
             android:layout_height="30dp"/>
     </LinearLayout>

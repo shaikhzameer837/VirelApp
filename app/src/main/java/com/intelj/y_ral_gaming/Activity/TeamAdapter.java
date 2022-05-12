@@ -42,7 +42,6 @@ public class TeamAdapter extends RecyclerView.Adapter<TeamAdapter.MyViewHolder> 
         public TextView title, info;
         TextView reg;
         ImageView profilePic;
-
         public MyViewHolder(View view) {
             super(view);
             title = view.findViewById(R.id.title);
@@ -65,7 +64,7 @@ public class TeamAdapter extends RecyclerView.Adapter<TeamAdapter.MyViewHolder> 
         holder.title.setText(userInfoList.get(position).child(AppConstant.pinfo).child(AppConstant.name).getValue() + "");
         holder.reg.setText(userInfoList.get(position).child(AppConstant.userName).getValue() + "");
         Glide.with(mContext)
-                .load("http://y-ral-gaming.com/admin/api/images/" + userInfoList.get(position).getKey() + ".png?u=" + (System.currentTimeMillis() / 1000))
+                .load("http://y-ral-gaming.com/admin/api/images/" + userInfoList.get(position).getKey() + ".png?u=" +AppConstant.imageExt())
                 .placeholder(R.drawable.game_avatar).circleCrop()
                 .into(holder.profilePic);
 //        if (userInfoList.get(position).getKey().equals(new AppConstant(mContext).getUserId())) {

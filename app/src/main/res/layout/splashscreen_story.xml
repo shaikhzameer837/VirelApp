@@ -12,9 +12,9 @@
         android:contentDescription="@null"
         android:scaleType="centerCrop" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:layout_width="wrap_content"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_margin="10dp"
         android:background="@drawable/round_rect"
@@ -22,6 +22,7 @@
         android:padding="10dp"
         android:id="@+id/skipScreen"
         android:text="skip"
+        android:textSize="12sp"
         android:textColor="@color/colorPrimary" />
 
     <Button

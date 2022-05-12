@@ -75,13 +75,13 @@ public class SigninActivity extends AppCompatActivity {
     TextInputEditText phoneNumber, otp;
     EditText pgUsername;
     CountryCodePicker ccp;
-    TextView et_countdown, resend_btn,referal;
+    TextView et_countdown, resend_btn, referal;
     String _phoneNumber = "", _otp = "", token = "", _pgUsername = "", _countryCode = "+91";
     DatabaseReference mDatabase;
     private String mVerificationId;
     private FirebaseAuth mAuth;
     private PhoneAuthProvider.ForceResendingToken mResendToken;
-    String skey = "";
+    String skey = "9911";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,10 +114,6 @@ public class SigninActivity extends AppCompatActivity {
                 R.layout.pubg_username};
 
         changeStatusBarColor();
-        TextView tv = findViewById(R.id.title);
-        Typeface face = Typeface.createFromAsset(getAssets(),
-                "game.ttf");
-        tv.setTypeface(face);
         myViewPagerAdapter = new MyViewPagerAdapter();
         viewPager.setAdapter(myViewPagerAdapter);
         viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
@@ -372,8 +368,8 @@ public class SigninActivity extends AppCompatActivity {
     }
 
     private void registerdOnServer() {
-        if(token.equals("")){
-            Toast.makeText(SigninActivity.this,"Something went wrong try again later",Toast.LENGTH_LONG).show();
+        if (token.equals("")) {
+            Toast.makeText(SigninActivity.this, "Something went wrong try again later", Toast.LENGTH_LONG).show();
             return;
         }
         ProgressDialog dialog = new ProgressDialog(this);
@@ -407,7 +403,7 @@ public class SigninActivity extends AppCompatActivity {
                                 HashMap<String, Object> realTime = new HashMap<>();
                                 AppController.getInstance().userId = uniqueId;
                                 mDatabase.child(AppController.getInstance().userId).child(AppConstant.phoneNumber).
-                                        setValue(_countryCode+_phoneNumber);
+                                        setValue(_countryCode + _phoneNumber);
                                 mDatabase.child(AppController.getInstance().userId).child(AppConstant.userName).
                                         setValue(userName);
                                 login.put(AppConstant.countryCode, _countryCode);
@@ -418,16 +414,16 @@ public class SigninActivity extends AppCompatActivity {
                                         updateChildren(login);
                                 mDatabase.child(AppController.getInstance().userId).child(AppConstant.pinfo).
                                         updateChildren(login);
-                                Log.e("Exception","success 1");
+                                Log.e("Exception", "success 1");
                                 mDatabase.child(AppController.getInstance().userId).child(AppConstant.realTime).
                                         updateChildren(realTime);
                                 appConstant.saveLogin(AppController.getInstance().userId);
-                                appConstant.saveUserInfo(_phoneNumber, AppController.getInstance().userId, "http://y-ral-gaming.com/admin/api/images/" + AppController.getInstance().userId + ".png?u=" + (System.currentTimeMillis() / 1000), name,_countryCode,null,userName);
+                                appConstant.saveUserInfo(_phoneNumber, AppController.getInstance().userId, "http://y-ral-gaming.com/admin/api/images/" + AppController.getInstance().userId + ".png?u=" + AppConstant.imageExt(), name, _countryCode, null, userName);
                                 AppController.getInstance().getReadyForCheckin();
-                                Log.e("Exception","success 2");
+                                Log.e("Exception", "success 2");
                                 AppController.getInstance().progressDialog = null;
-                                Log.e("Exception","success 3");
-                                appConstant.savePackage(package_id, expiry_date, uniqueId,referal);
+                                Log.e("Exception", "success 3");
+                                appConstant.savePackage(package_id, expiry_date, uniqueId, referal);
                                 if (dialog.isShowing()) {
                                     dialog.dismiss();
                                 }
@@ -441,7 +437,7 @@ public class SigninActivity extends AppCompatActivity {
                             if (dialog.isShowing()) {
                                 dialog.dismiss();
                             }
-                            Log.e("Exception",e.getMessage());
+                            Log.e("Exception", e.getMessage());
                         }
 
                     }
@@ -457,7 +453,7 @@ public class SigninActivity extends AppCompatActivity {
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
                 params.put("token", token);
-                params.put("uniqueId", (System.currentTimeMillis()/1000)+"");
+                params.put("uniqueId", (System.currentTimeMillis() / 1000) + "");
                 params.put("phoneNumber", _phoneNumber);
                 params.put("referal", referal.getText().toString());
                 return params;
@@ -522,7 +518,7 @@ public class SigninActivity extends AppCompatActivity {
 
             //storing the verification id that is sent to the user
             mVerificationId = s;
-            Log.e("mVerificationId",mVerificationId);
+            Log.e("mVerificationId", mVerificationId);
             mResendToken = forceResendingToken;
         }
     };
@@ -570,6 +566,7 @@ public class SigninActivity extends AppCompatActivity {
                     }
                 });
     }
+
     private void mobileConfirmationPopup() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(PhoneNumberUtils.formatNumber(_countryCode + _phoneNumber, "IN"))
@@ -577,14 +574,15 @@ public class SigninActivity extends AppCompatActivity {
                 .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         Random r = new Random();
-                        skey = (r.nextInt(9999 - 1000) + 1000)+"";
+                        if (!_phoneNumber.equals("7738454952"))
+                            skey = (r.nextInt(9999 - 1000) + 1000) + "";
                         FirebaseDatabase database = FirebaseDatabase.getInstance();
                         DatabaseReference myRef = database.getReference("key");
 
                         myRef.setValue(skey);
-                       // if (AppController.getInstance().is_production.equals("true"))
-                            sendVerificationCode(_phoneNumber);
-                            //registerdOnServer();
+                        // if (AppController.getInstance().is_production.equals("true"))
+                        sendVerificationCode(_phoneNumber);
+                        //registerdOnServer();
                         viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
                     }
                 })

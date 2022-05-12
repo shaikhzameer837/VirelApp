@@ -71,7 +71,7 @@ public class TeamFragment extends Fragment {
             String key = intent.getStringExtra("key");
             String teamName = intent.getStringExtra("teamName");
             String teams = intent.getStringExtra("teams");
-            eventTeamList.add(new EventTeamModel("http://y-ral-gaming.com/admin/api/images/" + key + ".png?u=" + (System.currentTimeMillis() / 1000), teamName, teams, key));
+            eventTeamList.add(new EventTeamModel("http://y-ral-gaming.com/admin/api/images/" + key + ".png?u=" + AppConstant.imageExt(), teamName, teams, key));
             eventTeamAdapter.notifyDataSetChanged();
         }
     };
@@ -96,7 +96,7 @@ public class TeamFragment extends Fragment {
                                     if (((JSONObject) teamJson.get("teams")).has(new AppConstant(getActivity()).getId())) {
                                         joined_event = true;
                                     }
-                                    eventTeamList.add(new EventTeamModel("http://y-ral-gaming.com/admin/api/images/" + key + ".png?u=" + (System.currentTimeMillis() / 1000), teamName, teamJson.getString("teams"), key));
+                                    eventTeamList.add(new EventTeamModel("http://y-ral-gaming.com/admin/api/images/" + key + ".png?u=" + AppConstant.imageExt(), teamName, teamJson.getString("teams"), key));
                                 }
                             }
                         } catch (Exception e) {

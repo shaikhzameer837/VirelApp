@@ -47,7 +47,7 @@ public class NotificationActivity extends AppCompatActivity {
                                 String subtitle = "";
                                 if (dataSnapshot.child("subject").getValue().equals("follow"))
                                     subtitle = "Followed you";
-                                notificationModelArrayList.add(new NotificationModel(dataSnapshot.child("id").getValue(String.class), snapshot.getValue(String.class), dataSnapshot.child("subject").getValue() + "", dataSnapshot.getKey(), subtitle));
+                                notificationModelArrayList.add(new NotificationModel(dataSnapshot.child("id").getValue(String.class), snapshot.getValue() == null ? "Player" : snapshot.getValue(String.class), dataSnapshot.child("subject").getValue() + "", dataSnapshot.getKey(), subtitle));
                                 notficationAdapter.notifyDataSetChanged();
                             }
 

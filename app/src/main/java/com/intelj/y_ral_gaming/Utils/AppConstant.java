@@ -86,6 +86,7 @@ public class AppConstant {
             pinfo = "pinfo",
             noti = "noti",
             realTime = "realTime",
+            msg = "msg",
             paymentHistory = "phist",
             discordId = "discordId",
             bio = "bio",
@@ -133,7 +134,9 @@ public class AppConstant {
             return diff / DAY_MILLIS + " days ago";
         }
     }
-
+    public static long imageExt(){
+        return (System.currentTimeMillis() / 60000);
+    }
     public static boolean isProduction = false;
     public static SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss aa");
     static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";

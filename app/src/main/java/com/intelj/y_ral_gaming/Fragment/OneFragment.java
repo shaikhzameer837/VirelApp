@@ -48,7 +48,6 @@ import java.util.Map;
 public class OneFragment extends Fragment {
     private RecyclerView recyclerView;
     private TextView tv_coming_soon;
-    private ImageView imageView;
     View rootView;
     private TimeSlotAdapter mAdapter;
     public ArrayList<GameItem> GameItem = new ArrayList<>();
@@ -76,31 +75,41 @@ public class OneFragment extends Fragment {
 
         }
     }
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        rootView = inflater.inflate(R.layout.fragment_one, container, false);
+        onResumeView();
+        return rootView;
+    }
     public void onResumeView() {
         shimmerFrameLayout = rootView.findViewById(R.id.shimmer_layout);
         mSwipeRefreshLayout = rootView.findViewById(R.id.swiperefresh_items);
         date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
         recyclerView = rootView.findViewById(R.id.recycler_view);
         tv_coming_soon = rootView.findViewById(R.id.tv_coming_soon);
-        imageView = rootView.findViewById(R.id.imageview);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(mLayoutManager);
         initializedata();
-        Glide.with(this).load(R.drawable.coming_soon).diskCacheStrategy(DiskCacheStrategy.ALL).centerCrop().into(imageView);
+       // Glide.with(this).load(R.drawable.coming_soon).diskCacheStrategy(DiskCacheStrategy.ALL).centerCrop().into(imageView);
         Log.e("show_listview",show_listview + "--"+title);
         if (show_listview != 0) {
             shimmerFrameLayout.startShimmer();
             recyclerView.setVisibility(View.VISIBLE);
             tv_coming_soon.setVisibility(View.GONE);
-            imageView.setVisibility(View.GONE);
+            rootView.findViewById(R.id.coming_soon).setVisibility(View.GONE);
             reloadData();
         } else {
             shimmerFrameLayout.stopShimmer();
             shimmerFrameLayout.setVisibility(View.GONE);
             recyclerView.setVisibility(View.GONE);
             tv_coming_soon.setVisibility(View.VISIBLE);
-            imageView.setVisibility(View.VISIBLE);
+            rootView.findViewById(R.id.coming_soon).setVisibility(View.VISIBLE);
         //    rootView.findViewById(R.id.entry).setVisibility(View.GONE);
         }
 //        for (String s : AppController.getInstance().timeArray) {
@@ -232,18 +241,7 @@ public class OneFragment extends Fragment {
         queue.add(stringRequest);
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_one, container, false);
-        onResumeView();
-        return rootView;
-    }
 
     private void initializedata() {
         mAdapter = new TimeSlotAdapter(getActivity(), GameItem, title);

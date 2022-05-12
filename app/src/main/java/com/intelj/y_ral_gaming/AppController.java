@@ -26,10 +26,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.google.firebase.crashlytics.internal.model.CrashlyticsReport;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -47,6 +49,8 @@ import com.intelj.y_ral_gaming.Activity.NotificationActivity;
 import com.intelj.y_ral_gaming.Activity.NotificationModel;
 import com.intelj.y_ral_gaming.Activity.SearchActivity;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
+import com.intelj.y_ral_gaming.db.AppDataBase;
+import com.intelj.y_ral_gaming.db.Chat;
 import com.intelj.y_ral_gaming.model.TournamentModel;
 
 import org.json.JSONArray;
@@ -82,15 +86,15 @@ public class AppController extends Application implements Application.ActivityLi
     public List<GameItem> movieList = new ArrayList<>();
     public GameItem gameItem;
     public TournamentModel tournamentModel;
+    AppDataBase appDataBase;
     public HashMap<String, Integer> popularList = new HashMap<>();
-
     @Override
     public void onCreate() {
         super.onCreate();
         instance = this;
         remoteConfig = FirebaseRemoteConfig.getInstance();
         remoteConfig.fetchAndActivate();
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+       // FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         getReadyForCheckin();
         getGameName();
         getTournamentTime();
@@ -116,11 +120,12 @@ public class AppController extends Application implements Application.ActivityLi
         x = 0;
         Log.e("userId1s", userId);
         mDatabase = FirebaseDatabase.getInstance().getReference(AppConstant.users).child(userId);
-        mDatabase.keepSynced(true);
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                mDatabase.keepSynced(true);
                 mySnapShort = dataSnapshot.child(AppConstant.pinfo);
+                follow = dataSnapshot.child(AppConstant.profile).child(AppConstant.following);
                 userInfoList = new ArrayList<>();
                 if (!dataSnapshot.exists()) {
                     new AppConstant(AppController.this).logout();
@@ -167,6 +172,17 @@ public class AppController extends Application implements Application.ActivityLi
                         }
                     }
                 }
+                DataSnapshot msgData = dataSnapshot.child(AppConstant.realTime).child(AppConstant.msg);
+                if (msgData.getChildrenCount() != 0) {
+                    for (DataSnapshot dataSnapshots : msgData.getChildren()) {
+                        appDataBase = AppDataBase.getDBInstance(AppController.this, dataSnapshots.child("owner").getValue() + "_chats");
+                        showNotification(dataSnapshots.child("messages").getValue(String.class), dataSnapshots.child(AppConstant.name).getValue(String.class), null, dataSnapshots.getKey());
+                        appDataBase.chatDao().insertUser(dataSnapshots.getValue(Chat.class));
+                    }
+                    Intent intent = new Intent("chat");
+                    LocalBroadcastManager.getInstance(AppController.this).sendBroadcast(intent);
+                    FirebaseDatabase.getInstance().getReference(AppConstant.users).child(userId).child(AppConstant.realTime).child(AppConstant.msg).removeValue();
+                }
             }
 
             @Override
@@ -179,8 +195,16 @@ public class AppController extends Application implements Application.ActivityLi
     public void showNotification(String msg, String title, Bitmap bitImage, String url) {
         Intent intent = new Intent(AppController.this, NotificationActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this,
-                676, intent, PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent pendingIntent;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            pendingIntent =PendingIntent.getActivity(this,
+                    0, intent,PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+        }else {
+            pendingIntent = PendingIntent.getActivity(this,
+                    0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             int importance = NotificationManager.IMPORTANCE_HIGH; //Important for heads-up notification
             NotificationChannel channel = new NotificationChannel("1", "name", importance);
