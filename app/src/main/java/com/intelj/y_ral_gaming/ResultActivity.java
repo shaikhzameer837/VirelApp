@@ -27,6 +27,7 @@ import com.intelj.y_ral_gaming.Utils.AppConstant;
 public class ResultActivity extends YouTubeBaseActivity {
     TextView question,timeInfo;
     Context mContext;
+
     String gameKey = "XjbbRCjQNKM";
     LinearLayout linearLayout;
     Boolean answer = null;
