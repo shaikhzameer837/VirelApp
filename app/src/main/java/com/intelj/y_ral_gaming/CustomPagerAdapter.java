@@ -1,11 +1,16 @@
 package com.intelj.y_ral_gaming;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.viewpager.widget.PagerAdapter;
@@ -22,6 +27,7 @@ import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.android.gms.ads.nativead.NativeAdOptions;
+import com.google.firebase.database.DataSnapshot;
 import com.intelj.y_ral_gaming.Activity.MainActivity;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 
@@ -30,9 +36,10 @@ import java.util.ArrayList;
 public class CustomPagerAdapter extends PagerAdapter {
     AdView v = null;
     private Context mContext;
-    ArrayList<String> dataSnapshots;
-
-    public CustomPagerAdapter(Context context, ArrayList<String> dataSnapshots) {
+    LinearLayout linearLayout;
+    TextView question;
+    ArrayList<DataSnapshot> dataSnapshots;
+    public CustomPagerAdapter(Context context, ArrayList<DataSnapshot> dataSnapshots) {
         mContext = context;
         this.dataSnapshots = dataSnapshots;
     }
@@ -41,61 +48,37 @@ public class CustomPagerAdapter extends PagerAdapter {
     public Object instantiateItem(ViewGroup collection, int position) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
         ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.img_swipe, collection, false);
-        ImageView imgs = layout.findViewById(R.id.imgs);
-//        if (position == 1) {
-//            imgs.setVisibility(View.GONE);
-//            MobileAds.initialize(mContext, new OnInitializationCompleteListener() {
-//                @Override
-//                public void onInitializationComplete(InitializationStatus initializationStatus) {
-//                }
-//            });
-//            AdView mAdView = layout.findViewById(R.id.adView);
-//            AdRequest adRequest = new AdRequest.Builder().build();
-//            mAdView.loadAd(adRequest);
-//
-//            mAdView.setAdListener(new AdListener() {
-//                @Override
-//                public void onAdLoaded() {
-//                    // Code to be executed when an ad finishes loading.
-//                    super.onAdLoaded();
-//                    Toast.makeText(mContext, "Add loaded", Toast.LENGTH_LONG).show();
-//                }
-//
-//                @Override
-//                public void onAdFailedToLoad(LoadAdError adError) {
-//                    // Code to be executed when an ad request fails.
-//                    super.onAdFailedToLoad(adError);
-//                    mAdView.loadAd(adRequest);
-//                }
-//
-//                @Override
-//                public void onAdOpened() {
-//                    // Code to be executed when an ad opens an overlay that
-//                    // covers the screen.
-//                    super.onAdOpened();
-//                }
-//
-//                @Override
-//                public void onAdClicked() {
-//                    // Code to be executed when the user clicks on an ad.
-//                    super.onAdClicked();
-//                }
-//
-//                @Override
-//                public void onAdClosed() {
-//                    // Code to be executed when the user is about to return
-//                    // to the app after tapping on an ad.
-////            super.onAdClosed();
-//                }
-//            });
-//        } else {
-            imgs.setVisibility(View.VISIBLE);
-            Glide.with(mContext)
-                    .load(dataSnapshots.get(position))
-                    .placeholder(R.drawable.game_avatar)
-                    .into(imgs);
-            collection.addView(layout);
-      //  }
+        int x = 0;
+        linearLayout = layout.findViewById(R.id.linearLayout);
+        question = layout.findViewById(R.id.question);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        params.weight = 1.0f;
+        params.setMargins(7, 7, 7, 7);
+        for (DataSnapshot snapshot : dataSnapshots.get(position).getChildren()) {
+            if (snapshot.getValue() instanceof Boolean) {
+                x++;
+                Button button = new Button(mContext);
+                button.setId(x);
+                button.setTag(x);
+                button.setText(snapshot.getKey());
+                button.setLayoutParams(params);
+                button.setBackgroundResource(R.drawable.curved_white);
+                button.setTextColor(Color.parseColor("#7e241c"));
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        v.setBackgroundResource(R.drawable.curved_red);
+                        ((Button) v).setTextColor(Color.parseColor("#ffffff"));
+                      //  answer = (Boolean) button.getTag();
+                    }
+                });
+                linearLayout.addView(button);
+            }
+        else
+                question.setText(snapshot.getValue(String.class));
+        }
+        collection.addView(layout);
         return layout;
     }
 
@@ -106,7 +89,7 @@ public class CustomPagerAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return 3;
+        return dataSnapshots.size();
     }
 
     @Override

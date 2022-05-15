@@ -56,11 +56,11 @@ public class TeamAdapter extends RecyclerView.Adapter<TeamAdapter.MyViewHolder> 
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.friend_list, parent, false);
 
-        return new TeamAdapter.MyViewHolder(itemView);
+        return new MyViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull TeamAdapter.MyViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull MyViewHolder holder, final int position) {
         holder.title.setText(userInfoList.get(position).child(AppConstant.pinfo).child(AppConstant.name).getValue() + "");
         holder.reg.setText(userInfoList.get(position).child(AppConstant.userName).getValue() + "");
         Glide.with(mContext)

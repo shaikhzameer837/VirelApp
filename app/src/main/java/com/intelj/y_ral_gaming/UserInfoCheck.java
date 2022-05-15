@@ -108,7 +108,7 @@ public class UserInfoCheck extends AppCompatActivity {
         rotatingTextWrapper.setContent("", rotatable);
         PackageManager pm = getPackageManager();
         int hasPerm = pm.checkPermission(
-                android.Manifest.permission.READ_CONTACTS,
+                Manifest.permission.READ_CONTACTS,
                 getPackageName());
         if (hasPerm != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(UserInfoCheck.this,

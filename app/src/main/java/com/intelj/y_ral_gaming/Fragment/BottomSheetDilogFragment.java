@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class BottomSheetDilogFragment extends com.google.android.material.bottomsheet.BottomSheetDialogFragment {
+public class BottomSheetDilogFragment extends BottomSheetDialogFragment {
     private ViewsSliderAdapter mAdapter;
     private TextView[] dots;
     private int[] layouts;
@@ -180,7 +180,7 @@ public class BottomSheetDilogFragment extends com.google.android.material.bottom
         public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(viewType, parent, false);
-            return new ViewsSliderAdapter.SliderViewHolder(view);
+            return new SliderViewHolder(view);
         }
 
         @Override

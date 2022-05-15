@@ -47,7 +47,7 @@ public class NotficationAdapter extends RecyclerView.Adapter<NotficationAdapter.
     }
 
     @Override
-    public void onBindViewHolder(NotficationAdapter.MyViewHolder holder, int position) {
+    public void onBindViewHolder(MyViewHolder holder, int position) {
         NotificationModel movie = notificationModelArrayList.get(position);
         holder.name.setText(movie.getName());
         holder.sub_title.setText(movie.getSubtitle());
