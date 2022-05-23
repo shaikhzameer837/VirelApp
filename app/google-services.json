@@ -41,6 +41,41 @@
           ]
         }
       }
+    },{
+      "client_info": {
+        "mobilesdk_app_id": "1:181524892704:android:b43f809cc528b3852b8045",
+        "android_client_info": {
+          "package_name": "com.intelj.y_ral_gaming"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "181524892704-02ubklggk18jdh9u1vp2fd68qck77ej7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBgjck5aTFIM12Cru-nz3-X5nUEuyt2ZIk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "181524892704-02ubklggk18jdh9u1vp2fd68qck77ej7.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "181524892704-9f12h2iv0s1oq90407gc3tcc2t15vso8.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.KickApp"
+              }
+            }
+          ]
+        }
+      }
     },
     {
       "client_info": {

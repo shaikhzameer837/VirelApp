@@ -1,20 +1,14 @@
 package com.intelj.y_ral_gaming;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.Button;
-import android.widget.LinearLayout;
+import android.os.Handler;
 import android.widget.ProgressBar;
-import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
@@ -28,14 +22,18 @@ import com.intelj.y_ral_gaming.Utils.AppConstant;
 import com.intelj.y_ral_gaming.Utils.LockableViewPager;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 public class ResultActivity extends YouTubeBaseActivity {
     TextView question, timeInfo;
     Context mContext;
+   // String gameKey = "F8Jwn2DtEkM";
     String gameKey = "XjbbRCjQNKM";
     ProgressBar progress;
     LockableViewPager viewPager;
     ArrayList<DataSnapshot> dataSnapshots = new ArrayList<>();
+    CustomPagerAdapter customPagerAdapter;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.result);
@@ -43,6 +41,27 @@ public class ResultActivity extends YouTubeBaseActivity {
         timeInfo = findViewById(R.id.timeInfo);
         progress = findViewById(R.id.progress);
         mContext = this;
+//        DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
+//        connectedRef.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                boolean connected = snapshot.getValue(Boolean.class);
+//                if (connected) {
+//                    db.collection("users")
+//                            .document("online")
+//                            .update(gameKey, FieldValue.increment(1));
+//                } else {
+//                    db.collection("users")
+//                            .document("online")
+//                            .update(gameKey, FieldValue.increment(-1));
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//                Log.w(TAG, "Listener was cancelled");
+//            }
+//        });
         YouTubePlayerView youTubePlayerView =
                 findViewById(R.id.player);
         youTubePlayerView.initialize(AppConstant.youtubeApiKey,
@@ -50,8 +69,9 @@ public class ResultActivity extends YouTubeBaseActivity {
                     @Override
                     public void onInitializationSuccess(YouTubePlayer.Provider provider,
                                                         YouTubePlayer youTubePlayer, boolean b) {
-                        startTriviaGame();
-                        youTubePlayer.cueVideo(gameKey);
+
+                        youTubePlayer.loadVideo(gameKey);
+                      //  youTubePlayer.cueVideo(gameKey);
                     }
 
                     @Override
@@ -61,7 +81,29 @@ public class ResultActivity extends YouTubeBaseActivity {
                     }
                 });
         viewPager = findViewById(R.id.viewpager);
+        HashMap<String,Object> hashMap = new HashMap<>();
+        FirebaseDatabase.getInstance().getReference("quiz").child(gameKey).child("3")
+                        .setValue(hashMap);
 
+        FirebaseDatabase.getInstance().getReference("quiz").child(gameKey)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            dataSnapshots.add(snapshot);
+                        }
+                        customPagerAdapter = new CustomPagerAdapter(ResultActivity.this, dataSnapshots);
+                        viewPager.setAdapter(customPagerAdapter);
+                        if (dataSnapshots.size() != 0)
+                            startTriviaGame();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError error) {
+
+                    }
+                });
+        viewPager.setOffscreenPageLimit(1);
     }
 
     private void startTriviaGame() {
@@ -73,27 +115,26 @@ public class ResultActivity extends YouTubeBaseActivity {
             }
 
             public void onFinish() {
+                customPagerAdapter.setCorrectAnswer(viewPager.getCurrentItem());
+                if(!customPagerAdapter.isCorrectAnswer()){
+                    Toast.makeText(ResultActivity.this,"OOPs lost" , Toast.LENGTH_LONG).show();
+                    return;
+                }else{
+                    Toast.makeText(ResultActivity.this,"you won" , Toast.LENGTH_LONG).show();
+                }
                 if (viewPager.getCurrentItem() != (dataSnapshots.size() - 1)) {
-                    viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
-                    startTriviaGame();
+                    new Handler().postDelayed(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
+                            startTriviaGame();
+                        }
+                    }, 2000);
+
                 }
             }
 
         }.start();
-        FirebaseDatabase.getInstance().getReference("quiz").child(gameKey)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                            dataSnapshots.add(snapshot);
-                        }
-                        viewPager.setAdapter(new CustomPagerAdapter(ResultActivity.this, dataSnapshots));
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError error) {
-
-                    }
-                });
     }
 }

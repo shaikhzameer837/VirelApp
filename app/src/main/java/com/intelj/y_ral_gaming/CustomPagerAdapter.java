@@ -34,11 +34,13 @@ import com.intelj.y_ral_gaming.Utils.AppConstant;
 import java.util.ArrayList;
 
 public class CustomPagerAdapter extends PagerAdapter {
-    AdView v = null;
     private Context mContext;
     LinearLayout linearLayout;
     TextView question;
     ArrayList<DataSnapshot> dataSnapshots;
+    ArrayList<Button> answerBtn = new ArrayList<>();
+    ArrayList<Boolean> isPress = new ArrayList<>();
+    boolean isWinner = false;
     public CustomPagerAdapter(Context context, ArrayList<DataSnapshot> dataSnapshots) {
         mContext = context;
         this.dataSnapshots = dataSnapshots;
@@ -59,23 +61,29 @@ public class CustomPagerAdapter extends PagerAdapter {
             if (snapshot.getValue() instanceof Boolean) {
                 x++;
                 Button button = new Button(mContext);
-                button.setId(x);
-                button.setTag(x);
+                button.setId(Integer.parseInt(position + "" + x));
+                button.setTag(snapshot.getValue(Boolean.class));
                 button.setText(snapshot.getKey());
                 button.setLayoutParams(params);
-                button.setBackgroundResource(R.drawable.curved_white);
-                button.setTextColor(Color.parseColor("#7e241c"));
+                button.setBackgroundResource(R.drawable.curved_transparent);
+                button.setTextColor(Color.parseColor("#ffffff"));
+                if (snapshot.getValue(Boolean.class))
+                    answerBtn.add(button);
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        v.setBackgroundResource(R.drawable.curved_red);
-                        ((Button) v).setTextColor(Color.parseColor("#ffffff"));
-                      //  answer = (Boolean) button.getTag();
+                        if (isPress.size() == position) {
+                            v.setBackgroundResource(R.drawable.curved_blue);
+                            ((Button) v).setTextColor(Color.parseColor("#ffffff"));
+                            isPress.add(true);
+                            isWinner = (Boolean) v.getTag();
+
+                        }
+                        //  answer = (Boolean) button.getTag();
                     }
                 });
                 linearLayout.addView(button);
-            }
-        else
+            } else
                 question.setText(snapshot.getValue(String.class));
         }
         collection.addView(layout);
@@ -102,5 +110,12 @@ public class CustomPagerAdapter extends PagerAdapter {
 
         return "";
     }
+    public boolean isCorrectAnswer(){
 
+        return isWinner;
+    }
+    public void setCorrectAnswer(int position) {
+        answerBtn.get(position).setBackgroundResource(R.drawable.curved_purple);
+        notifyDataSetChanged();
+    }
 }

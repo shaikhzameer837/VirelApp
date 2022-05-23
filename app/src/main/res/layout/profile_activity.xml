@@ -30,26 +30,27 @@
                 android:id="@+id/back"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:rotation="-180"
                 android:layout_centerVertical="true"
+                android:rotation="-180"
                 android:src="@drawable/arrow" />
 
             <TextView
                 android:id="@+id/title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
                 android:gravity="center_horizontal"
                 android:text="Profile"
-                android:layout_centerVertical="true"
                 android:textColor="@color/black" />
 
             <ImageView
                 android:id="@+id/chat"
                 android:layout_width="wrap_content"
-                android:gravity="center_vertical"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_margin="10dp"
+                android:visibility="gone"
+                android:gravity="center_vertical"
                 android:src="@drawable/chat"
                 android:textColor="@color/black" />
 
