@@ -160,7 +160,6 @@ public class MainActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
     int oldId;
     ImageView imageView;
-    private AdView mAdView;
     LinearLayout moneyList;
     String wAmount = "";
     String payType = "Amount";

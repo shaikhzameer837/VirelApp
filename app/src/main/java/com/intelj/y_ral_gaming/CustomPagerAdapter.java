@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +42,7 @@ public class CustomPagerAdapter extends PagerAdapter {
     ArrayList<Button> answerBtn = new ArrayList<>();
     ArrayList<Boolean> isPress = new ArrayList<>();
     boolean isWinner = false;
+    RelativeLayout gameTime;
     public CustomPagerAdapter(Context context, ArrayList<DataSnapshot> dataSnapshots) {
         mContext = context;
         this.dataSnapshots = dataSnapshots;
@@ -52,39 +54,41 @@ public class CustomPagerAdapter extends PagerAdapter {
         ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.img_swipe, collection, false);
         int x = 0;
         linearLayout = layout.findViewById(R.id.linearLayout);
+        gameTime = layout.findViewById(R.id.gameTime);
         question = layout.findViewById(R.id.question);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
         params.weight = 1.0f;
         params.setMargins(7, 7, 7, 7);
         for (DataSnapshot snapshot : dataSnapshots.get(position).getChildren()) {
-            if (snapshot.getValue() instanceof Boolean) {
-                x++;
-                Button button = new Button(mContext);
-                button.setId(Integer.parseInt(position + "" + x));
-                button.setTag(snapshot.getValue(Boolean.class));
-                button.setText(snapshot.getKey());
-                button.setLayoutParams(params);
-                button.setBackgroundResource(R.drawable.curved_transparent);
-                button.setTextColor(Color.parseColor("#ffffff"));
-                if (snapshot.getValue(Boolean.class))
-                    answerBtn.add(button);
-                button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (isPress.size() == position) {
-                            v.setBackgroundResource(R.drawable.curved_blue);
-                            ((Button) v).setTextColor(Color.parseColor("#ffffff"));
-                            isPress.add(true);
-                            isWinner = (Boolean) v.getTag();
-
+            if (!snapshot.getKey().equals("time")) {
+                if (snapshot.getValue() instanceof Boolean) {
+                    x++;
+                    Button button = new Button(mContext);
+                    button.setId(Integer.parseInt(position + "" + x));
+                    button.setTag(snapshot.getValue(Boolean.class));
+                    button.setText(snapshot.getKey());
+                    button.setLayoutParams(params);
+                    button.setBackgroundResource(R.drawable.curved_transparent);
+                    button.setTextColor(Color.parseColor("#ffffff"));
+                    if (snapshot.getValue(Boolean.class))
+                        answerBtn.add(button);
+                    button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (isPress.size() == position) {
+                                v.setBackgroundResource(R.drawable.curved_blue);
+                                ((Button) v).setTextColor(Color.parseColor("#ffffff"));
+                                isPress.add(true);
+                                isWinner = (Boolean) v.getTag();
+                            }
+                            //  answer = (Boolean) button.getTag();
                         }
-                        //  answer = (Boolean) button.getTag();
-                    }
-                });
-                linearLayout.addView(button);
-            } else
-                question.setText(snapshot.getValue(String.class));
+                    });
+                    linearLayout.addView(button);
+                } else
+                    question.setText(snapshot.getValue(String.class));
+            }
         }
         collection.addView(layout);
         return layout;
@@ -110,10 +114,12 @@ public class CustomPagerAdapter extends PagerAdapter {
 
         return "";
     }
-    public boolean isCorrectAnswer(){
+
+    public boolean isCorrectAnswer() {
 
         return isWinner;
     }
+
     public void setCorrectAnswer(int position) {
         answerBtn.get(position).setBackgroundResource(R.drawable.curved_purple);
         notifyDataSetChanged();

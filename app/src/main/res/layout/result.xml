@@ -9,10 +9,11 @@
         android:id="@+id/player"
         android:layout_width="match_parent"
         android:layout_height="200dp" />
-    <RelativeLayout
+    <RelativeLayout android:id="@+id/gameTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:visibility="gone"
         android:layout_gravity="center_horizontal"
         android:elevation="5dp">
 
@@ -37,6 +38,15 @@
             android:text="10"
             android:textColor="@color/colorPrimary" />
     </RelativeLayout>
+
+    <TextView android:id="@+id/startTime"
+        android:layout_width="match_parent"
+        android:text=""
+        android:textSize="27sp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textColor="@color/colorPrimary"
+        android:layout_height="match_parent"/>
     <com.intelj.y_ral_gaming.Utils.LockableViewPager
         android:id="@+id/viewpager"
         android:layout_marginTop="-40dp"

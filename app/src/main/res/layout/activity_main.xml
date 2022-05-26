@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
@@ -152,27 +153,36 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:background="@color/black" />
-
+    </LinearLayout>
+    <com.google.android.material.bottomappbar.BottomAppBar
+        android:id="@+id/bottomAppBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        app:fabAlignmentMode="center"
+        android:background="@color/colorPrimary"
+        app:elevation="5dp"
+        app:fabCradleMargin="5dp"
+        app:fabCradleRoundedCornerRadius="5dp"
+        app:fabCradleVerticalOffset="5dp"
+        >
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_navigation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
-            app:elevation="1dp"
+            android:background="#00000000"
+            app:elevation="0dp"
             app:itemHorizontalTranslationEnabled="false"
             app:itemIconTint="@color/nav_color"
             app:itemTextColor="@color/nav_color"
             app:labelVisibilityMode="labeled"
             app:menu="@menu/bottom_navigation_menu" />
-    </LinearLayout>
-
-    <!--    <com.google.android.material.navigation.NavigationView-->
-    <!--        android:id="@+id/nav_view_drawer"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="match_parent"-->
-    <!--        android:layout_gravity="start"-->
-    <!--        android:fitsSystemWindows="true"-->
-    <!--        app:headerLayout="@layout/nav_header_main"-->
-    <!--        app:menu="@menu/activity_main_drawer" />-->
-
-</RelativeLayout>
+    </com.google.android.material.bottomappbar.BottomAppBar>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/arrow_down"
+        android:background="@color/colorPrimaryDark"
+        app:layout_anchor="@id/bottomAppBar" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

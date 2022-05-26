@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/game_slot"
         android:icon="@drawable/home"
+        app:showAsAction="always|withText"
         android:title="Home" />
 <!--&lt;!&ndash;    <item&ndash;&gt;-->
 <!--        android:id="@+id/team"-->
@@ -12,17 +14,26 @@
     <item
         android:id="@+id/tournament"
         android:icon="@drawable/trophy_outline"
+        app:showAsAction="always|withText"
         android:title="Events" />
     <item
+        android:id="@+id/abc"
+        app:showAsAction="always|withText"
+        android:title="" />
+    <item
         android:id="@+id/status"
+        app:showAsAction="always|withText"
         android:icon="@drawable/status"
         android:title="Status" />
     <item
         android:id="@+id/history"
+        app:showAsAction="always|withText"
         android:icon="@drawable/history"
         android:title="History" />
-    <item
-        android:id="@+id/chat"
-        android:icon="@drawable/chat"
-        android:title="Chat" />
+<!--    <item-->
+<!--        android:id="@+id/chat"-->
+<!--        app:showAsAction="always|withText"-->
+<!--        android:visible="false"-->
+<!--        android:icon="@drawable/chat"-->
+<!--        android:title="Chat" />-->
 </menu>
