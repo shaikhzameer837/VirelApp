@@ -104,6 +104,8 @@
         <activity android:name=".Activity.EventInfo" />
         <activity android:name=".Activity.NotificationActivity" />
         <activity android:name=".FollowActivity" />
+        <activity android:name="com.intelj.y_ral_gaming.Activity.ViralWeb" />
+        <activity android:name="com.intelj.y_ral_gaming.Activity.ChatList" />
 
         <service
             android:name=".FirebaseFCMServices"

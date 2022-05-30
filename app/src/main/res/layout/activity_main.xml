@@ -54,31 +54,43 @@
                 android:background="@color/appColor"
                 android:textColor="@color/colorPrimary"
                 android:textSize="10sp" />
-           <TextView
+           <ImageView
                 android:id="@+id/notification"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_marginRight="10dp"
-                android:drawableTop="@drawable/bell"
-                android:text="notification"
+                android:src="@drawable/bell"
                 android:textColor="@color/black"
                 android:textSize="11sp" />
             <TextView
                 android:id="@+id/coins"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="1"
+                android:layout_marginRight="-45dp"
+                android:layout_marginTop="-10dp"
+                android:paddingRight="5dp"
+                android:paddingLeft="5dp"
+                android:elevation="2dp"
+                android:paddingTop="3dp"
+                android:visibility="gone"
+                android:paddingBottom="3dp"
+                android:background="@color/appColor"
+                android:textColor="@color/colorPrimary"
+                android:textSize="10sp" />
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_marginRight="15dp"
-                android:drawableTop="@drawable/ic_coin"
-                android:text="coins"
+                android:src="@drawable/ic_coin"
                 android:textColor="@color/black"
                 android:textSize="11sp" />
 
-            <TextView
-                android:id="@+id/showSupport"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawableTop="@drawable/support"
-                android:text="Help"
+            <ImageView
+                android:id="@+id/chat"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/chat"
                 android:textColor="@color/black"
                 android:textSize="11sp" />
         </LinearLayout>
@@ -182,7 +194,9 @@
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/arrow_down"
-        android:background="@color/colorPrimaryDark"
+        android:src="@drawable/folder_play_outline"
+        android:background="@color/colorPrimary"
+        android:backgroundTint="@color/colorPrimary"
+        android:elevation="3dp"
         app:layout_anchor="@id/bottomAppBar" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

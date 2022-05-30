@@ -30,6 +30,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.transition.Fade;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -137,6 +138,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import at.huber.youtubeExtractor.VideoMeta;
+import at.huber.youtubeExtractor.YouTubeExtractor;
+import at.huber.youtubeExtractor.YtFile;
+
 public class MainActivity extends AppCompatActivity {
     AppConstant appConstant;
     private ViewPager gameViewpager;
@@ -144,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     TextView coins;
     EditText ign, igid;
-    private RecyclerView recyclerView, rv_popular, rv_contact;
+    private RecyclerView recyclerView, rv_popular;
     View inflated;
     int RESULT_LOAD_IMAGE = 9;
     int PROFILE_IMAGE = 11;
@@ -169,15 +174,8 @@ public class MainActivity extends AppCompatActivity {
     private ShimmerFrameLayout shimmerFrameLayout;
     SharedPreferences sharedPreferences;
     ArrayList<UserListModel> teamModel;
-    ArrayList<ContactListModel> contactModel;
     MemberListAdapter userAdapter;
-    ContactListAdapter contactListAdapter;
     RecyclerView recyclerviewTeam;
-    private static final int REQUEST = 112;
-    HashMap<String, String> contactArrayList = new HashMap<>();
-    SharedPreferences shd;
-    HashSet<String> originalContact = new HashSet<>();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -185,6 +183,9 @@ public class MainActivity extends AppCompatActivity {
         imgProfile = findViewById(R.id.imgs);
         ncount = findViewById(R.id.ncount);
         appConstant = new AppConstant(this);
+        getYoutubeVid("hdltisKb2bc");
+        getYoutubeVid("ICqjw7zGEbA");
+        getYoutubeVid("9Q8CYILXfh8");
         // requestWindowFeature(Window.FEATURE_NO_TITLE);
         //this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         sharedPreferences = getSharedPreferences(appConstant.getId(), 0);
@@ -219,6 +220,12 @@ public class MainActivity extends AppCompatActivity {
                     showBottomSheetDialog();
             }
         });
+        findViewById(R.id.fab).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this,ViralWeb.class));
+            }
+        });
         findViewById(R.id.search).setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -228,10 +235,11 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-        findViewById(R.id.showSupport).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.chat).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showSupport();
+              //  showSupport();
+                startActivity(new Intent(MainActivity.this,ChatList.class));
             }
         });
         coins = findViewById(R.id.coins);
@@ -358,8 +366,26 @@ public class MainActivity extends AppCompatActivity {
                     }
                 };
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
-    }
 
+    }
+    public void getYoutubeVid(String youtubeLink) {
+        new YouTubeExtractor(this) {
+            @Override
+            public void onExtractionComplete(SparseArray<YtFile> ytFiles, VideoMeta vMeta) {
+                if (ytFiles != null) {
+                    try {
+                        int itag = 22;
+                        String downloadUrl = ytFiles.get(itag).getUrl();
+                        AppController.getInstance().shortsUrlList.add(downloadUrl);
+                    } catch (Exception e) {
+                        // below line is used for handling our errors.
+                        Log.e("TAG", "Error : " + e.toString());
+
+                    }
+                }
+            }
+        }.extract("https://www.youtube.com/watch?v="+youtubeLink);
+    }
     private static boolean hasPermissions(Context context, String... permissions) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
             for (String permission : permissions) {
@@ -371,107 +397,9 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    class readContactTask extends AsyncTask<Void, Integer, String> {
-        String TAG = getClass().getSimpleName();
-
-        protected void onPreExecute() {
-            super.onPreExecute();
-            contactModel.clear();
-            Log.d(TAG + " PreExceute", "On pre Exceute......");
-        }
-
-        protected String doInBackground(Void... arg0) {
-            readContacts();
-            return "You are at PostExecute";
-        }
-
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            returnPhone = 0;
-            originalContact.clear();
-            for (String phoneNo : contactArrayList.keySet()) {
-                serverContact(phoneNo, contactArrayList.get(phoneNo));
-            }
-            inflated.findViewById(R.id.la_contact).setVisibility(View.GONE);
-        }
-    }
-
-    int returnPhone = 0;
-
-    public void serverContact(String number, String original) {
-        Log.e("userNum", number);
-        DatabaseReference mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
-        Query query = mFirebaseDatabaseReference.child("users").orderByChild("phoneNumber").equalTo(number);
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                returnPhone++;
-                if (dataSnapshot != null) {
-                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                        Log.e("number//", original);
-                        Log.e("number//---", postSnapshot.getKey());
-                        originalContact.add(postSnapshot.getKey());
-                        appConstant.saveUserInfo(original, postSnapshot.getKey(), "http://y-ral-gaming.com/admin/api/images/" + postSnapshot.getKey() + ".png?u=" + AppConstant.imageExt(), null, "", postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue() != null ? postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue().toString() : null, postSnapshot.child(AppConstant.userName).getValue() != null ? postSnapshot.child(AppConstant.userName).getValue().toString() : System.currentTimeMillis() + "");
-                        contactModel.add(new ContactListModel("http://y-ral-gaming.com/admin/api/images/" + postSnapshot.getKey() + ".png?u=" + AppConstant.imageExt(), appConstant.getContactName(postSnapshot.child(AppConstant.phoneNumber).getValue(String.class)), postSnapshot.getKey(), postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue() != null ? postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue().toString() : ""));
-                        contactListAdapter.notifyDataSetChanged();
-                    }
-                }
-                if (contactArrayList.size() == returnPhone) {
-                    SharedPreferences.Editor setEditor = shd.edit();
-                    setEditor.putStringSet(AppConstant.contact, originalContact);
-                    setEditor.apply();
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
 
 
-    public void readContacts() {
-        contactArrayList.clear();
-        ContentResolver cr = getContentResolver();
-        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
-                null, null, null, null);
-        if ((cur != null ? cur.getCount() : 0) > 0) {
-            while (cur != null && cur.moveToNext()) {
-                String id = cur.getString(
-                        cur.getColumnIndex(ContactsContract.Contacts._ID));
-                String name = cur.getString(cur.getColumnIndex(
-                        ContactsContract.Contacts.DISPLAY_NAME));
 
-                if (cur.getInt(cur.getColumnIndex(
-                        ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0) {
-                    Cursor pCur = cr.query(
-                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                            null,
-                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
-                            new String[]{id}, null);
-                    while (pCur.moveToNext()) {
-                        String phoneNo = pCur.getString(pCur.getColumnIndex(
-                                ContactsContract.CommonDataKinds.Phone.NUMBER)).replace(" ", "");
-                        if (phoneNo.length() > 8) {
-                            String original = phoneNo;
-                            if (phoneNo.startsWith("0"))
-                                phoneNo = phoneNo.substring(1);
-                            if (!phoneNo.startsWith("+"))
-                                phoneNo = appConstant.getCountryCode() + phoneNo;
-                            Log.i("Phone Number: ", appConstant.getCountryCode());
-                            contactArrayList.put(phoneNo, original);
-                        }
-
-                    }
-                    pCur.close();
-                }
-            }
-        }
-        if (cur != null) {
-            cur.close();
-        }
-    }
 
     private void getPopularFace() {
         AppController.getInstance().popularList.clear();
@@ -1359,13 +1287,6 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(intent);
                 } else {
                     Toast.makeText(this, "You have disabled a contacts permission", Toast.LENGTH_LONG).show();
-                }
-                break;
-            case REQUEST:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    new readContactTask().execute();
-                } else {
-                    Toast.makeText(this, "The app was not allowed to read your contact", Toast.LENGTH_LONG).show();
                 }
                 break;
         }
