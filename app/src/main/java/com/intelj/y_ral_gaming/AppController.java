@@ -2,6 +2,7 @@ package com.intelj.y_ral_gaming;
 
 import static android.app.Notification.DEFAULT_SOUND;
 import static android.app.Notification.DEFAULT_VIBRATE;
+import static android.content.ContentValues.TAG;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -38,13 +39,19 @@ import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.storage.FirebaseStorage;
 import com.intelj.y_ral_gaming.Activity.MainActivity;
 import com.intelj.y_ral_gaming.Activity.NotificationActivity;
 import com.intelj.y_ral_gaming.Activity.ViralWeb;
@@ -60,6 +67,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import at.huber.youtubeExtractor.VideoMeta;
@@ -84,7 +92,6 @@ public class AppController extends Application implements Application.ActivityLi
     public DataSnapshot dataSnapshot;
     public String is_production;
     public AlertDialog.Builder builder;
-    public String subscription_package = "";
     public int amount = 0;
     public List<GameItem> movieList = new ArrayList<>();
     public List<String> shortsUrlList = new ArrayList<>();
@@ -98,19 +105,35 @@ public class AppController extends Application implements Application.ActivityLi
         instance = this;
         remoteConfig = FirebaseRemoteConfig.getInstance();
         remoteConfig.fetchAndActivate();
-
-       // FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         getReadyForCheckin();
         getGameName();
         getTournamentTime();
         is_production = remoteConfig.getString("is_production");
+        getVideoList();
     }
-
-
-    public String getSubscription_package() {
-        return subscription_package.equals("") ? new AppConstant(this).getDataFromShared(AppConstant.package_info, "") : subscription_package;
+    public void getVideoList(){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference docRef = db.collection("yral_web").document("video");
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Map<String, Object> map = document.getData();
+                        for (Map.Entry<String, Object> entry : map.entrySet()) {
+                            shortsUrlList.add("https://cdn.discordapp.com/attachments/911308156855005195/"+entry.getKey()+"/1.mp4");
+                          //  Log.d("DocumentSnapshot", shortsUrlList.get(shortsUrlList.size()-1));
+                        }
+                    } else {
+                        Log.d(TAG, "No such document");
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+            }
+        });
     }
-
     public void getReadyForCheckin() {
         appConstant = new AppConstant(this);
         if (new AppConstant(this).checkLogin()) {

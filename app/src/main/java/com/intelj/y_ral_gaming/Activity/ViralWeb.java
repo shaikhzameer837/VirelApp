@@ -15,14 +15,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.google.android.exoplayer2.ExoPlaybackException;
+import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.Timeline;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.extractor.ExtractorsFactory;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
+import com.google.android.exoplayer2.source.LoopingMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
@@ -71,46 +78,69 @@ public class ViralWeb extends AppCompatActivity {
             getYoutubeVid(position);
         }
     };
-    public void stopVideo(){
+
+    public void stopVideo() {
         if (exoPlayer != null) {
             exoPlayer.setPlayWhenReady(false);
             exoPlayer.release();
             exoPlayer = null;
         }
     }
+
     public void getYoutubeVid(int position) {
-//        String youtubeLink = "https://www.youtube.com/watch?v=UKTO7VCrCRs";
-//
-//        new YouTubeExtractor(this) {
-//            @Override
-//            public void onExtractionComplete(SparseArray<YtFile> ytFiles, VideoMeta vMeta) {
-//                if (ytFiles != null) {
         try {
-            //bandwisthmeter is used for getting default bandwidth
             BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
-            // track selector is used to navigate between video using a default seekbar.
             TrackSelector trackSelector = new DefaultTrackSelector(new AdaptiveTrackSelection.Factory(bandwidthMeter));
-            //we are ading our track selector to exoplayer.
             exoPlayer = ExoPlayerFactory.newSimpleInstance(ViralWeb.this, trackSelector);
-            // we are parsing a video url and parsing its video uri.
-            // we are creating a variable for datasource factory and setting its user agent as 'exoplayer_view'
             DefaultHttpDataSourceFactory dataSourceFactory = new DefaultHttpDataSourceFactory("exoplayer_video");
-            // we are creating a variable for extractor factory and setting it to default extractor factory.
             ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
-            //we are creating a media source with above variables and passing our event handler as null,
             SimpleExoPlayerList.get(position).setPlayer(exoPlayer);
             Uri videouri = Uri.parse(AppController.getInstance().shortsUrlList.get(position));
             mediaSource = new ExtractorMediaSource(videouri, dataSourceFactory, extractorsFactory, null, null);
             exoPlayer.prepare(mediaSource);
             exoPlayer.setPlayWhenReady(true);
+            exoPlayer.addListener(new ExoPlayer.EventListener() {
+                @Override
+                public void onTimelineChanged(Timeline timeline, Object manifest) {
+
+                }
+
+                @Override
+                public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
+
+                }
+
+                @Override
+                public void onLoadingChanged(boolean isLoading) {
+
+                }
+
+                @Override
+                public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+
+                }
+
+                @Override
+                public void onPlayerError(ExoPlaybackException error) {
+
+                }
+
+                @Override
+                public void onPositionDiscontinuity() {
+
+                }
+
+                @Override
+                public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
+
+                }
+            });
+
         } catch (Exception e) {
             // below line is used for handling our errors.
             Log.e("TAG", "Error : " + e.toString());
 
         }
-//                }
-//            }
-//        }.extract(youtubeLink);
     }
 
     @Override
@@ -131,6 +161,7 @@ public class ViralWeb extends AppCompatActivity {
                     .inflate(viewType, parent, false);
             return new SliderViewHolder(view);
         }
+
         @Override
         public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
             SliderViewHolder buttonViewHolder = (SliderViewHolder) holder;

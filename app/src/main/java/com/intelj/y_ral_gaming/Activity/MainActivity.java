@@ -1,5 +1,7 @@
 package com.intelj.y_ral_gaming.Activity;
 
+import static android.content.ContentValues.TAG;
+
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -98,6 +100,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -183,9 +187,34 @@ public class MainActivity extends AppCompatActivity {
         imgProfile = findViewById(R.id.imgs);
         ncount = findViewById(R.id.ncount);
         appConstant = new AppConstant(this);
-        getYoutubeVid("hdltisKb2bc");
-        getYoutubeVid("ICqjw7zGEbA");
-        getYoutubeVid("9Q8CYILXfh8");
+//        AppController.getInstance().shortsUrlList.add("https://cdn.discordapp.com/attachments/911308156855005195/981386524530716702/weirdest_things_astronauts_have_seen_cdn.320mp3converter.com.mp4");
+//        AppController.getInstance().shortsUrlList.add("https://cdn.discordapp.com/attachments/911308156855005195/981387457994047539/videoplayback.mp4");
+//        Map<String, Object> city = new HashMap<>();
+//        Map<String, Object> details = new HashMap<>();
+//        details.put("userid",appConstant.getId());
+//        details.put("likes",0);
+//        details.put("comment",0);
+//        details.put("caption","Gaming Zone");
+//        city.put("981594891480104980",details);
+//        FirebaseFirestore db = FirebaseFirestore.getInstance();
+//        db.collection("yral_web").document("video")
+//                .set(city, SetOptions.merge())
+//                .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                    @Override
+//                    public void onSuccess(Void aVoid) {
+//                        Log.d(TAG, "DocumentSnapshot successfully written!");
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Log.w(TAG, "Error writing document", e);
+//                    }
+//                });
+
+//        getYoutubeVid("hdltisKb2bc");
+//        getYoutubeVid("ICqjw7zGEbA");
+//        getYoutubeVid("9Q8CYILXfh8");
         // requestWindowFeature(Window.FEATURE_NO_TITLE);
         //this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         sharedPreferences = getSharedPreferences(appConstant.getId(), 0);
@@ -376,6 +405,7 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         int itag = 22;
                         String downloadUrl = ytFiles.get(itag).getUrl();
+                        Log.e("downloadUrl",downloadUrl);
                         AppController.getInstance().shortsUrlList.add(downloadUrl);
                     } catch (Exception e) {
                         // below line is used for handling our errors.
