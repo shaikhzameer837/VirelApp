@@ -38,7 +38,8 @@ public class AppConstant {
             login = "login",
             profile = "profile",
             phoneNumber = "phoneNumber",
-    // userId = "userId",
+            yralWeb = "yral_web",
+            likes = "likes",
             id = "id",
             amount = "amount",
             ad_mobs = "ca-app-pub-4340305355612346/9283952361",
@@ -134,9 +135,11 @@ public class AppConstant {
             return diff / DAY_MILLIS + " days ago";
         }
     }
-    public static long imageExt(){
+
+    public static long imageExt() {
         return (System.currentTimeMillis() / 60000);
     }
+
     public static boolean isProduction = false;
     public static SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss aa");
     static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
@@ -287,7 +290,8 @@ public class AppConstant {
         setSharedPref();
         return sharedPreferences.getString(id, "");
     }
-   public String getName() {
+
+    public String getName() {
         SharedPreferences mysharedPreferences = _context.getSharedPreferences(getId(), 0);
         return mysharedPreferences.getString(name, "");
     }

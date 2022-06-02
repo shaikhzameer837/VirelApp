@@ -88,12 +88,12 @@ public class SearchActivity extends AppCompatActivity {
         }));
         ArrayList<String> userIDs = new ArrayList<>();
         userIDs.add("95");
+        userIDs.add("320");
         userIDs.add("344");
         userIDs.add("184");
         userIDs.add("47");
         userIDs.add("255");
         userIDs.add("159");
-        userIDs.add("255");
         ArrayList<SuggesstionModel> recyclerDataArrayList = new ArrayList<>();
         SuggestionViewAdapter adapter = new SuggestionViewAdapter(recyclerDataArrayList, this);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(SearchActivity.this, 3, GridLayoutManager.VERTICAL, false);

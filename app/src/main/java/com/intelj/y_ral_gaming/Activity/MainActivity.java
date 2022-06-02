@@ -142,10 +142,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import at.huber.youtubeExtractor.VideoMeta;
-import at.huber.youtubeExtractor.YouTubeExtractor;
-import at.huber.youtubeExtractor.YtFile;
-
 public class MainActivity extends AppCompatActivity {
     AppConstant appConstant;
     private ViewPager gameViewpager;
@@ -171,6 +167,7 @@ public class MainActivity extends AppCompatActivity {
     ImageView imageView;
     LinearLayout moneyList;
     String wAmount = "";
+    String gameplay = "";
     String payType = "Amount";
     String paymentType = "Google Pay";
     List<PopularModel> popularModels = new ArrayList<>();
@@ -397,25 +394,6 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
 
     }
-    public void getYoutubeVid(String youtubeLink) {
-        new YouTubeExtractor(this) {
-            @Override
-            public void onExtractionComplete(SparseArray<YtFile> ytFiles, VideoMeta vMeta) {
-                if (ytFiles != null) {
-                    try {
-                        int itag = 22;
-                        String downloadUrl = ytFiles.get(itag).getUrl();
-                        Log.e("downloadUrl",downloadUrl);
-                        AppController.getInstance().shortsUrlList.add(downloadUrl);
-                    } catch (Exception e) {
-                        // below line is used for handling our errors.
-                        Log.e("TAG", "Error : " + e.toString());
-
-                    }
-                }
-            }
-        }.extract("https://www.youtube.com/watch?v="+youtubeLink);
-    }
     private static boolean hasPermissions(Context context, String... permissions) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
             for (String permission : permissions) {
@@ -525,6 +503,7 @@ public class MainActivity extends AppCompatActivity {
         wAmount = "";
         String[] payTypeList = {"Redeem Amount"};
         String[] paymentTypeList = {"Google Pay", "PhonePe", "paytm"};
+        String[] gameplayTypeList = {"Free Fire", "BGMI"};
         paymentBottomSheet = new BottomSheetDialog(this);
         paymentBottomSheet.setContentView(R.layout.money_sheet);
         EditText upi = paymentBottomSheet.findViewById(R.id.upi);
@@ -547,6 +526,19 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         Spinner spin = paymentBottomSheet.findViewById(R.id.spinner);
+        Spinner sp_gameplay = paymentBottomSheet.findViewById(R.id.gameplay);
+        sp_gameplay.setSelection(0);
+        sp_gameplay.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                gameplay = gameplayTypeList[position];
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
         payment_system.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -666,6 +658,7 @@ public class MainActivity extends AppCompatActivity {
                 params.put("amount", wAmount);
                 params.put("type", payType);
                 params.put("paymentType", paymentType);
+                params.put("gameplay", gameplay);
                 params.put("time", (System.currentTimeMillis()) + "");
                 params.put("userName", sharedPreferences.getString(AppConstant.name, ""));
                 return params;

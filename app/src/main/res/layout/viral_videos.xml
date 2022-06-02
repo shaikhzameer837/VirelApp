@@ -24,8 +24,7 @@
         android:paddingTop="10dp"
         android:paddingRight="5dp"
         android:paddingBottom="10dp">
-
-        <TextView
+        <TextView android:id="@+id/likes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableTop="@drawable/cards_heart_outline"

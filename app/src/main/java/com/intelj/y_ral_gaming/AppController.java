@@ -70,9 +70,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import at.huber.youtubeExtractor.VideoMeta;
-import at.huber.youtubeExtractor.YouTubeExtractor;
-import at.huber.youtubeExtractor.YtFile;
 
 public class AppController extends Application implements Application.ActivityLifecycleCallbacks {
     public static AppController instance;
@@ -94,7 +91,7 @@ public class AppController extends Application implements Application.ActivityLi
     public AlertDialog.Builder builder;
     public int amount = 0;
     public List<GameItem> movieList = new ArrayList<>();
-    public List<String> shortsUrlList = new ArrayList<>();
+    public Map<String, Object> shortsUrlList = new HashMap<>();
     public GameItem gameItem;
     public TournamentModel tournamentModel;
     AppDataBase appDataBase;
@@ -120,11 +117,7 @@ public class AppController extends Application implements Application.ActivityLi
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-                        Map<String, Object> map = document.getData();
-                        for (Map.Entry<String, Object> entry : map.entrySet()) {
-                            shortsUrlList.add("https://cdn.discordapp.com/attachments/911308156855005195/"+entry.getKey()+"/1.mp4");
-                          //  Log.d("DocumentSnapshot", shortsUrlList.get(shortsUrlList.size()-1));
-                        }
+                        shortsUrlList = document.getData();
                     } else {
                         Log.d(TAG, "No such document");
                     }
