@@ -91,7 +91,6 @@ public class AppController extends Application implements Application.ActivityLi
     public AlertDialog.Builder builder;
     public int amount = 0;
     public List<GameItem> movieList = new ArrayList<>();
-    public Map<String, Object> shortsUrlList = new HashMap<>();
     public GameItem gameItem;
     public TournamentModel tournamentModel;
     AppDataBase appDataBase;
@@ -106,27 +105,8 @@ public class AppController extends Application implements Application.ActivityLi
         getGameName();
         getTournamentTime();
         is_production = remoteConfig.getString("is_production");
-        getVideoList();
     }
-    public void getVideoList(){
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        DocumentReference docRef = db.collection("yral_web").document("video");
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        shortsUrlList = document.getData();
-                    } else {
-                        Log.d(TAG, "No such document");
-                    }
-                } else {
-                    Log.d(TAG, "get failed with ", task.getException());
-                }
-            }
-        });
-    }
+
     public void getReadyForCheckin() {
         appConstant = new AppConstant(this);
         if (new AppConstant(this).checkLogin()) {

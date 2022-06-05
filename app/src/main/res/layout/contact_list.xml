@@ -9,15 +9,18 @@
         android:src="@drawable/game_avatar"
         android:transitionName="fade"
         android:layout_height="40dp"/>
-    <TextView android:id="@+id/name"
+
+    <TextView
+        android:id="@+id/name"
         android:layout_width="match_parent"
-        android:text="dewdfew"
-        android:textColor="@color/black"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
         android:layout_toRightOf="@+id/profile"
-        android:layout_height="wrap_content"/>
+        android:text="dewdfew"
+        android:textColor="@color/black" />
 
-    <TextView android:id="@+id/lastMess"
+    <TextView
+        android:id="@+id/lastMess"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/name"

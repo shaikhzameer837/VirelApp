@@ -1,8 +1,6 @@
 package com.intelj.y_ral_gaming.Activity;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,15 +8,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.core.app.ActivityOptionsCompat;
-import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.intelj.y_ral_gaming.ContactListModel;
 import com.intelj.y_ral_gaming.R;
-import com.intelj.y_ral_gaming.Utils.AppConstant;
 
 import java.util.List;
 

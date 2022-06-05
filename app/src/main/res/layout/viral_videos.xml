@@ -8,9 +8,9 @@
     <com.google.android.exoplayer2.ui.SimpleExoPlayerView
         android:id="@+id/idExoPlayerVIew"
         android:layout_width="match_parent"
-        app:use_controller="false"
         android:layout_height="match_parent"
-        app:resize_mode="fit" />
+        app:resize_mode="fit"
+        app:use_controller="false" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -23,25 +23,34 @@
         android:paddingLeft="5dp"
         android:paddingTop="10dp"
         android:paddingRight="5dp"
+        android:layout_marginRight="10dp"
         android:paddingBottom="10dp">
-        <TextView android:id="@+id/likes"
+
+        <TextView
+            android:id="@+id/likes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:drawableTop="@drawable/cards_heart_outline"
+            android:gravity="center"
             android:text="Likes"
             android:textColor="@color/colorPrimary"
             android:textSize="10sp" />
 
         <TextView
+            android:id="@+id/comment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_marginTop="20dp"
             android:drawableTop="@drawable/comment_text_outline"
+            android:gravity="center"
             android:text="comment"
             android:textColor="@color/colorPrimary"
             android:textSize="10sp" />
 
         <TextView
+            android:id="@+id/share"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
@@ -50,24 +59,42 @@
             android:textColor="@color/colorPrimary"
             android:textSize="10sp" />
     </LinearLayout>
+
     <RelativeLayout
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="#80000000"
-        android:padding="10dp"
-        android:layout_height="wrap_content">
-        <ImageView android:id="@+id/img"
+        android:padding="10dp">
+
+        <ImageView
+            android:id="@+id/img"
             android:layout_width="50dp"
-            android:src="@drawable/game_avatar"
-            android:layout_height="50dp"/>
+            android:layout_height="50dp"
+            android:src="@drawable/game_avatar" />
+
         <TextView
+            android:id="@+id/userName"
             android:layout_width="match_parent"
-            android:text="Y-ral Gaming"
-            android:layout_toRightOf="@+id/img"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:textStyle="bold"
+            android:layout_marginTop="4dp"
+            android:textSize="12sp"
+            android:layout_toRightOf="@+id/img"
+            android:text="Y-ral Gaming"
             android:textColor="@color/colorPrimary"
-            android:layout_height="wrap_content"/>
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/caption"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/userName"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:textSize="11sp"
+            android:layout_toRightOf="@+id/img"
+            android:text="Y-ral Gaming"
+            android:textColor="@color/colorPrimary"/>
     </RelativeLayout>
 </RelativeLayout>

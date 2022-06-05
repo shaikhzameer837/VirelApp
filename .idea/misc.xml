@@ -152,20 +152,29 @@
         <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/drawable/curved_purple.xml" value="0.199" />
         <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/drawable/curved_transparent.xml" value="0.184" />
         <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/drawable/curved_white.xml" value="0.184" />
+        <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/drawable/discord.xml" value="0.1585" />
         <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/drawable/folder_play_outline.xml" value="0.1" />
         <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/drawable/grad.xml" value="0.199" />
         <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/drawable/history.xml" value="0.1" />
         <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/drawable/ic_coin.xml" value="0.1" />
+        <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/drawable/instagram.xml" value="0.1585" />
         <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/drawable/share_outline.xml" value="0.1585" />
-        <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/layout/activity_main.xml" value="0.17255434782608695" />
+        <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/drawable/whatsapp.xml" value="0.1585" />
+        <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/drawable/youtube.xml" value="0.1585" />
+        <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/layout/activity_main.xml" value="0.22" />
         <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/layout/bottom_sheet.xml" value="0.16893115942028986" />
+        <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/layout/chat_activity.xml" value="0.1" />
+        <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/layout/comments.xml" value="0.16666666666666666" />
+        <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/layout/contact_list.xml" value="0.22" />
+        <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/layout/game_slot.xml" value="0.19114583333333332" />
         <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/layout/img_swipe.xml" value="0.17552083333333332" />
-        <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/layout/money_sheet.xml" value="0.1" />
+        <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/layout/money_sheet.xml" value="0.22" />
         <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/layout/profile_activity.xml" value="0.1" />
         <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/layout/register_match.xml" value="0.17255434782608695" />
         <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/layout/result.xml" value="0.17552083333333332" />
         <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/layout/slide_two.xml" value="0.16893115942028986" />
-        <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/layout/viral_videos.xml" value="0.22" />
+        <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/layout/support.xml" value="0.19114583333333332" />
+        <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/layout/viral_videos.xml" value="0.16666666666666666" />
         <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/layout/viral_web.xml" value="0.16893115942028986" />
         <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/menu/bottom_navigation_menu.xml" value="0.12777777777777777" />
       </map>

@@ -79,6 +79,8 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         app:tabGravity="fill"
+        app:tabIconTint="@color/black"
+        app:tabTextColor="@color/black"
         android:background="@color/colorPrimary"
         app:tabIndicatorColor="@color/black"
         app:tabMode="scrollable" />

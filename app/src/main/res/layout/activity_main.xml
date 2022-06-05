@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
@@ -30,10 +29,10 @@
                 android:id="@+id/playerName"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center_vertical"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="10dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
                 android:text="Y Ral Gaming"
                 android:textColor="@color/black"
                 android:textStyle="bold" />
@@ -42,56 +41,56 @@
                 android:id="@+id/ncount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="1"
-                android:layout_marginRight="-45dp"
                 android:layout_marginTop="-10dp"
-                android:paddingRight="5dp"
-                android:paddingLeft="5dp"
-                android:elevation="2dp"
-                android:paddingTop="3dp"
-                android:visibility="gone"
-                android:paddingBottom="3dp"
+                android:layout_marginRight="-45dp"
                 android:background="@color/appColor"
+                android:elevation="2dp"
+                android:paddingLeft="5dp"
+                android:paddingTop="3dp"
+                android:paddingRight="5dp"
+                android:paddingBottom="3dp"
+                android:text="1"
                 android:textColor="@color/colorPrimary"
-                android:textSize="10sp" />
-           <ImageView
+                android:textSize="10sp"
+                android:visibility="gone" />
+
+            <TextView
                 android:id="@+id/notification"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginRight="10dp"
-                android:src="@drawable/bell"
-                android:textColor="@color/black"
-                android:textSize="11sp" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="15dp"
+                android:drawableTop="@drawable/bell"
+                android:text="Alert"
+                android:textSize="10sp" />
+
             <TextView
                 android:id="@+id/coins"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="1"
-                android:layout_marginRight="-45dp"
-                android:layout_marginTop="-10dp"
-                android:paddingRight="5dp"
-                android:paddingLeft="5dp"
+                android:layout_gravity="center"
+                android:drawableTop="@drawable/ic_coin"
                 android:elevation="2dp"
-                android:paddingTop="3dp"
-                android:visibility="gone"
-                android:paddingBottom="3dp"
-                android:background="@color/appColor"
-                android:textColor="@color/colorPrimary"
-                android:textSize="10sp" />
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:gravity="center"
                 android:layout_marginRight="15dp"
-                android:src="@drawable/ic_coin"
-                android:textColor="@color/black"
+                android:text="1"
                 android:textSize="11sp" />
 
-            <ImageView
+
+            <TextView
                 android:id="@+id/chat"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/chat"
-                android:textColor="@color/black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableTop="@drawable/chat"
+                android:text="Chat"
+                android:layout_marginRight="15dp"
+                android:textSize="11sp" />
+           <TextView
+                android:id="@+id/help"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableTop="@drawable/support"
+                android:text="help"
+                android:layout_marginRight="10dp"
                 android:textSize="11sp" />
         </LinearLayout>
 
@@ -104,20 +103,21 @@
             android:id="@+id/lin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="15dp"
             android:background="@color/color_dialog_gray"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingBottom="15dp">
+
             <EditText
-                android:layout_width="match_parent"
-                android:background="@drawable/curved_white"
-                android:padding="10dp"
                 android:id="@+id/search"
-                android:textColorHint="@color/textcolor"
-                android:textSize="11sp"
-                android:hint="Search Friends"
-                android:drawableLeft="@drawable/magnify"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
                 android:layout_margin="10dp"
-                android:layout_height="40dp"/>
+                android:background="@drawable/curved_white"
+                android:drawableLeft="@drawable/magnify"
+                android:hint="Search Friends"
+                android:padding="10dp"
+                android:textColorHint="@color/textcolor"
+                android:textSize="11sp" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -142,6 +142,7 @@
                     <include layout="@layout/popular_list" />
 
                     <include layout="@layout/popular_list" />
+
                     <include layout="@layout/popular_list" />
 
                     <include layout="@layout/popular_list" />
@@ -152,8 +153,8 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_popular"
                 android:layout_width="match_parent"
-                android:layout_marginRight="10dp"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
                 android:scrollbars="vertical" />
 
         </LinearLayout>
@@ -166,18 +167,19 @@
             android:layout_weight="1"
             android:background="@color/black" />
     </LinearLayout>
+
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottomAppBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        app:fabAlignmentMode="center"
         android:background="@color/colorPrimary"
         app:elevation="5dp"
+        app:fabAlignmentMode="center"
         app:fabCradleMargin="5dp"
         app:fabCradleRoundedCornerRadius="5dp"
-        app:fabCradleVerticalOffset="5dp"
-        >
+        app:fabCradleVerticalOffset="5dp">
+
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_navigation"
             android:layout_width="match_parent"
@@ -190,13 +192,14 @@
             app:labelVisibilityMode="labeled"
             app:menu="@menu/bottom_navigation_menu" />
     </com.google.android.material.bottomappbar.BottomAppBar>
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/folder_play_outline"
         android:background="@color/colorPrimary"
         android:backgroundTint="@color/colorPrimary"
         android:elevation="3dp"
+        android:src="@drawable/folder_play_outline"
         app:layout_anchor="@id/bottomAppBar" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

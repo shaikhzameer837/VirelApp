@@ -31,7 +31,7 @@ public class AppConstant {
     public static String follow = "follow";
     public static String following_count = "following_count";
     public static String follower_count = "follower_count";
-    private Context _context;
+     private Context _context;
     private SharedPreferences sharedPreferences;
     private SharedPreferences myInfo;
     public static String AppName = "Y-Ral Gaming",
@@ -40,6 +40,7 @@ public class AppConstant {
             phoneNumber = "phoneNumber",
             yralWeb = "yral_web",
             likes = "likes",
+            comments = "comments",
             id = "id",
             amount = "amount",
             ad_mobs = "ca-app-pub-4340305355612346/9283952361",
@@ -49,7 +50,6 @@ public class AppConstant {
             user = "user",
             contact = "contact",
             package_id = "package_id",
-            package_name = "package_name",
             expiry_date = "expiry_date",
             follower = "follower",
             following = "following",
@@ -57,17 +57,10 @@ public class AppConstant {
             message = "message",
             subject = "subject",
             uniqueId = "uniqueId",
-            live_stream = "live_stream",
             friends = "friends",
-            member = "member",
-            mobile_info = "mobile_info",
-            youtubeId = "youtubeId",
-            winner_id = "winner_id",
             deviceId = "deviceId",
             ign = "ign",
             saveYTid = "saveYTid",
-            stopTime = "stopTime",
-            backgroundData = "backgroundData",
             search = "search",
             myTeam = "myTeam",
             teamName = "teamName",
@@ -88,16 +81,13 @@ public class AppConstant {
             noti = "noti",
             realTime = "realTime",
             msg = "msg",
-            paymentHistory = "phist",
             discordId = "discordId",
             bio = "bio",
             verified = "verified",
             pubgId = "pubgId",
             youtubeApiKey = "AIzaSyBQiqtYCe51DtHvGhJOjO20Vv9Y_uzRyks",
-            splashscreen = "splashscreen",
             name = "userName",
             userName = "un",
-            bookingid = "bookingid",
             username_search = "username";
     public static final String[] player_title = {"Sniper", "Noob", "Sentinel", "Camper", "Pro", "Smurf", "Strategic"};
     private static final int SECOND_MILLIS = 1000;

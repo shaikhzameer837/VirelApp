@@ -1,52 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
     <TextView
         android:layout_width="match_parent"
-        android:text="Support help"
-        android:textStyle="bold"
+        android:layout_height="45dp"
         android:layout_margin="5dp"
+        android:background="#dddddd"
+        android:gravity="center_vertical"
         android:paddingLeft="15dp"
-        android:gravity="center_vertical"
-        android:background="#dddddd"
+        android:text="Support help"
         android:textColor="#000000"
-        android:layout_height="45dp"/>
-    <TextView android:id="@+id/discord"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/discord"
         android:layout_width="match_parent"
-        android:text=" Discord"
-        android:gravity="center_vertical"
+        android:layout_height="wrap_content"
         android:drawableLeft="@drawable/discord"
+        android:gravity="center_vertical"
         android:padding="15dp"
-        android:layout_height="wrap_content"/>
+        android:text=" Discord" />
+
     <View
         android:layout_width="match_parent"
-        android:background="#dddddd"
-        android:layout_height="1dp"/>
-   <TextView
+        android:layout_height="1dp"
+        android:background="#dddddd" />
+
+    <TextView
+        android:id="@+id/instagram"
         android:layout_width="match_parent"
-        android:text=" Instagran"
-       android:id="@+id/instagram"
+        android:layout_height="wrap_content"
         android:drawableLeft="@drawable/instagram"
+        android:gravity="center_vertical"
         android:padding="15dp"
-       android:gravity="center_vertical"
-       android:layout_height="wrap_content"/>
+        android:text=" Instagran" />
+
     <View
         android:layout_width="match_parent"
-        android:background="#dddddd"
-        android:layout_height="1dp"/>
-   <TextView
+        android:layout_height="1dp"
+        android:background="#dddddd" />
+
+    <TextView
+        android:id="@+id/youtube"
         android:layout_width="match_parent"
-        android:text=" Youtube"
-       android:id="@+id/youtube"
+        android:layout_height="wrap_content"
         android:drawableLeft="@drawable/youtube"
+        android:gravity="center_vertical"
         android:padding="15dp"
-       android:gravity="center_vertical"
-       android:layout_height="wrap_content"/>
+        android:text=" Youtube" />
+
     <View
         android:layout_width="match_parent"
-        android:background="#dddddd"
-        android:layout_height="1dp"/>
+        android:layout_height="1dp"
+        android:background="#dddddd" />
+
+    <TextView
+        android:id="@+id/whatsapp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/whatsapp"
+        android:gravity="center_vertical"
+        android:padding="15dp"
+        android:text="  WhatsApp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#dddddd" />
 </LinearLayout>

@@ -177,6 +177,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<UserListModel> teamModel;
     MemberListAdapter userAdapter;
     RecyclerView recyclerviewTeam;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -249,7 +250,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.fab).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this,ViralWeb.class));
+                startActivity(new Intent(MainActivity.this, ViralWeb.class));
             }
         });
         findViewById(R.id.search).setOnTouchListener(new View.OnTouchListener() {
@@ -264,8 +265,8 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.chat).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              //  showSupport();
-                startActivity(new Intent(MainActivity.this,ChatList.class));
+                Toast.makeText(MainActivity.this,"Coming Soon",Toast.LENGTH_LONG).show();
+               // startActivity(new Intent(MainActivity.this, ChatList.class));
             }
         });
         coins = findViewById(R.id.coins);
@@ -276,6 +277,12 @@ public class MainActivity extends AppCompatActivity {
                     showCoins();
                 else
                     showBottomSheetDialog();
+            }
+        });
+       findViewById(R.id.help).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showSupport();
             }
         });
         bottomNavigation = findViewById(R.id.bottom_navigation);
@@ -394,6 +401,7 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
 
     }
+
     private static boolean hasPermissions(Context context, String... permissions) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
             for (String permission : permissions) {
@@ -404,9 +412,6 @@ public class MainActivity extends AppCompatActivity {
         }
         return true;
     }
-
-
-
 
 
     private void getPopularFace() {
@@ -527,7 +532,10 @@ public class MainActivity extends AppCompatActivity {
         });
         Spinner spin = paymentBottomSheet.findViewById(R.id.spinner);
         Spinner sp_gameplay = paymentBottomSheet.findViewById(R.id.gameplay);
+        ArrayAdapter sp_gameplayAdp = new ArrayAdapter(this, android.R.layout.simple_spinner_item, gameplayTypeList);
         sp_gameplay.setSelection(0);
+        sp_gameplayAdp.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        sp_gameplay.setAdapter(sp_gameplayAdp);
         sp_gameplay.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -553,6 +561,7 @@ public class MainActivity extends AppCompatActivity {
         ArrayAdapter paymentAdp = new ArrayAdapter(this, android.R.layout.simple_spinner_item, paymentTypeList);
         paymentAdp.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         payment_system.setAdapter(paymentAdp);
+
         spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -567,8 +576,6 @@ public class MainActivity extends AppCompatActivity {
         ArrayAdapter aa = new ArrayAdapter(this, android.R.layout.simple_spinner_item, payTypeList);
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spin.setAdapter(aa);
-
-
         moneyList = paymentBottomSheet.findViewById(R.id.moneyList);
         paymentBottomSheet.findViewById(R.id.btn_next).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -697,6 +704,20 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/c/YRALGaming"));
                 startActivity(browserIntent);
+            }
+        });
+       bottomSheetDialog.findViewById(R.id.whatsapp).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    Intent intentWhatsapp = new Intent(Intent.ACTION_VIEW);
+                    String url = "https://chat.whatsapp.com/DYI8frk0T6kH0RBrsB9fpy";
+                    intentWhatsapp.setData(Uri.parse(url));
+                    intentWhatsapp.setPackage("com.whatsapp");
+                    startActivity(intentWhatsapp);
+                }catch (Exception e){
+
+                }
             }
         });
         bottomSheetDialog.show();
@@ -1036,7 +1057,7 @@ public class MainActivity extends AppCompatActivity {
                                                 obj.getString("image_url"),
                                                 obj.getString("date"),
                                                 obj.getString("status"),
-                                                obj.getString("comment"), "", "", "",0));
+                                                obj.getString("comment"), "", "", "", 0));
                             }
                             TournamentAdapter pAdapter = new TournamentAdapter(MainActivity.this, tournamentModelList, false);
                             recyclerView.setAdapter(pAdapter);

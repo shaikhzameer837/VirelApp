@@ -156,10 +156,10 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
                     LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);
                     return;
                 }
-                AppController.getInstance().gameItem = gameItem.get(position);
-                Intent intent = new Intent(mContext, ResultActivity.class);
-                intent.putExtra("title", title);
-                mContext.startActivity(intent);
+//                AppController.getInstance().gameItem = gameItem.get(position);
+//                Intent intent = new Intent(mContext, ResultActivity.class);
+//                intent.putExtra("title", title);
+//                mContext.startActivity(intent);
             }
         });
         if (gameItem.get(position).getIsexist().equals("1")) {
