@@ -242,6 +242,13 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this,ChatList.class));
             }
         });
+
+        findViewById(R.id.help).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, AnnouncementActivity.class));
+            }
+        });
         coins = findViewById(R.id.coins);
         coins.setOnClickListener(new View.OnClickListener() {
             @Override

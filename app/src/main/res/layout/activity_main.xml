@@ -87,6 +87,15 @@
                 android:textSize="11sp" />
 
             <ImageView
+                android:id="@+id/help"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginRight="15dp"
+                android:src="@drawable/help"
+                android:textColor="@color/black"
+                android:textSize="11sp" />
+
+            <ImageView
                 android:id="@+id/chat"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
