@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.transition.Fade;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
@@ -69,7 +70,6 @@ public class EventInfo extends AppCompatActivity {
     ArrayList<EditText> editTextList = new ArrayList<>();
     AppConstant appConstant;
     int teamCount = 0;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -132,6 +132,18 @@ public class EventInfo extends AppCompatActivity {
         bottomSheetDialog.findViewById(R.id.submit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (teamName.getText().toString().trim().equals("")) {
+                    teamName.setError("Enter your team name");
+                    teamName.requestFocus();
+                    return;
+                }
+                for (int x = 0; x < editTextList.size(); x++) {
+                    if (editTextList.get(x).getText().toString().trim().equals("")) {
+                        editTextList.get(x).setError("Player Name cannot be empty");
+                        editTextList.get(x).requestFocus();
+                        return;
+                    }
+                }
                 joinEvent();
                 bottomSheetDialog.cancel();
             }
@@ -140,6 +152,7 @@ public class EventInfo extends AppCompatActivity {
             EditText editText = new EditText(EventInfo.this);
             editText.setTextSize(12);
             editText.setSingleLine(true);
+            editText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
             editText.setTag(x == 0 ? new AppConstant(EventInfo.this).getId() : AppConstant.randomString(5));
             editTextList.add(editText);
             LinearLayout.LayoutParams editTextParams = new LinearLayout.LayoutParams(

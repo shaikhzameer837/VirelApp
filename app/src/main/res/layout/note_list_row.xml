@@ -48,12 +48,23 @@
         android:textSize="13sp" />
 
     <TextView
+        android:id="@+id/slot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/name"
+        android:layout_alignParentRight="true"
+        android:lineSpacingExtra="0dp"
+        android:text="......"
+        android:textColor="@color/color_type_success"
+        android:textSize="11sp" />
+
+    <TextView
         android:id="@+id/status"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/time"
-        android:textColor="@color/black"
         android:layout_toRightOf="@+id/images"
         android:text="...................."
+        android:textColor="@color/black"
         android:textSize="12sp" />
 </RelativeLayout>

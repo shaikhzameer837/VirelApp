@@ -1,5 +1,6 @@
 package com.intelj.y_ral_gaming.Activity;
 
+import android.Manifest;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -47,6 +48,7 @@ public class ChatList extends AppCompatActivity {
     private static final int REQUEST = 112;
     ContactListAdapter contactListAdapter;
     AppConstant appConstant;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,25 +74,7 @@ public class ChatList extends AppCompatActivity {
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(ChatList.this);
         rv_contact.setLayoutManager(mLayoutManager);
         contactModel = new ArrayList<>();
-        Set<String> set = shd.getStringSet(AppConstant.contact, null);
-        if (set != null) {
-            for (String s : set) {
-                SharedPreferences userInfo = getSharedPreferences(s, Context.MODE_PRIVATE);
-                contactModel.add(new ContactListModel(userInfo.getString(AppConstant.myPicUrl, ""), appConstant.getContactName(userInfo.getString(AppConstant.phoneNumber, "")), userInfo.getString(AppConstant.id, ""), userInfo.getString(AppConstant.bio, "")));
-            }
-            findViewById(R.id.la_contact).setVisibility(View.GONE);
-        } else {
-            if (Build.VERSION.SDK_INT >= 23) {
-                String[] PERMISSIONS = {android.Manifest.permission.READ_CONTACTS};
-                if (!hasPermissions(ChatList.this, PERMISSIONS)) {
-                    ActivityCompat.requestPermissions(ChatList.this, PERMISSIONS, REQUEST);
-                } else {
-                    new readContactTask().execute();
-                }
-            } else {
-                new readContactTask().execute();
-            }
-        }
+
         contactListAdapter = new ContactListAdapter(ChatList.this, contactModel);
         rv_contact.setAdapter(contactListAdapter);
         rv_contact.addOnItemTouchListener(new RecyclerTouchListener(ChatList.this, rv_contact, new RecyclerTouchListener.ClickListener() {
@@ -113,6 +97,7 @@ public class ChatList extends AppCompatActivity {
             }
         }));
     }
+
     private static boolean hasPermissions(Context context, String... permissions) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
             for (String permission : permissions) {
@@ -123,6 +108,7 @@ public class ChatList extends AppCompatActivity {
         }
         return true;
     }
+
     class readContactTask extends AsyncTask<Void, Integer, String> {
         String TAG = getClass().getSimpleName();
 
@@ -147,7 +133,9 @@ public class ChatList extends AppCompatActivity {
             findViewById(R.id.la_contact).setVisibility(View.GONE);
         }
     }
+
     int returnPhone = 0;
+
     public void serverContact(String number, String original) {
         Log.e("userNum", number);
         DatabaseReference mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
@@ -222,6 +210,26 @@ public class ChatList extends AppCompatActivity {
             cur.close();
         }
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+            String[] PERMISSIONS = {android.Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS};
+            if (!hasPermissions(ChatList.this, PERMISSIONS)) {
+                ActivityCompat.requestPermissions(ChatList.this, PERMISSIONS, REQUEST);
+            } else {
+                Set<String> set = shd.getStringSet(AppConstant.contact, null);
+                if (set != null) {
+                    for (String s : set) {
+                        SharedPreferences userInfo = getSharedPreferences(s, Context.MODE_PRIVATE);
+                        contactModel.add(new ContactListModel(userInfo.getString(AppConstant.myPicUrl, ""), appConstant.getContactName(userInfo.getString(AppConstant.phoneNumber, "")), userInfo.getString(AppConstant.id, ""), userInfo.getString(AppConstant.bio, "")));
+                    }
+                    findViewById(R.id.la_contact).setVisibility(View.GONE);
+                } else
+                    new readContactTask().execute();
+            }
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {

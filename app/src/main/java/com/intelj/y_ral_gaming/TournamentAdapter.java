@@ -23,13 +23,14 @@ public class TournamentAdapter extends RecyclerView.Adapter<TournamentAdapter.My
     private boolean isTour;
     private List<TournamentModel> tournamentModelList;
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView name,time,status,gameName;
+        public TextView name,time,status,gameName,slot;
         ImageView images;
         public MyViewHolder(View view) {
             super(view);
             name = view.findViewById(R.id.name);
             time = view.findViewById(R.id.time);
             status = view.findViewById(R.id.status);
+            slot = view.findViewById(R.id.slot);
             images = view.findViewById(R.id.images);
             gameName = view.findViewById(R.id.gameName);
             if(isTour) {
@@ -62,6 +63,7 @@ public class TournamentAdapter extends RecyclerView.Adapter<TournamentAdapter.My
         TournamentModel tournamentModel = tournamentModelList.get(position);
         holder.name.setText(tournamentModel.getName());
         holder.time.setText(tournamentModel.getDate());
+        holder.slot.setText(!isTour? "" :tournamentModel.getTeam_count()+"/"+tournamentModel.getMax());
         holder.gameName.setText(tournamentModel.getGame_name());
         if(tournamentModel.getStatus().equals("0")) {
             holder.status.setText("Upcoming");

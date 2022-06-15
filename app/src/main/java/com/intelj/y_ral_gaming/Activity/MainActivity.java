@@ -265,8 +265,8 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.chat).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this,"Coming Soon",Toast.LENGTH_LONG).show();
-               // startActivity(new Intent(MainActivity.this, ChatList.class));
+                //Toast.makeText(MainActivity.this,"Coming Soon",Toast.LENGTH_LONG).show();
+                startActivity(new Intent(MainActivity.this, ChatList.class));
             }
         });
         coins = findViewById(R.id.coins);
@@ -964,7 +964,8 @@ public class MainActivity extends AppCompatActivity {
                                         obj.getString("prize_pool"),
                                         obj.getString("info"),
                                         obj.getString("id"),
-                                        obj.getInt("max")
+                                        obj.getInt("max"),
+                                        obj.getInt("team_count")
                                 ));
                             }
                             TournamentAdapter pAdapter = new TournamentAdapter(MainActivity.this, tournamentModelList, true);
@@ -1057,7 +1058,7 @@ public class MainActivity extends AppCompatActivity {
                                                 obj.getString("image_url"),
                                                 obj.getString("date"),
                                                 obj.getString("status"),
-                                                obj.getString("comment"), "", "", "", 0));
+                                                obj.getString("comment"), "", "", "", 0,0));
                             }
                             TournamentAdapter pAdapter = new TournamentAdapter(MainActivity.this, tournamentModelList, false);
                             recyclerView.setAdapter(pAdapter);

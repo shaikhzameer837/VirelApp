@@ -84,8 +84,8 @@ public class ViralWeb extends AppCompatActivity {
     private ViewsSliderAdapter mAdapter;
     ViewPager2 viewPager2;
     SimpleExoPlayer exoPlayer;
-    MediaSource mediaSource;
     ArrayList<SimpleExoPlayerView> SimpleExoPlayerList = new ArrayList<>();
+    ArrayList<SimpleExoPlayer> exoplayerList = new ArrayList<>();
     ArrayList<String> keys;
     AppConstant appConstant;
     private RecyclerView recyclerView;
@@ -103,8 +103,10 @@ public class ViralWeb extends AppCompatActivity {
         userName = findViewById(R.id.userName);
         getVideoList();
     }
+
     public Map<String, Object> shortsUrlList = new HashMap<>();
-    public void getVideoList(){
+
+    public void getVideoList() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference docRef = db.collection("yral_web").document("video");
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -127,6 +129,7 @@ public class ViralWeb extends AppCompatActivity {
             }
         });
     }
+
     private void init() {
         mAdapter = new ViewsSliderAdapter();
         viewPager2.setAdapter(mAdapter);
@@ -139,7 +142,9 @@ public class ViralWeb extends AppCompatActivity {
         public void onPageSelected(int position) {
             super.onPageSelected(position);
             stopVideo();
-            getYoutubeVid(position);
+            exoPlayer = exoplayerList.get(position);
+            SimpleExoPlayerList.get(position).setPlayer(exoPlayer);
+            exoPlayer.setPlayWhenReady(true);
         }
     };
 
@@ -155,16 +160,16 @@ public class ViralWeb extends AppCompatActivity {
         try {
             BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
             TrackSelector trackSelector = new DefaultTrackSelector(new AdaptiveTrackSelection.Factory(bandwidthMeter));
-            exoPlayer = ExoPlayerFactory.newSimpleInstance(ViralWeb.this, trackSelector);
+            if (exoplayerList.size() == position)
+                exoplayerList.add(ExoPlayerFactory.newSimpleInstance(ViralWeb.this, trackSelector));
             DefaultHttpDataSourceFactory dataSourceFactory = new DefaultHttpDataSourceFactory("exoplayer_video");
             ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
-            SimpleExoPlayerList.get(position).setPlayer(exoPlayer);
+
             Uri videouri = Uri.parse("https://cdn.discordapp.com/attachments/911308156855005195/" + keys.get(position) + "/1.mp4");
-            Log.e( "getYoutubeVid: ", "https://cdn.discordapp.com/attachments/911308156855005195/" + keys.get(position) + "/1.mp4");
-            mediaSource = new ExtractorMediaSource(videouri, dataSourceFactory, extractorsFactory, null, null);
-            exoPlayer.prepare(mediaSource);
-            exoPlayer.setPlayWhenReady(true);
-            exoPlayer.addListener(new ExoPlayer.EventListener() {
+            Log.e("getYoutubeVid: ", "https://cdn.discordapp.com/attachments/911308156855005195/" + keys.get(position) + "/1.mp4");
+            MediaSource mediaSource = new ExtractorMediaSource(videouri, dataSourceFactory, extractorsFactory, null, null);
+            exoplayerList.get(position).prepare(mediaSource);
+            exoplayerList.get(position).addListener(new ExoPlayer.EventListener() {
                 @Override
                 public void onTimelineChanged(Timeline timeline, Object manifest) {
 
@@ -279,27 +284,28 @@ public class ViralWeb extends AppCompatActivity {
 
         queue.add(stringRequest);
     }
+
     boolean doubleBackToExitPressedOnce = false;
 
     @Override
     public void onBackPressed() {
         if (doubleBackToExitPressedOnce) {
             super.onBackPressed();
-            stopVideo();
             return;
         }
+
         this.doubleBackToExitPressedOnce = true;
-        double a = viewPager2.getCurrentItem() != shortsUrlList.size() ? (viewPager2.getCurrentItem() + 1) : 0;
-        viewPager2.setCurrentItem((int)a);
-        Toast.makeText(this,"Double click to exit", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
 
             @Override
             public void run() {
-                doubleBackToExitPressedOnce=false;
+                doubleBackToExitPressedOnce = false;
             }
         }, 2000);
     }
+
     private void postComment(String s, String gameId) {
         RequestQueue queue = Volley.newRequestQueue(ViralWeb.this);
         String url = "http://y-ral-gaming.com/admin/api/post_comment.php";
@@ -373,7 +379,8 @@ public class ViralWeb extends AppCompatActivity {
         @Override
         public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
             SliderViewHolder buttonViewHolder = (SliderViewHolder) holder;
-            SimpleExoPlayerList.add(buttonViewHolder.idExoPlayerVIew);
+            if (SimpleExoPlayerList.size() == position)
+                SimpleExoPlayerList.add(buttonViewHolder.idExoPlayerVIew);
             SharedPreferences sharedPreferences = getSharedPreferences(AppConstant.AppName, 0);
             FirebaseDatabase.getInstance().getReference().child(AppConstant.users)
                     .child(((Map<String, Object>) shortsUrlList.get(keys.get(position))).get("userid").toString())
@@ -381,7 +388,7 @@ public class ViralWeb extends AppCompatActivity {
                     .child(AppConstant.name).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            buttonViewHolder.userName.setText(snapshot.getValue()+"");
+                            buttonViewHolder.userName.setText(snapshot.getValue() + "");
                         }
 
                         @Override
@@ -428,7 +435,7 @@ public class ViralWeb extends AppCompatActivity {
                     RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
                     recyclerView.setLayoutManager(mLayoutManager);
                     recyclerView.setAdapter(commentsAdapter);
-                    reloadData(keys.get(position).toString());
+                    reloadData(keys.get(position));
                     view.findViewById(R.id.send).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -440,9 +447,11 @@ public class ViralWeb extends AppCompatActivity {
                     dialog.show();
                 }
             });
+            getYoutubeVid(position);
             buttonViewHolder.likes.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    onPause();
                     Long likes = (Long) v.getTag();
                     Map<String, Object> city = new HashMap<>();
                     Map<String, Object> details = new HashMap<>();
@@ -485,7 +494,7 @@ public class ViralWeb extends AppCompatActivity {
 
         public class SliderViewHolder extends RecyclerView.ViewHolder {
             SimpleExoPlayerView idExoPlayerVIew;
-            TextView likes, comment, share,userName,caption;
+            TextView likes, comment, share, userName, caption;
 
             public SliderViewHolder(View view) {
                 super(view);
