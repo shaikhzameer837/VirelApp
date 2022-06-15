@@ -3,11 +3,13 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Android Projects/y-ral-gaming/app/src/main/res/layout/activity_announcement.xml" value="0.20102564102564102" />
         <entry key="..\:/Android Projects/y-ral-gaming/app/src/main/res/layout/activity_demo.xml" value="0.12360688956433637" />
         <entry key="..\:/Android Projects/y-ral-gaming/app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="..\:/Android Projects/y-ral-gaming/app/src/main/res/layout/activity_main2.xml" value="0.1" />
         <entry key="..\:/Android Projects/y-ral-gaming/app/src/main/res/layout/activity_payment.xml" value="0.23324275362318841" />
         <entry key="..\:/Android Projects/y-ral-gaming/app/src/main/res/layout/activity_search_friend.xml" value="0.12360688956433637" />
+        <entry key="..\:/Android Projects/y-ral-gaming/app/src/main/res/layout/announcement_item.xml" value="0.20102564102564102" />
         <entry key="..\:/Android Projects/y-ral-gaming/app/src/main/res/layout/bootmsheetdialog_fragment.xml" value="0.24230072463768115" />
         <entry key="..\:/Android Projects/y-ral-gaming/app/src/main/res/layout/bottom.xml" value="0.1" />
         <entry key="..\:/Android Projects/y-ral-gaming/app/src/main/res/layout/bottom_sheet_dialog.xml" value="0.14990942028985507" />
