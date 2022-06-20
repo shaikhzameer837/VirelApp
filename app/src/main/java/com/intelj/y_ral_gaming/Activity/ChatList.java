@@ -48,7 +48,6 @@ public class ChatList extends AppCompatActivity {
     private static final int REQUEST = 112;
     ContactListAdapter contactListAdapter;
     AppConstant appConstant;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,7 +73,6 @@ public class ChatList extends AppCompatActivity {
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(ChatList.this);
         rv_contact.setLayoutManager(mLayoutManager);
         contactModel = new ArrayList<>();
-
         contactListAdapter = new ContactListAdapter(ChatList.this, contactModel);
         rv_contact.setAdapter(contactListAdapter);
         rv_contact.addOnItemTouchListener(new RecyclerTouchListener(ChatList.this, rv_contact, new RecyclerTouchListener.ClickListener() {
@@ -84,7 +82,6 @@ public class ChatList extends AppCompatActivity {
                 String transitionName = "fade";
                 View transitionView = view.findViewById(R.id.profile);
                 ViewCompat.setTransitionName(transitionView, transitionName);
-
                 ActivityOptionsCompat options = ActivityOptionsCompat.
                         makeSceneTransitionAnimation(ChatList.this, transitionView, transitionName);
                 intent.putExtra(AppConstant.id, contactModel.get(position).getUserid());
@@ -120,17 +117,17 @@ public class ChatList extends AppCompatActivity {
 
         protected String doInBackground(Void... arg0) {
             readContacts();
-            return "You are at PostExecute";
-        }
-
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
             returnPhone = 0;
             originalContact.clear();
             for (String phoneNo : contactArrayList.keySet()) {
                 serverContact(phoneNo, contactArrayList.get(phoneNo));
             }
-            findViewById(R.id.la_contact).setVisibility(View.GONE);
+            return "You are at PostExecute";
+        }
+
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            contactListAdapter.notifyDataSetChanged();
         }
     }
 
@@ -151,7 +148,6 @@ public class ChatList extends AppCompatActivity {
                         originalContact.add(postSnapshot.getKey());
                         appConstant.saveUserInfo(original, postSnapshot.getKey(), "http://y-ral-gaming.com/admin/api/images/" + postSnapshot.getKey() + ".png?u=" + AppConstant.imageExt(), null, "", postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue() != null ? postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue().toString() : null, postSnapshot.child(AppConstant.userName).getValue() != null ? postSnapshot.child(AppConstant.userName).getValue().toString() : System.currentTimeMillis() + "");
                         contactModel.add(new ContactListModel("http://y-ral-gaming.com/admin/api/images/" + postSnapshot.getKey() + ".png?u=" + AppConstant.imageExt(), appConstant.getContactName(postSnapshot.child(AppConstant.phoneNumber).getValue(String.class)), postSnapshot.getKey(), postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue() != null ? postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue().toString() : ""));
-                        contactListAdapter.notifyDataSetChanged();
                     }
                 }
                 if (contactArrayList.size() == returnPhone) {
@@ -224,8 +220,7 @@ public class ChatList extends AppCompatActivity {
                         SharedPreferences userInfo = getSharedPreferences(s, Context.MODE_PRIVATE);
                         contactModel.add(new ContactListModel(userInfo.getString(AppConstant.myPicUrl, ""), appConstant.getContactName(userInfo.getString(AppConstant.phoneNumber, "")), userInfo.getString(AppConstant.id, ""), userInfo.getString(AppConstant.bio, "")));
                     }
-                    findViewById(R.id.la_contact).setVisibility(View.GONE);
-                } else
+                 } else
                     new readContactTask().execute();
             }
     }

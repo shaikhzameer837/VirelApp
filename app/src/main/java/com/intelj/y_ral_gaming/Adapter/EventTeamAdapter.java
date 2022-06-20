@@ -70,7 +70,6 @@ public class EventTeamAdapter extends RecyclerView.Adapter<EventTeamAdapter.MyVi
                     TextView title = bottomSheetDialog.findViewById(R.id.refresh);
                     title.setText(eventTeamModel.getImg_name());
                     title.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-                    bottomSheetDialog.findViewById(R.id.la_contact).setVisibility(View.GONE);
                     RecyclerView userRecyclerView = bottomSheetDialog.findViewById(R.id.rv_contact);
                     ArrayList<ContactListModel> contactModel = new ArrayList<>();
                     Iterator<String> keys = jsonObject.keys();

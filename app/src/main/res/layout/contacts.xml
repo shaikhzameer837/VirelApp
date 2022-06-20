@@ -15,15 +15,7 @@
         android:background="@drawable/curved_drawable"
         android:textColor="@color/black"
         android:layout_height="45dp"/>
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/la_contact"
-        android:layout_width="140dp"
-        android:layout_marginTop="20dp"
-        android:layout_height="140dp"
-        android:layout_gravity="center"
-        app:lottie_fileName="contacts.json"
-        app:lottie_autoPlay="true"
-        app:lottie_loop="true"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_contact"
         android:layout_width="match_parent"

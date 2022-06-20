@@ -256,9 +256,12 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.search).setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                Intent intent = new Intent(MainActivity.this, SearchActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intent);
+                if(event.getAction() == MotionEvent.ACTION_UP) {
+                    Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    startActivity(intent);
+                    return true;
+                }
                 return false;
             }
         });

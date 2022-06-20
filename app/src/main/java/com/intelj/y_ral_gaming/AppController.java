@@ -12,6 +12,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -29,6 +30,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.danikula.videocache.HttpProxyCacheServer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.extractor.ExtractorsFactory;
@@ -56,6 +58,7 @@ import com.intelj.y_ral_gaming.Activity.MainActivity;
 import com.intelj.y_ral_gaming.Activity.NotificationActivity;
 import com.intelj.y_ral_gaming.Activity.ViralWeb;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
+import com.intelj.y_ral_gaming.Utils.Utils;
 import com.intelj.y_ral_gaming.db.AppDataBase;
 import com.intelj.y_ral_gaming.db.Chat;
 import com.intelj.y_ral_gaming.model.TournamentModel;
@@ -106,7 +109,18 @@ public class AppController extends Application implements Application.ActivityLi
         getTournamentTime();
         is_production = remoteConfig.getString("is_production");
     }
+    private HttpProxyCacheServer proxy;
 
+    public static HttpProxyCacheServer getProxy(Context context) {
+        AppController app = (AppController) context.getApplicationContext();
+        return app.proxy == null ? (app.proxy = app.newProxy()) : app.proxy;
+    }
+
+    private HttpProxyCacheServer newProxy() {
+        return new HttpProxyCacheServer.Builder(this)
+                .cacheDirectory(Utils.getVideoCacheDir(AppController.this))
+                .build();
+    }
     public void getReadyForCheckin() {
         appConstant = new AppConstant(this);
         if (new AppConstant(this).checkLogin()) {

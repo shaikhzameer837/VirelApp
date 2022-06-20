@@ -90,6 +90,7 @@ public class ViralWeb extends AppCompatActivity {
     AppConstant appConstant;
     private RecyclerView recyclerView;
     TextView userName;
+    int UniversalPosition = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,29 +143,37 @@ public class ViralWeb extends AppCompatActivity {
         public void onPageSelected(int position) {
             super.onPageSelected(position);
             stopVideo();
-            exoPlayer = exoplayerList.get(position);
-            SimpleExoPlayerList.get(position).setPlayer(exoPlayer);
-            exoPlayer.setPlayWhenReady(true);
+            UniversalPosition = position;
+            // exoPlayer = exoplayerList.get(UniversalPosition);
+            exoplayerList.get(UniversalPosition).setPlayWhenReady(true);
         }
     };
 
+
     public void stopVideo() {
         if (exoPlayer != null) {
-            exoPlayer.setPlayWhenReady(false);
-            exoPlayer.release();
-            exoPlayer = null;
+            exoplayerList.get(UniversalPosition).setPlayWhenReady(false);
+            // exoPlayer.release();
+            //   exoPlayer = null;
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        stopVideo();
     }
 
     public void getYoutubeVid(int position) {
         try {
             BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
             TrackSelector trackSelector = new DefaultTrackSelector(new AdaptiveTrackSelection.Factory(bandwidthMeter));
+
             if (exoplayerList.size() == position)
                 exoplayerList.add(ExoPlayerFactory.newSimpleInstance(ViralWeb.this, trackSelector));
             DefaultHttpDataSourceFactory dataSourceFactory = new DefaultHttpDataSourceFactory("exoplayer_video");
             ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
-
+            SimpleExoPlayerList.get(position).setPlayer(exoplayerList.get(position));
             Uri videouri = Uri.parse("https://cdn.discordapp.com/attachments/911308156855005195/" + keys.get(position) + "/1.mp4");
             Log.e("getYoutubeVid: ", "https://cdn.discordapp.com/attachments/911308156855005195/" + keys.get(position) + "/1.mp4");
             MediaSource mediaSource = new ExtractorMediaSource(videouri, dataSourceFactory, extractorsFactory, null, null);
@@ -216,17 +225,14 @@ public class ViralWeb extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (exoPlayer != null) {
-            exoPlayer.setPlayWhenReady(false);
-        }
+        exoplayerList.get(UniversalPosition).setPlayWhenReady(false);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (exoPlayer != null) {
-            exoPlayer.setPlayWhenReady(true);
-        }
+        if (exoplayerList.size() > UniversalPosition)
+            exoplayerList.get(UniversalPosition).setPlayWhenReady(true);
     }
 
 

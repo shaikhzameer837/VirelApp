@@ -211,7 +211,9 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
         AppCompatButton btn_next = bottomSheetDialog.findViewById(R.id.btn_next);
         LinearLayout lin = bottomSheetDialog.findViewById(R.id.lin);
         EditText gamename = bottomSheetDialog.findViewById(R.id.ingameName);
+        SharedPreferences prefs = mContext.getSharedPreferences(AppConstant.AppName, 0);
         gamename.setHint("Enter your " + title + " player 1 in game name");
+        gamename.setText(prefs.getString("GameName", ""));
         AppCompatButton add_money = bottomSheetDialog.findViewById(R.id.add_money);
         setViews(infos, btn_next, position, textView, add_money);
         btn_next.setOnClickListener(new View.OnClickListener() {
@@ -234,6 +236,8 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
                             obj1.put(i == 0 ? new AppConstant(mContext).getId() : new AppConstant(mContext).randomString(5) + "", obj);
                         }
                     }
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putString("GameName", gamename.getText().toString()).apply();
                     Log.e("jsonObject", obj1.toString());
                     Log.e("jsonObject", new AppConstant(mContext).getId());
                     saveUserInfo(position, obj1.toString(), textView.getText().toString(), childCount);

@@ -100,7 +100,7 @@ public class ProFileActivity extends AppCompatActivity {
         final MyAdapter adapter = new MyAdapter(this, getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(adapter);
         if (userid.equals(appConstant.getId())) {
-           // findViewById(R.id.chat).setVisibility(View.GONE);
+            // findViewById(R.id.chat).setVisibility(View.GONE);
             edit_profile.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -234,7 +234,7 @@ public class ProFileActivity extends AppCompatActivity {
 
             }
         });
-        // getProfileInfo();
+        getProfileInfo();
         //  prepareytModelData();
     }
 
