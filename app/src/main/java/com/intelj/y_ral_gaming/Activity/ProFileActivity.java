@@ -4,7 +4,10 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Html;
 import android.transition.Fade;
@@ -47,6 +50,8 @@ import com.intelj.y_ral_gaming.R;
 import com.intelj.y_ral_gaming.SigninActivity;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -61,7 +66,7 @@ public class ProFileActivity extends AppCompatActivity {
     TextView name, bio, title, userName, follower_count, following_count, edit_profile;
     long followers = 0;
     long following = 0;
-
+    TextView rank,rankCount;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +76,8 @@ public class ProFileActivity extends AppCompatActivity {
         userName = findViewById(R.id.userName);
         bio = findViewById(R.id.bio);
         title_pic = findViewById(R.id.title_pic);
+        rank = findViewById(R.id.rank);
+        rankCount = findViewById(R.id.rankCount);
         follower_count = findViewById(R.id.follower_count);
         following_count = findViewById(R.id.following_count);
         title = findViewById(R.id.title);
@@ -263,7 +270,14 @@ public class ProFileActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         Log.e("response", response);
-                        progressDialog.cancel();
+                        try {
+                            JSONObject json = new JSONObject(response);
+                            rank.setText(getRank(json.getInt("rank")));
+                            rankCount.setText(json.getInt("rank") + "/100");
+                        }catch (Exception e){
+
+                        }
+                            progressDialog.cancel();
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -288,8 +302,16 @@ public class ProFileActivity extends AppCompatActivity {
 
         queue.add(stringRequest);
     }
-
-
+    public String getRank(int rankPoint){
+        if(rankPoint < 99){
+            Drawable dr = getResources().getDrawable(R.drawable.rank1);
+            Bitmap bitmap = ((BitmapDrawable) dr).getBitmap();
+            Drawable d = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 25, 25, true));
+            rank.setCompoundDrawablesWithIntrinsicBounds(d, null, null, null);
+            return "Iron";
+        }
+        return "";
+    }
     public class MyAdapter extends FragmentPagerAdapter {
 
         private Context myContext;

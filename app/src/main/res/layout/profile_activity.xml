@@ -172,10 +172,25 @@
         android:layout_height="1dp"
         android:background="#888888" />
 
-    <View
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:background="@color/color_dialog_gray" />
+        android:layout_height="40dp"
+        android:padding="10dp"
+        android:background="@color/color_dialog_gray" >
+        <TextView
+            android:layout_width="wrap_content"
+            android:id="@+id/rank"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_height="match_parent"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:id="@+id/rankCount"
+            android:gravity="center"
+            android:layout_alignParentRight="true"
+            android:layout_height="match_parent"/>
+    </RelativeLayout>
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
