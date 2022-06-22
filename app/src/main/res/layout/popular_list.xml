@@ -1,64 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+
+<soup.neumorphism.NeumorphCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="100dp"
+    style="@style/Widget.Neumorph.Button"
+    android:layout_width="130dp"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="10dp"
-    android:layout_marginTop="10dp"
-    android:layout_margin="5dp"
-    app:cardCornerRadius="5dp"
-    app:cardElevation="5dp">
-<LinearLayout
-    android:layout_width="100dp"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:background="@color/color_dialog_gray"
+    app:neumorph_shapeType="basin">
 
-    <ImageView
-        android:id="@+id/imgs"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:layout_marginTop="10dp"
-        android:layout_gravity="center"
-        android:src="@drawable/game_avatar"
-        android:transitionName="fade" />
-
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="match_parent"
-        android:layout_height="18dp"
-        android:layout_below="@+id/imgs"
-        android:gravity="center_horizontal"
-        android:text="title"
-        android:textColor="#333333"
-        android:textSize="11sp" />
-
-    <TextView
-        android:id="@+id/genre"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:drawableLeft="@drawable/ic_coin"
-        android:gravity="center_horizontal"
-        android:layout_marginBottom="10dp"
-        android:text="title"
-        android:textSize="10sp" />
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/count"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:background="@color/appColor"
-        android:paddingTop="1dp"
-        android:paddingBottom="3dp"
-        android:paddingLeft="3dp"
-        android:paddingRight="3dp"
-        android:gravity="center_horizontal"
-        android:text="0"
-        android:layout_marginTop="-20dp"
-        android:textColor="@color/colorPrimary"
-        android:textSize="10sp" />
+        <ImageView
+            android:id="@+id/imgs"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/game_avatar"
+            android:transitionName="fade" />
 
-</LinearLayout>
-</androidx.cardview.widget.CardView>
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="18dp"
+            android:layout_below="@+id/imgs"
+            android:gravity="center_horizontal"
+            android:text="title"
+            android:textColor="#333333"
+            android:textSize="11sp" />
+
+        <TextView
+            android:id="@+id/genre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="10dp"
+            android:drawableLeft="@drawable/ic_coin"
+            android:gravity="center_horizontal"
+            android:text="title"
+            android:textSize="10sp" />
+
+        <TextView
+            android:id="@+id/count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginTop="-20dp"
+            android:background="@color/appColor"
+            android:gravity="center_horizontal"
+            android:paddingLeft="3dp"
+            android:paddingTop="1dp"
+            android:paddingRight="3dp"
+            android:paddingBottom="3dp"
+            android:text="0"
+            android:textColor="@color/colorPrimary"
+            android:textSize="10sp" />
+
+    </LinearLayout>
+</soup.neumorphism.NeumorphCardView>

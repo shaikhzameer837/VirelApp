@@ -59,7 +59,7 @@ public class ProFileActivity extends AppCompatActivity {
     TextView txt;
     String userid;
     SharedPreferences sharedPreferences;
-    ImageView imgProfile, title_pic;
+    ImageView imgProfile;
     TabLayout tabLayout;
     ViewPager viewPager;
     AppConstant appConstant;
@@ -75,7 +75,6 @@ public class ProFileActivity extends AppCompatActivity {
         imgProfile = findViewById(R.id.profPic);
         userName = findViewById(R.id.userName);
         bio = findViewById(R.id.bio);
-        title_pic = findViewById(R.id.title_pic);
         rank = findViewById(R.id.rank);
         rankCount = findViewById(R.id.rankCount);
         follower_count = findViewById(R.id.follower_count);

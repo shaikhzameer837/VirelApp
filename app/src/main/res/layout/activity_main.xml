@@ -106,19 +106,22 @@
             android:background="@color/color_dialog_gray"
             android:orientation="vertical"
             android:paddingBottom="15dp">
-
+            <soup.neumorphism.NeumorphCardView
+                style="@style/Widget.Neumorph.Button"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                app:neumorph_shapeType="pressed">
             <EditText
                 android:id="@+id/search"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_margin="10dp"
-                android:background="@drawable/curved_white"
+                android:layout_height="match_parent"
                 android:drawableLeft="@drawable/magnify"
                 android:hint="Search Friends"
                 android:padding="10dp"
+                android:background="@null"
                 android:textColorHint="@color/textcolor"
                 android:textSize="11sp" />
-
+            </soup.neumorphism.NeumorphCardView>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

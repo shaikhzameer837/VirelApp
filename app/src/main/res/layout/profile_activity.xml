@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
@@ -9,15 +10,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="240dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal">
-
-        <ImageView
-            android:id="@+id/title_pic"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:alpha="0.3"
-            android:scaleType="centerCrop" />
 
 
         <RelativeLayout
@@ -49,10 +43,10 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_margin="10dp"
-                android:visibility="gone"
                 android:gravity="center_vertical"
                 android:src="@drawable/chat"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:visibility="gone" />
 
 
         </RelativeLayout>
@@ -114,83 +108,87 @@
             android:textColor="@color/black"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_below="@+id/profPic"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="10dp"
-            android:text="awdawdw"
-            android:textColor="@color/black"
-            android:textStyle="bold" />
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/userName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/name"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="3dp"
-            android:text="awdawdw"
-            android:textColor="@color/black" />
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="10dp"
+                android:text="awdawdw"
+                android:textColor="@color/black"
+                android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/bio"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/userName"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="3dp"
-            android:ellipsize="end"
-            android:singleLine="true"
-            android:text="awdawdfewa"
-            android:textColor="@color/black" />
+            <TextView
+                android:id="@+id/userName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="3dp"
+                android:text="awdawdw"
+                android:textColor="@color/black" />
 
-        <TextView
-            android:id="@+id/popular"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="true"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="3dp"
-            android:background="@color/colorPrimaryDark"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:text="1"
-            android:textColor="@color/colorPrimary"
-            android:visibility="gone" />
+            <TextView
+                android:id="@+id/bio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:paddingLeft="15dp"
+                android:paddingTop="3dp"
+                android:singleLine="true"
+                android:text="awdawdfewa"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/popular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/bio"
+                android:layout_gravity="right"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="3dp"
+                android:background="@color/colorPrimaryDark"
+                android:gravity="right"
+                android:paddingLeft="5dp"
+                android:visibility="gone"
+                android:paddingRight="5dp"
+                android:textColor="@color/colorPrimary"/>
+        </LinearLayout>
     </RelativeLayout>
-
-    <View
+    <soup.neumorphism.NeumorphCardView
+        style="@style/Widget.Neumorph.Button"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#888888" />
+        android:layout_height="60dp"
+        android:background="@color/color_dialog_gray"
+        app:neumorph_shapeType="pressed">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:padding="10dp"
-        android:background="@color/color_dialog_gray" >
-        <TextView
-            android:layout_width="wrap_content"
-            android:id="@+id/rank"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:layout_height="match_parent"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="10dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:id="@+id/rankCount"
-            android:gravity="center"
-            android:layout_alignParentRight="true"
-            android:layout_height="match_parent"/>
-    </RelativeLayout>
+            <TextView
+                android:id="@+id/rank"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="zac"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/rankCount"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:gravity="center" />
+        </RelativeLayout>
+    </soup.neumorphism.NeumorphCardView>
+
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
