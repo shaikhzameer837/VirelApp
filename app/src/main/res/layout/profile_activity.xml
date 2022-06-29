@@ -13,7 +13,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal">
 
-
         <RelativeLayout
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
@@ -51,75 +50,44 @@
 
         </RelativeLayout>
 
+        <TextView
+            android:id="@+id/popular"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/toolbar"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="3dp"
+            android:background="@color/colorPrimaryDark"
+            android:gravity="right"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:textColor="@color/colorPrimary"
+            android:visibility="gone" />
+
         <ImageView
             android:id="@+id/profPic"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
             android:layout_below="@+id/toolbar"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="10dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="8dp"
             android:contentDescription="image_desc"
             android:scaleType="centerCrop"
             android:src="@drawable/game_avatar"
             android:transitionName="fade" />
 
         <LinearLayout
-            android:id="@+id/lin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/toolbar"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="5dp"
-            android:layout_toRightOf="@+id/profPic">
-
-            <TextView
-                android:id="@+id/follower_count"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center_horizontal"
-                android:text="0 \n following"
-                android:textSize="12sp" />
-
-            <TextView
-                android:id="@+id/following_count"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center_horizontal"
-                android:text="0 \n follower"
-                android:textSize="12sp" />
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/edit_profile"
-            android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:layout_below="@+id/lin"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginBottom="10dp"
-            android:layout_toRightOf="@+id/profPic"
-            android:background="@drawable/curved_white"
-            android:gravity="center"
-            android:padding="8dp"
-            android:text="Edit"
-            android:textColor="@color/black"
-            android:textStyle="bold" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
             android:layout_below="@+id/profPic"
-            android:orientation="vertical"
-            android:layout_height="wrap_content">
+            android:gravity="center"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:text="awdawdw"
                 android:textColor="@color/black"
                 android:textStyle="bold" />
@@ -128,67 +96,139 @@
                 android:id="@+id/userName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
                 android:layout_marginTop="3dp"
                 android:text="awdawdw"
-                android:textColor="@color/black" />
+                android:textColor="@color/grey_black"
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/bio"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
-                android:paddingLeft="15dp"
+                android:gravity="center"
                 android:paddingTop="3dp"
                 android:singleLine="true"
                 android:text="awdawdfewa"
-                android:textColor="@color/black" />
+                android:textColor="@color/grey_black"
+                android:textSize="12sp" />
 
-            <TextView
-                android:id="@+id/popular"
-                android:layout_width="wrap_content"
+
+            <LinearLayout
+                android:id="@+id/lin"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/bio"
-                android:layout_gravity="right"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="3dp"
-                android:background="@color/colorPrimaryDark"
-                android:gravity="right"
-                android:paddingLeft="5dp"
-                android:visibility="gone"
-                android:paddingRight="5dp"
-                android:textColor="@color/colorPrimary"/>
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="5dp"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/rank"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/follower_count"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:text="0 \n following"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/following_count"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:text="0 \n follower"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="5dp"
+                android:gravity="center">
+                <RelativeLayout android:id="@+id/rel_button"
+                    android:layout_width="120dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/curved_white"
+                    android:layout_height="35dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:id="@+id/iconImage"
+                    android:src="@drawable/chat"
+                    />
+                    <TextView
+                        android:id="@+id/edit_profile"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="Edit Profile"
+                        android:textSize="12sp"
+                        android:layout_toRightOf="@+id/iconImage"
+                        android:textColor="@color/black"
+                        android:textStyle="bold" />
+                </RelativeLayout>
+
+                <RelativeLayout android:id="@+id/rel_mess"
+                    android:layout_width="120dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/curved_white"
+                    android:layout_height="35dp">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10dp"
+                        android:id="@+id/chatIcon"
+                        android:src="@drawable/chat"
+                        />
+
+                    <TextView
+                        android:id="@+id/rank_button"
+                        android:layout_toRightOf="@+id/chatIcon"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:textSize="12sp"
+                        android:text="Message"
+                        android:textColor="@color/black"
+                        android:textStyle="bold" />
+                </RelativeLayout>
+            </LinearLayout>
         </LinearLayout>
     </RelativeLayout>
-    <soup.neumorphism.NeumorphCardView
-        style="@style/Widget.Neumorph.Button"
+
+    <View
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@color/color_dialog_gray"
-        app:neumorph_shapeType="pressed">
+        android:layout_height="1dp"
+        android:background="@color/black" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="10dp">
-
-            <TextView
-                android:id="@+id/rank"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="zac"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/rankCount"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentRight="true"
-                android:gravity="center" />
-        </RelativeLayout>
-    </soup.neumorphism.NeumorphCardView>
-
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:background="@color/grey" />
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"

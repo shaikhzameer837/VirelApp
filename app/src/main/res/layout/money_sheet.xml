@@ -1,132 +1,243 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#f0f6f9"
     android:orientation="vertical">
 
     <TextView
         android:id="@+id/amount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#ddd"
-        android:gravity="center"
         android:padding="10dp"
-        android:text="Withdraw Money"
-        android:textColor="#000" />
+        android:text="Withdraw Money From Your  Card"
+        android:textColor="#000"
+        android:textStyle="bold" />
+
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="10dp"
+        app:cardMaxElevation="12dp"
+        app:cardPreventCornerOverlap="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/grad"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="10dp"
+            app:cardBackgroundColor="@drawable/grad">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView android:id="@+id/user_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:shadowColor = "#000"
+                    android:shadowDx = "-2"
+                    android:shadowDy = "-2"
+                    android:ellipsize="end"
+                    android:shadowRadius = "1"
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="right"
+                    android:src="@drawable/sim" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/moneyList"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/outline"
+                    android:onClick="WidthDrawAmount"
+                    android:padding="18dp"
+                    android:tag="0"
+                    android:text="25"
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="WidthDrawAmount"
+                    android:padding="18dp"
+                    android:tag="1000"
+                    android:text="50"
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="WidthDrawAmount"
+                    android:padding="18dp"
+                    android:tag="2000"
+                    android:text="100"
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="WidthDrawAmount"
+                    android:padding="18dp"
+                    android:tag="3000"
+                    android:text="150"
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="WidthDrawAmount"
+                    android:padding="18dp"
+                    android:tag="4000"
+                    android:text="200"
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/TextInputLayoutStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@null"
+                android:textColorHint="@color/colorPrimary"
+                app:boxStrokeColor="@color/colorPrimary">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/upi"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edittext_bottom_line"
+                    android:hint="Enter paytm number/ upi id"
+                    android:padding="10dp"
+                    android:textColor="@color/colorPrimary"
+                    android:textColorHint="@color/colorPrimary"
+                    android:textSize="14sp"
+                    app:boxStrokeColor="@color/colorPrimary" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView android:id="@+id/coins"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:drawableLeft="@drawable/ic_coin"
+                    android:text="112"
+                    android:textSize="11sp"
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:gravity="right|bottom"
+                    android:text="*payment will be settled within 2 hours"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="11sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:padding="10dp"
-        android:textSize="10sp"
-        android:text="Your payment will be settled within 24 hours after withdrawal request"
-        android:textColor="#000" />
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="8dp"
+        android:text="Payment receiving option"
+        android:textColor="@color/black" />
 
     <LinearLayout
-        android:id="@+id/moneyList"
+        android:id="@+id/payOptionList"
         android:layout_width="match_parent"
+        android:layout_marginLeft="10dp"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:padding="10dp">
+        android:orientation="horizontal">
 
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/outline"
-            android:onClick="WidthDrawAmount"
+            android:drawableTop="@drawable/gpay"
+            android:onClick="selectPayM"
             android:padding="15dp"
-            android:text="25"
+            android:tag="Google Pay"
+            android:text="Gpay"
+            android:textSize="11sp"
+            android:background="@drawable/outline_black"
             android:textColor="@color/black" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/outline"
-            android:onClick="WidthDrawAmount"
+            android:drawableTop="@drawable/phonepay"
+            android:onClick="selectPayM"
             android:padding="15dp"
-            android:text="50"
+            android:tag="PhonePe"
+            android:textSize="11sp"
+            android:text="phonepe"
             android:textColor="@color/black" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/outline"
-            android:onClick="WidthDrawAmount"
+            android:drawableTop="@drawable/paytm"
+            android:gravity="center"
+            android:onClick="selectPayM"
+            android:textSize="11sp"
             android:padding="15dp"
-            android:text="100"
-            android:textColor="@color/black" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/outline"
-            android:onClick="WidthDrawAmount"
-            android:padding="15dp"
-            android:text="150"
-            android:textColor="@color/black" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/outline"
-            android:onClick="WidthDrawAmount"
-            android:padding="15dp"
-            android:text="200"
+            android:tag="paytm"
+            android:text="paytm"
             android:textColor="@color/black" />
     </LinearLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
         android:layout_marginTop="5dp"
-        android:layout_marginRight="15dp">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/upi"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Enter paytm number/ upi id"
-            android:textSize="14sp" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:layout_marginLeft="15dp"
-        android:text="payment type"/>
+        android:text="Gamer"
+        android:textColor="@color/black" />
 
-    <Spinner
-        android:id="@+id/payment_system"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp" />
-
-    <Spinner
-        android:id="@+id/spinner"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:visibility="gone"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp" />
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:text="Game Played"/>
     <Spinner
         android:id="@+id/gameplay"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="35dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"

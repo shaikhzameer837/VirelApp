@@ -1,12 +1,9 @@
 package com.intelj.y_ral_gaming.Activity;
 
-import static android.content.ContentValues.TAG;
-
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -18,13 +15,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.ParcelFileDescriptor;
-import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.text.ClipboardManager;
@@ -32,7 +27,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.transition.Fade;
 import android.util.Log;
-import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -53,7 +47,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.content.ContextCompat;
@@ -79,13 +72,6 @@ import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.facebook.shimmer.ShimmerFrameLayout;
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.LoadAdError;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -96,12 +82,8 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -111,9 +93,9 @@ import com.intelj.y_ral_gaming.Adapter.PayMentAdapter;
 import com.intelj.y_ral_gaming.Adapter.PopularAdapter;
 import com.intelj.y_ral_gaming.Adapter.RankAdapter;
 import com.intelj.y_ral_gaming.AppController;
-import com.intelj.y_ral_gaming.ContactListModel;
 import com.intelj.y_ral_gaming.Fragment.BottomSheetDilogFragment;
 import com.intelj.y_ral_gaming.Fragment.OneFragment;
+import com.intelj.y_ral_gaming.BaseActivity;
 import com.intelj.y_ral_gaming.TournamentAdapter;
 import com.intelj.y_ral_gaming.PopularModel;
 import com.intelj.y_ral_gaming.R;
@@ -136,13 +118,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
     AppConstant appConstant;
     private ViewPager gameViewpager;
     BottomNavigationView bottomNavigation;
@@ -166,9 +147,9 @@ public class MainActivity extends AppCompatActivity {
     int oldId;
     ImageView imageView;
     LinearLayout moneyList;
+    LinearLayout payOptionList;
     String wAmount = "";
     String gameplay = "";
-    String payType = "Amount";
     String paymentType = "Google Pay";
     List<PopularModel> popularModels = new ArrayList<>();
     PopularAdapter popularAdapter;
@@ -276,7 +257,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.help).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, AnnouncementActivity.class));
+                showContextMenuDialogFragment();
             }
         });
         coins = findViewById(R.id.coins);
@@ -287,12 +268,6 @@ public class MainActivity extends AppCompatActivity {
                     showCoins();
                 else
                     showBottomSheetDialog();
-            }
-        });
-       findViewById(R.id.help).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showSupport();
             }
         });
         bottomNavigation = findViewById(R.id.bottom_navigation);
@@ -411,19 +386,6 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
 
     }
-
-    private static boolean hasPermissions(Context context, String... permissions) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
-            for (String permission : permissions) {
-                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-
     private void getPopularFace() {
         AppController.getInstance().popularList.clear();
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -500,29 +462,45 @@ public class MainActivity extends AppCompatActivity {
 
     public void WidthDrawAmount(View view) {
         TextView selected = ((TextView) view);
-        selected.setBackgroundColor(Color.parseColor("#000000"));
-        selected.setTextColor(Color.parseColor("#ffffff"));
-        for (int i = 0; i < moneyList.getChildCount(); i++) {
-            TextView unselected = (TextView) moneyList.getChildAt(i);
-            if (selected != moneyList.getChildAt(i)) {
-                unselected.setBackgroundResource(R.drawable.outline);
-                unselected.setTextColor(Color.parseColor("#000000"));
+        if(Integer.parseInt(selected.getTag()+"") < AppController.getInstance().rank) {
+            selected.setBackgroundColor(Color.parseColor("#000000"));
+            selected.setTextColor(Color.parseColor("#ffffff"));
+            for (int i = 0; i < moneyList.getChildCount(); i++) {
+                TextView unselected = (TextView) moneyList.getChildAt(i);
+                if (selected != moneyList.getChildAt(i)) {
+                    unselected.setBackgroundResource(R.drawable.outline);
+                    unselected.setTextColor(Color.parseColor("#000000"));
+                }
             }
+            wAmount = selected.getText().toString();
+        }else{
+
         }
-        wAmount = selected.getText().toString();
+    }
+    public void selectPayM(View view) {
+        TextView selected = ((TextView) view);
+            selected.setBackgroundResource(R.drawable.outline_black);
+            for (int i = 0; i < payOptionList.getChildCount(); i++) {
+                TextView unselected = (TextView) payOptionList.getChildAt(i);
+                if (selected != payOptionList.getChildAt(i)) {
+                    unselected.setBackground(null);
+                }
+            }
+            paymentType = selected.getText().toString();
     }
 
     BottomSheetDialog paymentBottomSheet;
 
     private void showCoins() {
         wAmount = "";
-        String[] payTypeList = {"Redeem Amount"};
-        String[] paymentTypeList = {"Google Pay", "PhonePe", "paytm"};
         String[] gameplayTypeList = {"Free Fire", "BGMI"};
         paymentBottomSheet = new BottomSheetDialog(this);
         paymentBottomSheet.setContentView(R.layout.money_sheet);
+        TextView user_name = paymentBottomSheet.findViewById(R.id.user_name);
+        TextView coins = paymentBottomSheet.findViewById(R.id.coins);
+        coins.setText(AppController.getInstance().amount+"");
+        user_name.setText(sharedPreferences.getString(AppConstant.name, "Player"));
         EditText upi = paymentBottomSheet.findViewById(R.id.upi);
-        Spinner payment_system = paymentBottomSheet.findViewById(R.id.payment_system);
         upi.addTextChangedListener(new TextWatcher() {
 
             @Override
@@ -540,7 +518,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        Spinner spin = paymentBottomSheet.findViewById(R.id.spinner);
         Spinner sp_gameplay = paymentBottomSheet.findViewById(R.id.gameplay);
         ArrayAdapter sp_gameplayAdp = new ArrayAdapter(this, android.R.layout.simple_spinner_item, gameplayTypeList);
         sp_gameplay.setSelection(0);
@@ -557,36 +534,8 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        payment_system.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                paymentType = paymentTypeList[position];
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-        ArrayAdapter paymentAdp = new ArrayAdapter(this, android.R.layout.simple_spinner_item, paymentTypeList);
-        paymentAdp.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        payment_system.setAdapter(paymentAdp);
-
-        spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                payType = payTypeList[position];
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-        ArrayAdapter aa = new ArrayAdapter(this, android.R.layout.simple_spinner_item, payTypeList);
-        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spin.setAdapter(aa);
         moneyList = paymentBottomSheet.findViewById(R.id.moneyList);
+        payOptionList = paymentBottomSheet.findViewById(R.id.payOptionList);
         paymentBottomSheet.findViewById(R.id.btn_next).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -673,7 +622,7 @@ public class MainActivity extends AppCompatActivity {
                 params.put("userid", new AppConstant(MainActivity.this).getUserName());
                 params.put("id", new AppConstant(MainActivity.this).getId());
                 params.put("amount", wAmount);
-                params.put("type", payType);
+                params.put("type", "Reedem Moeny");
                 params.put("paymentType", paymentType);
                 params.put("gameplay", gameplay);
                 params.put("time", (System.currentTimeMillis()) + "");
@@ -692,46 +641,7 @@ public class MainActivity extends AppCompatActivity {
         queue.add(stringRequest);
     }
 
-    private void showSupport() {
-        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
-        bottomSheetDialog.setContentView(R.layout.support);
-        bottomSheetDialog.findViewById(R.id.discord).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://discord.gg/5XDFC53w5q"));
-                startActivity(browserIntent);
-            }
-        });
-        bottomSheetDialog.findViewById(R.id.instagram).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.instagram.com/y_ral_gaming/"));
-                startActivity(browserIntent);
-            }
-        });
-        bottomSheetDialog.findViewById(R.id.youtube).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/c/YRALGaming"));
-                startActivity(browserIntent);
-            }
-        });
-       bottomSheetDialog.findViewById(R.id.whatsapp).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    Intent intentWhatsapp = new Intent(Intent.ACTION_VIEW);
-                    String url = "https://chat.whatsapp.com/DYI8frk0T6kH0RBrsB9fpy";
-                    intentWhatsapp.setData(Uri.parse(url));
-                    intentWhatsapp.setPackage("com.whatsapp");
-                    startActivity(intentWhatsapp);
-                }catch (Exception e){
 
-                }
-            }
-        });
-        bottomSheetDialog.show();
-    }
 
 //    private void playYTVideo() {
 //        SharedPreferences prefs = getSharedPreferences(AppConstant.AppName, MODE_PRIVATE);

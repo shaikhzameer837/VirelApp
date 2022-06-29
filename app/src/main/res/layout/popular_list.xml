@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<soup.neumorphism.NeumorphCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<soup.neumorphism.NeumorphCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/Widget.Neumorph.Button"
-    android:layout_width="130dp"
+    android:layout_width="125dp"
     android:layout_height="wrap_content"
     android:background="@color/color_dialog_gray"
     app:neumorph_shapeType="basin">
@@ -49,6 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:layout_marginTop="-20dp"
+            android:layout_marginRight="3dp"
             android:background="@color/appColor"
             android:gravity="center_horizontal"
             android:paddingLeft="3dp"

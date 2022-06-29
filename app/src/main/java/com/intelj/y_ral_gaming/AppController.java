@@ -93,6 +93,7 @@ public class AppController extends Application implements Application.ActivityLi
     public String is_production;
     public AlertDialog.Builder builder;
     public int amount = 0;
+    public int rank = 0;
     public List<GameItem> movieList = new ArrayList<>();
     public GameItem gameItem;
     public TournamentModel tournamentModel;

@@ -66,7 +66,8 @@ public class ProFileActivity extends AppCompatActivity {
     TextView name, bio, title, userName, follower_count, following_count, edit_profile;
     long followers = 0;
     long following = 0;
-    TextView rank,rankCount;
+    ImageView iconImage,chatIcon;
+    TextView rank, rank_button;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,12 +75,14 @@ public class ProFileActivity extends AppCompatActivity {
         txt = findViewById(R.id.info);
         imgProfile = findViewById(R.id.profPic);
         userName = findViewById(R.id.userName);
+        rank_button = findViewById(R.id.rank_button);
+        chatIcon = findViewById(R.id.chatIcon);
         bio = findViewById(R.id.bio);
         rank = findViewById(R.id.rank);
-        rankCount = findViewById(R.id.rankCount);
         follower_count = findViewById(R.id.follower_count);
         following_count = findViewById(R.id.following_count);
         title = findViewById(R.id.title);
+        iconImage = findViewById(R.id.iconImage);
         edit_profile = findViewById(R.id.edit_profile);
         Fade fade = new Fade();
         appConstant = new AppConstant(this);
@@ -107,10 +110,20 @@ public class ProFileActivity extends AppCompatActivity {
         viewPager.setAdapter(adapter);
         if (userid.equals(appConstant.getId())) {
             // findViewById(R.id.chat).setVisibility(View.GONE);
-            edit_profile.setOnClickListener(new View.OnClickListener() {
+            iconImage.setImageResource(R.drawable.ic_edit);
+            findViewById(R.id.rel_button).setBackgroundResource(R.drawable.curved_red);
+            edit_profile.setTextColor(Color.parseColor("#ffffff"));
+            findViewById(R.id.rel_button).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     startActivity(new Intent(ProFileActivity.this, EditProfile.class));
+                }
+            });
+        }else{
+            findViewById(R.id.rel_mess).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(ProFileActivity.this,"Coming Soon",Toast.LENGTH_LONG).show();
                 }
             });
         }
@@ -149,15 +162,18 @@ public class ProFileActivity extends AppCompatActivity {
                     if (!appConstant.checkLogin()) {
                         edit_profile.setText("Login to follow");
                         edit_profile.setTextColor(Color.parseColor("#333333"));
-                        edit_profile.setBackgroundResource(R.drawable.curved_white);
+                        iconImage.setImageResource(R.drawable.lock_outline);
+                        findViewById(R.id.rel_button).setBackgroundResource(R.drawable.curved_white);
                     } else if (!snapshot.child(AppConstant.profile).child(AppConstant.follower).child(appConstant.getId()).exists()) {
                         edit_profile.setText("follow");
                         edit_profile.setTextColor(Color.WHITE);
-                        edit_profile.setBackgroundResource(R.drawable.curved_blue);
+                        iconImage.setImageResource(R.drawable.account_plus);
+                        findViewById(R.id.rel_button).setBackgroundResource(R.drawable.curved_blue);
                     } else {
                         edit_profile.setText("unfollow");
                         edit_profile.setTextColor(Color.parseColor("#333333"));
-                        edit_profile.setBackgroundResource(R.drawable.curved_white);
+                        iconImage.setImageResource(R.drawable.account_minus);
+                        findViewById(R.id.rel_button).setBackgroundResource(R.drawable.curved_gray);
                     }
                     edit_profile.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -178,7 +194,8 @@ public class ProFileActivity extends AppCompatActivity {
                                 follower_count.setText(Html.fromHtml("<b><font size='14' color='#000000'>" + followers + "</font></b> <br/>Follower"));
                                 edit_profile.setText("unfollow");
                                 edit_profile.setTextColor(Color.parseColor("#333333"));
-                                edit_profile.setBackgroundResource(R.drawable.curved_white);
+                                iconImage.setImageResource(R.drawable.account_minus);
+                                findViewById(R.id.rel_button).setBackgroundResource(R.drawable.curved_gray);
                             } else {
                                 FirebaseDatabase.getInstance().getReference(AppConstant.users).child(userid).child(AppConstant.profile).child(AppConstant.follower).child(appConstant.getId()).removeValue();
                                 FirebaseDatabase.getInstance().getReference(AppConstant.users).child(appConstant.getId()).child(AppConstant.profile).child(AppConstant.following).child(userid).removeValue();
@@ -186,7 +203,8 @@ public class ProFileActivity extends AppCompatActivity {
                                 follower_count.setText(Html.fromHtml("<b><font size='14' color='#000000'>" + followers + "</font></b> <br/>Follower"));
                                 edit_profile.setText("follow");
                                 edit_profile.setTextColor(Color.WHITE);
-                                edit_profile.setBackgroundResource(R.drawable.curved_blue);
+                                iconImage.setImageResource(R.drawable.account_plus);
+                                findViewById(R.id.rel_button).setBackgroundResource(R.drawable.curved_blue);
                             }
                         }
                     });
@@ -271,12 +289,29 @@ public class ProFileActivity extends AppCompatActivity {
                         Log.e("response", response);
                         try {
                             JSONObject json = new JSONObject(response);
-                            rank.setText(getRank(json.getInt("rank")));
-                            rankCount.setText(json.getInt("rank") + "/100");
-                        }catch (Exception e){
+                            rank.setText(Html.fromHtml("<b><font size='14' color='#000000'>" + getRank(json.getInt("rank")) + "", new Html.ImageGetter() {
+                                @Override
+                                public Drawable getDrawable(String source) {
+                                    int resourceId = getResources().getIdentifier(source, "drawable", getPackageName());
+                                    Drawable drawable = getResources().getDrawable(resourceId);
+                                    drawable.setBounds(0, 0, 40, 30);
+                                    return drawable;
+                                }
+                            }, null));
+
+                            if (userid.equals(appConstant.getId())) {
+                                chatIcon.setImageResource(R.drawable.menu_down);
+                                rank_button.setText(json.getInt("rank")+" total kills");
+                                findViewById(R.id.rel_mess).setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                    }
+                                });
+                            }
+                        } catch (Exception e) {
 
                         }
-                            progressDialog.cancel();
+                        progressDialog.cancel();
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -301,16 +336,24 @@ public class ProFileActivity extends AppCompatActivity {
 
         queue.add(stringRequest);
     }
-    public String getRank(int rankPoint){
-        if(rankPoint < 99){
-            Drawable dr = getResources().getDrawable(R.drawable.rank1);
-            Bitmap bitmap = ((BitmapDrawable) dr).getBitmap();
-            Drawable d = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 25, 25, true));
-            rank.setCompoundDrawablesWithIntrinsicBounds(d, null, null, null);
-            return "Iron";
+
+    public String getRank(int rankPoint) {
+        if (rankPoint < 1000) {
+            return "</b><img src='rank1' /><br/>Iron";
+        } else if (rankPoint < 2000) {
+            return rankPoint + "</b></font></b><img src='rank2' /><br/>bronze";
+        } else if (rankPoint < 3000) {
+            return rankPoint + "</b></font></b><img src='rank3' /><br/>Silver";
+        } else if (rankPoint < 4000) {
+            return rankPoint + "</b></font></b><img src='rank4' /><br/>Gold";
+        } else if (rankPoint < 5000) {
+            return rankPoint + "</b></font></b><img src='rank5' /><br/>Platinum";
+        } else if (rankPoint < 6000) {
+            return rankPoint + "</b></font></b><img src='rank6' /><br/>Diamond";
         }
         return "";
     }
+
     public class MyAdapter extends FragmentPagerAdapter {
 
         private Context myContext;

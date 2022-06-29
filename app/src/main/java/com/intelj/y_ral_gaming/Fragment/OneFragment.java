@@ -140,6 +140,7 @@ public class OneFragment extends Fragment {
                             JSONObject json = new JSONObject(response);
                             if (json.getBoolean("success") && !json.has("msg")) {
                                 AppController.getInstance().amount = Integer.parseInt(json.getString("amount"));
+                                AppController.getInstance().rank = Integer.parseInt(json.getString("rank"));
                                 JSONArray ja_data = json.getJSONArray("match_info");
                                  GameItem.clear();
                                 for (int i = 0; i < ja_data.length(); i++) {

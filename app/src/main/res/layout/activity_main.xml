@@ -68,10 +68,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_marginRight="15dp"
                 android:drawableTop="@drawable/ic_coin"
                 android:elevation="2dp"
                 android:gravity="center"
-                android:layout_marginRight="15dp"
                 android:text="1"
                 android:textSize="11sp" />
 
@@ -105,11 +105,13 @@
             android:layout_height="wrap_content"
             android:background="@color/color_dialog_gray"
             android:orientation="vertical"
-            android:paddingBottom="15dp">
+            android:paddingBottom="5dp">
             <soup.neumorphism.NeumorphCardView
                 style="@style/Widget.Neumorph.Button"
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
+                app:neumorph_strokeWidth="1dp"
+                app:neumorph_strokeColor="@color/darkgrey"
                 app:neumorph_shapeType="pressed">
             <EditText
                 android:id="@+id/search"
