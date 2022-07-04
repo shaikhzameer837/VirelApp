@@ -5,11 +5,12 @@
     android:orientation="vertical"
     android:padding="10dp">
 
-    <TextView
+    <TextView android:id="@+id/refresh"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/curved_drawable"
         android:padding="10dp"
+        android:drawableRight="@drawable/refresh_circle"
         android:text="Add Team info"
         android:textColor="@color/black"
         android:textSize="13sp"
@@ -35,7 +36,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical" />
-
     <Button
         android:id="@+id/submit"
         android:layout_width="match_parent"
@@ -45,4 +45,17 @@
         android:text="Register Team"
         android:textColor="@color/colorPrimary"
         android:textSize="12sp" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="Select 3 Players from your contact"
+        android:textColor="@color/black"
+        android:layout_height="wrap_content"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_contact"
+        android:layout_marginTop="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:scrollbars="vertical" />
+
 </LinearLayout>

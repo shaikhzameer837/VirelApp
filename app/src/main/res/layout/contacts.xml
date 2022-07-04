@@ -15,7 +15,25 @@
         android:background="@drawable/curved_drawable"
         android:textColor="@color/black"
         android:layout_height="45dp"/>
-
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:orientation="vertical"-->
+<!--        android:layout_height="wrap_content">-->
+<!--        <com.airbnb.lottie.LottieAnimationView-->
+<!--            android:id="@+id/login"-->
+<!--            android:layout_width="200dp"-->
+<!--            android:layout_height="200dp"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            android:layout_gravity="center"-->
+<!--            app:lottie_fileName="chat.json"-->
+<!--            app:lottie_autoPlay="true"-->
+<!--            app:lottie_loop="true"/>-->
+<!--        <androidx.appcompat.widget.AppCompatButton-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:id="@+id/fMessage"-->
+<!--            android:text="Start Your first Message"-->
+<!--            android:layout_height="wrap_content"/>-->
+<!--    </LinearLayout>-->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_contact"
         android:layout_width="match_parent"

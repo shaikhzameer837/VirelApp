@@ -123,9 +123,9 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MyViewHolder
         holder.info.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AppController.getInstance().gameItem = movieList.get(position);
-                Intent intent = new Intent(mContext, ResultActivity.class);
-                mContext.startActivity(intent);
+//                AppController.getInstance().gameItem = movieList.get(position);
+//                Intent intent = new Intent(mContext, ResultActivity.class);
+//                mContext.startActivity(intent);
             }
         });
 //        Glide.with(mContext).load(movieList.get(position))

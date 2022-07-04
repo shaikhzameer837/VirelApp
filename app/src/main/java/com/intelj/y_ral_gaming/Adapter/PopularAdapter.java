@@ -3,6 +3,7 @@ package com.intelj.y_ral_gaming.Adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,7 +59,7 @@ public class PopularAdapter extends RecyclerView.Adapter<PopularAdapter.MyViewHo
         PopularModel movie = moviesList.get(position);
         holder.title.setText(movie.getImg_name());
         holder.genre.setText(movie.getTotal_coins() + "");
-        holder.count.setText("#"+(position + 1)+ "");
+        holder.count.setText(" #"+(position + 1)+ "");
         holder.imgs.setTag(position);
         holder.imgs.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,7 +74,8 @@ public class PopularAdapter extends RecyclerView.Adapter<PopularAdapter.MyViewHo
                 mContext.startActivity(intent, options.toBundle());
             }
         });
-        Glide.with(mContext).load(movie.getImg_url()).apply(new RequestOptions().circleCrop()).placeholder(R.drawable.game_avatar).into(holder.imgs);
+        Log.e("getImg_url", "http://y-ral-gaming.com/admin/api/images/"+movie.getUser_id()+".png?u=" + System.currentTimeMillis());
+        Glide.with(mContext).load("http://y-ral-gaming.com/admin/api/images/"+movie.getUser_id()+".png?u=" + System.currentTimeMillis()).apply(new RequestOptions().circleCrop()).placeholder(R.drawable.game_avatar).into(holder.imgs);
     }
 
     @Override

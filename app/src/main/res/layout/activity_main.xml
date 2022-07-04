@@ -74,22 +74,12 @@
                 android:gravity="center"
                 android:text="1"
                 android:textSize="11sp" />
-
-
-            <TextView
-                android:id="@+id/chat"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawableTop="@drawable/chat"
-                android:text="Chat"
-                android:layout_marginRight="15dp"
-                android:textSize="11sp" />
            <TextView
                 android:id="@+id/help"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableTop="@drawable/support"
-                android:text="help"
+                android:drawableTop="@drawable/drop_down"
+                android:text="More"
                 android:layout_marginRight="10dp"
                 android:textSize="11sp" />
         </LinearLayout>
@@ -109,7 +99,7 @@
             <soup.neumorphism.NeumorphCardView
                 style="@style/Widget.Neumorph.Button"
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
+                android:layout_height="65dp"
                 app:neumorph_strokeWidth="1dp"
                 app:neumorph_strokeColor="@color/darkgrey"
                 app:neumorph_shapeType="pressed">
@@ -138,7 +128,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:shimmer_duration="1000">
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

@@ -15,16 +15,16 @@
         android:id="@+id/tournament"
         android:icon="@drawable/trophy_outline"
         app:showAsAction="always|withText"
-        android:title="Events" />
+        android:title="Events " />
     <item
         android:id="@+id/abc"
         app:showAsAction="always|withText"
-        android:title="" />
+        android:title=" " />
     <item
         android:id="@+id/status"
         app:showAsAction="always|withText"
-        android:icon="@drawable/status"
-        android:title="Status" />
+        android:icon="@drawable/list_status"
+        android:title="status" />
     <item
         android:id="@+id/history"
         app:showAsAction="always|withText"

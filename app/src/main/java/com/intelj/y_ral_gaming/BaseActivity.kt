@@ -5,9 +5,11 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.intelj.y_ral_gaming.Activity.AnnouncementActivity
+import com.intelj.y_ral_gaming.Activity.MainActivity
 import com.yalantis.contextmenu.lib.ContextMenuDialogFragment
 import com.yalantis.contextmenu.lib.MenuObject
 import com.yalantis.contextmenu.lib.MenuParams
@@ -33,7 +35,7 @@ open class BaseActivity : AppCompatActivity() {
 
     private fun initMenuFragment() {
         val menuParams = MenuParams(
-            actionBarSize = 100,
+            actionBarSize = 80,
             menuObjects = getMenuObjects(),
             isClosableOutside = false
         )
@@ -42,32 +44,30 @@ open class BaseActivity : AppCompatActivity() {
             menuItemClickListener = { view, position ->
                 if (position == 1) {
                     showSupport()
-                } else if (position == 2) {
-                    startActivity(Intent(this@BaseActivity, AnnouncementActivity::class.java))
+                } else {
+                    Toast.makeText(applicationContext,"Comming Soon",Toast.LENGTH_LONG).show()
                 }
             }
-//            menuItemLongClickListener = { view, position ->
-//                Toast.makeText(
-//                        this@SampleActivity,
-//                        "Long clicked on position: $position",
-//                        Toast.LENGTH_SHORT
-//                ).show()
-//            }
         }
     }
 
     public fun getMenuObjects() = mutableListOf<MenuObject>().apply {
-        val close = MenuObject().apply { setResourceValue(R.drawable.close) }
-        val send = MenuObject("Help").apply { setResourceValue(R.drawable.game_avatar) }
+        val close = MenuObject().apply {  setResourceValue(R.drawable.close) }
+//        val status = MenuObject("Payment Status").apply {
+//            setResourceValue(R.drawable.status)
+//        }
+        val send = MenuObject("Help").apply {  setResourceValue( R.drawable.support)}
         val like = MenuObject("Announcement").apply {
-            setBitmapValue(BitmapFactory.decodeResource(resources, R.drawable.rank1))
+            setResourceValue(R.drawable.bullhorn_outline)
         }
-
-
+         val suggestion = MenuObject("Suggestion").apply {
+            setResourceValue(R.drawable.suggestion)
+        }
         add(close)
+        //add(status)
         add(send)
         add(like)
-
+        add(suggestion)
     }
 
     public fun showContextMenuDialogFragment() {
@@ -106,6 +106,11 @@ open class BaseActivity : AppCompatActivity() {
                 intentWhatsapp.setPackage("com.whatsapp")
                 startActivity(intentWhatsapp)
             } catch (e: Exception) {
+                val intentWhatsapp = Intent(Intent.ACTION_VIEW)
+                val url = "https://chat.whatsapp.com/DYI8frk0T6kH0RBrsB9fpy"
+                intentWhatsapp.data = Uri.parse(url)
+                intentWhatsapp.setPackage("com.gbwhatsapp")
+                startActivity(intentWhatsapp)
             }
         }
         bottomSheetDialog.show()

@@ -43,6 +43,7 @@ public class AppConstant {
             comments = "comments",
             id = "id",
             amount = "amount",
+            payment = "payment",
             ad_mobs = "ca-app-pub-4340305355612346/9283952361",
             google_ad_mobs = "ca-app-pub-3940256099942544/2247696110",
             applyMatches = "applyMatches",
@@ -300,7 +301,22 @@ public class AppConstant {
         myInfo = _context.getSharedPreferences(AppController.getInstance().userId, Context.MODE_PRIVATE);
         return myInfo.getBoolean(friends, false);
     }
-
+    public static String getRank(int rankPoint) {
+        if (rankPoint < 1000) {
+            return "</b><img src='rank1' /><br/>Iron";
+        } else if (rankPoint < 2000) {
+            return rankPoint + "</b></font></b><img src='rank2' /><br/>bronze";
+        } else if (rankPoint < 3000) {
+            return rankPoint + "</b></font></b><img src='rank3' /><br/>Silver";
+        } else if (rankPoint < 4000) {
+            return rankPoint + "</b></font></b><img src='rank4' /><br/>Gold";
+        } else if (rankPoint < 5000) {
+            return rankPoint + "</b></font></b><img src='rank5' /><br/>Platinum";
+        } else if (rankPoint < 6000) {
+            return rankPoint + "</b></font></b><img src='rank6' /><br/>Diamond";
+        }
+        return "";
+    }
     public static void setSubscription() {
         FirebaseMessaging.getInstance().subscribeToTopic("FreeFire").addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override

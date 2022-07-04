@@ -81,16 +81,15 @@ import java.util.List;
 import java.util.Map;
 
 public class ViralWeb extends AppCompatActivity {
-    private ViewsSliderAdapter mAdapter;
     ViewPager2 viewPager2;
     SimpleExoPlayer exoPlayer;
+    int oldPosition = 0;
+    AppConstant appConstant;
+    TextView userName;
     ArrayList<SimpleExoPlayerView> SimpleExoPlayerList = new ArrayList<>();
     ArrayList<SimpleExoPlayer> exoplayerList = new ArrayList<>();
     ArrayList<String> keys;
-    AppConstant appConstant;
-    private RecyclerView recyclerView;
-    TextView userName;
-    int UniversalPosition = 0;
+    ViewsSliderAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,6 +122,9 @@ public class ViralWeb extends AppCompatActivity {
                     keys = new ArrayList(shortsUrlList.keySet());
                     Collections.shuffle(keys);
                     //keys = shortsUrlList.keySet().toArray();
+                    for (String key : keys) {
+
+                    }
                     init();
                 } else {
                     Log.d(TAG, "get failed with ", task.getException());
@@ -135,105 +137,20 @@ public class ViralWeb extends AppCompatActivity {
         mAdapter = new ViewsSliderAdapter();
         viewPager2.setAdapter(mAdapter);
         viewPager2.registerOnPageChangeCallback(pageChangeCallback);
+       // viewPager2.setOffscreenPageLimit(3);
     }
-
 
     ViewPager2.OnPageChangeCallback pageChangeCallback = new ViewPager2.OnPageChangeCallback() {
         @Override
         public void onPageSelected(int position) {
             super.onPageSelected(position);
-            stopVideo();
-            UniversalPosition = position;
-            // exoPlayer = exoplayerList.get(UniversalPosition);
-            exoplayerList.get(UniversalPosition).setPlayWhenReady(true);
+            exoplayerList.get(oldPosition).setPlayWhenReady(false);
+            exoplayerList.get(oldPosition).getPlaybackState();
+            exoplayerList.get(position).setPlayWhenReady(true);
+            exoplayerList.get(position).getPlaybackState();
+            oldPosition = position;
         }
     };
-
-
-    public void stopVideo() {
-        if (exoPlayer != null) {
-            exoplayerList.get(UniversalPosition).setPlayWhenReady(false);
-            // exoPlayer.release();
-            //   exoPlayer = null;
-        }
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        stopVideo();
-    }
-
-    public void getYoutubeVid(int position) {
-        try {
-            BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
-            TrackSelector trackSelector = new DefaultTrackSelector(new AdaptiveTrackSelection.Factory(bandwidthMeter));
-
-            if (exoplayerList.size() == position)
-                exoplayerList.add(ExoPlayerFactory.newSimpleInstance(ViralWeb.this, trackSelector));
-            DefaultHttpDataSourceFactory dataSourceFactory = new DefaultHttpDataSourceFactory("exoplayer_video");
-            ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
-            SimpleExoPlayerList.get(position).setPlayer(exoplayerList.get(position));
-            Uri videouri = Uri.parse("https://cdn.discordapp.com/attachments/911308156855005195/" + keys.get(position) + "/1.mp4");
-            Log.e("getYoutubeVid: ", "https://cdn.discordapp.com/attachments/911308156855005195/" + keys.get(position) + "/1.mp4");
-            MediaSource mediaSource = new ExtractorMediaSource(videouri, dataSourceFactory, extractorsFactory, null, null);
-            exoplayerList.get(position).prepare(mediaSource);
-            exoplayerList.get(position).addListener(new ExoPlayer.EventListener() {
-                @Override
-                public void onTimelineChanged(Timeline timeline, Object manifest) {
-
-                }
-
-                @Override
-                public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
-
-                }
-
-                @Override
-                public void onLoadingChanged(boolean isLoading) {
-
-                }
-
-                @Override
-                public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-
-                }
-
-                @Override
-                public void onPlayerError(ExoPlaybackException error) {
-
-                }
-
-                @Override
-                public void onPositionDiscontinuity() {
-
-                }
-
-                @Override
-                public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
-
-                }
-            });
-
-        } catch (Exception e) {
-            // below line is used for handling our errors.
-            Log.e("TAG", "Error : " + e.toString());
-
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        exoplayerList.get(UniversalPosition).setPlayWhenReady(false);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (exoplayerList.size() > UniversalPosition)
-            exoplayerList.get(UniversalPosition).setPlayWhenReady(true);
-    }
 
 
     ArrayList<Comments> commentsArrayList = new ArrayList<>();
@@ -290,28 +207,6 @@ public class ViralWeb extends AppCompatActivity {
 
         queue.add(stringRequest);
     }
-
-    boolean doubleBackToExitPressedOnce = false;
-
-    @Override
-    public void onBackPressed() {
-        if (doubleBackToExitPressedOnce) {
-            super.onBackPressed();
-            return;
-        }
-
-        this.doubleBackToExitPressedOnce = true;
-        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
-
-        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-
-            @Override
-            public void run() {
-                doubleBackToExitPressedOnce = false;
-            }
-        }, 2000);
-    }
-
     private void postComment(String s, String gameId) {
         RequestQueue queue = Volley.newRequestQueue(ViralWeb.this);
         String url = "http://y-ral-gaming.com/admin/api/post_comment.php";
@@ -366,9 +261,8 @@ public class ViralWeb extends AppCompatActivity {
 
         queue.add(stringRequest);
     }
-
+    private RecyclerView recyclerView;
     EditText comments;
-
     public class ViewsSliderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         public ViewsSliderAdapter() {
@@ -385,16 +279,49 @@ public class ViralWeb extends AppCompatActivity {
         @Override
         public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
             SliderViewHolder buttonViewHolder = (SliderViewHolder) holder;
-            if (SimpleExoPlayerList.size() == position)
-                SimpleExoPlayerList.add(buttonViewHolder.idExoPlayerVIew);
-            SharedPreferences sharedPreferences = getSharedPreferences(AppConstant.AppName, 0);
-            FirebaseDatabase.getInstance().getReference().child(AppConstant.users)
-                    .child(((Map<String, Object>) shortsUrlList.get(keys.get(position))).get("userid").toString())
-                    .child(AppConstant.pinfo)
-                    .child(AppConstant.name).addListenerForSingleValueEvent(new ValueEventListener() {
+            try {
+                BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
+                TrackSelector trackSelector = new DefaultTrackSelector(new AdaptiveTrackSelection.Factory(bandwidthMeter));
+                exoPlayer = ExoPlayerFactory.newSimpleInstance(ViralWeb.this, trackSelector);
+                Uri videoURI = Uri.parse("https://cdn.discordapp.com/attachments/911308156855005195/" + keys.get(position) + "/1.mp4");
+                DefaultHttpDataSourceFactory dataSourceFactory = new DefaultHttpDataSourceFactory("exoplayer_video");
+                ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
+                MediaSource mediaSource = new ExtractorMediaSource(videoURI, dataSourceFactory, extractorsFactory, null, null);
+                exoPlayer.prepare(mediaSource);
+                buttonViewHolder.idExoPlayerVIew.setPlayer(exoPlayer);
+                if (exoplayerList.size() == position) {
+                    exoplayerList.add(exoPlayer);
+                    SimpleExoPlayerList.add(buttonViewHolder.idExoPlayerVIew);
+                }
+                // buttonViewHolder.idExoPlayerVIew.setPlayer(exoPlayer);
+
+                SharedPreferences sharedPreferences = getSharedPreferences(AppConstant.AppName, 0);
+                FirebaseDatabase.getInstance().getReference().child(AppConstant.users)
+                        .child(((Map<String, Object>) shortsUrlList.get(keys.get(position))).get("userid").toString())
+                        .child(AppConstant.pinfo)
+                        .child(AppConstant.name).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                buttonViewHolder.userName.setText(snapshot.getValue() + "");
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                buttonViewHolder.likes.setTag(((Map<String, Object>) shortsUrlList.get(keys.get(position))).get("likes"));
+                buttonViewHolder.likes.setText(((Map<String, Object>) shortsUrlList.get(keys.get(position))).get("likes").toString());
+                buttonViewHolder.comment.setText(((Map<String, Object>) shortsUrlList.get(keys.get(position))).get("comment").toString());
+                buttonViewHolder.caption.setText(((Map<String, Object>) shortsUrlList.get(keys.get(position))).get("caption").toString());
+                if (sharedPreferences.getString(keys.get(position), null) == null) {
+                    FirebaseDatabase.getInstance().getReference().child(AppConstant.yralWeb).child(keys.get(position)).child(AppConstant.likes).child(appConstant.getId()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            buttonViewHolder.userName.setText(snapshot.getValue() + "");
+                            if (snapshot.exists())
+                                buttonViewHolder.likes.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.cards_heart, 0, 0);
+                            else
+                                buttonViewHolder.likes.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.cards_heart_outline, 0, 0);
                         }
 
                         @Override
@@ -402,90 +329,74 @@ public class ViralWeb extends AppCompatActivity {
 
                         }
                     });
-            buttonViewHolder.likes.setTag(((Map<String, Object>) shortsUrlList.get(keys.get(position))).get("likes"));
-            buttonViewHolder.likes.setText(((Map<String, Object>) shortsUrlList.get(keys.get(position))).get("likes").toString());
-            buttonViewHolder.comment.setText(((Map<String, Object>) shortsUrlList.get(keys.get(position))).get("comment").toString());
-            buttonViewHolder.caption.setText(((Map<String, Object>) shortsUrlList.get(keys.get(position))).get("caption").toString());
-            if (sharedPreferences.getString(keys.get(position), null) == null) {
-                FirebaseDatabase.getInstance().getReference().child(AppConstant.yralWeb).child(keys.get(position)).child(AppConstant.likes).child(appConstant.getId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                } else {
+                    buttonViewHolder.likes.setCompoundDrawablesWithIntrinsicBounds(0, sharedPreferences.getString(keys.get(position).toString(), null).equals("0") ? R.drawable.cards_heart : R.drawable.cards_heart_outline, 0, 0);
+                }
+                buttonViewHolder.share.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.exists())
-                            buttonViewHolder.likes.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.cards_heart, 0, 0);
-                        else
-                            buttonViewHolder.likes.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.cards_heart_outline, 0, 0);
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
+                    public void onClick(View v) {
+                        Toast.makeText(ViralWeb.this, "Coming Soon", Toast.LENGTH_LONG).show();
                     }
                 });
-            } else {
-                buttonViewHolder.likes.setCompoundDrawablesWithIntrinsicBounds(0, sharedPreferences.getString(keys.get(position).toString(), null).equals("0") ? R.drawable.cards_heart : R.drawable.cards_heart_outline, 0, 0);
-            }
-            buttonViewHolder.share.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(ViralWeb.this, "Coming Soon", Toast.LENGTH_LONG).show();
-                }
-            });
-            buttonViewHolder.comment.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    View view = getLayoutInflater().inflate(R.layout.comments, null);
-                    BottomSheetDialog dialog = new BottomSheetDialog(ViralWeb.this);
-                    comments = view.findViewById(R.id.comments);
-                    recyclerView = view.findViewById(R.id.rv);
-                    commentsAdapter = new CommentsAdapter(ViralWeb.this, commentsArrayList);
-                    RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-                    recyclerView.setLayoutManager(mLayoutManager);
-                    recyclerView.setAdapter(commentsAdapter);
-                    reloadData(keys.get(position));
-                    view.findViewById(R.id.send).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            postComment(comments.getText().toString(), keys.get(position));
-                        }
-                    });
+                buttonViewHolder.comment.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        View view = getLayoutInflater().inflate(R.layout.comments, null);
+                        BottomSheetDialog dialog = new BottomSheetDialog(ViralWeb.this);
+                        comments = view.findViewById(R.id.comments);
+                        recyclerView = view.findViewById(R.id.rv);
+                        commentsAdapter = new CommentsAdapter(ViralWeb.this, commentsArrayList);
+                        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+                        recyclerView.setLayoutManager(mLayoutManager);
+                        recyclerView.setAdapter(commentsAdapter);
+                        reloadData(keys.get(position));
+                        view.findViewById(R.id.send).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                postComment(comments.getText().toString(), keys.get(position));
+                            }
+                        });
 
-                    dialog.setContentView(view);
-                    dialog.show();
-                }
-            });
-            getYoutubeVid(position);
-            buttonViewHolder.likes.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onPause();
-                    Long likes = (Long) v.getTag();
-                    Map<String, Object> city = new HashMap<>();
-                    Map<String, Object> details = new HashMap<>();
-                    SharedPreferences sharedPreferences = getSharedPreferences(AppConstant.AppName, 0);
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    if (sharedPreferences.getString(keys.get(position).toString(), null) == null || sharedPreferences.getString(keys.get(position).toString(), null).equals("1")) {
-                        buttonViewHolder.likes.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.cards_heart, 0, 0);
-                        FirebaseDatabase.getInstance().getReference().child(AppConstant.yralWeb).child(keys.get(position).toString()).child(AppConstant.likes).child(appConstant.getId()).setValue(System.currentTimeMillis() / 1000);
-                        editor.putString(keys.get(position).toString(), "0").apply();
-                        details.put("likes", FieldValue.increment(1));
-                        city.put(keys.get(position).toString(), details);
-                        FirebaseFirestore.getInstance().collection(AppConstant.yralWeb)
-                                .document("video").set(city, SetOptions.merge());
-                        likes = likes + 1;
-                    } else {
-                        buttonViewHolder.likes.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.cards_heart_outline, 0, 0);
-                        editor.putString(keys.get(position).toString(), "1").apply();
-                        FirebaseDatabase.getInstance().getReference().child(AppConstant.yralWeb).child(keys.get(position).toString()).child(AppConstant.likes).child(appConstant.getId()).removeValue();
-                        details.put("likes", FieldValue.increment(-1));
-                        city.put(keys.get(position).toString(), details);
-                        FirebaseFirestore.getInstance().collection(AppConstant.yralWeb)
-                                .document("video").set(city, SetOptions.merge());
-                        likes = likes - 1;
+                        dialog.setContentView(view);
+                        dialog.show();
                     }
-                    buttonViewHolder.likes.setTag(likes);
-                    buttonViewHolder.likes.setText(likes + "");
-                }
-            });
+                });
+                buttonViewHolder.likes.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onPause();
+                        Long likes = (Long) v.getTag();
+                        Map<String, Object> city = new HashMap<>();
+                        Map<String, Object> details = new HashMap<>();
+                        SharedPreferences sharedPreferences = getSharedPreferences(AppConstant.AppName, 0);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        if (sharedPreferences.getString(keys.get(position).toString(), null) == null || sharedPreferences.getString(keys.get(position).toString(), null).equals("1")) {
+                            buttonViewHolder.likes.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.cards_heart, 0, 0);
+                            FirebaseDatabase.getInstance().getReference().child(AppConstant.yralWeb).child(keys.get(position).toString()).child(AppConstant.likes).child(appConstant.getId()).setValue(System.currentTimeMillis() / 1000);
+                            editor.putString(keys.get(position).toString(), "0").apply();
+                            details.put("likes", FieldValue.increment(1));
+                            city.put(keys.get(position).toString(), details);
+                            FirebaseFirestore.getInstance().collection(AppConstant.yralWeb)
+                                    .document("video").set(city, SetOptions.merge());
+                            likes = likes + 1;
+                        } else {
+                            buttonViewHolder.likes.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.cards_heart_outline, 0, 0);
+                            editor.putString(keys.get(position).toString(), "1").apply();
+                            FirebaseDatabase.getInstance().getReference().child(AppConstant.yralWeb).child(keys.get(position).toString()).child(AppConstant.likes).child(appConstant.getId()).removeValue();
+                            details.put("likes", FieldValue.increment(-1));
+                            city.put(keys.get(position).toString(), details);
+                            FirebaseFirestore.getInstance().collection(AppConstant.yralWeb)
+                                    .document("video").set(city, SetOptions.merge());
+                            likes = likes - 1;
+                        }
+                        buttonViewHolder.likes.setTag(likes);
+                        buttonViewHolder.likes.setText(likes + "");
+                    }
+                });
+
+            } catch (Exception e) {
+                Log.e("MainAcvtivity", " exoplayer error " + e.toString());
+            }
         }
 
         @Override

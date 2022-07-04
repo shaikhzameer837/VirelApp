@@ -14,6 +14,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.text.ClipboardManager;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
 import android.transition.Fade;
 import android.util.Log;
@@ -148,7 +150,7 @@ public class MainActivity extends BaseActivity {
     ImageView imageView;
     LinearLayout moneyList;
     LinearLayout payOptionList;
-    String wAmount = "";
+    String wAmount = "25";
     String gameplay = "";
     String paymentType = "Google Pay";
     List<PopularModel> popularModels = new ArrayList<>();
@@ -237,7 +239,7 @@ public class MainActivity extends BaseActivity {
         findViewById(R.id.search).setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction() == MotionEvent.ACTION_UP) {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
                     Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     startActivity(intent);
@@ -246,14 +248,6 @@ public class MainActivity extends BaseActivity {
                 return false;
             }
         });
-        findViewById(R.id.chat).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Toast.makeText(MainActivity.this,"Coming Soon",Toast.LENGTH_LONG).show();
-                startActivity(new Intent(MainActivity.this, ChatList.class));
-            }
-        });
-
         findViewById(R.id.help).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -318,6 +312,13 @@ public class MainActivity extends BaseActivity {
                                 return true;
                             case R.id.chat:
                                 inflateView(R.layout.contacts);
+//                                inflated.findViewById(R.id.refresh).setVisibility(View.GONE);
+//                                inflated.findViewById(R.id.fMessage).setOnClickListener(new View.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(View v) {
+//                                        startActivity(new Intent(MainActivity.this, ChatList.class));
+//                                    }
+//                                });
 //                                shd = getSharedPreferences(AppConstant.id, MODE_PRIVATE);
 //                                rv_contact = inflated.findViewById(R.id.rv_contact);
 //                                inflated.findViewById(R.id.refresh).setOnClickListener(new View.OnClickListener() {
@@ -386,6 +387,7 @@ public class MainActivity extends BaseActivity {
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
 
     }
+
     private void getPopularFace() {
         AppController.getInstance().popularList.clear();
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -462,7 +464,7 @@ public class MainActivity extends BaseActivity {
 
     public void WidthDrawAmount(View view) {
         TextView selected = ((TextView) view);
-        if(Integer.parseInt(selected.getTag()+"") < AppController.getInstance().rank) {
+        if (Integer.parseInt(selected.getTag() + "") < AppController.getInstance().rank) {
             selected.setBackgroundColor(Color.parseColor("#000000"));
             selected.setTextColor(Color.parseColor("#ffffff"));
             for (int i = 0; i < moneyList.getChildCount(); i++) {
@@ -473,32 +475,42 @@ public class MainActivity extends BaseActivity {
                 }
             }
             wAmount = selected.getText().toString();
-        }else{
-
+        } else {
+            Toast.makeText(MainActivity.this, "You need " + selected.getContentDescription() + " rank to withdraw this amount", Toast.LENGTH_LONG).show();
         }
     }
+
     public void selectPayM(View view) {
         TextView selected = ((TextView) view);
-            selected.setBackgroundResource(R.drawable.outline_black);
-            for (int i = 0; i < payOptionList.getChildCount(); i++) {
-                TextView unselected = (TextView) payOptionList.getChildAt(i);
-                if (selected != payOptionList.getChildAt(i)) {
-                    unselected.setBackground(null);
-                }
+        selected.setBackgroundResource(R.drawable.outline_black);
+        for (int i = 0; i < payOptionList.getChildCount(); i++) {
+            TextView unselected = (TextView) payOptionList.getChildAt(i);
+            if (selected != payOptionList.getChildAt(i)) {
+                unselected.setBackground(null);
             }
-            paymentType = selected.getText().toString();
+        }
+        paymentType = selected.getText().toString();
     }
 
     BottomSheetDialog paymentBottomSheet;
 
     private void showCoins() {
-        wAmount = "";
         String[] gameplayTypeList = {"Free Fire", "BGMI"};
         paymentBottomSheet = new BottomSheetDialog(this);
         paymentBottomSheet.setContentView(R.layout.money_sheet);
         TextView user_name = paymentBottomSheet.findViewById(R.id.user_name);
         TextView coins = paymentBottomSheet.findViewById(R.id.coins);
-        coins.setText(AppController.getInstance().amount+"");
+        TextView ranks = paymentBottomSheet.findViewById(R.id.ranks);
+        coins.setText(AppController.getInstance().amount + "");
+        ranks.setText(Html.fromHtml("<b><font size='14' color='#000000'>" + AppConstant.getRank(AppController.getInstance().rank) + "", new Html.ImageGetter() {
+            @Override
+            public Drawable getDrawable(String source) {
+                int resourceId = getResources().getIdentifier(source, "drawable", getPackageName());
+                Drawable drawable = getResources().getDrawable(resourceId);
+                drawable.setBounds(0, 0, 40, 30);
+                return drawable;
+            }
+        }, null));
         user_name.setText(sharedPreferences.getString(AppConstant.name, "Player"));
         EditText upi = paymentBottomSheet.findViewById(R.id.upi);
         upi.addTextChangedListener(new TextWatcher() {
@@ -554,7 +566,24 @@ public class MainActivity extends BaseActivity {
                         return;
                     }
                     if (upi.getText().toString().trim().contains("@") || android.text.TextUtils.isDigitsOnly(upi.getText().toString())) {
-                        requestMoney(upi.getText().toString());
+                        SharedPreferences prefs = getSharedPreferences(AppConstant.AppName, MODE_PRIVATE);
+                        long currentTime = (System.currentTimeMillis()/1000);
+                        long lastRequest = prefs.getLong(AppConstant.payment, currentTime);//"No name defined" is the default value.
+                        if(currentTime >= lastRequest) {
+                            requestMoney(upi.getText().toString());
+                        }else{
+                            new AlertDialog.Builder(MainActivity.this)
+                                    .setTitle("Alert")
+                                    .setMessage("Payment Already requested try again after 24hrs")
+                                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            // Continue with delete operation
+                                        }
+                                    })
+                                    .setNegativeButton(android.R.string.no, null)
+                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                    .show();
+                        }
                     } else {
                         upi.setError("Invalid upi id / paytm number");
                         upi.requestFocus();
@@ -591,7 +620,9 @@ public class MainActivity extends BaseActivity {
                             JSONObject obj = new JSONObject(response);
                             if (!obj.getBoolean("success"))
                                 return;
-
+                            SharedPreferences.Editor editor = getSharedPreferences(AppConstant.AppName, MODE_PRIVATE).edit();
+                            editor.putLong(AppConstant.payment, (System.currentTimeMillis() / 1000) + 86400);
+                            editor.apply();
                             new AlertDialog.Builder(MainActivity.this)
                                     .setTitle("success")
                                     .setMessage("Payment requested you will recieve payment in 24hrs \n Your Ticked id is " + obj.getString("ticked_id") + "\n click on status to check your payment request status")
@@ -622,7 +653,7 @@ public class MainActivity extends BaseActivity {
                 params.put("userid", new AppConstant(MainActivity.this).getUserName());
                 params.put("id", new AppConstant(MainActivity.this).getId());
                 params.put("amount", wAmount);
-                params.put("type", "Reedem Moeny");
+                params.put("type", "Redeem Money");
                 params.put("paymentType", paymentType);
                 params.put("gameplay", gameplay);
                 params.put("time", (System.currentTimeMillis()) + "");
@@ -640,7 +671,6 @@ public class MainActivity extends BaseActivity {
 
         queue.add(stringRequest);
     }
-
 
 
 //    private void playYTVideo() {
@@ -875,6 +905,7 @@ public class MainActivity extends BaseActivity {
 
                             for (int i = 0; i < array.length(); i++) {
                                 JSONObject obj = array.getJSONObject(i);
+                                Log.e("team_count", obj.getInt("team_count") + "");
                                 tournamentModelList.add(new TournamentModel(obj.getString("name"),
                                         obj.getString("game_name"),
                                         obj.getString("image_url"),
@@ -978,7 +1009,7 @@ public class MainActivity extends BaseActivity {
                                                 obj.getString("image_url"),
                                                 obj.getString("date"),
                                                 obj.getString("status"),
-                                                obj.getString("comment"), "", "", "", 0,0));
+                                                obj.getString("comment"), "", "", "", 0, 0));
                             }
                             TournamentAdapter pAdapter = new TournamentAdapter(MainActivity.this, tournamentModelList, false);
                             recyclerView.setAdapter(pAdapter);

@@ -289,7 +289,7 @@ public class ProFileActivity extends AppCompatActivity {
                         Log.e("response", response);
                         try {
                             JSONObject json = new JSONObject(response);
-                            rank.setText(Html.fromHtml("<b><font size='14' color='#000000'>" + getRank(json.getInt("rank")) + "", new Html.ImageGetter() {
+                            rank.setText(Html.fromHtml("<b><font size='14' color='#000000'>" + AppConstant.getRank(json.getInt("rank")) + "", new Html.ImageGetter() {
                                 @Override
                                 public Drawable getDrawable(String source) {
                                     int resourceId = getResources().getIdentifier(source, "drawable", getPackageName());
@@ -335,23 +335,6 @@ public class ProFileActivity extends AppCompatActivity {
         };
 
         queue.add(stringRequest);
-    }
-
-    public String getRank(int rankPoint) {
-        if (rankPoint < 1000) {
-            return "</b><img src='rank1' /><br/>Iron";
-        } else if (rankPoint < 2000) {
-            return rankPoint + "</b></font></b><img src='rank2' /><br/>bronze";
-        } else if (rankPoint < 3000) {
-            return rankPoint + "</b></font></b><img src='rank3' /><br/>Silver";
-        } else if (rankPoint < 4000) {
-            return rankPoint + "</b></font></b><img src='rank4' /><br/>Gold";
-        } else if (rankPoint < 5000) {
-            return rankPoint + "</b></font></b><img src='rank5' /><br/>Platinum";
-        } else if (rankPoint < 6000) {
-            return rankPoint + "</b></font></b><img src='rank6' /><br/>Diamond";
-        }
-        return "";
     }
 
     public class MyAdapter extends FragmentPagerAdapter {

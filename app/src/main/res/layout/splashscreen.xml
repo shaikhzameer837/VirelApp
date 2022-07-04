@@ -1,38 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black">
-
-    <com.facebook.shimmer.ShimmerFrameLayout
-        android:id="@+id/shimmer_view_container"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <ImageView android:id="@+id/img"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_gravity="center"
-        app:shimmer_duration="1000">
-
-        <ImageView
-            android:id="@+id/logo"
-            android:layout_width="wrap_content"
-            android:layout_height="250dp"
-            android:scaleType="centerInside"
-            android:src="@mipmap/app_logo" />
-    </com.facebook.shimmer.ShimmerFrameLayout>
-
-    <ProgressBar android:id="@+id/progress"
-        android:layout_width="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:visibility="gone"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:layout_below="@+id/shimmer_view_container" />
-    <!--    <com.sdsmdg.harjot.rotatingtext.RotatingTextWrapper-->
-    <!--        android:id="@+id/custom_switcher"-->
-    <!--        android:layout_marginTop="30dp"-->
-    <!--        android:layout_centerHorizontal="true"-->
-    <!--        android:layout_below="@+id/shimmer_view_container"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content" />-->
+        android:layout_height="wrap_content"/>
+<TextView
+    android:layout_width="wrap_content"
+    android:text="Welcome to Yral Gaming"
+    android:textColor="@color/appColor"
+    android:textStyle="bold"
+    android:layout_centerHorizontal="true"
+    android:layout_alignParentBottom="true"
+    android:layout_marginBottom="20dp"
+    android:layout_height="wrap_content"/>
 </RelativeLayout>
