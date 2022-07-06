@@ -458,7 +458,6 @@ public class MainActivity extends BaseActivity {
                 return params;
             }
         };
-
         queue.add(stringRequest);
     }
 

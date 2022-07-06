@@ -18,15 +18,17 @@
             android:layout_marginTop="10dp"
             android:layout_marginRight="15dp"
             android:gravity="center_vertical"
+            app:ccp_textColor="@color/colorPrimary"
             app:ccp_showFullName="true" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/name_text_input"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style="@style/TextInputLayoutStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:layout_marginTop="10dp"
+            app:hintTextColor="@color/colorPrimary"
             android:layout_marginRight="15dp">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -35,6 +37,8 @@
                 android:layout_height="wrap_content"
                 android:hint="Enter your phone number"
                 android:inputType="number"
+                android:textColorHint="@color/colorPrimary"
+                android:textColor="@color/colorPrimary"
                 android:textSize="14sp" />
         </com.google.android.material.textfield.TextInputLayout>
 

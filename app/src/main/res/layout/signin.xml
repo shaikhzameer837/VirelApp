@@ -5,7 +5,13 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:showIn="@layout/signin">
-
+    <com.airbnb.lottie.LottieAnimationView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        app:lottie_autoPlay="true"
+        app:lottie_fileName="background.json"
+        app:lottie_loop="true"/>
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/animationView"
         android:layout_centerHorizontal="true"
@@ -24,7 +30,7 @@
         android:layout_below="@+id/animationView"
         android:gravity="center"
         android:text="Welcome to Y-RAL gaming"
-        android:textColor="@color/appColor"
+        android:textColor="@color/colorPrimary"
         android:textSize="19sp" />
 
     <androidx.viewpager.widget.ViewPager
@@ -38,6 +44,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/btn_next"
         android:gravity="center"
+        android:textColor="@color/colorPrimary"
         android:text="By clicking on Next you accept our terms and condition" />
 
     <Button

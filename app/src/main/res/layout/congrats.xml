@@ -1,9 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:background="@color/colorPrimary"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent">
-    <ImageView android:id="@+id/img"
+    <TextView
         android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textColor="@color/appColor"
+        android:layout_marginTop="20dp"
+        android:textStyle="bold"
+        android:text="Congrats, You have won 10 coins worth 10 rupees\n Earn 15 more coins and withraw real money instantly "
         android:layout_height="wrap_content"/>
-
+    <com.airbnb.lottie.LottieAnimationView
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center"
+        app:lottie_fileName="congrats.json"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"/>
+    <soup.neumorphism.NeumorphCardView
+        style="@style/Widget.Neumorph.Button"
+        android:layout_width="300dp"
+        android:layout_height="65dp"
+        android:layout_gravity="center"
+        app:neumorph_strokeWidth="1dp"
+        android:onClick="nextPage"
+        app:neumorph_strokeColor="@color/darkgrey"
+        app:neumorph_shapeType="basin">
+        <TextView
+            android:layout_width="match_parent"
+            android:text="Getting Started"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:layout_height="match_parent"/>
+    </soup.neumorphism.NeumorphCardView>
 </LinearLayout>

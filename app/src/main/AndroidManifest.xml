@@ -110,6 +110,7 @@
         <activity android:name=".FollowActivity" />
         <activity android:name=".Activity.ViralWeb" />
         <activity android:name=".Activity.ChatList" />
+        <activity android:name="com.intelj.y_ral_gaming.Congrats" />
 
         <service
             android:name=".FirebaseFCMServices"
