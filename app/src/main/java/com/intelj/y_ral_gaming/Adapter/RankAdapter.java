@@ -33,7 +33,7 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.MyViewHolder> 
             desc = view.findViewById(R.id.desc);
             name = view.findViewById(R.id.name);
             imgs = view.findViewById(R.id.imgs);
-            count_win = view.findViewById(R.id.count_win);
+         //   count_win = view.findViewById(R.id.count_win);
         }
     }
 

@@ -14,7 +14,7 @@ import com.intelj.y_ral_gaming.SplashScreenStory;
 
 public class PrizePoolFragment extends Fragment {
     View rootView;
-    String subj;
+    String subj="";
     public PrizePoolFragment(String subj) {
         this.subj = subj;
     }

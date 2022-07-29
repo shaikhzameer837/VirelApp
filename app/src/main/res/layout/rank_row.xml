@@ -1,36 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="5dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+<RelativeLayout
     android:orientation="vertical"
     android:padding="5dp" android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:id="@+id/relative_layout">
-    <ImageView android:id="@+id/imgs"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/imgs"
         android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_marginRight="20dp"
-        android:src="@drawable/game_avatar"
-        android:layout_height="60dp"/>
+        android:src="@drawable/rank1" />
     <TextView android:layout_toRightOf="@+id/imgs"
         android:layout_width="match_parent"
         android:id="@+id/name"
-        android:layout_toLeftOf="@+id/count_win"
-        android:text="asfwef"
+        android:text="iron"
+        android:textColor="@color/appColor"
         android:textStyle="bold"
         android:layout_marginTop="10dp"
         android:layout_height="wrap_content"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:id="@+id/count_win"
-        android:text="asfwef"
-        android:layout_alignParentRight="true"
-        android:textStyle="bold"
-        android:drawableLeft="@drawable/trophy"
-        android:textColor="@color/colorPrimaryDark"
-        android:layout_marginTop="10dp"
-        android:layout_height="wrap_content"/>
+
+
    <TextView android:layout_toRightOf="@+id/imgs"
         android:layout_width="match_parent"
        android:layout_below="@+id/name"
-       android:text="sdgtersg"
+       android:text="&#60; 1000 kills"
        android:id="@+id/desc"
        android:layout_marginTop="10dp"
        android:layout_height="wrap_content"/>
@@ -42,3 +41,151 @@
         android:layout_toRightOf="@+id/imgs"
         android:layout_height="1dp"/>
 </RelativeLayout>
+<RelativeLayout
+    android:orientation="vertical"
+    android:padding="5dp" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/imgs1"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginRight="20dp"
+        android:src="@drawable/rank2" />
+
+    <TextView
+        android:id="@+id/name1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@+id/imgs1"
+        android:text="Bronze"
+        android:textColor="@color/appColor"
+        android:textStyle="bold" />
+
+
+    <TextView
+        android:id="@+id/desc1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/name1"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@+id/imgs1"
+        android:text="&#60; 2000 kills" />
+    <View
+        android:layout_width="match_parent"
+        android:background="#c0c0c0"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/desc1"
+        android:layout_toRightOf="@+id/imgs1"
+        android:layout_height="1dp"/>
+</RelativeLayout>
+<RelativeLayout
+    android:orientation="vertical"
+    android:padding="5dp" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/imgs2"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginRight="20dp"
+        android:src="@drawable/rank4" />
+    <TextView android:layout_toRightOf="@+id/imgs2"
+        android:layout_width="match_parent"
+        android:id="@+id/name2"
+        android:text="Silver"
+        android:textColor="@color/appColor"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"
+        android:layout_height="wrap_content"/>
+
+
+   <TextView android:layout_toRightOf="@+id/imgs2"
+        android:layout_width="match_parent"
+       android:layout_below="@+id/name2"
+       android:text="&#60; 3000 kills"
+       android:id="@+id/desc2"
+       android:layout_marginTop="10dp"
+       android:layout_height="wrap_content"/>
+    <View
+        android:layout_width="match_parent"
+        android:background="#c0c0c0"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/desc2"
+        android:layout_toRightOf="@+id/imgs2"
+        android:layout_height="1dp"/>
+</RelativeLayout>
+<RelativeLayout
+    android:orientation="vertical"
+    android:padding="5dp" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/imgs3"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginRight="20dp"
+        android:src="@drawable/rank5" />
+    <TextView android:layout_toRightOf="@+id/imgs3"
+        android:layout_width="match_parent"
+        android:id="@+id/name3"
+        android:text="Gold"
+        android:textColor="@color/appColor"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"
+        android:layout_height="wrap_content"/>
+
+
+   <TextView android:layout_toRightOf="@+id/imgs3"
+        android:layout_width="match_parent"
+       android:layout_below="@+id/name3"
+       android:text="&#60; 4000 kills"
+       android:id="@+id/desc3"
+       android:layout_marginTop="10dp"
+       android:layout_height="wrap_content"/>
+    <View
+        android:layout_width="match_parent"
+        android:background="#c0c0c0"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/desc3"
+        android:layout_toRightOf="@+id/imgs3"
+        android:layout_height="1dp"/>
+</RelativeLayout>
+<RelativeLayout
+    android:orientation="vertical"
+    android:padding="5dp" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/imgs4"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginRight="20dp"
+        android:src="@drawable/rank6" />
+    <TextView android:layout_toRightOf="@+id/imgs4"
+        android:layout_width="match_parent"
+        android:id="@+id/name4"
+        android:text="Platinum"
+        android:textColor="@color/appColor"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"
+        android:layout_height="wrap_content"/>
+
+
+   <TextView android:layout_toRightOf="@+id/imgs4"
+        android:layout_width="match_parent"
+       android:layout_below="@+id/name4"
+       android:text="&#60; 5000 kills"
+       android:id="@+id/desc4"
+       android:layout_marginTop="10dp"
+       android:layout_height="wrap_content"/>
+    <View
+        android:layout_width="match_parent"
+        android:background="#c0c0c0"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/desc4"
+        android:layout_toRightOf="@+id/imgs4"
+        android:layout_height="1dp"/>
+</RelativeLayout>
+</LinearLayout>

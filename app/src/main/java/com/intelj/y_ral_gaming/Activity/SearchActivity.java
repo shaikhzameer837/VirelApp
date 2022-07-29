@@ -96,6 +96,7 @@ public class SearchActivity extends AppCompatActivity {
         userIDs.add("255");
         userIDs.add("159");
         userIDs.add("324");
+        userIDs.add("75");
         Collections.shuffle(userIDs);
         ArrayList<SuggesstionModel> recyclerDataArrayList = new ArrayList<>();
         SuggestionViewAdapter adapter = new SuggestionViewAdapter(recyclerDataArrayList, this);

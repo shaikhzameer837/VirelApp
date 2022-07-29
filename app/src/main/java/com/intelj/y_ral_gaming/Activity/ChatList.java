@@ -51,25 +51,25 @@ public class ChatList extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.contacts);
+        setContentView(R.layout.chat_list);
         shd = getSharedPreferences(AppConstant.id, MODE_PRIVATE);
         rv_contact = findViewById(R.id.rv_contact);
         appConstant = new AppConstant(this);
-        findViewById(R.id.refresh).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (Build.VERSION.SDK_INT >= 23) {
-                    String[] PERMISSIONS = {android.Manifest.permission.READ_CONTACTS};
-                    if (!hasPermissions(ChatList.this, PERMISSIONS)) {
-                        ActivityCompat.requestPermissions(ChatList.this, PERMISSIONS, REQUEST);
-                    } else {
-                        new readContactTask().execute();
-                    }
-                } else {
-                    new readContactTask().execute();
-                }
-            }
-        });
+//        findViewById(R.id.refresh).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (Build.VERSION.SDK_INT >= 23) {
+//                    String[] PERMISSIONS = {android.Manifest.permission.READ_CONTACTS};
+//                    if (!hasPermissions(ChatList.this, PERMISSIONS)) {
+//                        ActivityCompat.requestPermissions(ChatList.this, PERMISSIONS, REQUEST);
+//                    } else {
+//                        new readContactTask().execute();
+//                    }
+//                } else {
+//                    new readContactTask().execute();
+//                }
+//            }
+//        });
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(ChatList.this);
         rv_contact.setLayoutManager(mLayoutManager);
         contactModel = new ArrayList<>();
@@ -93,6 +93,24 @@ public class ChatList extends AppCompatActivity {
 
             }
         }));
+        String[] PERMISSIONS = {android.Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS};
+        if (!hasPermissions(ChatList.this, PERMISSIONS)) {
+            ActivityCompat.requestPermissions(ChatList.this, PERMISSIONS, REQUEST);
+        } else {
+           loadChats();
+        }
+    }
+
+    private void loadChats() {
+        Set<String> set = shd.getStringSet(AppConstant.contact, null);
+        if (set != null) {
+            for (String s : set) {
+                SharedPreferences userInfo = getSharedPreferences(s, Context.MODE_PRIVATE);
+                contactModel.add(new ContactListModel(userInfo.getString(AppConstant.myPicUrl, ""), appConstant.getContactName(userInfo.getString(AppConstant.phoneNumber, "")), userInfo.getString(AppConstant.id, ""), userInfo.getString(AppConstant.bio, "")));
+            }
+            contactListAdapter.notifyDataSetChanged();
+        } else
+            new readContactTask().execute();
     }
 
     private static boolean hasPermissions(Context context, String... permissions) {
@@ -210,19 +228,7 @@ public class ChatList extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-            String[] PERMISSIONS = {android.Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS};
-            if (!hasPermissions(ChatList.this, PERMISSIONS)) {
-                ActivityCompat.requestPermissions(ChatList.this, PERMISSIONS, REQUEST);
-            } else {
-                Set<String> set = shd.getStringSet(AppConstant.contact, null);
-                if (set != null) {
-                    for (String s : set) {
-                        SharedPreferences userInfo = getSharedPreferences(s, Context.MODE_PRIVATE);
-                        contactModel.add(new ContactListModel(userInfo.getString(AppConstant.myPicUrl, ""), appConstant.getContactName(userInfo.getString(AppConstant.phoneNumber, "")), userInfo.getString(AppConstant.id, ""), userInfo.getString(AppConstant.bio, "")));
-                    }
-                 } else
-                    new readContactTask().execute();
-            }
+
     }
 
     @Override
@@ -232,7 +238,7 @@ public class ChatList extends AppCompatActivity {
         switch (requestCode) {
             case REQUEST:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    new readContactTask().execute();
+                    loadChats();
                 } else {
                     Toast.makeText(this, "The app was not allowed to read your contact", Toast.LENGTH_LONG).show();
                 }

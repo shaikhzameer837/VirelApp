@@ -13,8 +13,6 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,9 +22,6 @@ import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.text.ClipboardManager;
-import android.text.Editable;
-import android.text.Html;
-import android.text.TextWatcher;
 import android.transition.Fade;
 import android.util.Log;
 import android.view.Menu;
@@ -36,13 +31,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.ViewStub;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,6 +46,7 @@ import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -105,6 +96,8 @@ import com.intelj.y_ral_gaming.SigninActivity;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 import com.intelj.y_ral_gaming.Utils.RecyclerTouchListener;
 import com.intelj.y_ral_gaming.VolleyMultipartRequest;
+import com.intelj.y_ral_gaming.main.PaymentWithdraw;
+import com.intelj.y_ral_gaming.main.PlaceholderFragment;
 import com.intelj.y_ral_gaming.model.TournamentModel;
 import com.intelj.y_ral_gaming.model.PaymentHistoryModel;
 import com.intelj.y_ral_gaming.model.UserListModel;
@@ -131,12 +124,11 @@ public class MainActivity extends BaseActivity {
     BottomNavigationView bottomNavigation;
     private TabLayout tabLayout;
     TextView coins;
-    EditText ign, igid;
     private RecyclerView recyclerView, rv_popular;
     View inflated;
     int RESULT_LOAD_IMAGE = 9;
     int PROFILE_IMAGE = 11;
-    ImageView imgProfile, saveProf, edit;
+    ImageView imgProfile, saveProf;
     String picturePath = null;
     TextView playerName, ncount;
     TextInputEditText discordId;
@@ -148,11 +140,6 @@ public class MainActivity extends BaseActivity {
     ProgressDialog progressDialog;
     int oldId;
     ImageView imageView;
-    LinearLayout moneyList;
-    LinearLayout payOptionList;
-    String wAmount = "25";
-    String gameplay = "";
-    String paymentType = "Google Pay";
     List<PopularModel> popularModels = new ArrayList<>();
     PopularAdapter popularAdapter;
     private ShimmerFrameLayout shimmerFrameLayout;
@@ -264,6 +251,14 @@ public class MainActivity extends BaseActivity {
                     showBottomSheetDialog();
             }
         });
+        TextView kill = findViewById(R.id.kill);
+        kill.setText(AppController.getInstance().rank + " total kills");
+        kill.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showRankChat();
+            }
+        });
         bottomNavigation = findViewById(R.id.bottom_navigation);
         final ViewStub stub = findViewById(R.id.layout_stub);
         stub.setLayoutResource(R.layout.game_slot);
@@ -312,13 +307,14 @@ public class MainActivity extends BaseActivity {
                                 return true;
                             case R.id.chat:
                                 inflateView(R.layout.contacts);
+
 //                                inflated.findViewById(R.id.refresh).setVisibility(View.GONE);
-//                                inflated.findViewById(R.id.fMessage).setOnClickListener(new View.OnClickListener() {
-//                                    @Override
-//                                    public void onClick(View v) {
-//                                        startActivity(new Intent(MainActivity.this, ChatList.class));
-//                                    }
-//                                });
+                                inflated.findViewById(R.id.fMessage).setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        startActivity(new Intent(MainActivity.this, ChatList.class));
+                                    }
+                                });
 //                                shd = getSharedPreferences(AppConstant.id, MODE_PRIVATE);
 //                                rv_contact = inflated.findViewById(R.id.rv_contact);
 //                                inflated.findViewById(R.id.refresh).setOnClickListener(new View.OnClickListener() {
@@ -387,7 +383,12 @@ public class MainActivity extends BaseActivity {
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
 
     }
-
+    public void showRankChat() {
+        View view = getLayoutInflater().inflate(R.layout.rank_row, null);
+        final BottomSheetDialog dialogBottom = new BottomSheetDialog(MainActivity.this);
+        dialogBottom.setContentView(view);
+        dialogBottom.show();
+    }
     private void getPopularFace() {
         AppController.getInstance().popularList.clear();
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -460,216 +461,62 @@ public class MainActivity extends BaseActivity {
         };
         queue.add(stringRequest);
     }
-
-    public void WidthDrawAmount(View view) {
-        TextView selected = ((TextView) view);
-        if (Integer.parseInt(selected.getTag() + "") < AppController.getInstance().rank) {
-            selected.setBackgroundColor(Color.parseColor("#000000"));
-            selected.setTextColor(Color.parseColor("#ffffff"));
-            for (int i = 0; i < moneyList.getChildCount(); i++) {
-                TextView unselected = (TextView) moneyList.getChildAt(i);
-                if (selected != moneyList.getChildAt(i)) {
-                    unselected.setBackgroundResource(R.drawable.outline);
-                    unselected.setTextColor(Color.parseColor("#000000"));
-                }
-            }
-            wAmount = selected.getText().toString();
-        } else {
-            Toast.makeText(MainActivity.this, "You need " + selected.getContentDescription() + " rank to withdraw this amount", Toast.LENGTH_LONG).show();
-        }
-    }
-
-    public void selectPayM(View view) {
-        TextView selected = ((TextView) view);
-        selected.setBackgroundResource(R.drawable.outline_black);
-        for (int i = 0; i < payOptionList.getChildCount(); i++) {
-            TextView unselected = (TextView) payOptionList.getChildAt(i);
-            if (selected != payOptionList.getChildAt(i)) {
-                unselected.setBackground(null);
-            }
-        }
-        paymentType = selected.getText().toString();
-    }
-
-    BottomSheetDialog paymentBottomSheet;
-
     private void showCoins() {
-        String[] gameplayTypeList = {"Free Fire", "BGMI"};
-        paymentBottomSheet = new BottomSheetDialog(this);
-        paymentBottomSheet.setContentView(R.layout.money_sheet);
-        TextView user_name = paymentBottomSheet.findViewById(R.id.user_name);
-        TextView coins = paymentBottomSheet.findViewById(R.id.coins);
-        TextView ranks = paymentBottomSheet.findViewById(R.id.ranks);
-        coins.setText(AppController.getInstance().amount + "");
-        ranks.setText(Html.fromHtml("<b><font size='14' color='#000000'>" + AppConstant.getRank(AppController.getInstance().rank) + "", new Html.ImageGetter() {
-            @Override
-            public Drawable getDrawable(String source) {
-                int resourceId = getResources().getIdentifier(source, "drawable", getPackageName());
-                Drawable drawable = getResources().getDrawable(resourceId);
-                drawable.setBounds(0, 0, 40, 30);
-                return drawable;
-            }
-        }, null));
-        user_name.setText(sharedPreferences.getString(AppConstant.name, "Player"));
-        EditText upi = paymentBottomSheet.findViewById(R.id.upi);
-        upi.addTextChangedListener(new TextWatcher() {
+        startActivity(new Intent(MainActivity.this, PaymentWithdraw.class));
+//        View paymentBottomSheet = getLayoutInflater().inflate(R.layout.delete_demo, null);
+//        final BottomSheetDialog dialogBottom = new BottomSheetDialog(MainActivity.this,R.style. BottomSheetDialog);
+//
+//
+//      //  tabs.setupWithViewPager(viewPager);
+//
+//        FragmentManager fm = getSupportFragmentManager();
+//// create a FragmentTransaction to begin the transaction and replace the Fragment
+//        FragmentTransaction fragmentTransaction = fm.beginTransaction();
+//// replace the FrameLayout with new Fragment
+//        fragmentTransaction.replace(R.id.frameLayout,new PlaceholderFragment());
+//        fragmentTransaction.commit();
+//
+//
+//        dialogBottom.setContentView(paymentBottomSheet);
+//        dialogBottom.show();
+//
+//        mainTab=paymentBottomSheet.findViewById(R.id.tablayout);
+//        fragment = new PrizePoolFragment("");
+//        fragmentManager = getSupportFragmentManager();
+//        fragmentTransaction = fragmentManager.beginTransaction();
+//        fragmentTransaction.replace(R.id.frameLayout, fragment);
+//        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+//        fragmentTransaction.commit();
+/////        viewPager=paymentBottomSheet.findViewById(R.id.viewPager);
+//        tabLayout.addTab(tabLayout.newTab().setText("Tab1"));
+//        tabLayout.addTab(tabLayout.newTab().setText("Tab2"));
+//        tabLayout.addTab(tabLayout.newTab().setText("Tab3"));
+//        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+//        TabLayoutAdapter tabLayoutAdapter =new TabLayoutAdapter(this,getSupportFragmentManager(),tabLayout.getTabCount());
+//        viewPager.setAdapter(tabLayoutAdapter);
+//        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+//
+//        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener(){
+//
+//            @Override
+//            public void onTabSelected(TabLayout.Tab tab) {
+//
+//                viewPager.setCurrentItem(tab.getPosition());
+//            }
+//
+//            @Override
+//            public void onTabUnselected(TabLayout.Tab tab) {
+//
+//            }
+//
+//            @Override
+//            public void onTabReselected(TabLayout.Tab tab) {
+//
+//            }
+//        });
 
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start,
-                                          int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start,
-                                      int before, int count) {
-
-            }
-        });
-        Spinner sp_gameplay = paymentBottomSheet.findViewById(R.id.gameplay);
-        ArrayAdapter sp_gameplayAdp = new ArrayAdapter(this, android.R.layout.simple_spinner_item, gameplayTypeList);
-        sp_gameplay.setSelection(0);
-        sp_gameplayAdp.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        sp_gameplay.setAdapter(sp_gameplayAdp);
-        sp_gameplay.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                gameplay = gameplayTypeList[position];
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-        moneyList = paymentBottomSheet.findViewById(R.id.moneyList);
-        payOptionList = paymentBottomSheet.findViewById(R.id.payOptionList);
-        paymentBottomSheet.findViewById(R.id.btn_next).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!new AppConstant(MainActivity.this).checkLogin()) {
-                    showBottomSheetDialog();
-                    return;
-                }
-                if (wAmount.equals("")) {
-                    Toast.makeText(MainActivity.this, "Please Select amount to withdraw", Toast.LENGTH_LONG).show();
-                    return;
-                }
-                if (Integer.parseInt(wAmount) <= AppController.getInstance().amount) {
-                    if (upi.getText().toString().trim().equals("")) {
-                        upi.setError("Upi id cannot be empty");
-                        upi.requestFocus();
-                        return;
-                    }
-                    if (upi.getText().toString().trim().contains("@") || android.text.TextUtils.isDigitsOnly(upi.getText().toString())) {
-                        SharedPreferences prefs = getSharedPreferences(AppConstant.AppName, MODE_PRIVATE);
-                        long currentTime = (System.currentTimeMillis()/1000);
-                        long lastRequest = prefs.getLong(AppConstant.payment, currentTime);//"No name defined" is the default value.
-                        if(currentTime >= lastRequest) {
-                            requestMoney(upi.getText().toString());
-                        }else{
-                            new AlertDialog.Builder(MainActivity.this)
-                                    .setTitle("Alert")
-                                    .setMessage("Payment Already requested try again after 24hrs")
-                                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            // Continue with delete operation
-                                        }
-                                    })
-                                    .setNegativeButton(android.R.string.no, null)
-                                    .setIcon(android.R.drawable.ic_dialog_alert)
-                                    .show();
-                        }
-                    } else {
-                        upi.setError("Invalid upi id / paytm number");
-                        upi.requestFocus();
-                    }
-                } else {
-                    Toast.makeText(MainActivity.this, "Insufficient Balance", Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-        paymentBottomSheet.findViewById(R.id.add_money).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new AppConstant(MainActivity.this).addMoney(MainActivity.this);
-            }
-        });
-        paymentBottomSheet.show();
     }
 
-    private void requestMoney(String upi) {
-        ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("loading...");
-        progressDialog.show();
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://y-ral-gaming.com/admin/api/request_payment.php";
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.e("onClick3", response);
-
-                        progressDialog.cancel();
-                        paymentBottomSheet.dismiss();
-                        try {
-                            JSONObject obj = new JSONObject(response);
-                            if (!obj.getBoolean("success"))
-                                return;
-                            SharedPreferences.Editor editor = getSharedPreferences(AppConstant.AppName, MODE_PRIVATE).edit();
-                            editor.putLong(AppConstant.payment, (System.currentTimeMillis() / 1000) + 86400);
-                            editor.apply();
-                            new AlertDialog.Builder(MainActivity.this)
-                                    .setTitle("success")
-                                    .setMessage("Payment requested you will recieve payment in 24hrs \n Your Ticked id is " + obj.getString("ticked_id") + "\n click on status to check your payment request status")
-                                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            // Continue with delete operation
-                                        }
-                                    })
-                                    .setNegativeButton(android.R.string.no, null)
-                                    .setIcon(android.R.drawable.ic_dialog_alert)
-                                    .show();
-                            bottomNavigation.findViewById(R.id.status).performClick();
-                        } catch (Exception e) {
-                            Log.e("logMess", e.getMessage());
-
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                progressDialog.cancel();
-            }
-        }) {
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put("upi", upi);
-                params.put("userid", new AppConstant(MainActivity.this).getUserName());
-                params.put("id", new AppConstant(MainActivity.this).getId());
-                params.put("amount", wAmount);
-                params.put("type", "Redeem Money");
-                params.put("paymentType", paymentType);
-                params.put("gameplay", gameplay);
-                params.put("time", (System.currentTimeMillis()) + "");
-                params.put("userName", sharedPreferences.getString(AppConstant.name, ""));
-                return params;
-            }
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-                params.put("Content-Type", "application/x-www-form-urlencoded");
-                return params;
-            }
-        };
-
-        queue.add(stringRequest);
-    }
 
 
 //    private void playYTVideo() {
@@ -980,7 +827,7 @@ public class MainActivity extends BaseActivity {
     private void showNotification() {
         List<TournamentModel> tournamentModelList = new ArrayList<>();
         TextView title = inflated.findViewById(R.id.title);
-        title.setText("Prize Claim History");
+        title.setText("Withdraw Status");
         recyclerView = inflated.findViewById(R.id.recycler_view);
         ShimmerFrameLayout shimmerFrameLayout = inflated.findViewById(R.id.shimmer_layout);
         shimmerFrameLayout.startShimmer();
@@ -1488,10 +1335,8 @@ public class MainActivity extends BaseActivity {
     public void setFirstView() {
         gameViewpager = inflated.findViewById(R.id.gameViewpager);
         tabLayout = inflated.findViewById(R.id.tabs);
-        ign = inflated.findViewById(R.id.ign);
-        igid = inflated.findViewById(R.id.igid);
-        edit = inflated.findViewById(R.id.edit);
-        tabLayout.setupWithViewPager(gameViewpager);
+
+         tabLayout.setupWithViewPager(gameViewpager);
         ArrayList<String> titleList = new ArrayList<>();
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         FirebaseDatabase.getInstance().getReference("masters").child("gameList").addValueEventListener(new ValueEventListener() {
@@ -1656,11 +1501,8 @@ public class MainActivity extends BaseActivity {
             Log.e("onClick3: ", intent.getBooleanExtra(AppConstant.name, false) + "");
             if (intent.getBooleanExtra(AppConstant.name, false)) {
                 Log.e("onClick3: ", "set error");
-                ign.setEnabled(true);
-                ign.setError("Enter your BGMI in game name");
-                ign.requestFocus();
-                edit.setImageResource(R.drawable.ic_check);
-                return;
+
+                 return;
             }
             if (intent.getBooleanExtra(AppConstant.AppName, false)) {
                 showBottomSheetDialog();
@@ -1671,7 +1513,7 @@ public class MainActivity extends BaseActivity {
                 return;
             }
             if (intent.getBooleanExtra(AppConstant.teamMember, false)) {
-                Set<String> myList = (Set<String>) getIntent().getSerializableExtra("teammeber");
+                Set<String> myList = (Set<String>) getIntent().getSerializableExtra("teammember");
                 BottomSheetDilogFragment bottomSheetFragment = new BottomSheetDilogFragment(myList);
                 bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
                 return;
@@ -1886,7 +1728,7 @@ public class MainActivity extends BaseActivity {
 
     public void showBottomSheetDialog() {
         View view = getLayoutInflater().inflate(R.layout.fragment_login_bottom_sheet_fragment, null);
-        final BottomSheetDialog dialogBottom = new BottomSheetDialog(MainActivity.this);
+        final BottomSheetDialog dialogBottom = new BottomSheetDialog(MainActivity.this,R.style. BottomSheetDialog);
         dialogBottom.setContentView(view);
         dialogBottom.show();
         Button btn_ok = view.findViewById(R.id.ok);

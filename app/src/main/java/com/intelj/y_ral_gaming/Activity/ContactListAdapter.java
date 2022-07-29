@@ -74,6 +74,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         Log.e("contactModel", contactModel.get(position).getProfile());
         holder.checkbox.setChecked(checkBoxList.contains(contactModel.get(position).getUserid()));
         holder.checkbox.setVisibility(isCheckBoxVisible ? View.VISIBLE : View.GONE);
+        holder.lastMess.setText("Hey Folk! I m here");
         Glide.with(mContext).load("http://y-ral-gaming.com/admin/api/images/" + contactModel.get(position).getUserid() + ".png?u=" + AppConstant.imageExt()).placeholder(R.drawable.game_avatar).apply(new RequestOptions().circleCrop()).into(holder.iv_profile);
     }
 

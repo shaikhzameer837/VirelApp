@@ -24,19 +24,28 @@
                 android:contentDescription="image_desc"
                 android:src="@drawable/game_avatar"
                 android:transitionName="fade" />
-
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
             <TextView
                 android:id="@+id/playerName"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_weight="1"
-                android:gravity="center_vertical"
                 android:text="Y Ral Gaming"
                 android:textColor="@color/black"
                 android:textStyle="bold" />
-
+            <TextView
+                android:id="@+id/kill"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:textSize="11sp"
+                android:text="Y Ral Gaming"/>
+            </LinearLayout>
             <TextView
                 android:id="@+id/ncount"
                 android:layout_width="wrap_content"

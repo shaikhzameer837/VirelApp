@@ -1,128 +1,165 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-    <LinearLayout
-        android:id="@+id/lin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:background="@drawable/curved_drawable"
-        android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="45dp"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:enabled="false"
-            android:gravity="center_vertical"
-            android:padding="10dp"
-            android:text="My Profile"
-            android:textColor="@color/black"
-            android:textColorHint="@color/grey_black"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+    <com.airbnb.lottie.LottieAnimationView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:scaleType="centerCrop"
+        app:lottie_autoPlay="true"
+        app:lottie_fileName="background.json"
+        app:lottie_loop="true" />
+
+    <RelativeLayout
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:gravity="center">
 
         <ImageView
-            android:id="@+id/save"
-            android:layout_width="21dp"
-            android:layout_height="18dp"
-            android:layout_gravity="center"
-            android:layout_margin="5dp"
-            android:gravity="center_vertical"
-            android:src="@drawable/ic_edit"
-            android:textColor="@color/black" />
-    </LinearLayout>
+            android:id="@+id/back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:rotation="-180"
+            android:src="@drawable/arrow"
+            app:tint="@color/colorPrimary" />
 
-    <ImageView
-        android:id="@+id/imgs"
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:gravity="center_horizontal"
+            android:text="Edit PRofile"
+            android:textColor="@color/colorPrimary"
+            android:textStyle="bold" />
+
+
+    </RelativeLayout>
+    <!--    <LinearLayout-->
+    <!--        android:id="@+id/lin"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_margin="5dp"-->
+    <!--        android:background="@drawable/curved_drawable"-->
+    <!--        android:orientation="horizontal">-->
+
+    <!--        <TextView-->
+    <!--            android:layout_width="0dp"-->
+    <!--            android:layout_height="45dp"-->
+    <!--            android:layout_weight="1"-->
+    <!--            android:background="@android:color/transparent"-->
+    <!--            android:enabled="false"-->
+    <!--            android:gravity="center_vertical"-->
+    <!--            android:padding="10dp"-->
+    <!--            android:text="My Profile"-->
+    <!--            android:textColor="@color/black"-->
+    <!--            android:textColorHint="@color/grey_black"-->
+    <!--            android:textSize="14sp"-->
+    <!--            android:textStyle="bold" />-->
+
+    <!--        <ImageView-->
+    <!--            android:id="@+id/save"-->
+    <!--            android:layout_width="21dp"-->
+    <!--            android:layout_height="18dp"-->
+    <!--            android:layout_gravity="center"-->
+    <!--            android:layout_margin="5dp"-->
+    <!--            android:gravity="center_vertical"-->
+    <!--            android:src="@drawable/ic_edit"-->
+    <!--            android:textColor="@color/black" />-->
+    <!--    </LinearLayout>-->
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/imgCover"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:layout_below="@+id/lin"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="10dp"
-        android:src="@drawable/game_avatar" />
+        android:layout_below="@+id/toolbar"
+        android:layout_margin="10dp"
+        android:elevation="2dp"
+        app:cardCornerRadius="7dp"
+        app:cardElevation="2dp">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/ref"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/lin"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="15dp"
-        android:layout_toRightOf="@+id/imgs"
-        android:visibility="gone">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/bios"
+        <ImageView
+            android:id="@+id/imgs"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:enabled="false"
-            android:hint="Bios"
-            android:textSize="14sp" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/lin"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="15dp"
-        android:layout_toRightOf="@+id/imgs"
-        android:visibility="gone">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/referal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:drawableRight="@drawable/content_copy"
-            android:editable="false"
-            android:enabled="true"
-            android:hint=" Referal Id"
-            android:singleLine="false"
-            android:textColor="#aaaaaa"
-            android:textSize="14sp" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/game_avatar" />
+    </androidx.cardview.widget.CardView>
 
     <TextView
+        android:id="@+id/titler"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/ref"
-        android:layout_marginLeft="30dp"
-        android:layout_toRightOf="@+id/imgs"
-        android:text="Invite friends and win 25rs per invite"
-        android:textSize="12sp"
-        android:visibility="gone" />
+        android:layout_below="@+id/toolbar"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_toRightOf="@+id/imgCover"
+        android:text="Gaming Title"
+        android:textColor="@color/colorPrimary"
+        android:textStyle="bold" />
+
+
+    <com.intelj.y_ral_gaming.Utils.TextInputAutoCompleteTextView
+        android:id="@+id/autoCompleteTextView1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/titler"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:paddingLeft="10dp"
+        android:layout_toRightOf="@+id/imgCover"
+        android:background="#00000000"
+        android:drawableRight="@drawable/close"
+        android:hint="Gaming Title"
+        android:text=""
+        android:textColor="@color/colorPrimary"
+        android:textSize="13sp" />
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="0.5dp"
+        android:layout_below="@+id/autoCompleteTextView1"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@+id/imgCover"
+        android:background="@color/black" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/imgs"
-        android:layout_marginTop="5dp"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/done"
+        android:layout_below="@+id/imgCover"
         android:orientation="vertical">
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/ref"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:layout_marginTop="10dp"
-            android:layout_marginRight="15dp">
+            android:layout_marginRight="15dp"
+            android:background="#00000000"
+            android:backgroundTint="#00000000"
+            android:textColorHint="@color/colorPrimary"
+            android:visibility="gone"
+            app:hintTextColor="@color/colorPrimary">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/name"
+                android:id="@+id/bios"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="#00000000"
                 android:enabled="false"
-                android:hint="Name"
-                android:singleLine="true"
+                android:hint="Bios"
+                android:textColor="@color/colorPrimary"
                 android:textSize="14sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -132,122 +169,208 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:layout_marginTop="10dp"
-            android:layout_marginRight="15dp">
+            android:layout_marginRight="15dp"
+            android:visibility="gone">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/userName"
+                android:id="@+id/referal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:digits="abcdefghijklmnopqrstuvwxyz_.1234567890"
-                android:enabled="false"
-                android:hint="user name"
-                android:singleLine="true"
-                android:inputType="text|textEmailAddress"
+                android:layout_marginLeft="15dp"
+                android:drawableRight="@drawable/content_copy"
+                android:editable="false"
+                android:enabled="true"
+                android:hint=" Referal Id"
+                android:singleLine="false"
+                android:textColor="#aaaaaa"
                 android:textSize="14sp" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="15dp">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/bio"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Bio (About Me)"
-                android:textSize="14sp" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="15dp">
-
-            <com.intelj.y_ral_gaming.Utils.TextInputAutoCompleteTextView
-                android:id="@+id/autoCompleteTextView1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:drawableRight="@drawable/close"
-                android:hint="Gaming Title"
-                android:padding="13dp"
-                android:text=""
-                android:textSize="13sp" />
-
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Games You play"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="5dp"
-            android:textStyle="bold" />
+            android:layout_below="@+id/ref"
+            android:layout_marginLeft="30dp"
+            android:text="Invite friends and win 25rs per invite"
+            android:textSize="12sp"
+            android:visibility="gone" />
 
-        <LinearLayout android:id="@+id/gameList"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_width="wrap_content"
+            android:layout_below="@+id/imgs"
+            android:orientation="vertical">
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:background="@drawable/curved_drawable"
-                android:onClick="subscribe"
-                android:tag="0"
-                android:padding="10dp"
-                android:text="FreeFire" />
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:background="#00000000"
+                android:backgroundTint="#00000000"
+                android:textColorHint="@color/colorPrimary"
+                app:hintTextColor="@color/colorPrimary">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#00000000"
+                    android:enabled="false"
+                    android:hint="Name"
+                    android:singleLine="true"
+                    android:textColor="@color/colorPrimary"
+                    android:textColorHint="@color/colorPrimary"
+                    android:textSize="14sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:background="#00000000"
+                android:backgroundTint="#00000000"
+                android:textColorHint="@color/colorPrimary"
+                app:hintTextColor="@color/colorPrimary">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/userName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#00000000"
+                    android:digits="abcdefghijklmnopqrstuvwxyz_.1234567890"
+                    android:enabled="false"
+                    android:hint="user name"
+                    android:inputType="text|textEmailAddress"
+                    android:singleLine="true"
+                    android:textColor="@color/colorPrimary"
+                    android:textColorHint="@color/colorPrimary"
+                    android:textSize="14sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:background="#00000000"
+                android:backgroundTint="#00000000"
+                android:textColorHint="@color/colorPrimary"
+                app:hintTextColor="@color/colorPrimary">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/bio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#00000000"
+                    android:hint="Bio (About Me)"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="14sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:background="@drawable/curved_drawable"
-                android:onClick="subscribe"
-                android:tag="0"
-                android:padding="10dp"
-                android:text="BGMI" />
+                android:layout_marginLeft="25dp"
+                android:layout_marginTop="5dp"
+                android:text="Games You play"
+                android:textColor="@color/colorPrimary"
+                android:textStyle="bold" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:background="@drawable/curved_drawable"
-                android:onClick="subscribe"
-                android:tag="0"
-                android:padding="10dp"
-                android:text="Valorant" />
-           <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:background="@drawable/curved_drawable"
-                android:onClick="subscribe"
-                android:tag="0"
-                android:padding="10dp"
-                android:text="Other Games" />
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:id="@+id/gameList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="250dp"
+                        android:layout_height="160dp"
+                        android:layout_margin="10dp"
+                        android:onClick="subscribe" />
+
+                    <ImageView
+                        android:layout_width="250dp"
+                        android:layout_height="160dp"
+                        android:layout_margin="10dp"
+                        android:onClick="subscribe" />
+                    <!--                    <TextView-->
+                    <!--                        android:layout_width="wrap_content"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:layout_margin="4dp"-->
+                    <!--                        android:background="@drawable/curved_drawable"-->
+                    <!--                        android:onClick="subscribe"-->
+                    <!--                        android:padding="10dp"-->
+                    <!--                        android:tag="0"-->
+                    <!--                        android:text="FreeFire" />-->
+
+                    <!--                    <TextView-->
+                    <!--                        android:layout_width="wrap_content"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:layout_margin="4dp"-->
+                    <!--                        android:background="@drawable/curved_drawable"-->
+                    <!--                        android:onClick="subscribe"-->
+                    <!--                        android:padding="10dp"-->
+                    <!--                        android:tag="0"-->
+                    <!--                        android:text="BGMI" />-->
+
+                    <!--                    <TextView-->
+                    <!--                        android:layout_width="wrap_content"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:layout_margin="4dp"-->
+                    <!--                        android:background="@drawable/curved_drawable"-->
+                    <!--                        android:onClick="subscribe"-->
+                    <!--                        android:padding="10dp"-->
+                    <!--                        android:tag="0"-->
+                    <!--                        android:text="Valorant" />-->
+
+                    <!--                    <TextView-->
+                    <!--                        android:layout_width="wrap_content"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:layout_margin="4dp"-->
+                    <!--                        android:background="@drawable/curved_drawable"-->
+                    <!--                        android:onClick="subscribe"-->
+                    <!--                        android:padding="10dp"-->
+                    <!--                        android:tag="0"-->
+                    <!--                        android:text="Other Games" />-->
 
 
+                </LinearLayout>
+            </HorizontalScrollView>
         </LinearLayout>
     </LinearLayout>
 
-    <androidx.appcompat.widget.AppCompatButton
+    <soup.neumorphism.NeumorphButton
         android:id="@+id/done"
-        android:layout_width="match_parent"
+        style="@style/Widget.Neumorph.Button"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/colorPrimaryDark"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
+        android:background="@color/colorPrimary"
+        android:drawableRight="@drawable/arrow"
         android:text="Done"
-        android:textColor="@color/colorPrimary"
-        android:visibility="gone" />
+        android:textColor="@color/black"
+        android:visibility="gone"
+        app:neumorph_backgroundColor="@color/colorPrimary"
+        app:neumorph_shapeType="pressed"
+        app:neumorph_strokeColor="@color/darkgrey">
 
 
+    </soup.neumorphism.NeumorphButton>
 </RelativeLayout>

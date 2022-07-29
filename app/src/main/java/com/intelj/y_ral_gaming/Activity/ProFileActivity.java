@@ -1,25 +1,34 @@
 package com.intelj.y_ral_gaming.Activity;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.Html;
 import android.transition.Fade;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -35,6 +44,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -307,6 +317,12 @@ public class ProFileActivity extends AppCompatActivity {
                                     public void onClick(View v) {
                                     }
                                 });
+                                rank_button.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        showRankChat();
+                                    }
+                                });
                             }
                         } catch (Exception e) {
 
@@ -336,7 +352,12 @@ public class ProFileActivity extends AppCompatActivity {
 
         queue.add(stringRequest);
     }
-
+    public void showRankChat() {
+        View view = getLayoutInflater().inflate(R.layout.rank_row, null);
+        final BottomSheetDialog dialogBottom = new BottomSheetDialog(ProFileActivity.this);
+        dialogBottom.setContentView(view);
+        dialogBottom.show();
+    }
     public class MyAdapter extends FragmentPagerAdapter {
 
         private Context myContext;

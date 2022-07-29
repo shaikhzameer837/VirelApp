@@ -27,16 +27,10 @@ public class SearchFriendAdapter extends RecyclerView.Adapter<SearchFriendAdapte
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView desc,name,count_win;
-        public RelativeLayout relative_layout;
-        ImageView imgs;
+
         public MyViewHolder(View view) {
             super(view);
-            desc = view.findViewById(R.id.desc);
-            name = view.findViewById(R.id.name);
-            imgs = view.findViewById(R.id.imgs);
-            count_win = view.findViewById(R.id.count_win);
-            relative_layout = view.findViewById(R.id.relative_layout);
+
         }
     }
 
@@ -51,19 +45,7 @@ public class SearchFriendAdapter extends RecyclerView.Adapter<SearchFriendAdapte
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        holder.desc.setText(dataSnapshots.get(position).child(AppConstant.phoneNumber).getValue()+"");
-//        holder.desc.setText(dataSnapshots.get(position).child(AppConstant.pinfo).child("pubg").getValue()+"");
-        holder.name.setText(dataSnapshots.get(position).child(AppConstant.username_search).getValue()  == null ? "User" : dataSnapshots.get(position).child(AppConstant.username_search).getValue()+"");
-        holder.count_win.setText(dataSnapshots.get(position).child(AppConstant.count_win).getValue() == null ? "0" :dataSnapshots.get(position).child(AppConstant.count_win).getValue()+"");
-        Glide.with(mContext).load(dataSnapshots.get(position).child(AppConstant.pinfo).child(AppConstant.myPicUrl).getValue()+"").placeholder(R.drawable.game_avatar).circleCrop().into(holder.imgs);
-        holder.relative_layout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                Intent i = new Intent(mContext, NewProfileActivity.class);
-//                AppController.getInstance().dataSnapshot = dataSnapshots.get(position);
-//                mContext.startActivity(i);
-            }
-        });
+
     }
 
     @Override

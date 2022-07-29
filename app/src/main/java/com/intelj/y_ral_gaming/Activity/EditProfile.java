@@ -79,7 +79,6 @@ public class EditProfile extends AppCompatActivity {
     AppConstant appConstant;
     ProgressDialog progressDialog;
     TextInputEditText playerName, TI_userName, bio;
-    AppCompatButton done;
     String userName = "";
     DatabaseReference mDatabase;
     AutoCompleteTextView tv_title;
@@ -94,12 +93,10 @@ public class EditProfile extends AppCompatActivity {
         playerName = findViewById(R.id.name);
         TI_userName = findViewById(R.id.userName);
         bio = findViewById(R.id.bio);
-        done = findViewById(R.id.done);
         TI_userName.setEnabled(true);
         playerName.setEnabled(true);
         gameList = findViewById(R.id.gameList);
-        done.setVisibility(View.VISIBLE);
-        findViewById(R.id.save).setVisibility(View.GONE);
+        findViewById(R.id.done).setVisibility(View.VISIBLE);
         ArrayAdapter<String> adapter = new ArrayAdapter<>
                 (this, android.R.layout.simple_list_item_1, AppConstant.player_title);
         tv_title = findViewById(R.id.autoCompleteTextView1);
@@ -137,7 +134,7 @@ public class EditProfile extends AppCompatActivity {
         });
         tv_title.setKeyListener(null);
         mDatabase = FirebaseDatabase.getInstance().getReference(appConstant.users);
-        done.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.done).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (playerName.getText().toString().trim().equals("")) {
@@ -206,18 +203,23 @@ public class EditProfile extends AppCompatActivity {
                         1);
             }
         });
-        Glide.with(this).load(sharedPreferences.getString(AppConstant.myPicUrl, "")).placeholder(R.drawable.game_avatar).apply(new RequestOptions().circleCrop()).into(imgProfile);
+        String[] imgList = {"https://m.media-amazon.com/images/I/81yGe-kXLiS._SL1500_.jpg",
+                "https://indianesports.indialivedaily.com/wp-content/uploads/2021/06/Battlegrounds-Mobile-India-Poster.jpg"};
+        Glide.with(this).load(sharedPreferences.getString(AppConstant.myPicUrl, ""))
+                .placeholder(R.drawable.game_avatar).into(imgProfile);
         for (int i = 0; i < gameList.getChildCount(); i++) {
-            TextView textView = (TextView) gameList.getChildAt(i);
-            if (prefs.getString(textView.getText().toString(), "0").equals("0")) {
-                textView.setBackgroundResource(R.drawable.curved_drawable);
-                textView.setTextColor(Color.parseColor("#333333"));
-            } else {
-                textView.setBackgroundResource(R.drawable.curved_red);
-                textView.setTextColor(Color.parseColor("#ffffff"));
-            }
-            textView.setTag(prefs.getString(textView.getText().toString(), "0"));
-            textView.setPadding(13, 13, 13, 13);
+            ImageView imageView =  (ImageView)gameList.getChildAt(i);
+            Glide.with(this).load(imgList[i])
+                    .placeholder(R.drawable.game_avatar).into(imageView);
+//            if (prefs.getString(textView.getText().toString(), "0").equals("0")) {
+//                textView.setBackgroundResource(R.drawable.curved_drawable);
+//                textView.setTextColor(Color.parseColor("#333333"));
+//            } else {
+//                textView.setBackgroundResource(R.drawable.curved_red);
+//                textView.setTextColor(Color.parseColor("#ffffff"));
+//            }
+//            textView.setTag(prefs.getString(textView.getText().toString(), "0"));
+//            textView.setPadding(13, 13, 13, 13);
         }
     }
 

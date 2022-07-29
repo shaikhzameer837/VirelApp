@@ -1,20 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_marginBottom="10dp"
+    android:background="@drawable/red_round_corner"
+    android:elevation="8dp"
+    android:orientation="vertical"
+    android:theme="@style/Theme.MaterialComponents.DayNight.DarkActionBar"
+    app:behavior_hideable="false"
+    app:behavior_peekHeight="356dp"
+    app:layout_behavior="@string/bottom_sheet_behavior">
     <TextView
+        android:id="@+id/title"
         android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:enabled="false"
+        android:gravity="center_horizontal"
+        android:lines="1"
+        android:paddingTop="15dp"
+        android:singleLine="true"
         android:text="Payment History"
-        android:textStyle="bold"
-        android:layout_margin="5dp"
-        android:paddingLeft="15dp"
-        android:gravity="center_vertical"
-        android:background="@drawable/curved_drawable"
-        android:textColor="@color/black"
-        android:layout_height="45dp"/>
-
+        android:textColor="@color/colorPrimary"
+        android:textColorHint="@color/grey_black"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="-40dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:layout_marginBottom="-15dp"
+        android:background="@drawable/background_with_shadow"
+        android:orientation="vertical">
     <com.facebook.shimmer.ShimmerFrameLayout
         android:id="@+id/shimmer_container"
         android:layout_width="match_parent"
@@ -41,6 +60,8 @@
         android:id="@+id/recycler_view"
         android:scrollbars="vertical"
         android:background="#ffffff"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="30dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
@@ -63,4 +84,5 @@
         android:textStyle="bold"
         android:text="No payment history found"
         android:layout_height="wrap_content"/>
+    </LinearLayout>
 </LinearLayout>

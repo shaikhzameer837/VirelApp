@@ -1,42 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_marginBottom="10dp"
+    android:background="@drawable/red_round_corner"
+    android:elevation="8dp"
+    android:orientation="vertical"
+    android:theme="@style/Theme.MaterialComponents.DayNight.DarkActionBar"
+    app:behavior_hideable="false"
+    app:behavior_peekHeight="356dp"
+    app:layout_behavior="@string/bottom_sheet_behavior">
+
     <TextView
+        android:id="@+id/title"
         android:layout_width="match_parent"
-        android:text="Contact List"
-        android:textStyle="bold"
-        android:layout_margin="5dp"
-        android:id="@+id/refresh"
-        android:paddingLeft="15dp"
-        android:gravity="center_vertical"
-        android:drawableRight="@drawable/refresh_circle"
-        android:background="@drawable/curved_drawable"
-        android:textColor="@color/black"
-        android:layout_height="45dp"/>
-<!--    <LinearLayout-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:orientation="vertical"-->
-<!--        android:layout_height="wrap_content">-->
-<!--        <com.airbnb.lottie.LottieAnimationView-->
-<!--            android:id="@+id/login"-->
-<!--            android:layout_width="200dp"-->
-<!--            android:layout_height="200dp"-->
-<!--            android:layout_marginTop="10dp"-->
-<!--            android:layout_gravity="center"-->
-<!--            app:lottie_fileName="chat.json"-->
-<!--            app:lottie_autoPlay="true"-->
-<!--            app:lottie_loop="true"/>-->
-<!--        <androidx.appcompat.widget.AppCompatButton-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:id="@+id/fMessage"-->
-<!--            android:text="Start Your first Message"-->
-<!--            android:layout_height="wrap_content"/>-->
-<!--    </LinearLayout>-->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_contact"
+        android:layout_height="80dp"
+        android:enabled="false"
+        android:gravity="center_horizontal"
+        android:lines="1"
+        android:paddingTop="15dp"
+        android:singleLine="true"
+        android:text="Recent Chat"
+        android:textColor="@color/colorPrimary"
+        android:textColorHint="@color/grey_black"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scrollbars="vertical" />
+        android:layout_height="500dp"
+        android:layout_marginTop="-40dp"
+        android:background="@drawable/background_with_shadow"
+        android:orientation="vertical"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/login"
+                android:layout_width="180dp"
+                android:layout_height="180dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                app:lottie_autoPlay="true"
+                app:lottie_fileName="chat.json"
+                app:lottie_loop="true" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/fMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:backgroundTint="@color/appColor"
+                android:textColor="@color/colorPrimary"
+                app:cornerRadius="10dp"
+                android:textSize="12sp"
+                android:layout_gravity="center_horizontal"
+                android:text="Start Your first Message" />
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_contact"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical" />
+    </LinearLayout>
 </LinearLayout>
