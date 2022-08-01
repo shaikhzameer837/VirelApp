@@ -1,21 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:padding="6dp"
     android:layout_height="wrap_content">
-    <ImageView android:id="@+id/profile"
-        android:layout_width="40dp"
-        android:contentDescription="image_desc"
-        android:src="@drawable/game_avatar"
-        android:transitionName="fade"
-        android:layout_height="40dp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/curved_red"
+        android:textColor="@color/white"
+        android:paddingLeft="7dp"
+        android:elevation="2dp"
+        android:layout_marginLeft="6dp"
+        android:paddingRight="7dp"
+        android:textSize="10sp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:text="15" />
+    <soup.neumorphism.NeumorphCardView
+        android:id="@+id/neo"
+        style="@style/Widget.Neumorph.Button"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:background="@color/color_dialog_gray"
+        app:neumorph_shapeType="pressed"
+        app:neumorph_strokeColor="@color/darkgrey"
+        app:neumorph_strokeWidth="1dp">
+
+        <ImageView
+            android:id="@+id/profile"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:contentDescription="image_desc"
+            android:padding="2dp"
+            android:src="@drawable/game_avatar"
+            android:transitionName="fade" />
+    </soup.neumorphism.NeumorphCardView>
+
+
 
     <TextView
         android:id="@+id/name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:layout_toRightOf="@+id/profile"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@+id/neo"
         android:text="dewdfew"
         android:textColor="@color/black" />
 
@@ -24,35 +54,43 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/name"
-        android:layout_marginLeft="5dp"
+        android:layout_marginLeft="10dp"
         android:layout_marginTop="5dp"
-        android:layout_toRightOf="@+id/profile" />
+        android:layout_toRightOf="@+id/neo" />
 
     <CheckBox
         android:id="@+id/checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:layout_alignParentRight="true" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:text="125"
-        android:padding="5dp"
-        android:textSize="12sp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp"
-        android:textColor="@color/colorPrimary"
-        android:background="@drawable/curved_red"
-        android:layout_marginTop="5dp"
-        android:layout_alignParentRight="true" />
+        android:layout_alignParentRight="true"
+        android:visibility="gone" />
+
+    <soup.neumorphism.NeumorphCardView
+        style="@style/Widget.Neumorph.Button"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentRight="true"
+        android:background="@color/color_dialog_gray"
+        app:neumorph_shapeType="flat"
+        app:neumorph_strokeColor="@color/darkgrey"
+        app:neumorph_strokeWidth="1dp">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:contentDescription="image_desc"
+            android:padding="8dp"
+            android:layout_gravity="center"
+            android:src="@drawable/arrow"
+            android:transitionName="fade" />
+    </soup.neumorphism.NeumorphCardView>
+
     <View
         android:layout_width="match_parent"
-        android:background="#c0c0c0"
-        android:layout_marginLeft="45dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginRight="10dp"
+        android:layout_height="1dp"
         android:layout_below="@+id/lastMess"
-        android:layout_height="1dp"/>
+        android:layout_marginLeft="45dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:background="#c0c0c0" />
 </RelativeLayout>

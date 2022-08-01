@@ -49,7 +49,7 @@ import java.util.Map;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class PlaceholderFragment extends Fragment {
+public class PlaceholderFragment extends Fragment implements View.OnClickListener {
     SharedPreferences sharedPreferences;
     private static final String ARG_SECTION_NUMBER = "section_number";
     LinearLayout moneyList;
@@ -79,6 +79,7 @@ public class PlaceholderFragment extends Fragment {
         }
         pageViewModel.setIndex(index);
     }
+
     String[] gameplayTypeList = {"Free Fire", "BGMI"};
 
     @Override
@@ -121,7 +122,7 @@ public class PlaceholderFragment extends Fragment {
 
             }
         });
-        Spinner sp_gameplay =  binding.gameplay;
+        Spinner sp_gameplay = binding.gameplay;
         ArrayAdapter sp_gameplayAdp = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_item, gameplayTypeList);
         sp_gameplay.setSelection(0);
         sp_gameplayAdp.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -142,7 +143,7 @@ public class PlaceholderFragment extends Fragment {
         binding.btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-             
+
                 if (wAmount.equals("")) {
                     Toast.makeText(getActivity(), "Please Select amount to withdraw", Toast.LENGTH_LONG).show();
                     return;
@@ -155,11 +156,11 @@ public class PlaceholderFragment extends Fragment {
                     }
                     if (upi.getText().toString().trim().contains("@") || android.text.TextUtils.isDigitsOnly(upi.getText().toString())) {
                         SharedPreferences prefs = getActivity().getSharedPreferences(AppConstant.AppName, MODE_PRIVATE);
-                        long currentTime = (System.currentTimeMillis()/1000);
+                        long currentTime = (System.currentTimeMillis() / 1000);
                         long lastRequest = prefs.getLong(AppConstant.payment, currentTime);//"No name defined" is the default value.
-                        if(currentTime >= lastRequest) {
+                        if (currentTime >= lastRequest) {
                             requestMoney(upi.getText().toString());
-                        }else{
+                        } else {
                             new AlertDialog.Builder(getActivity())
                                     .setTitle("Alert")
                                     .setMessage("Payment Already requested try again after 24hrs")
@@ -181,6 +182,7 @@ public class PlaceholderFragment extends Fragment {
                 }
             }
         });
+        binding.gpay.setOnClickListener(this);
         binding.addMoney.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -190,6 +192,7 @@ public class PlaceholderFragment extends Fragment {
         View root = binding.getRoot();
         return root;
     }
+
     public void WidthDrawAmount(View view) {
         TextView selected = ((TextView) view);
         if (Integer.parseInt(selected.getTag() + "") < AppController.getInstance().rank) {
@@ -225,6 +228,7 @@ public class PlaceholderFragment extends Fragment {
         super.onDestroyView();
         binding = null;
     }
+
     private void requestMoney(String upi) {
         ProgressDialog progressDialog = new ProgressDialog(getActivity());
         progressDialog.setTitle("loading...");
@@ -256,7 +260,7 @@ public class PlaceholderFragment extends Fragment {
                                     .setNegativeButton(android.R.string.no, null)
                                     .setIcon(android.R.drawable.ic_dialog_alert)
                                     .show();
-                         } catch (Exception e) {
+                        } catch (Exception e) {
                             Log.e("logMess", e.getMessage());
 
                         }
@@ -291,5 +295,17 @@ public class PlaceholderFragment extends Fragment {
         };
 
         queue.add(stringRequest);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getTag().toString()) {
+            case "1":
+                selectPayM(v);
+                break;
+            case "2":
+                WidthDrawAmount(v);
+                break;
+        }
     }
 }

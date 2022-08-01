@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginBottom="10dp"
-    android:background="@drawable/red_round_corner"
     android:elevation="8dp"
     android:orientation="vertical"
     android:theme="@style/Theme.MaterialComponents.DayNight.DarkActionBar"
@@ -12,26 +11,9 @@
     app:behavior_peekHeight="356dp"
     app:layout_behavior="@string/bottom_sheet_behavior">
 
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:enabled="false"
-        android:gravity="center_horizontal"
-        android:imeOptions="actionDone"
-        android:lines="1"
-        android:paddingTop="15dp"
-        android:singleLine="true"
-        android:text="Tournament"
-        android:textColor="@color/colorPrimary"
-        android:textColorHint="@color/grey_black"
-        android:textSize="12sp"
-        android:textStyle="bold" />
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="1500dp"
-        android:layout_marginTop="-40dp"
+        android:layout_height="match_parent"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:layout_marginBottom="-15dp"

@@ -1,19 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:gravity="right"
+    android:layout_width="300dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:maxWidth="300dp"
+    android:layout_gravity="right"
     android:id="@+id/out_layer"
     android:layout_height="wrap_content">
 
     <LinearLayout android:id="@+id/chat_layout"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:maxWidth="300dp"
+        android:gravity="right"
         android:orientation="vertical"
-        android:background="@drawable/left_message"
-        android:paddingRight="10dp"
-        android:paddingBottom="10dp">
+        android:paddingRight="5dp"
+        android:paddingBottom="5dp">
+        <soup.neumorphism.NeumorphCardView
+            android:id="@+id/chatBubble"
+            style="@style/Widget.Neumorph.CardView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            app:neumorph_backgroundColor="@color/black"
+            app:neumorph_shapeType="flat"
+            app:neumorph_strokeColor="@color/darkgrey"
+            app:neumorph_strokeWidth="1dp">
         <ImageView android:id="@+id/image"
             android:layout_width="wrap_content"
             android:visibility="gone"
@@ -26,16 +38,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="dsfergfer"
-            android:textColor="@color/colorPrimary"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="5dp"
+            android:gravity="center"
+            android:textColor="@color/white"
             android:textSize="13sp" />
+        </soup.neumorphism.NeumorphCardView>
 
         <TextView
             android:id="@+id/time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/title"
-            android:text="afeww"
-            android:textColor="@color/colorPrimary"
+            android:text="dfasdw"
+            android:layout_gravity="right"
+            android:textColor="@color/grey_black"
             android:textSize="11sp" />
     </LinearLayout>
 </LinearLayout>

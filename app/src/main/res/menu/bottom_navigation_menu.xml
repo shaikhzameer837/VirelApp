@@ -21,15 +21,16 @@
         app:showAsAction="always|withText"
         android:title=" " />
     <item
+        android:id="@+id/challenge"
+        app:showAsAction="always|withText"
+        android:icon="@drawable/flag_triangle"
+        android:title="Challenges" />
+    <item
         android:id="@+id/chat"
         app:showAsAction="always|withText"
         android:icon="@drawable/chat"
         android:title="Chat" />
-    <item
-        android:id="@+id/history"
-        app:showAsAction="always|withText"
-        android:icon="@drawable/history"
-        android:title="History" />
+
 <!--    <item-->
 <!--        android:id="@+id/chat"-->
 <!--        app:showAsAction="always|withText"-->

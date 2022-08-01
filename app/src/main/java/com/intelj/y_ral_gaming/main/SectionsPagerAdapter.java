@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
+import com.intelj.y_ral_gaming.Fragment.PaymentHistory;
+import com.intelj.y_ral_gaming.Fragment.PaymentStatus;
 import com.intelj.y_ral_gaming.R;
 
 /**
@@ -29,7 +31,15 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         // getItem is called to instantiate the fragment for the given page.
         // Return a PlaceholderFragment (defined as a static inner class below).
-        return PlaceholderFragment.newInstance(position + 1);
+        switch (position){
+
+            case 2 :
+                return  PaymentStatus.newInstance(position + 1);
+            case 1 :
+                return  PaymentHistory.newInstance(position + 1);
+            default:
+                return   PlaceholderFragment.newInstance(position + 1);
+        }
     }
 
     @Nullable

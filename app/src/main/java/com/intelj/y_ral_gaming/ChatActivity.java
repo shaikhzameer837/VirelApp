@@ -20,6 +20,7 @@ import android.renderscript.ScriptIntrinsicBlur;
 import android.transition.Fade;
 import android.util.Base64;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -54,7 +55,7 @@ import java.util.TimerTask;
 public class ChatActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ChatAdapter mAdapter;
-    TextInputEditText message;
+    EditText message;
     ImageView fileSelect, profile;
     int App_Image = 11;
     String picturePath = "";
@@ -78,7 +79,7 @@ public class ChatActivity extends AppCompatActivity {
         profile = findViewById(R.id.profile);
         recyclerView = findViewById(R.id.recycler_view);
         fileSelect = findViewById(R.id.fileSelect);
-        userId = getIntent().getStringExtra(AppConstant.id);
+        userId = "95";//getIntent().getStringExtra(AppConstant.id);
         appDataBase = AppDataBase.getDBInstance(ChatActivity.this, userId + "_chats");
         message = findViewById(R.id.message);
         mAdapter = new ChatAdapter(this);
@@ -108,8 +109,9 @@ public class ChatActivity extends AppCompatActivity {
                 Chat chat = new Chat();
                 chat.messages = message.getText().toString();
                 chat.msgStatus = 0;
-                chat.owner = new AppConstant(ChatActivity.this).getId();
+               // chat.owner = new AppConstant(ChatActivity.this).getId();
                 chat.subject = 0;
+                chat.owner = new AppConstant(ChatActivity.this).getId();
                 chat.times = System.currentTimeMillis() + "";
                 appDataBase.chatDao().insertUser(chat);
                 mAdapter.setAllChat(appDataBase);

@@ -95,6 +95,7 @@ import com.intelj.y_ral_gaming.R;
 import com.intelj.y_ral_gaming.SigninActivity;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 import com.intelj.y_ral_gaming.Utils.RecyclerTouchListener;
+import com.intelj.y_ral_gaming.Utils.RibbonFactory;
 import com.intelj.y_ral_gaming.VolleyMultipartRequest;
 import com.intelj.y_ral_gaming.main.PaymentWithdraw;
 import com.intelj.y_ral_gaming.main.PlaceholderFragment;
@@ -251,14 +252,7 @@ public class MainActivity extends BaseActivity {
                     showBottomSheetDialog();
             }
         });
-        TextView kill = findViewById(R.id.kill);
-        kill.setText(AppController.getInstance().rank + " total kills");
-        kill.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showRankChat();
-            }
-        });
+
         bottomNavigation = findViewById(R.id.bottom_navigation);
         final ViewStub stub = findViewById(R.id.layout_stub);
         stub.setLayoutResource(R.layout.game_slot);
@@ -269,10 +263,7 @@ public class MainActivity extends BaseActivity {
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        if ((item.getItemId() != R.id.tournament && item.getItemId() != R.id.tournament) && !new AppConstant(MainActivity.this).checkLogin()) {
-                            showBottomSheetDialog();
-                            return true;
-                        }
+
                         if (item.getItemId() == oldId)
                             return true;
 
@@ -282,33 +273,17 @@ public class MainActivity extends BaseActivity {
                                 inflateView(R.layout.game_slot);
                                 setFirstView();
                                 return true;
-//                           case R.id.game_slot:
-//                                inflateView(R.layout.fragment_one);
-//                                //setFirstView();
-//                                return true;
-                            case R.id.status:
-                                inflateView(R.layout.rank);
-                                showNotification();
-                                return true;
-                            case R.id.rank:
-                                inflateView(R.layout.rank);
-                                //showRank();
-                                return true;
-//                            case R.id.team:
-//                                inflateView(R.layout.bottom_sheet_dialog);
-//                                showTeam();
-//                                return true;
+
                             case R.id.tournament:
+                                inflateView(R.layout.tournament);
                                 showTournament();
                                 return true;
-                            case R.id.history:
-                                inflateView(R.layout.history);
-                                showHistory(inflated);
+                            case R.id.challenge:
+                                inflateView(R.layout.challenge);
+                                showChallenge(inflated);
                                 return true;
                             case R.id.chat:
                                 inflateView(R.layout.contacts);
-
-//                                inflated.findViewById(R.id.refresh).setVisibility(View.GONE);
                                 inflated.findViewById(R.id.fMessage).setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
@@ -383,12 +358,18 @@ public class MainActivity extends BaseActivity {
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
 
     }
+
+    private void showChallenge(View inflated) {
+
+    }
+
     public void showRankChat() {
         View view = getLayoutInflater().inflate(R.layout.rank_row, null);
         final BottomSheetDialog dialogBottom = new BottomSheetDialog(MainActivity.this);
         dialogBottom.setContentView(view);
         dialogBottom.show();
     }
+
     private void getPopularFace() {
         AppController.getInstance().popularList.clear();
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -407,9 +388,7 @@ public class MainActivity extends BaseActivity {
                                 JSONObject jObj = ja_data.getJSONObject(i);
                                 appConstant.saveUserInfo("", jObj.getString("userid"), "http://y-ral-gaming.com/admin/api/images/" + jObj.getString("userid") + ".png?u=" + AppConstant.imageExt(), jObj.getString("name"), "", null, jObj.getString("userid"));
                                 popularModels.add(new PopularModel(jObj.getString("url"), jObj.getString("name"), jObj.getString("amount"), jObj.getString("userid")));
-                                // recyclerDataArrayList.add(new RecyclerData(jObj.getString("userid"),"http://y-ral-gaming.com/admin/api/images/" + jObj.getString("userid") + ".png?u=" + (System.currentTimeMillis() / 1000),jObj.getString("name")));
-//                                recyclerDataArrayList.add(new RecyclerData(jObj.getString("url"), jObj.getString("name"), jObj.getString("amount"), jObj.getString("userid")));
-                            }
+                             }
                             Collections.sort(popularModels, new Comparator<PopularModel>() {
                                 @Override
                                 public int compare(PopularModel o1, PopularModel o2) {
@@ -419,20 +398,10 @@ public class MainActivity extends BaseActivity {
                             for (PopularModel popularModel : popularModels) {
                                 AppController.getInstance().popularList.put(popularModel.getUser_id(), AppController.getInstance().popularList.size() + 1);
                             }
-//                            if(popularModels.size() > 10) {
-//                                 for (int i = 0; i < popularModels.size(); i++) {
-//                                     popularModels.remove(popularModels.get(i));
-//                                     Log.e("popularModels//",popularModels.size()+"");
-//                                 }
-//                             }
                             popularAdapter = new PopularAdapter(MainActivity.this, popularModels);
                             GridLayoutManager mLayoutManager = new GridLayoutManager(MainActivity.this, 1, GridLayoutManager.HORIZONTAL, false);
                             rv_popular.setLayoutManager(mLayoutManager);
                             rv_popular.setAdapter(popularAdapter);
-//                             RecyclerViewAdapter adapter=new RecyclerViewAdapter(recyclerDataArrayList,MainActivity.this);
-//                            GridLayoutManager mLayoutManager = new GridLayoutManager(MainActivity.this, 1, GridLayoutManager.HORIZONTAL, false);
-//                            rv_popular.setLayoutManager(mLayoutManager);
-//                            rv_popular.setAdapter(adapter);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -461,6 +430,7 @@ public class MainActivity extends BaseActivity {
         };
         queue.add(stringRequest);
     }
+
     private void showCoins() {
         startActivity(new Intent(MainActivity.this, PaymentWithdraw.class));
 //        View paymentBottomSheet = getLayoutInflater().inflate(R.layout.delete_demo, null);
@@ -516,7 +486,6 @@ public class MainActivity extends BaseActivity {
 //        });
 
     }
-
 
 
 //    private void playYTVideo() {
@@ -629,22 +598,6 @@ public class MainActivity extends BaseActivity {
 //        startActivityForResult(gallery, RESULT_LOAD_IMAGE);
 //    }
 
-    private void saveToProfile(String imageUrl) {
-        SharedPreferences sharedPreferences = getSharedPreferences(new AppConstant(this).getId(), 0);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(AppConstant.name, playerName.getText().toString());
-        editor.putString(AppConstant.discordId, discordId.getText().toString());
-        if (imageUrl != null) {
-//            FirebaseDatabase.getInstance().getReference(AppConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.myPicUrl).setValue(imageUrl);
-            editor.putString(AppConstant.myPicUrl, imageUrl);
-            picturePath = null;
-        }
-        editor.apply();
-        discordId.setEnabled(false);
-        playerName.setEnabled(false);
-        saveProf.setImageResource(R.drawable.ic_edit);
-        Toast.makeText(MainActivity.this, "Profile Updated Successfully", Toast.LENGTH_LONG).show();
-    }
 
     @Override
     protected void onResume() {
@@ -729,7 +682,6 @@ public class MainActivity extends BaseActivity {
     }
 
     private void showTournament() {
-        inflateView(R.layout.rank);
         List<TournamentModel> tournamentModelList = new ArrayList<>();
         TextView title = inflated.findViewById(R.id.title);
         title.setText("Tournament");
@@ -823,279 +775,12 @@ public class MainActivity extends BaseActivity {
         }));
     }
 
-
-    private void showNotification() {
-        List<TournamentModel> tournamentModelList = new ArrayList<>();
-        TextView title = inflated.findViewById(R.id.title);
-        title.setText("Withdraw Status");
-        recyclerView = inflated.findViewById(R.id.recycler_view);
-        ShimmerFrameLayout shimmerFrameLayout = inflated.findViewById(R.id.shimmer_layout);
-        shimmerFrameLayout.startShimmer();
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://y-ral-gaming.com/admin/api/get_status.php";
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.e("tokenResponse", response);
-                        shimmerFrameLayout.hideShimmer();
-                        shimmerFrameLayout.setVisibility(View.GONE);
-                        try {
-                            JSONArray array = new JSONArray(response);
-                            if (array.length() == 0) {
-                                inflated.findViewById(R.id.pBar3).setVisibility(View.VISIBLE);
-                                inflated.findViewById(R.id.not).setVisibility(View.VISIBLE);
-                                return;
-                            }
-                            for (int i = 0; i < array.length(); i++) {
-                                JSONObject obj = array.getJSONObject(i);
-                                tournamentModelList.add(
-                                        new TournamentModel(obj.getString("name"),
-                                                "",
-                                                obj.getString("image_url"),
-                                                obj.getString("date"),
-                                                obj.getString("status"),
-                                                obj.getString("comment"), "", "", "", 0, 0));
-                            }
-                            TournamentAdapter pAdapter = new TournamentAdapter(MainActivity.this, tournamentModelList, false);
-                            recyclerView.setAdapter(pAdapter);
-                        } catch (Exception e) {
-                            Log.e("error Rec", e.getMessage());
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-/*                shimmer_container.hideShimmer();
-                shimmer_container.setVisibility(View.GONE);*/
-                error.printStackTrace();
-                FirebaseCrashlytics.getInstance().recordException(error);
-            }
-        }) {
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put("user_id", appConstant.getId());
-                return params;
-            }
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-                params.put("Content-Type", "application/x-www-form-urlencoded");
-                return params;
-            }
-        };
-
-        queue.add(stringRequest);
-
-
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-    }
-
-
-    private void showRank() {
-        final RecyclerView recyclerView = inflated.findViewById(R.id.recycler_view);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(mLayoutManager);
-        FirebaseDatabase.getInstance().getReference(AppConstant.users).orderByChild("winner").limitToLast(10).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(final DataSnapshot dataSnapshot) {
-                ArrayList<DataSnapshot> dataSnapshots = new ArrayList<>();
-                for (DataSnapshot child : dataSnapshot.getChildren()) {
-                    dataSnapshots.add(0, child);
-                }
-                RankAdapter pAdapter = new RankAdapter(MainActivity.this, dataSnapshots);
-                recyclerView.setAdapter(pAdapter);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-
-            }
-        });
-    }
-
     private void inflateView(int layout) {
         ViewStub newViewStub = deflate(inflated);
         newViewStub.setLayoutResource(layout);
         inflated = newViewStub.inflate();
     }
 
-    private void showHistory(View inflated) {
-        ArrayList<PaymentHistoryModel> paymentHistoryModels = new ArrayList<>();
-        final RecyclerView recyclerView = inflated.findViewById(R.id.recycler_view);
-        ShimmerFrameLayout shimmer_container = inflated.findViewById(R.id.shimmer_container);
-        shimmer_container.startShimmer();
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(mLayoutManager);
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://y-ral-gaming.com/admin/api/get_payment_list.php";
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.e("tokenResponse", response);
-                        shimmer_container.hideShimmer();
-                        shimmer_container.setVisibility(View.GONE);
-                        try {
-                            JSONArray array = new JSONArray(response);
-                            if (array.length() == 0) {
-                                inflated.findViewById(R.id.pBar3).setVisibility(View.VISIBLE);
-                                inflated.findViewById(R.id.msg).setVisibility(View.VISIBLE);
-                                return;
-                            }
-                            for (int i = 0; i < array.length(); i++) {
-                                JSONObject obj = array.getJSONObject(i);
-                                paymentHistoryModels.add(new PaymentHistoryModel(AppConstant.getTimeAgo(Integer.parseInt(obj.getString("date"))),
-                                        obj.getString("transaction_id"), obj.getString("amount"),
-                                        obj.getString("screenshort"), obj.getString("ticket_id"), obj.getInt("type")));
-                            }
-                            PayMentAdapter pAdapter = new PayMentAdapter(MainActivity.this, paymentHistoryModels);
-                            recyclerView.setAdapter(pAdapter);
-
-                        } catch (Exception e) {
-                            Log.e("error Rec", e.getMessage());
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-/*                shimmer_container.hideShimmer();
-                shimmer_container.setVisibility(View.GONE);*/
-                error.printStackTrace();
-                FirebaseCrashlytics.getInstance().recordException(error);
-            }
-        }) {
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put("user_id", appConstant.getId());
-                return params;
-            }
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-                params.put("Content-Type", "application/x-www-form-urlencoded");
-                return params;
-            }
-        };
-
-        queue.add(stringRequest);
-
-        /*if (AppController.getInstance().userId != null) {
-            DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference(AppConstant.users)
-                    .child(AppController.getInstance().userId).child(AppConstant.paymentHistory);
-            mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(final DataSnapshot dataSnapshot) {
-                    ArrayList<DataSnapshot> dataSnapshots = new ArrayList<>();
-                    for (DataSnapshot child : dataSnapshot.getChildren()) {
-                        dataSnapshots.add(child);
-                    }
-                    *//*PayMentAdapter pAdapter = new PayMentAdapter(MainActivity.this, dataSnapshots);
-                    recyclerView.setAdapter(pAdapter);*//*
-                }
-
-                @Override
-                public void onCancelled(DatabaseError error) {
-
-                }
-            });
-
-        }*/
-    }
-
-    private void updateName() {
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Updating...");
-        progressDialog.show();
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://y-ral-gaming.com/admin/api/profile_update.php";
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.e("response", response);
-                        progressDialog.cancel();
-                        saveToProfile(null);
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                progressDialog.cancel();
-                Toast.makeText(MainActivity.this, "Something went wrong try again later ", Toast.LENGTH_SHORT).show();
-            }
-        }) {
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put("user_id", new AppConstant(MainActivity.this).getId());
-                params.put("name", playerName.getText().toString() + "");
-                params.put("discord", discordId.getText().toString() + "");
-                return params;
-            }
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-                params.put("Content-Type", "application/x-www-form-urlencoded");
-                return params;
-            }
-        };
-
-        queue.add(stringRequest);
-    }
-
-    private void uploadFiles() {
-        storage = FirebaseStorage.getInstance();
-        storageReference = storage.getReference();
-
-        if (filePath != null) {
-            progressDialog = new ProgressDialog(this);
-            progressDialog.setTitle("Uploading...");
-            progressDialog.show();
-
-            StorageReference ref = storageReference.child("images/" + UUID.randomUUID().toString());
-            ref.putFile(filePath)
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            if (taskSnapshot.getMetadata() != null) {
-                                if (taskSnapshot.getMetadata().getReference() != null) {
-                                    Task<Uri> result = taskSnapshot.getStorage().getDownloadUrl();
-                                    result.addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                        @Override
-                                        public void onSuccess(Uri uri) {
-                                            String imageUrl = uri.toString();
-                                            saveToProfile(imageUrl);
-                                        }
-                                    });
-                                }
-                            }
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            progressDialog.dismiss();
-                            Toast.makeText(MainActivity.this, "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot
-                                    .getTotalByteCount());
-                            progressDialog.setMessage("Uploaded " + (int) progress + "%");
-                        }
-                    });
-        }
-
-    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -1110,8 +795,6 @@ public class MainActivity extends BaseActivity {
                     startActivity(new Intent(MainActivity.this, SigninActivity.class));
                 break;
             case 1:
-
-                // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
@@ -1186,157 +869,11 @@ public class MainActivity extends BaseActivity {
         return image;
     }
 
-    public Bitmap getResizedBitmap(Bitmap image, int maxSize) {
-        int width = image.getWidth();
-        int height = image.getHeight();
-
-        float bitmapRatio = (float) width / (float) height;
-        if (bitmapRatio > 1) {
-            width = maxSize;
-            height = (int) (width / bitmapRatio);
-        } else {
-            height = maxSize;
-            width = (int) (height * bitmapRatio);
-        }
-        return Bitmap.createScaledBitmap(image, width, height, true);
-    }
-
-    private void uploadProfile() {
-        ProgressDialog dialog = new ProgressDialog(MainActivity.this);
-        dialog.setMessage("Uploading file, please wait.");
-        dialog.show();
-        VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST,
-                "http://y-ral-gaming.com/admin/api/profile_pic.php?" +
-                        "userid=" + appConstant.getId() + "&&name=" + playerName.getText().toString() + "&&discordId=" + discordId.getText().toString()
-                ,
-                new Response.Listener<NetworkResponse>() {
-                    @Override
-                    public void onResponse(NetworkResponse response) {
-                        if (dialog.isShowing())
-                            dialog.dismiss();
-                        saveToProfile(new String(response.data));
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        if (dialog.isShowing()) {
-                            dialog.dismiss();
-                        }
-                        new Handler(Looper.getMainLooper()).post(new Runnable() {
-                            @Override
-                            public void run() {
-                            }
-                        });
-                        // Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
-                        Log.e("GotError", "" + error.getMessage());
-                    }
-                }) {
-
-            //            @Override
-//            protected Map<String, String> getParams() throws AuthFailureError {
-//                Map<String, String> params = new HashMap<>();
-//                params.put("tags", tags);
-//                return params;
-//            }
-            @Override
-            protected Map<String, DataPart> getByteData() {
-                Map<String, DataPart> params = new HashMap<>();
-                params.put("uploaded_file", new DataPart(appConstant.getId() + ".png", getFileDataFromDrawable()));
-                // params.put("userId", new DataPart("1605435786512"));
-                return params;
-            }
-        };
-        //adding the request to volley
-        Volley.newRequestQueue(this).add(volleyMultipartRequest);
-    }
-
-//    private void uploadBitmap() {
-//        ProgressDialog dialog = new ProgressDialog(MainActivity.this);
-//        dialog.setMessage("Uploading file, please wait.");
-//        dialog.show();
-//        VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST,
-//                "http://y-ral-gaming.com/admin/api/upload.php?" +
-//                        "userid=" + appConstant.getUserId() + "&&time=" + et_datetime.getText().toString() +
-//                        "&&profile=" + sharedPreferences.getString(AppConstant.myPicUrl, "") +
-//                        "&&upi=" + upi.getText().toString() +
-//                        "&&discord=" + sharedPreferences.getString(AppConstant.discordId, "")
-//                        + "&&name=" + sharedPreferences.getString(AppConstant.name, ""),
-//                new Response.Listener<NetworkResponse>() {
-//                    @Override
-//                    public void onResponse(NetworkResponse response) {
-//                        if (dialog.isShowing())
-//                            dialog.dismiss();
-//                        if (Pdialog.isShowing())
-//                            Pdialog.dismiss();
-//                        try {
-//                            Log.e("GotError", "success");
-//                            JSONObject obj = new JSONObject(new String(response.data));
-//                            // selectedImage = null;
-//                            new Handler(Looper.getMainLooper()).post(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    if (R.id.status == oldId)
-//                                        showNotification();
-//                                    else
-//                                        bottomNavigation.findViewById(R.id.status).performClick();
-//                                    //bottomNavigation.getMenu().findItem(R.id.status).setChecked(true);
-//                                    Toast.makeText(MainActivity.this, "Upload Successfully", Toast.LENGTH_LONG).show();
-//                                }
-//                            });
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                            Log.e("GotError", "" + e.getMessage());
-//                        }
-//                    }
-//                },
-//                new Response.ErrorListener() {
-//                    @Override
-//                    public void onErrorResponse(VolleyError error) {
-//                        if (dialog.isShowing()) {
-//                            dialog.dismiss();
-//                        }
-//                        new Handler(Looper.getMainLooper()).post(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                            }
-//                        });
-//                        // Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
-//                        Log.e("GotError", "" + error.getMessage());
-//                    }
-//                }) {
-//
-//            //            @Override
-////            protected Map<String, String> getParams() throws AuthFailureError {
-////                Map<String, String> params = new HashMap<>();
-////                params.put("tags", tags);
-////                return params;
-////            }
-//            @Override
-//            protected Map<String, DataPart> getByteData() {
-//                Map<String, DataPart> params = new HashMap<>();
-//                long imagename = System.currentTimeMillis();
-//                params.put("uploaded_file", new DataPart(imagename + ".png", getFileDataFromDrawable()));
-//                // params.put("userId", new DataPart("1605435786512"));
-//                return params;
-//            }
-//        };
-//        //adding the request to volley
-//        Volley.newRequestQueue(this).add(volleyMultipartRequest);
-//    }
-
-    public byte[] getFileDataFromDrawable() {
-        selectedImage = getResizedBitmap(selectedImage, 700);
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        selectedImage.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
-        return byteArrayOutputStream.toByteArray();
-    }
-
     public void setFirstView() {
         gameViewpager = inflated.findViewById(R.id.gameViewpager);
         tabLayout = inflated.findViewById(R.id.tabs);
 
-         tabLayout.setupWithViewPager(gameViewpager);
+        tabLayout.setupWithViewPager(gameViewpager);
         ArrayList<String> titleList = new ArrayList<>();
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         FirebaseDatabase.getInstance().getReference("masters").child("gameList").addValueEventListener(new ValueEventListener() {
@@ -1361,14 +898,6 @@ public class MainActivity extends BaseActivity {
 
             }
         });
-//        if (AppController.getInstance().gameNameHashmap.size() > 0) {
-//            for (Map.Entry<String, Boolean> entry : AppController.getInstance().gameNameHashmap.entrySet()) {
-//                adapter.addFragment(new PaidScrims(entry.getKey(), entry.getValue()), entry.getKey());
-//                titleList.add(entry.getKey());
-//                // do something with key and/or tab
-//            }
-//
-//        }
         gameViewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             public void onPageScrollStateChanged(int state) {
             }
@@ -1383,46 +912,6 @@ public class MainActivity extends BaseActivity {
             }
         });
     }
-
-//    public void getUserAmount() {
-//        RequestQueue queue = Volley.newRequestQueue(this);
-//        String url = "http://y-ral-gaming.com/admin/api/get_amount.php";
-//        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-//                new Response.Listener<String>() {
-//                    @Override
-//                    public void onResponse(String response) {
-//                        Log.e("tokenResponse", response);
-//                        amount = response;
-//                        package_name.setText("Rs " + response);
-//                    }
-//                }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-///*                shimmer_container.hideShimmer();
-//                shimmer_container.setVisibility(View.GONE);*/
-//                error.printStackTrace();
-//                FirebaseCrashlytics.getInstance().recordException(error);
-//            }
-//        }) {
-//            @Override
-//            protected Map<String, String> getParams() {
-//                Map<String, String> params = new HashMap<>();
-//                params.put("user_id", appConstant.getUserId());
-//                return params;
-//            }
-//
-//            @Override
-//            public Map<String, String> getHeaders() throws AuthFailureError {
-//                Map<String, String> params = new HashMap<>();
-//                params.put("Content-Type", "application/x-www-form-urlencoded");
-//                return params;
-//            }
-//        };
-//
-//        queue.add(stringRequest);
-//
-//    }
-
 
     class ViewPagerAdapter extends FragmentStatePagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();
@@ -1482,9 +971,6 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
@@ -1502,7 +988,7 @@ public class MainActivity extends BaseActivity {
             if (intent.getBooleanExtra(AppConstant.name, false)) {
                 Log.e("onClick3: ", "set error");
 
-                 return;
+                return;
             }
             if (intent.getBooleanExtra(AppConstant.AppName, false)) {
                 showBottomSheetDialog();
@@ -1510,6 +996,14 @@ public class MainActivity extends BaseActivity {
             }
             if (new AppConstant(MainActivity.this).checkLogin() && intent.getBooleanExtra(AppConstant.amount, false)) {
                 coins.setText(withSuffix(AppController.getInstance().amount));
+                TextView kill = findViewById(R.id.kill);
+                kill.setText(AppController.getInstance().rank + " total kills");
+                kill.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        showRankChat();
+                    }
+                });
                 return;
             }
             if (intent.getBooleanExtra(AppConstant.teamMember, false)) {
@@ -1518,78 +1012,6 @@ public class MainActivity extends BaseActivity {
                 bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
                 return;
             }
-            //   SharedPreferences sharedPreferences = getSharedPreferences(AppConstant.AppName, 0);
-            // ign.setHint(intent.getStringExtra(AppConstant.title) + " in game name");
-            // igid.setHint(intent.getStringExtra(AppConstant.title) + " id");
-            // ign.setText(sharedPreferences.getString(intent.getStringExtra(AppConstant.title), ""));
-            // igid.setText(sharedPreferences.getString(intent.getStringExtra(AppConstant.title) + "_" + AppConstant.userName, ""));
-//            inflated.findViewById(R.id.edit).setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    if (!new AppConstant(context).checkLogin()) {
-//                        showBottomSheetDialog();
-//                        return;
-//                    }
-//
-//                    if (ign.isEnabled()) {
-//                        // if (igid.getText().toString().trim().equals("") || ign.getText().toString().trim().equals("")) {
-//                        if (ign.getText().toString().trim().equals("")) {
-//                            Toast.makeText(MainActivity.this, intent.getStringExtra(AppConstant.title) + " id cannot be empty", Toast.LENGTH_LONG).show();
-//                            return;
-//                        }
-//                        ign.setEnabled(false);
-//                        igid.setEnabled(false);
-//                        ign.clearFocus();
-//                        edit.setImageResource(R.drawable.ic_edit);
-//                        SharedPreferences.Editor editor = sharedPreferences.edit();
-//                        editor.putString(intent.getStringExtra(AppConstant.title), ign.getText().toString());
-//                        editor.putString(intent.getStringExtra(AppConstant.title) + "_" + AppConstant.userName, igid.getText().toString());
-//                        editor.apply();
-//                        Toast.makeText(MainActivity.this, "Id updated", Toast.LENGTH_LONG).show();
-//                        FirebaseDatabase.getInstance().getReference(AppConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(intent.getStringExtra(AppConstant.title)).setValue(ign.getText().toString());
-//                        FirebaseDatabase.getInstance().getReference(AppConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(intent.getStringExtra(AppConstant.title) + "_" + AppConstant.userName).setValue(igid.getText().toString());
-//                    } else {
-//                        edit.setImageResource(R.drawable.ic_check);
-//                        ign.setEnabled(true);
-//                        igid.setEnabled(true);
-//                        igid.requestFocus();
-//                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-//                        imm.showSoftInput(igid, InputMethodManager.SHOW_IMPLICIT);
-//                        ign.setSelection(ign.getText().length());
-//                    }
-//                }
-//            });
-
-
-            // game_id.setText(intent.getStringExtra(AppConstant.title));
-//            // Get extra data included in the Intent
-//            String message = intent.getStringExtra("message");
-//            if (message.equals("bottom_sheet_broadcast")) {
-//                showBottomSheetDialog();
-//                return;
-//            }
-//            final String roomPlan = intent.getStringExtra("roomPlan");
-//            new CountDownTimer(Long.parseLong(message), 1000) {
-//                @Override
-//                public void onTick(long millisUntilFinished) {
-//                    int seconds = (int) (millisUntilFinished / 1000) % 60;
-//                    int minutes = (int) ((millisUntilFinished / (1000 * 60)) % 60);
-//                    int hours = (int) ((millisUntilFinished / (1000 * 60 * 60)) % 24);
-//                    timeLeft.setText("Your next Game starts in " + hours + ":" + minutes + ":" + seconds);
-//                    timeLeft.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View view) {
-//                           // startService(new Intent(MainActivity.this, MyService.class));
-//                        }
-//                    });
-//                }
-//
-//                @Override
-//                public void onFinish() {
-//                    timeLeft.setText("Finished");
-//                }
-//            }.start();
-            //   setRoomVideo(roomPlan);
         }
     };
 
@@ -1708,16 +1130,6 @@ public class MainActivity extends BaseActivity {
         startActivity(startMain);
     }
 
-    private void setClipboard(String text) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-            ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-            clipboard.setText(text);
-        } else {
-            android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-            ClipData clip = ClipData.newPlainText("Copied Text", text);
-            clipboard.setPrimaryClip(clip);
-        }
-    }
 
     @Override
     public void onDestroy() {
@@ -1728,23 +1140,18 @@ public class MainActivity extends BaseActivity {
 
     public void showBottomSheetDialog() {
         View view = getLayoutInflater().inflate(R.layout.fragment_login_bottom_sheet_fragment, null);
-        final BottomSheetDialog dialogBottom = new BottomSheetDialog(MainActivity.this,R.style. BottomSheetDialog);
+        final BottomSheetDialog dialogBottom = new BottomSheetDialog(MainActivity.this, R.style.BottomSheetDialog);
         dialogBottom.setContentView(view);
         dialogBottom.show();
         Button btn_ok = view.findViewById(R.id.ok);
-//        Button btn_cancel = view.findViewById(R.id.cancel);
         btn_ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (ContextCompat.checkSelfPermission(MainActivity.this,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE)
                         != PackageManager.PERMISSION_GRANTED) {
-
-                    // Permission is not granted
-                    // Should we show an explanation?
                     if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
                             Manifest.permission.WRITE_EXTERNAL_STORAGE) && dialog == null) {
-                        //If User was asked permission before and denied
                         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
 
                         alertDialogBuilder.setTitle("Permission needed");
@@ -1780,201 +1187,4 @@ public class MainActivity extends BaseActivity {
         });
 
     }
-
-//    private void setUpNavigationView() {
-//        //Setting Navigation View Item Selected Listener to handle the item click of the navigation menu
-//        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-//
-//            // This method will trigger on item Click of navigation menu
-//            @Override
-//            public boolean onNavigationItemSelected(MenuItem menuItem) {
-//
-//                //Check to see which item was being clicked and perform appropriate action
-//                switch (menuItem.getItemId()) {
-//                    //Replacing the main content with ContentFragment Which is our Inbox View;
-//                    case R.id.nav_aboutus:
-//                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.tcs.com/")));
-//                        //drawer.closeDrawers();
-//                        return true;
-//
-//                    case R.id.nav_privacypolicy:
-//                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.tcs.com/privacy-policy")));
-//                       // drawer.closeDrawers();
-//                        return true;
-//
-//                    case R.id.nav_tt:
-//                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.tcs.com/legal-disclaimer")));
-//                       // drawer.closeDrawers();
-//                        return true;
-//
-//                    case R.id.nav_facebook:
-//                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/Kakelious/")));
-//                     //   drawer.closeDrawers();
-//                        return true;
-//
-//                    case R.id.nav_discord:
-//                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://discord.gg/uygzekRnhE")));
-//                     //   drawer.closeDrawers();
-//                        return true;
-//
-//                    case R.id.nav_youtube:
-//                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://youtube.com/channel/UCt3oqOC4xYAQBzWIhiupLBg"));
-//                        startActivity(intent);
-//                    //    drawer.closeDrawers();
-//                        return true;
-//                    /*case R.id.nav_notifications:
-//                        navItemIndex = 3;
-//                        CURRENT_TAG = TAG_NOTIFICATIONS;
-//                        break;
-//                    case R.id.nav_settings:
-//
-//
-//                        break;
-//                    case R.id.nav_about_us:
-//                        // launch new intent instead of loading fragment
-//                        startActivity(new Intent(MainActivity.this, AboutUsActivity.class));
-//                        drawer.closeDrawers();
-//                        return true;
-//                    case R.id.nav_privacy_policy:
-//                        // launch new intent instead of loading fragment
-//                        startActivity(new Intent(MainActivity.this, PrivacyPolicyActivity.class));
-//                        drawer.closeDrawers();
-//                        return true;
-//                    default:
-//                        navItemIndex = 0;*/
-//                }
-//
-//                //Checking if the item is in checked state or not, if not make it in checked state
-//                if (menuItem.isChecked()) {
-//                    menuItem.setChecked(false);
-//                } else {
-//                    menuItem.setChecked(true);
-//                }
-//                menuItem.setChecked(true);
-//
-////                loadHomeFragment();
-//
-//                return true;
-//            }
-//        });
-//
-//
-//        /*ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.openDrawer, R.string.closeDrawer) {
-//
-//            @Override
-//            public void onDrawerClosed(View drawerView) {
-//                // Code here will be triggered once the drawer closes as we dont want anything to happen so we leave this blank
-//                super.onDrawerClosed(drawerView);
-//            }
-//
-//            @Override
-//            public void onDrawerOpened(View drawerView) {
-//                // Code here will be triggered once the drawer open as we dont want anything to happen so we leave this blank
-//                super.onDrawerOpened(drawerView);
-//            }
-//        };
-//
-//        //Setting the actionbarToggle to drawer layout
-//        drawer.setDrawerListener(actionBarDrawerToggle);
-//
-//        //calling sync state is necessary or else your hamburger icon wont show up
-//        actionBarDrawerToggle.syncState();*/
-//    }
-
-//    public void requestContactPermission() {
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-//                if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-//                        Manifest.permission.READ_CONTACTS)) {
-//                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//                    builder.setTitle("Read Contacts permission");
-//                    builder.setPositiveButton(android.R.string.ok, null);
-//                    builder.setMessage("Please enable access to contacts.");
-//                    builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
-//                        @TargetApi(Build.VERSION_CODES.M)
-//                        @Override
-//                        public void onDismiss(DialogInterface dialog) {
-//                            requestPermissions(
-//                                    new String[]
-//                                            {Manifest.permission.READ_CONTACTS}
-//                                    , PERMISSIONS_REQUEST_READ_CONTACTS);
-//                        }
-//                    });
-//                    builder.show();
-//                } else {
-//                    ActivityCompat.requestPermissions(this,
-//                            new String[]{Manifest.permission.READ_CONTACTS},
-//                            PERMISSIONS_REQUEST_READ_CONTACTS);
-//                }
-//            } else {
-//                Intent intent = new Intent(MainActivity.this, SearchFriendActivity.class);
-//                startActivity(intent);
-//            }
-//        } else {
-//            Intent intent = new Intent(MainActivity.this, SearchFriendActivity.class);
-//            startActivity(intent);
-//        }
-//    }
-
-//    private void setPackagename() {
-//        if (package_name != null) {
-//            try {
-//                JSONObject jsnobject = new JSONObject(AppController.getInstance().getSubscription_package());
-//                JSONArray jsonArray = jsnobject.getJSONArray("package");
-//                JSONObject explrObject = jsonArray.getJSONObject(Integer.parseInt(new AppConstant(MainActivity.this)
-//                        .getDataFromShared(AppConstant.package_id, "0")));
-//                // package_name.setText(explrObject.getString(AppConstant.package_name));
-//            } catch (Exception e) {
-//                Log.e("My App", "Could not parse malformed JSON:" + e.getMessage());
-//            }
-//        }
-//    }
-
-//    private void addviewDisplay() {
-//        MobileAds.initialize(this, new OnInitializationCompleteListener() {
-//            @Override
-//            public void onInitializationComplete(InitializationStatus initializationStatus) {
-//            }
-//        });
-//
-//        AdRequest adRequest = new AdRequest.Builder().build();
-//        mAdView.loadAd(adRequest);
-//
-//        mAdView.setAdListener(new AdListener() {
-//            @Override
-//            public void onAdLoaded() {
-//                // Code to be executed when an ad finishes loading.
-//                super.onAdLoaded();
-//                Toast.makeText(MainActivity.this, "Add loaded", Toast.LENGTH_LONG).show();
-//            }
-//
-//            @Override
-//            public void onAdFailedToLoad(LoadAdError adError) {
-//                // Code to be executed when an ad request fails.
-//                super.onAdFailedToLoad(adError);
-//                mAdView.loadAd(adRequest);
-//            }
-//
-//            @Override
-//            public void onAdOpened() {
-//                // Code to be executed when an ad opens an overlay that
-//                // covers the screen.
-//                super.onAdOpened();
-//            }
-//
-//            @Override
-//            public void onAdClicked() {
-//                // Code to be executed when the user clicks on an ad.
-//                super.onAdClicked();
-//            }
-//
-//            @Override
-//            public void onAdClosed() {
-//                // Code to be executed when the user is about to return
-//                // to the app after tapping on an ad.
-////            super.onAdClosed();
-//            }
-//        });
-//
-//    }
 }

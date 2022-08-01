@@ -204,7 +204,7 @@
         android:orientation="horizontal">
 
 
-        <TextView
+        <TextView android:id="@+id/gpay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableTop="@drawable/gpay"
@@ -216,7 +216,7 @@
             android:background="@drawable/outline_black"
             android:textColor="@color/black" />
 
-        <TextView
+        <TextView android:id="@+id/phonepay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableTop="@drawable/phonepay"
@@ -227,7 +227,7 @@
             android:text="phonepe"
             android:textColor="@color/black" />
 
-        <TextView
+        <TextView android:id="@+id/paytm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableTop="@drawable/paytm"

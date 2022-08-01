@@ -95,7 +95,6 @@ public class AppController extends Application implements Application.ActivityLi
     public int amount = 0;
     public int rank = 0;
     public List<GameItem> movieList = new ArrayList<>();
-    public GameItem gameItem;
     public TournamentModel tournamentModel;
     AppDataBase appDataBase;
     public HashMap<String, Integer> popularList = new HashMap<>();

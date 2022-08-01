@@ -1,37 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingTop="2dp"
-    android:paddingBottom="2dp"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp"
-    android:layout_marginBottom="10dp">
-    <ImageView android:id="@+id/images"
-        android:layout_width="90dp"
-        android:scaleType="centerCrop"
-        android:layout_marginRight="10dp"
-        android:layout_height="60dp"/>
+    android:layout_height="match_parent"
+    android:layout_marginBottom="10dp"
+    android:background="@drawable/red_round_corner"
+    android:elevation="8dp"
+    android:orientation="vertical"
+    android:theme="@style/Theme.MaterialComponents.DayNight.DarkActionBar"
+    app:behavior_hideable="false"
+    app:behavior_peekHeight="356dp"
+    app:layout_behavior="@string/bottom_sheet_behavior">
+
     <TextView
-        android:id="@+id/name"
+        android:id="@+id/title"
         android:layout_width="match_parent"
-        android:layout_toRightOf="@+id/images"
-        android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:textColor="@color/black"
-        android:lineSpacingExtra="0dp"  />
-    <TextView
-        android:id="@+id/time"
-        android:layout_toRightOf="@+id/images"
-        android:layout_width="match_parent"
-        android:textSize="13sp"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/name"/>
-    <TextView
-        android:id="@+id/status"
-        android:layout_toRightOf="@+id/images"
-        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:enabled="false"
+        android:gravity="center_horizontal"
+        android:imeOptions="actionDone"
+        android:lines="1"
+        android:paddingTop="15dp"
+        android:singleLine="true"
+        android:text="Tournament"
+        android:textColor="@color/colorPrimary"
+        android:textColorHint="@color/grey_black"
         android:textSize="12sp"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/time"/>
-</RelativeLayout>
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1500dp"
+        android:layout_marginTop="-40dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:layout_marginBottom="-15dp"
+        android:background="@drawable/background_with_shadow"
+        android:orientation="vertical">
+
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmer_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:shimmer_duration="1000">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <include layout="@layout/note_list_row" />
+
+                <include layout="@layout/note_list_row" />
+
+                <include layout="@layout/note_list_row" />
+
+                <include layout="@layout/note_list_row" />
+
+            </LinearLayout>
+
+        </com.facebook.shimmer.ShimmerFrameLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:background="#ffffff"
+            android:scrollbars="vertical" />
+
+        <TextView
+            android:id="@+id/not"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="25dp"
+            android:background="@drawable/curved_drawable"
+            android:drawableLeft="@drawable/bell"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="No status"
+            android:visibility="gone" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/pBar3"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="5dp"
+            android:visibility="gone"
+            app:lottie_autoPlay="true"
+            app:lottie_fileName="notification.json"
+            app:lottie_loop="true" />
+    </LinearLayout>
+</LinearLayout>

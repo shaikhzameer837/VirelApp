@@ -1,86 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="#f3f2ee"
-    android:layout_height="match_parent">
+    android:orientation="vertical">
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:orientation="horizontal"
+        android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:layout_height="wrap_content">
+        android:orientation="horizontal">
         <soup.neumorphism.NeumorphCardView
             style="@style/Widget.Neumorph.Button"
-            android:layout_width="83dp"
-            android:layout_height="83dp"
-            app:neumorph_strokeWidth="1dp"
-            app:neumorph_strokeColor="@color/darkgrey"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:background="@color/color_dialog_gray"
             app:neumorph_shapeType="basin">
             <ImageView
-                android:layout_width="60dp"
-                android:background="@drawable/cover_pic"
-                android:padding="2dp"
-                android:src="@drawable/game_avatar"
-                android:layout_height="60dp"/>
+                android:layout_width="35dp"
+                android:src="@drawable/arrow"
+                android:rotation="-180"
+                android:layout_gravity="center"
+                android:layout_height="35dp"/>
         </soup.neumorphism.NeumorphCardView>
-         <TextView
+
+
+        <TextView
             android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10dp"
             android:layout_weight="1"
-            android:text="Chat"
-             android:layout_marginLeft="10dp"
-            android:textSize="19sp"
-            android:textStyle="bold"
-            android:layout_gravity="center_vertical"
-            android:textColor="@color/appColor"
-            android:layout_height="wrap_content"/>
-         <TextView
-            android:layout_width="wrap_content"
-            android:text="12"
-            android:textSize="17sp"
-             android:background="@drawable/curved_red"
-            android:textStyle="bold"
-            android:padding="5dp"
-            android:layout_gravity="center_vertical"
-            android:textColor="@color/colorPrimary"
-            android:layout_height="wrap_content"/>
+            android:gravity="center"
+            android:text="Contact number Chat"
+            android:textColor="@color/black"
+            android:textStyle="bold" />
+        <soup.neumorphism.NeumorphCardView
+            style="@style/Widget.Neumorph.Button"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            app:neumorph_shapeType="basin"
+            app:neumorph_strokeColor="@color/darkgrey"
+            app:neumorph_strokeWidth="1dp">
+
+            <ImageView android:id="@+id/refresh"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="10dp"
+                android:src="@drawable/refresh_circle" />
+        </soup.neumorphism.NeumorphCardView>
+
     </LinearLayout>
 
     <soup.neumorphism.NeumorphCardView
         style="@style/Widget.Neumorph.Button"
         android:layout_width="match_parent"
         android:layout_height="65dp"
-        app:neumorph_strokeWidth="1dp"
-        android:backgroundTint="@color/black"
         android:background="@color/black"
+        android:backgroundTint="@color/black"
+        app:neumorph_shapeType="pressed"
         app:neumorph_strokeColor="@color/darkgrey"
-        app:neumorph_shapeType="pressed">
+        app:neumorph_strokeWidth="1dp">
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:layout_height="wrap_content">
-        <ImageView
-            android:layout_width="wrap_content"
-            android:src="@drawable/magnify"
-            android:layout_margin="10dp"
-            android:layout_gravity="center_vertical"
-            android:layout_height="match_parent"/>
-        <EditText
-            android:id="@+id/search"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:hint="Search Friends"
-            android:padding="10dp"
-            android:background="@null"
-            android:textColorHint="@color/textcolor"
-            android:textSize="11sp" />
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="10dp"
+                android:src="@drawable/magnify" />
+
+            <EditText
+                android:id="@+id/search"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@null"
+                android:hint="Search Friends"
+                android:padding="10dp"
+                android:textColorHint="@color/textcolor"
+                android:textSize="11sp" />
         </LinearLayout>
     </soup.neumorphism.NeumorphCardView>
-     <androidx.recyclerview.widget.RecyclerView
+
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_contact"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:layout_margin="10dp"
         android:scrollbars="vertical" />
 </LinearLayout>

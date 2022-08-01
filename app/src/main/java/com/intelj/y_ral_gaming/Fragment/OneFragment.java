@@ -153,18 +153,11 @@ public class OneFragment extends Fragment {
                                             jObj.getString("id").equals("") ? "****" : jObj.getString("id")
                                             , jObj.getString("password").equals("") ? "****" : jObj.getString("password"),
                                             jObj.getString("result_url"), jObj.getInt("max"), jObj.getString("yt_url"), jObj.getString("gId")));
-//                                    UserModel userModel = new UserModel()
-//                                            .setRegisterd(false)
-//                                            .setTotalCount(0)
-//                                            .setTime(jObj.getString("time")).setuniqueDate(date + "/" + title + "/" + jObj.getString("time")).userModelBuilder();
-
                                 }
                                 Log.e("titlessss", GameItem.size() + " " + title);
                                 Intent intent = new Intent("custom-event-name");
                                 intent.putExtra(AppConstant.amount, true);
                                 LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
-//                                BroadCast
-//                                ((TextView) findViewById(R.id.coins)).setText(AppController.getInstance().amount + "");
                                 mAdapter.notifyDataSetChanged();
                             } else {
                                 key = "OK";
@@ -189,7 +182,6 @@ public class OneFragment extends Fragment {
                                             }
                                         })
 
-                                        // A null listener allows the button to dismiss the dialog and take no further action.
                                         .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
@@ -214,7 +206,6 @@ public class OneFragment extends Fragment {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                //  progressDialog.cancel();
                 shimmerFrameLayout.hideShimmer();
                 shimmerFrameLayout.setVisibility(View.GONE);
             }

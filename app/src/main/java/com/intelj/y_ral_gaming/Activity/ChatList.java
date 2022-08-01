@@ -55,21 +55,21 @@ public class ChatList extends AppCompatActivity {
         shd = getSharedPreferences(AppConstant.id, MODE_PRIVATE);
         rv_contact = findViewById(R.id.rv_contact);
         appConstant = new AppConstant(this);
-//        findViewById(R.id.refresh).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (Build.VERSION.SDK_INT >= 23) {
-//                    String[] PERMISSIONS = {android.Manifest.permission.READ_CONTACTS};
-//                    if (!hasPermissions(ChatList.this, PERMISSIONS)) {
-//                        ActivityCompat.requestPermissions(ChatList.this, PERMISSIONS, REQUEST);
-//                    } else {
-//                        new readContactTask().execute();
-//                    }
-//                } else {
-//                    new readContactTask().execute();
-//                }
-//            }
-//        });
+        findViewById(R.id.refresh).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (Build.VERSION.SDK_INT >= 23) {
+                    String[] PERMISSIONS = {android.Manifest.permission.READ_CONTACTS};
+                    if (!hasPermissions(ChatList.this, PERMISSIONS)) {
+                        ActivityCompat.requestPermissions(ChatList.this, PERMISSIONS, REQUEST);
+                    } else {
+                        new readContactTask().execute();
+                    }
+                } else {
+                    new readContactTask().execute();
+                }
+            }
+        });
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(ChatList.this);
         rv_contact.setLayoutManager(mLayoutManager);
         contactModel = new ArrayList<>();
