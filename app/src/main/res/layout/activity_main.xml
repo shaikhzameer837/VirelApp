@@ -44,6 +44,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:textSize="11sp"
+                android:layout_gravity="center_vertical"
                 android:drawableRight="@drawable/drop_down"
                 android:text="Y Ral Gaming"/>
             </LinearLayout>

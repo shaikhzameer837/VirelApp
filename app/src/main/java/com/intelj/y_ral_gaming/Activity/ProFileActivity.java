@@ -1,38 +1,30 @@
 package com.intelj.y_ral_gaming.Activity;
 
-import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.text.Html;
 import android.transition.Fade;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityOptionsCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.android.volley.AuthFailureError;
@@ -46,6 +38,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -53,16 +46,19 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.intelj.y_ral_gaming.AppController;
 import com.intelj.y_ral_gaming.ChatActivity;
+import com.intelj.y_ral_gaming.ContactListModel;
 import com.intelj.y_ral_gaming.FollowActivity;
-import com.intelj.y_ral_gaming.Fragment.OneFragment;
 import com.intelj.y_ral_gaming.Fragment.PostFragment;
 import com.intelj.y_ral_gaming.R;
 import com.intelj.y_ral_gaming.SigninActivity;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
+import com.intelj.y_ral_gaming.Utils.RecyclerTouchListener;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 public class ProFileActivity extends AppCompatActivity {
@@ -119,6 +115,7 @@ public class ProFileActivity extends AppCompatActivity {
         final MyAdapter adapter = new MyAdapter(this, getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(adapter);
         if (userid.equals(appConstant.getId())) {
+            rank.setText("Create a team");
             // findViewById(R.id.chat).setVisibility(View.GONE);
             iconImage.setImageResource(R.drawable.ic_edit);
             findViewById(R.id.rel_button).setBackgroundResource(R.drawable.curved_red);
@@ -299,16 +296,6 @@ public class ProFileActivity extends AppCompatActivity {
                         Log.e("response", response);
                         try {
                             JSONObject json = new JSONObject(response);
-                            rank.setText(Html.fromHtml("<b><font size='14' color='#000000'>" + AppConstant.getRank(json.getInt("rank")) + "", new Html.ImageGetter() {
-                                @Override
-                                public Drawable getDrawable(String source) {
-                                    int resourceId = getResources().getIdentifier(source, "drawable", getPackageName());
-                                    Drawable drawable = getResources().getDrawable(resourceId);
-                                    drawable.setBounds(0, 0, 40, 30);
-                                    return drawable;
-                                }
-                            }, null));
-
                             if (userid.equals(appConstant.getId())) {
                                 chatIcon.setImageResource(R.drawable.menu_down);
                                 rank_button.setText(json.getInt("rank")+" total kills");
@@ -320,7 +307,7 @@ public class ProFileActivity extends AppCompatActivity {
                                 rank_button.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        showRankChat();
+                                        showTeamList();
                                     }
                                 });
                             }
@@ -352,12 +339,81 @@ public class ProFileActivity extends AppCompatActivity {
 
         queue.add(stringRequest);
     }
-    public void showRankChat() {
-        View view = getLayoutInflater().inflate(R.layout.rank_row, null);
-        final BottomSheetDialog dialogBottom = new BottomSheetDialog(ProFileActivity.this);
-        dialogBottom.setContentView(view);
-        dialogBottom.show();
+    RecyclerView rv_contact;
+    SharedPreferences shd;
+    LinearLayout lin;
+    ArrayList<EditText> editTextList = new ArrayList<>();
+    ArrayList<TextInputLayout> textInputLayouts = new ArrayList<>();
+    ArrayList<ContactListModel> contactModel;
+    HashMap<String, String> contactArrayList = new HashMap<>();
+    HashSet<String> originalContact = new HashSet<>();
+    ContactListAdapter contactListAdapter;
+    int returnPhone = 0;
+    private void showTeamList() {
+            editTextList.clear();
+            contactModel = new ArrayList<>();
+            BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(ProFileActivity.this);
+            bottomSheetDialog.setContentView(R.layout.add_team_info);
+            lin = bottomSheetDialog.findViewById(R.id.lin);
+            bottomSheetDialog.findViewById(R.id.refresh).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    //new readContactTask().execute();
+                }
+            });
+            teamName = bottomSheetDialog.findViewById(R.id.teamName);
+            shd = getSharedPreferences(AppConstant.id, MODE_PRIVATE);
+            rv_contact = bottomSheetDialog.findViewById(R.id.rv_contact);
+            appConstant = new AppConstant(this);
+            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(ProFileActivity.this);
+            rv_contact.setLayoutManager(mLayoutManager);
+            contactModel = new ArrayList<>();
+            contactListAdapter = new ContactListAdapter(ProFileActivity.this, contactModel);
+            rv_contact.setAdapter(contactListAdapter);
+            contactListAdapter.checkVisible();
+            rv_contact.addOnItemTouchListener(new RecyclerTouchListener(ProFileActivity.this, rv_contact, new RecyclerTouchListener.ClickListener() {
+                @Override
+                public void onClick(View view, int position) {
+                    int slectedContact = contactListAdapter.setChecBox(editTextList.size() == 6 ? -1 : position);
+                    if (slectedContact != -1) {
+                        addEditText(contactModel.get(position).getName(), contactModel.get(position).getUserid());
+                    } else
+                        Toast.makeText(ProFileActivity.this, "Max 6 players can register", Toast.LENGTH_LONG).show();
+                }
+
+                @Override
+                public void onLongClick(View view, int position) {
+
+                }
+            }));
+            bottomSheetDialog.findViewById(R.id.submit).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (teamName.getText().toString().trim().equals("")) {
+                        teamName.setError("Enter your team name");
+                        teamName.requestFocus();
+                        return;
+                    }
+                    if (editTextList.size() < 4) {
+                        Toast.makeText(ProFileActivity.this, "Minimum 4 players are required", Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                    for (int x = 0; x < editTextList.size(); x++) {
+                        if (editTextList.get(x).getText().toString().trim().equals("")) {
+                            editTextList.get(x).setError("Player Name cannot be empty");
+                            editTextList.get(x).requestFocus();
+                            return;
+                        }
+                    }
+                    joinEvent();
+                    bottomSheetDialog.cancel();
+                }
+            });
+            addEditText("", new AppConstant(ProFileActivity.this).getId());
+            bottomSheetDialog.show();
     }
+
     public class MyAdapter extends FragmentPagerAdapter {
 
         private Context myContext;

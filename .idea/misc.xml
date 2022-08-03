@@ -229,6 +229,10 @@
         <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/layout/viral_web.xml" value="0.16893115942028986" />
         <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/menu/bottom_navigation_menu.xml" value="0.12777777777777777" />
         <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/menu/menu_main.xml" value="0.19114583333333332" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.67" />
+        <entry key="app/src/main/res/layout/fragment_login_bottom_sheet_fragment.xml" value="0.1259259259259259" />
+        <entry key="app/src/main/res/layout/history.xml" value="0.19610507246376813" />
+        <entry key="app/src/main/res/layout/rank.xml" value="0.16893115942028986" />
       </map>
     </option>
   </component>

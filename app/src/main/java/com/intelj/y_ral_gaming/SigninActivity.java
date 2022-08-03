@@ -428,7 +428,7 @@ public class SigninActivity extends AppCompatActivity {
                                 if (dialog.isShowing()) {
                                     dialog.dismiss();
                                 }
-                                Intent intent = new Intent(SigninActivity.this, isNew ? MainActivity.class : Congrats.class);//UserInfoCheck.class);
+                                Intent intent = new Intent(SigninActivity.this, isNew ? Congrats.class : MainActivity.class);//UserInfoCheck.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
                             } else {
