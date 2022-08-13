@@ -4,6 +4,7 @@ import static android.content.Context.MODE_PRIVATE;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -27,6 +28,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -35,7 +37,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.intelj.y_ral_gaming.Activity.MainActivity;
 import com.intelj.y_ral_gaming.AppController;
 import com.intelj.y_ral_gaming.R;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
@@ -94,7 +95,7 @@ public class PlaceholderFragment extends Fragment implements View.OnClickListene
         TextView coins = binding.coins;
         TextView ranks = binding.ranks;
         coins.setText(AppController.getInstance().amount + "");
-        ranks.setText(Html.fromHtml("<b><font size='14' color='#000000'>" + AppConstant.getRank(AppController.getInstance().rank) + "", new Html.ImageGetter() {
+        ranks.setText(Html.fromHtml("<img src='"+AppConstant.getRank(AppController.getInstance().rank) + "'/> " , new Html.ImageGetter() {
             @Override
             public Drawable getDrawable(String source) {
                 int resourceId = getResources().getIdentifier(source, "drawable", getActivity().getPackageName());
@@ -249,17 +250,10 @@ public class PlaceholderFragment extends Fragment implements View.OnClickListene
                             SharedPreferences.Editor editor = getActivity().getSharedPreferences(AppConstant.AppName, MODE_PRIVATE).edit();
                             editor.putLong(AppConstant.payment, (System.currentTimeMillis() / 1000) + 86400);
                             editor.apply();
-                            new AlertDialog.Builder(getActivity())
-                                    .setTitle("success")
-                                    .setMessage("Payment requested you will recieve payment in 24hrs \n Your Ticked id is " + obj.getString("ticked_id") + "\n click on status to check your payment request status")
-                                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            // Continue with delete operation
-                                        }
-                                    })
-                                    .setNegativeButton(android.R.string.no, null)
-                                    .setIcon(android.R.drawable.ic_dialog_alert)
-                                    .show();
+                            Intent intent = new Intent("payment");
+                            intent.putExtra("ticked_id",obj.getString("ticked_id"));
+                            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+
                         } catch (Exception e) {
                             Log.e("logMess", e.getMessage());
 

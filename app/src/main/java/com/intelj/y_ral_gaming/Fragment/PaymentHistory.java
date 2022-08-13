@@ -22,23 +22,17 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
-import com.intelj.y_ral_gaming.Activity.MainActivity;
 import com.intelj.y_ral_gaming.Adapter.PayMentAdapter;
-import com.intelj.y_ral_gaming.R;
-import com.intelj.y_ral_gaming.TournamentAdapter;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 import com.intelj.y_ral_gaming.databinding.HistoryBinding;
-import com.intelj.y_ral_gaming.databinding.RankBinding;
 import com.intelj.y_ral_gaming.main.PageViewModel;
 import com.intelj.y_ral_gaming.model.PaymentHistoryModel;
-import com.intelj.y_ral_gaming.model.TournamentModel;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class PaymentHistory extends Fragment {

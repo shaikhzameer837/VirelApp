@@ -5,14 +5,14 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:scaleType="centerCrop"
-        app:lottie_autoPlay="true"
-        app:lottie_fileName="background.json"
-        app:lottie_loop="true" />
+<!--    <com.airbnb.lottie.LottieAnimationView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:layout_gravity="center"-->
+<!--        android:scaleType="centerCrop"-->
+<!--        app:lottie_autoPlay="true"-->
+<!--        app:lottie_fileName="background.json"-->
+<!--        app:lottie_loop="true" />-->
 
     <RelativeLayout
         android:id="@+id/toolbar"
@@ -27,7 +27,7 @@
             android:layout_centerVertical="true"
             android:rotation="-180"
             android:src="@drawable/arrow"
-            app:tint="@color/colorPrimary" />
+            app:tint="@color/black" />
 
         <TextView
             android:id="@+id/title"
@@ -36,7 +36,7 @@
             android:layout_centerVertical="true"
             android:gravity="center_horizontal"
             android:text="Edit PRofile"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/black"
             android:textStyle="bold" />
 
 
@@ -101,7 +101,7 @@
         android:layout_marginTop="20dp"
         android:layout_toRightOf="@+id/imgCover"
         android:text="Gaming Title"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@color/black"
         android:textStyle="bold" />
 
 
@@ -110,16 +110,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/titler"
+        android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
         android:layout_marginRight="10dp"
-        android:layout_marginLeft="10dp"
-        android:paddingLeft="10dp"
         android:layout_toRightOf="@+id/imgCover"
         android:background="#00000000"
         android:drawableRight="@drawable/close"
         android:hint="Gaming Title"
+        android:paddingLeft="10dp"
         android:text=""
-        android:textColor="@color/colorPrimary"
+        android:textColor="@color/black"
         android:textSize="13sp" />
     <View
         android:layout_width="wrap_content"
@@ -148,9 +148,9 @@
             android:layout_marginRight="15dp"
             android:background="#00000000"
             android:backgroundTint="#00000000"
-            android:textColorHint="@color/colorPrimary"
+            android:textColorHint="@color/black"
             android:visibility="gone"
-            app:hintTextColor="@color/colorPrimary">
+            app:hintTextColor="@color/black">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/bios"
@@ -159,7 +159,7 @@
                 android:background="#00000000"
                 android:enabled="false"
                 android:hint="Bios"
-                android:textColor="@color/colorPrimary"
+                android:textColor="@color/black"
                 android:textSize="14sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -210,8 +210,8 @@
                 android:layout_marginRight="15dp"
                 android:background="#00000000"
                 android:backgroundTint="#00000000"
-                android:textColorHint="@color/colorPrimary"
-                app:hintTextColor="@color/colorPrimary">
+                android:textColorHint="@color/black"
+                app:hintTextColor="@color/black">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/name"
@@ -221,8 +221,8 @@
                     android:enabled="false"
                     android:hint="Name"
                     android:singleLine="true"
-                    android:textColor="@color/colorPrimary"
-                    android:textColorHint="@color/colorPrimary"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/black"
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -235,8 +235,8 @@
                 android:layout_marginRight="15dp"
                 android:background="#00000000"
                 android:backgroundTint="#00000000"
-                android:textColorHint="@color/colorPrimary"
-                app:hintTextColor="@color/colorPrimary">
+                android:textColorHint="@color/black"
+                app:hintTextColor="@color/black">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/userName"
@@ -248,8 +248,8 @@
                     android:hint="user name"
                     android:inputType="text|textEmailAddress"
                     android:singleLine="true"
-                    android:textColor="@color/colorPrimary"
-                    android:textColorHint="@color/colorPrimary"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/black"
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -262,8 +262,8 @@
                 android:layout_marginRight="15dp"
                 android:background="#00000000"
                 android:backgroundTint="#00000000"
-                android:textColorHint="@color/colorPrimary"
-                app:hintTextColor="@color/colorPrimary">
+                android:textColorHint="@color/black"
+                app:hintTextColor="@color/black">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/bio"
@@ -271,7 +271,7 @@
                     android:layout_height="wrap_content"
                     android:background="#00000000"
                     android:hint="Bio (About Me)"
-                    android:textColor="@color/colorPrimary"
+                    android:textColor="@color/black"
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -279,10 +279,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="25dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="15dp"
                 android:text="Games You play"
-                android:textColor="@color/colorPrimary"
+                android:textColor="@color/black"
                 android:textStyle="bold" />
 
             <HorizontalScrollView
@@ -291,85 +291,142 @@
 
                 <LinearLayout
                     android:id="@+id/gameList"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
+                    android:layout_marginTop="15dp"
                     android:layout_marginRight="10dp"
                     android:orientation="horizontal">
 
-                    <ImageView
-                        android:layout_width="250dp"
-                        android:layout_height="160dp"
-                        android:layout_margin="10dp"
-                        android:onClick="subscribe" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="4dp"
+                        android:background="@drawable/curved_drawable"
+                        android:onClick="subscribe"
+                        android:padding="10dp"
+                        android:tag="0"
+                        android:text="FreeFire" />
 
-                    <ImageView
-                        android:layout_width="250dp"
-                        android:layout_height="160dp"
-                        android:layout_margin="10dp"
-                        android:onClick="subscribe" />
-                    <!--                    <TextView-->
-                    <!--                        android:layout_width="wrap_content"-->
-                    <!--                        android:layout_height="wrap_content"-->
-                    <!--                        android:layout_margin="4dp"-->
-                    <!--                        android:background="@drawable/curved_drawable"-->
-                    <!--                        android:onClick="subscribe"-->
-                    <!--                        android:padding="10dp"-->
-                    <!--                        android:tag="0"-->
-                    <!--                        android:text="FreeFire" />-->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="4dp"
+                        android:background="@drawable/curved_drawable"
+                        android:onClick="subscribe"
+                        android:padding="10dp"
+                        android:tag="0"
+                        android:text="BGMI" />
 
-                    <!--                    <TextView-->
-                    <!--                        android:layout_width="wrap_content"-->
-                    <!--                        android:layout_height="wrap_content"-->
-                    <!--                        android:layout_margin="4dp"-->
-                    <!--                        android:background="@drawable/curved_drawable"-->
-                    <!--                        android:onClick="subscribe"-->
-                    <!--                        android:padding="10dp"-->
-                    <!--                        android:tag="0"-->
-                    <!--                        android:text="BGMI" />-->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="4dp"
+                        android:background="@drawable/curved_drawable"
+                        android:onClick="subscribe"
+                        android:padding="10dp"
+                        android:tag="0"
+                        android:text="Valorant" />
 
-                    <!--                    <TextView-->
-                    <!--                        android:layout_width="wrap_content"-->
-                    <!--                        android:layout_height="wrap_content"-->
-                    <!--                        android:layout_margin="4dp"-->
-                    <!--                        android:background="@drawable/curved_drawable"-->
-                    <!--                        android:onClick="subscribe"-->
-                    <!--                        android:padding="10dp"-->
-                    <!--                        android:tag="0"-->
-                    <!--                        android:text="Valorant" />-->
-
-                    <!--                    <TextView-->
-                    <!--                        android:layout_width="wrap_content"-->
-                    <!--                        android:layout_height="wrap_content"-->
-                    <!--                        android:layout_margin="4dp"-->
-                    <!--                        android:background="@drawable/curved_drawable"-->
-                    <!--                        android:onClick="subscribe"-->
-                    <!--                        android:padding="10dp"-->
-                    <!--                        android:tag="0"-->
-                    <!--                        android:text="Other Games" />-->
-
-
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="4dp"
+                        android:background="@drawable/curved_drawable"
+                        android:onClick="subscribe"
+                        android:padding="10dp"
+                        android:tag="0"
+                        android:text="Other Games" />
                 </LinearLayout>
             </HorizontalScrollView>
+            <!--            <HorizontalScrollView-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content">-->
+
+            <!--                <LinearLayout-->
+            <!--                    android:id="@+id/gameList"-->
+            <!--                    android:layout_width="match_parent"-->
+            <!--                    android:layout_height="wrap_content"-->
+            <!--                    android:layout_marginLeft="10 dp"-->
+            <!--                    android:layout_marginRight="10dp"-->
+            <!--                    android:orientation="horizontal">-->
+
+            <!--                    <ImageView-->
+            <!--                        android:layout_width="250dp"-->
+            <!--                        android:layout_height="160dp"-->
+            <!--                        android:layout_margin="10dp"-->
+            <!--                        android:onClick="subscribe" />-->
+
+            <!--                    <ImageView-->
+            <!--                        android:layout_width="250dp"-->
+            <!--                        android:layout_height="160dp"-->
+            <!--                        android:layout_margin="10dp"-->
+            <!--                        android:onClick="subscribe" />-->
+            <!--                    &lt;!&ndash;                    <TextView&ndash;&gt;-->
+            <!--                    &lt;!&ndash;                        android:layout_width="wrap_content"&ndash;&gt;-->
+            <!--                    &lt;!&ndash;                        android:layout_height="wrap_content"&ndash;&gt;-->
+            <!--                    &lt;!&ndash;                        android:layout_margin="4dp"&ndash;&gt;-->
+            <!--                    &lt;!&ndash;                        android:background="@drawable/curved_drawable"&ndash;&gt;-->
+            <!--                    &lt;!&ndash;                        android:onClick="subscribe"&ndash;&gt;-->
+            <!--                    &lt;!&ndash;                        android:padding="10dp"&ndash;&gt;-->
+            <!--                    &lt;!&ndash;                        android:tag="0"&ndash;&gt;-->
+            <!--                    &lt;!&ndash;                        android:text="FreeFire" />&ndash;&gt;-->
+
+            <!--                    &lt;!&ndash;                    <TextView&ndash;&gt;-->
+            <!--                    &lt;!&ndash;                        android:layout_width="wrap_content"&ndash;&gt;-->
+            <!--                    &lt;!&ndash;                        android:layout_height="wrap_content"&ndash;&gt;-->
+            <!--                    &lt;!&ndash;                        android:layout_margin="4dp"&ndash;&gt;-->
+            <!--                    &lt;!&ndash;                        android:background="@drawable/curved_drawable"&ndash;&gt;-->
+            <!--                    &lt;!&ndash;                        android:onClick="subscribe"&ndash;&gt;-->
+            <!--                    &lt;!&ndash;                        android:padding="10dp"&ndash;&gt;-->
+            <!--                    &lt;!&ndash;                        android:tag="0"&ndash;&gt;-->
+            <!--                    &lt;!&ndash;                        android:text="BGMI" />&ndash;&gt;-->
+
+            <!--                    &lt;!&ndash;                    <TextView&ndash;&gt;-->
+            <!--                    &lt;!&ndash;                        android:layout_width="wrap_content"&ndash;&gt;-->
+            <!--                    &lt;!&ndash;                        android:layout_height="wrap_content"&ndash;&gt;-->
+            <!--                    &lt;!&ndash;                        android:layout_margin="4dp"&ndash;&gt;-->
+            <!--                    &lt;!&ndash;                        android:background="@drawable/curved_drawable"&ndash;&gt;-->
+            <!--                    &lt;!&ndash;                        android:onClick="subscribe"&ndash;&gt;-->
+            <!--                    &lt;!&ndash;                        android:padding="10dp"&ndash;&gt;-->
+            <!--                    &lt;!&ndash;                        android:tag="0"&ndash;&gt;-->
+            <!--                    &lt;!&ndash;                        android:text="Valorant" />&ndash;&gt;-->
+
+            <!--                    &lt;!&ndash;                    <TextView&ndash;&gt;-->
+            <!--                    &lt;!&ndash;                        android:layout_width="wrap_content"&ndash;&gt;-->
+            <!--                    &lt;!&ndash;                        android:layout_height="wrap_content"&ndash;&gt;-->
+            <!--                    &lt;!&ndash;                        android:layout_margin="4dp"&ndash;&gt;-->
+            <!--                    &lt;!&ndash;                        android:background="@drawable/curved_drawable"&ndash;&gt;-->
+            <!--                    &lt;!&ndash;                        android:onClick="subscribe"&ndash;&gt;-->
+            <!--                    &lt;!&ndash;                        android:padding="10dp"&ndash;&gt;-->
+            <!--                    &lt;!&ndash;                        android:tag="0"&ndash;&gt;-->
+            <!--                    &lt;!&ndash;                        android:text="Other Games" />&ndash;&gt;-->
+
+
+            <!--                </LinearLayout>-->
+            <!--            </HorizontalScrollView>-->
         </LinearLayout>
     </LinearLayout>
 
     <soup.neumorphism.NeumorphButton
         android:id="@+id/done"
-        style="@style/Widget.Neumorph.Button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="20dp"
-        android:background="@color/colorPrimary"
-        android:drawableRight="@drawable/arrow"
-        android:text="Done"
-        android:textColor="@color/black"
-        android:visibility="gone"
-        app:neumorph_backgroundColor="@color/colorPrimary"
-        app:neumorph_shapeType="pressed"
-        app:neumorph_strokeColor="@color/darkgrey">
+        style="@style/Widget.Neumorph.Button"
+        android:layout_width="wrap_content"
+        android:layout_height="75dp"
+        android:padding="25dp"
+        app:neumorph_backgroundColor="@color/black"
+        android:layout_gravity="center"
+        app:neumorph_strokeWidth="1dp"
+        android:drawableRight="@drawable/arrow_white"
+        android:text="  Update Profile "
+        android:drawableLeft="@drawable/account"
+        android:textColor="@color/white"
+        android:onClick="sendNumber"
+        app:neumorph_strokeColor="@color/darkgrey"
+        app:neumorph_shapeType="flat">
 
 
     </soup.neumorphism.NeumorphButton>

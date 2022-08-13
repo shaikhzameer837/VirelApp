@@ -19,39 +19,56 @@
         android:layout_marginRight="10dp"
         android:scaleType="centerCrop" />
     <TextView
+        android:id="@+id/type"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="-80dp"
+        android:gravity="center_vertical"
+        android:background="#80000000"
+        android:textColor="@color/colorPrimary"
+        android:drawableLeft="@drawable/account"
+        android:layout_toRightOf="@+id/imgs"
+        android:text="Solo"
+        android:textSize="11dp"
+        android:textStyle="bold" />
+    <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
+        android:layout_marginLeft="10dp"
         android:text="..."
-        android:layout_toRightOf="@+id/imgs"
-        android:textColor="#000000"
-        android:textSize="15sp"
+        android:textColor="@color/black"
+        android:layout_toRightOf="@+id/type"
+        android:textSize="12sp"
         android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/type"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="10dp"
-        android:gravity="center_vertical"
-        android:layout_centerHorizontal="true"
-        android:drawableLeft="@drawable/account"
-        android:layout_toRightOf="@+id/title"
-        android:text="Solo"
-        android:textSize="12dp"
-        android:textStyle="bold" />
     <TextView
         android:id="@+id/entry"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/type"
-        android:text=" Entre Free"
-        android:layout_marginLeft="5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@id/title"
         android:drawableLeft="@drawable/star"
-        android:layout_marginTop="2dp"
+        android:gravity="center_vertical"
+        android:text=" [Free Entry]"
+        android:textColor="@color/black"
         android:textSize="11sp" />
+<!--    <TextView-->
+<!--        android:id="@+id/pp"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginLeft="10dp"-->
+<!--        android:layout_toRightOf="@id/entry"-->
+<!--        android:drawableLeft="@drawable/star"-->
+<!--        android:gravity="center_vertical"-->
+<!--        android:text=" PP [Top 10]"-->
+<!--        android:textColor="@color/black"-->
+<!--        android:textSize="11sp" />-->
+
+
+
 
 
     <TextView
@@ -97,15 +114,14 @@
         android:layout_height="50dp"
         android:layout_alignParentRight="true"
         android:background="@color/color_dialog_gray"
-        app:neumorph_shapeType="flat"
-        app:neumorph_strokeColor="@color/darkgrey"
-        app:neumorph_strokeWidth="1dp">
-    <ImageView
-        android:id="@+id/reg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/arrow"
-        android:textColor="@color/textcolor" />
+        app:neumorph_shapeType="pressed">
+
+        <ImageView
+            android:id="@+id/reg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/info"
+            android:textColor="@color/textcolor" />
     </soup.neumorphism.NeumorphCardView>
 
 <!--    <ImageView-->

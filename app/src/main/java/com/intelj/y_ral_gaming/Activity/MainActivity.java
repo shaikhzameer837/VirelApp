@@ -3,7 +3,6 @@ package com.intelj.y_ral_gaming.Activity;
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
-import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,15 +12,13 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.provider.Settings;
-import android.text.ClipboardManager;
+import android.text.Html;
 import android.transition.Fade;
 import android.util.Log;
 import android.view.Menu;
@@ -46,7 +43,6 @@ import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -55,7 +51,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.android.volley.AuthFailureError;
-import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -65,9 +60,6 @@ import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.facebook.shimmer.ShimmerFrameLayout;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.tabs.TabLayout;
@@ -78,36 +70,27 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.intelj.y_ral_gaming.Adapter.MemberListAdapter;
-import com.intelj.y_ral_gaming.Adapter.PayMentAdapter;
 import com.intelj.y_ral_gaming.Adapter.PopularAdapter;
-import com.intelj.y_ral_gaming.Adapter.RankAdapter;
 import com.intelj.y_ral_gaming.AppController;
+import com.intelj.y_ral_gaming.BaseActivity;
 import com.intelj.y_ral_gaming.Fragment.BottomSheetDilogFragment;
 import com.intelj.y_ral_gaming.Fragment.OneFragment;
-import com.intelj.y_ral_gaming.BaseActivity;
-import com.intelj.y_ral_gaming.TournamentAdapter;
 import com.intelj.y_ral_gaming.PopularModel;
 import com.intelj.y_ral_gaming.R;
 import com.intelj.y_ral_gaming.SigninActivity;
+import com.intelj.y_ral_gaming.TournamentAdapter;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 import com.intelj.y_ral_gaming.Utils.RecyclerTouchListener;
-import com.intelj.y_ral_gaming.Utils.RibbonFactory;
-import com.intelj.y_ral_gaming.VolleyMultipartRequest;
 import com.intelj.y_ral_gaming.main.PaymentWithdraw;
-import com.intelj.y_ral_gaming.main.PlaceholderFragment;
 import com.intelj.y_ral_gaming.model.TournamentModel;
-import com.intelj.y_ral_gaming.model.PaymentHistoryModel;
 import com.intelj.y_ral_gaming.model.UserListModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -117,7 +100,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 public class MainActivity extends BaseActivity {
     AppConstant appConstant;
@@ -997,7 +979,16 @@ public class MainActivity extends BaseActivity {
             if (new AppConstant(MainActivity.this).checkLogin() && intent.getBooleanExtra(AppConstant.amount, false)) {
                 coins.setText(withSuffix(AppController.getInstance().amount));
                 TextView kill = findViewById(R.id.kill);
-                kill.setText(AppController.getInstance().rank + " total kills");
+                kill.setText(Html.fromHtml( "<img src='"+AppConstant.getRank(AppController.getInstance().rank) + "'/> " +  AppController.getInstance().rank + " points", new Html.ImageGetter() {
+                    @Override
+                    public Drawable getDrawable(String source) {
+                        int resourceId = getResources().getIdentifier(source, "drawable", getPackageName());
+                        Drawable drawable = getResources().getDrawable(resourceId);
+                        drawable.setBounds(0, 0, 40, 30);
+                        return drawable;
+                    }
+                }, null));
+                //  AppController.getInstance().rank + " points"
                 kill.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
