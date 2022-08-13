@@ -30,7 +30,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.app.ActivityCompat;
 
 import com.android.volley.AuthFailureError;
@@ -43,22 +42,18 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.intelj.y_ral_gaming.AppController;
-import com.intelj.y_ral_gaming.ContactListModel;
 import com.intelj.y_ral_gaming.R;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 import com.intelj.y_ral_gaming.VolleyMultipartRequest;
@@ -67,8 +62,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 public class EditProfile extends AppCompatActivity {
@@ -208,18 +201,18 @@ public class EditProfile extends AppCompatActivity {
         Glide.with(this).load(sharedPreferences.getString(AppConstant.myPicUrl, ""))
                 .placeholder(R.drawable.game_avatar).into(imgProfile);
         for (int i = 0; i < gameList.getChildCount(); i++) {
-            ImageView imageView =  (ImageView)gameList.getChildAt(i);
-            Glide.with(this).load(imgList[i])
-                    .placeholder(R.drawable.game_avatar).into(imageView);
-//            if (prefs.getString(textView.getText().toString(), "0").equals("0")) {
-//                textView.setBackgroundResource(R.drawable.curved_drawable);
-//                textView.setTextColor(Color.parseColor("#333333"));
-//            } else {
-//                textView.setBackgroundResource(R.drawable.curved_red);
-//                textView.setTextColor(Color.parseColor("#ffffff"));
-//            }
-//            textView.setTag(prefs.getString(textView.getText().toString(), "0"));
-//            textView.setPadding(13, 13, 13, 13);
+            MaterialTextView textView =  (MaterialTextView)gameList.getChildAt(i);
+//            Glide.with(this).load(imgList[i])
+//                    .placeholder(R.drawable.game_avatar).into(imageView);
+            if (prefs.getString(textView.getText().toString(), "0").equals("0")) {
+                textView.setBackgroundResource(R.drawable.curved_drawable);
+                textView.setTextColor(Color.parseColor("#333333"));
+            } else {
+                textView.setBackgroundResource(R.drawable.curved_red);
+                textView.setTextColor(Color.parseColor("#ffffff"));
+            }
+            textView.setTag(prefs.getString(textView.getText().toString(), "0"));
+            textView.setPadding(13, 13, 13, 13);
         }
     }
 

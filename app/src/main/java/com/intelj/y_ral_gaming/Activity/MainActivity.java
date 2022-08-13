@@ -194,7 +194,7 @@ public class MainActivity extends BaseActivity {
         findViewById(R.id.notification).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!new AppConstant(MainActivity.this).checkLogin())
+                if (new AppConstant(MainActivity.this).checkLogin())
                     startActivity(new Intent(MainActivity.this, NotificationActivity.class));
                 else
                     showBottomSheetDialog();
@@ -979,7 +979,7 @@ public class MainActivity extends BaseActivity {
             if (new AppConstant(MainActivity.this).checkLogin() && intent.getBooleanExtra(AppConstant.amount, false)) {
                 coins.setText(withSuffix(AppController.getInstance().amount));
                 TextView kill = findViewById(R.id.kill);
-                kill.setText(Html.fromHtml( AppConstant.getRank(AppController.getInstance().rank) + "", new Html.ImageGetter() {
+                kill.setText(Html.fromHtml( "<img src='"+AppConstant.getRank(AppController.getInstance().rank) + "'/> " +  AppController.getInstance().rank + " points", new Html.ImageGetter() {
                     @Override
                     public Drawable getDrawable(String source) {
                         int resourceId = getResources().getIdentifier(source, "drawable", getPackageName());

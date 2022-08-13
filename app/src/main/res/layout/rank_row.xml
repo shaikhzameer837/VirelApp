@@ -3,18 +3,18 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="5dp">
+    android:padding="1dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="5dp">
+        android:padding="1dp">
 
         <ImageView
             android:id="@+id/imgs"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_marginRight="20dp"
             android:src="@drawable/rank1" />
 
@@ -22,7 +22,7 @@
             android:id="@+id/name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="1dp"
             android:layout_toRightOf="@+id/imgs"
             android:text="iron"
             android:textColor="@color/appColor"
@@ -35,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/name"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="1dp"
             android:layout_toRightOf="@+id/imgs"
             android:text="&#60; 1000 kills"
             android:textSize="12sp" />
@@ -44,7 +44,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_below="@+id/desc"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="1dp"
             android:layout_toRightOf="@+id/imgs"
             android:background="#c0c0c0" />
     </RelativeLayout>
@@ -53,12 +53,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="5dp">
+        android:padding="1dp">
 
         <ImageView
             android:id="@+id/imgs1"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_marginRight="20dp"
             android:src="@drawable/rank2" />
 
@@ -67,7 +67,7 @@
 
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="1dp"
             android:layout_toRightOf="@+id/imgs1"
             android:text="Bronze"
             android:textColor="@color/appColor"
@@ -81,7 +81,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/name1"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="1dp"
             android:layout_toRightOf="@+id/imgs1"
             android:text="&#60; 2000 kills"
             android:textSize="12sp" />
@@ -90,7 +90,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_below="@+id/desc1"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="1dp"
             android:layout_toRightOf="@+id/imgs1"
             android:background="#c0c0c0" />
     </RelativeLayout>
@@ -99,12 +99,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="5dp">
+        android:padding="1dp">
 
         <ImageView
             android:id="@+id/imgs2"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_marginRight="20dp"
             android:src="@drawable/rank4" />
 
@@ -112,7 +112,7 @@
             android:id="@+id/name2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="1dp"
             android:layout_toRightOf="@+id/imgs2"
             android:text="Silver"
             android:textColor="@color/appColor"
@@ -125,7 +125,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/name2"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="1dp"
             android:layout_toRightOf="@+id/imgs2"
             android:text="&#60; 3000 kills"
             android:textSize="12sp" />
@@ -134,7 +134,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_below="@+id/desc2"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="1dp"
             android:layout_toRightOf="@+id/imgs2"
             android:background="#c0c0c0" />
     </RelativeLayout>
@@ -143,12 +143,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="5dp">
+        android:padding="1dp">
 
         <ImageView
             android:id="@+id/imgs3"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_marginRight="20dp"
             android:src="@drawable/rank5" />
 
@@ -156,7 +156,7 @@
             android:id="@+id/name3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="1dp"
             android:layout_toRightOf="@+id/imgs3"
             android:text="Gold"
             android:textColor="@color/appColor"
@@ -169,7 +169,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/name3"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="1dp"
             android:layout_toRightOf="@+id/imgs3"
             android:text="&#60; 4000 kills"
             android:textSize="12sp" />
@@ -178,7 +178,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_below="@+id/desc3"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="1dp"
             android:layout_toRightOf="@+id/imgs3"
             android:background="#c0c0c0" />
     </RelativeLayout>
@@ -187,12 +187,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="5dp">
+        android:padding="1dp">
 
         <ImageView
             android:id="@+id/imgs4"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_marginRight="20dp"
             android:src="@drawable/rank6" />
 
@@ -200,7 +200,7 @@
             android:id="@+id/name4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="1dp"
             android:layout_toRightOf="@+id/imgs4"
             android:text="Platinum"
             android:textColor="@color/appColor"
@@ -213,7 +213,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/name4"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="1dp"
             android:layout_toRightOf="@+id/imgs4"
             android:text="&#60; 5000 kills"
             android:textSize="12sp" />
@@ -222,7 +222,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_below="@+id/desc4"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="1dp"
             android:layout_toRightOf="@+id/imgs4"
             android:background="#c0c0c0" />
     </RelativeLayout>

@@ -1,12 +1,20 @@
 package com.intelj.y_ral_gaming.Activity;
 
+import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Color;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.text.Html;
+import android.text.InputFilter;
 import android.transition.Fade;
 import android.util.Log;
 import android.view.View;
@@ -18,6 +26,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
@@ -43,6 +52,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.intelj.y_ral_gaming.AppController;
 import com.intelj.y_ral_gaming.ChatActivity;
@@ -60,6 +70,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class ProFileActivity extends AppCompatActivity {
     TextView txt;
@@ -73,7 +84,7 @@ public class ProFileActivity extends AppCompatActivity {
     long followers = 0;
     long following = 0;
     ImageView iconImage,chatIcon;
-    TextView rank, rank_button;
+    TextView  rank,rank_button;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,7 +126,8 @@ public class ProFileActivity extends AppCompatActivity {
         final MyAdapter adapter = new MyAdapter(this, getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(adapter);
         if (userid.equals(appConstant.getId())) {
-            rank.setText("Create a team");
+            int id = getResources().getIdentifier(AppConstant.getRank(AppController.getInstance().rank), "drawable", getPackageName());
+            rank.setCompoundDrawablesWithIntrinsicBounds(0,id,0,0);
             // findViewById(R.id.chat).setVisibility(View.GONE);
             iconImage.setImageResource(R.drawable.ic_edit);
             findViewById(R.id.rel_button).setBackgroundResource(R.drawable.curved_red);
@@ -297,8 +309,8 @@ public class ProFileActivity extends AppCompatActivity {
                         try {
                             JSONObject json = new JSONObject(response);
                             if (userid.equals(appConstant.getId())) {
-                                chatIcon.setImageResource(R.drawable.menu_down);
-                                rank_button.setText(json.getInt("rank")+" total kills");
+                                chatIcon.setImageResource(R.drawable.group);
+                                rank_button.setText("My Team");
                                 findViewById(R.id.rel_mess).setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
@@ -349,7 +361,9 @@ public class ProFileActivity extends AppCompatActivity {
     HashSet<String> originalContact = new HashSet<>();
     ContactListAdapter contactListAdapter;
     int returnPhone = 0;
-    private void showTeamList() {
+    EditText teamName;
+    private static final int REQUEST = 112;
+    private void createTeam() {
             editTextList.clear();
             contactModel = new ArrayList<>();
             BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(ProFileActivity.this);
@@ -358,8 +372,12 @@ public class ProFileActivity extends AppCompatActivity {
             bottomSheetDialog.findViewById(R.id.refresh).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-                    //new readContactTask().execute();
+                    String[] PERMISSIONS = {android.Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS};
+                    if (!hasPermissions(ProFileActivity.this, PERMISSIONS)) {
+                        ActivityCompat.requestPermissions(ProFileActivity.this, PERMISSIONS, REQUEST);
+                    } else {
+                        loadChats();
+                    }
                 }
             });
             teamName = bottomSheetDialog.findViewById(R.id.teamName);
@@ -369,6 +387,7 @@ public class ProFileActivity extends AppCompatActivity {
             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(ProFileActivity.this);
             rv_contact.setLayoutManager(mLayoutManager);
             contactModel = new ArrayList<>();
+
             contactListAdapter = new ContactListAdapter(ProFileActivity.this, contactModel);
             rv_contact.setAdapter(contactListAdapter);
             contactListAdapter.checkVisible();
@@ -406,14 +425,163 @@ public class ProFileActivity extends AppCompatActivity {
                             return;
                         }
                     }
-                    joinEvent();
                     bottomSheetDialog.cancel();
                 }
             });
             addEditText("", new AppConstant(ProFileActivity.this).getId());
             bottomSheetDialog.show();
     }
+    private void loadChats() {
+        Set<String> set = shd.getStringSet(AppConstant.contact, null);
+        if (set != null) {
+            for (String s : set) {
+                SharedPreferences userInfo = getSharedPreferences(s, Context.MODE_PRIVATE);
+                contactModel.add(new ContactListModel(userInfo.getString(AppConstant.myPicUrl, ""), appConstant.getContactName(userInfo.getString(AppConstant.phoneNumber, "")), userInfo.getString(AppConstant.id, ""), userInfo.getString(AppConstant.bio, "")));
+            }
+            contactListAdapter.notifyDataSetChanged();
+        } else
+            new readContactTask().execute();
+    }
+    class readContactTask extends AsyncTask<Void, Integer, String> {
+        String TAG = getClass().getSimpleName();
 
+        protected void onPreExecute() {
+            super.onPreExecute();
+            contactModel.clear();
+            Log.d(TAG + " PreExceute", "On pre Exceute......");
+        }
+
+        protected String doInBackground(Void... arg0) {
+            readContacts();
+            returnPhone = 0;
+            originalContact.clear();
+            for (String phoneNo : contactArrayList.keySet()) {
+                serverContact(phoneNo, contactArrayList.get(phoneNo));
+            }
+            return "You are at PostExecute";
+        }
+
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            contactListAdapter.notifyDataSetChanged();
+        }
+    }
+    public void serverContact(String number, String original) {
+        Log.e("userNum", number);
+        DatabaseReference mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        Query query = mFirebaseDatabaseReference.child("users").orderByChild("phoneNumber").equalTo(number);
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                returnPhone++;
+                if (dataSnapshot != null) {
+                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                        Log.e("number//", original);
+                        Log.e("number//---", postSnapshot.getKey());
+                        originalContact.add(postSnapshot.getKey());
+                        appConstant.saveUserInfo(original, postSnapshot.getKey(), "http://y-ral-gaming.com/admin/api/images/" + postSnapshot.getKey() + ".png?u=" + AppConstant.imageExt(), null, "", postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue() != null ? postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue().toString() : null, postSnapshot.child(AppConstant.userName).getValue() != null ? postSnapshot.child(AppConstant.userName).getValue().toString() : System.currentTimeMillis() + "");
+                        contactModel.add(new ContactListModel("http://y-ral-gaming.com/admin/api/images/" + postSnapshot.getKey() + ".png?u=" + AppConstant.imageExt(), appConstant.getContactName(postSnapshot.child(AppConstant.phoneNumber).getValue(String.class)), postSnapshot.getKey(), postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue() != null ? postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue().toString() : ""));
+                    }
+                }
+                if (contactArrayList.size() == returnPhone) {
+                    SharedPreferences.Editor setEditor = shd.edit();
+                    setEditor.putStringSet(AppConstant.contact, originalContact);
+                    setEditor.apply();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+    public void showTeamList() {
+        View view = getLayoutInflater().inflate(R.layout.rank_row, null);
+        final BottomSheetDialog dialogBottom = new BottomSheetDialog(ProFileActivity.this);
+        dialogBottom.setContentView(view);
+        dialogBottom.show();
+    }
+    public void readContacts() {
+        contactArrayList.clear();
+        ContentResolver cr = getContentResolver();
+        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
+                null, null, null, null);
+        if ((cur != null ? cur.getCount() : 0) > 0) {
+            while (cur != null && cur.moveToNext()) {
+                String id = cur.getString(
+                        cur.getColumnIndex(ContactsContract.Contacts._ID));
+                String name = cur.getString(cur.getColumnIndex(
+                        ContactsContract.Contacts.DISPLAY_NAME));
+
+                if (cur.getInt(cur.getColumnIndex(
+                        ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0) {
+                    Cursor pCur = cr.query(
+                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                            null,
+                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
+                            new String[]{id}, null);
+                    while (pCur.moveToNext()) {
+                        String phoneNo = pCur.getString(pCur.getColumnIndex(
+                                ContactsContract.CommonDataKinds.Phone.NUMBER)).replace(" ", "");
+                        if (phoneNo.length() > 8) {
+                            String original = phoneNo;
+                            if (phoneNo.startsWith("0"))
+                                phoneNo = phoneNo.substring(1);
+                            if (!phoneNo.startsWith("+"))
+                                phoneNo = appConstant.getCountryCode() + phoneNo;
+                            Log.i("Phone Number: ", appConstant.getCountryCode());
+                            contactArrayList.put(phoneNo, original);
+                        }
+
+                    }
+                    pCur.close();
+                }
+            }
+        }
+        if (cur != null) {
+            cur.close();
+        }
+    }
+    private static boolean hasPermissions(Context context, String... permissions) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    public void addEditText(String userName, String userId) {
+        for (int i = 0; i < editTextList.size(); i++) {
+            if (editTextList.get(i).getTag().equals(userId)) {
+                lin.removeView(textInputLayouts.get(i));
+                editTextList.remove(editTextList.get(i));
+                return;
+            }
+        }
+        EditText editText = new EditText(ProFileActivity.this);
+        editText.setTextSize(12);
+        editText.setSingleLine(true);
+        editText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
+        editText.setTag(userId);
+        LinearLayout.LayoutParams editTextParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        TextInputLayout textInputLayout = new TextInputLayout(ProFileActivity.this, null, R.style.Widget_MaterialComponents_TextInputLayout_OutlinedBox);
+        textInputLayout.setBoxBackgroundMode(TextInputLayout.BOX_BACKGROUND_OUTLINE);
+        textInputLayout.setBoxCornerRadii(5, 5, 5, 5);
+        LinearLayout.LayoutParams textInputLayoutParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        textInputLayout.setLayoutParams(textInputLayoutParams);
+        textInputLayout.addView(editText, editTextParams);
+        textInputLayout.setHint(editTextList.size() == 0 ? "Enter your ingame name" : "Enter " + userName + "'s ingame name");
+        editTextList.add(editText);
+        lin.addView(textInputLayout);
+        textInputLayouts.add(textInputLayout);
+    }
     public class MyAdapter extends FragmentPagerAdapter {
 
         private Context myContext;

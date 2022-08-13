@@ -95,7 +95,7 @@ public class PlaceholderFragment extends Fragment implements View.OnClickListene
         TextView coins = binding.coins;
         TextView ranks = binding.ranks;
         coins.setText(AppController.getInstance().amount + "");
-        ranks.setText(Html.fromHtml("<b><font size='14' color='#000000'>" + AppConstant.getRank(AppController.getInstance().rank) + "", new Html.ImageGetter() {
+        ranks.setText(Html.fromHtml("<img src='"+AppConstant.getRank(AppController.getInstance().rank) + "'/> " , new Html.ImageGetter() {
             @Override
             public Drawable getDrawable(String source) {
                 int resourceId = getResources().getIdentifier(source, "drawable", getActivity().getPackageName());

@@ -127,7 +127,10 @@
                 <TextView
                     android:id="@+id/rank"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:drawableTop="@drawable/rank1"
+                    android:text="Rank"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center_horizontal"
                     android:textSize="12sp" />
@@ -207,13 +210,13 @@
 
                     <TextView
                         android:id="@+id/rank_button"
-                        android:layout_toRightOf="@+id/chatIcon"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:layout_toRightOf="@+id/chatIcon"
                         android:gravity="center"
-                        android:textSize="12sp"
                         android:text="Message"
                         android:textColor="@color/black"
+                        android:textSize="12sp"
                         android:textStyle="bold" />
                 </RelativeLayout>
             </LinearLayout>

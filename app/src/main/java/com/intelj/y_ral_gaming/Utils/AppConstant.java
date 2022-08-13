@@ -303,17 +303,17 @@ public class AppConstant {
     }
     public static String getRank(int rankPoint) {
         if (rankPoint < 1000) {
-            return "<img src='rank1' /> " + rankPoint + " points";
+            return "rank1";
         } else if (rankPoint < 2000) {
-            return rankPoint + "<img src='rank2' /> " + rankPoint + " points";
+            return rankPoint + "rank2" ;
         } else if (rankPoint < 3000) {
-            return rankPoint + "<img src='rank3' />" + rankPoint + " points";
+            return rankPoint + "rank3" ;
         } else if (rankPoint < 4000) {
-            return rankPoint + "<img src='rank4' />" + rankPoint + " points";
+            return rankPoint + "rank4" ;
         } else if (rankPoint < 5000) {
-            return rankPoint + "<img src='rank5' />" + rankPoint + " points" ;
+            return rankPoint + "rank5"  ;
         } else if (rankPoint < 6000) {
-            return rankPoint + "<img src='rank6' />" + rankPoint + " points";
+            return rankPoint + "rank6" ;
         }
         return "";
     }
