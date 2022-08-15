@@ -131,8 +131,7 @@ public class AppController extends Application implements Application.ActivityLi
     }
 
     int x = 0;
-
-    private void getUserInfo() {
+    public void getUserInfo() {
         x = 0;
         Log.e("userId1s", userId);
         mDatabase = FirebaseDatabase.getInstance().getReference(AppConstant.users).child(userId);

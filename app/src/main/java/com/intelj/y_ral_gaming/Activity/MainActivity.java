@@ -75,6 +75,8 @@ import com.intelj.y_ral_gaming.Adapter.MemberListAdapter;
 import com.intelj.y_ral_gaming.Adapter.PopularAdapter;
 import com.intelj.y_ral_gaming.AppController;
 import com.intelj.y_ral_gaming.BaseActivity;
+import com.intelj.y_ral_gaming.ChatActivity;
+import com.intelj.y_ral_gaming.ContactListModel;
 import com.intelj.y_ral_gaming.Fragment.BottomSheetDilogFragment;
 import com.intelj.y_ral_gaming.Fragment.OneFragment;
 import com.intelj.y_ral_gaming.PopularModel;
@@ -83,6 +85,7 @@ import com.intelj.y_ral_gaming.SigninActivity;
 import com.intelj.y_ral_gaming.TournamentAdapter;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 import com.intelj.y_ral_gaming.Utils.RecyclerTouchListener;
+import com.intelj.y_ral_gaming.db.AppDataBase;
 import com.intelj.y_ral_gaming.main.PaymentWithdraw;
 import com.intelj.y_ral_gaming.model.TournamentModel;
 import com.intelj.y_ral_gaming.model.UserListModel;
@@ -114,13 +117,9 @@ public class MainActivity extends BaseActivity {
     ImageView imgProfile, saveProf;
     String picturePath = null;
     TextView playerName, ncount;
-    TextInputEditText discordId;
-    private Uri filePath = null;
     AlertDialog dialog;
     public static final int PERMISSIONS_REQUEST_READ_CONTACTS = 15;
-    FirebaseStorage storage;
-    StorageReference storageReference;
-    ProgressDialog progressDialog;
+    TextView kill;
     int oldId;
     ImageView imageView;
     List<PopularModel> popularModels = new ArrayList<>();
@@ -138,6 +137,13 @@ public class MainActivity extends BaseActivity {
         imgProfile = findViewById(R.id.imgs);
         ncount = findViewById(R.id.ncount);
         appConstant = new AppConstant(this);
+        kill = findViewById(R.id.kill);
+        kill.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showRankChat();
+            }
+        });
 //        AppController.getInstance().shortsUrlList.add("https://cdn.discordapp.com/attachments/911308156855005195/981386524530716702/weirdest_things_astronauts_have_seen_cdn.320mp3converter.com.mp4");
 //        AppController.getInstance().shortsUrlList.add("https://cdn.discordapp.com/attachments/911308156855005195/981387457994047539/videoplayback.mp4");
 //        Map<String, Object> city = new HashMap<>();
@@ -272,6 +278,62 @@ public class MainActivity extends BaseActivity {
                                         startActivity(new Intent(MainActivity.this, ChatList.class));
                                     }
                                 });
+                                ImageView newChat = inflated.findViewById(R.id.newChat);
+                                newChat.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        startActivity(new Intent(MainActivity.this, ChatList.class));
+                                    }
+                                });
+
+                                SharedPreferences shd = getSharedPreferences(AppConstant.recent, MODE_PRIVATE);
+                                Set<String> set = shd.getStringSet(AppConstant.contact, null);
+                                ArrayList<ContactListModel> contactModel = new ArrayList<>();
+                                if (set != null) {
+                                    for (String s : set) {
+                                        SharedPreferences userInfo = getSharedPreferences(s, Context.MODE_PRIVATE);
+                                        AppDataBase appDataBase = AppDataBase.getDBInstance(MainActivity.this, s + "_chats");
+                                        Log.e("messages", s);
+                                        contactModel.add(0, new ContactListModel(userInfo.getString(AppConstant.myPicUrl, ""), appConstant.getContactName(userInfo.getString(AppConstant.phoneNumber, "")), userInfo.getString(AppConstant.id, ""), appDataBase.chatDao().getlastMess().size() > 0 ? appDataBase.chatDao().getlastMess().get(0).messages : ""));
+                                    }
+                                    Collections.sort(contactModel, new Comparator<ContactListModel>() {
+                                        @Override
+                                        public int compare(final ContactListModel object1, final ContactListModel object2) {
+                                            Log.e("Collections", object1.getName() + " " + object2.getName());
+                                            return object1.getName().compareTo(object2.getName());
+                                        }
+                                    });
+                                    inflated.findViewById(R.id.lin).setVisibility(View.GONE);
+                                }
+                                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(MainActivity.this);
+                                RecyclerView rv_contact = inflated.findViewById(R.id.rv_contact);
+                                rv_contact.setLayoutManager(mLayoutManager);
+                                ContactListAdapter contactListAdapter = new ContactListAdapter(MainActivity.this, contactModel);
+                                rv_contact.setAdapter(contactListAdapter);
+                                rv_contact.addOnItemTouchListener(new RecyclerTouchListener(MainActivity.this, rv_contact, new RecyclerTouchListener.ClickListener() {
+                                    @Override
+                                    public void onClick(View view, int position) {
+                                        if (!appConstant.checkLogin()) {
+                                            startActivity(new Intent(MainActivity.this, SigninActivity.class));
+                                            return;
+                                        }
+                                        Intent intent = new Intent(MainActivity.this, ChatActivity.class);
+                                        String transitionName = "fade";
+                                        View transitionView = view.findViewById(R.id.profile);
+                                        ViewCompat.setTransitionName(transitionView, transitionName);
+                                        ActivityOptionsCompat options = ActivityOptionsCompat.
+                                                makeSceneTransitionAnimation(MainActivity.this, transitionView, transitionName);
+                                        intent.putExtra(AppConstant.id, contactModel.get(position).getUserid());
+                                        startActivity(intent, options.toBundle());
+                                    }
+
+                                    @Override
+                                    public void onLongClick(View view, int position) {
+
+                                    }
+                                }));
+
+
 //                                shd = getSharedPreferences(AppConstant.id, MODE_PRIVATE);
 //                                rv_contact = inflated.findViewById(R.id.rv_contact);
 //                                inflated.findViewById(R.id.refresh).setOnClickListener(new View.OnClickListener() {
@@ -370,7 +432,7 @@ public class MainActivity extends BaseActivity {
                                 JSONObject jObj = ja_data.getJSONObject(i);
                                 appConstant.saveUserInfo("", jObj.getString("userid"), "http://y-ral-gaming.com/admin/api/images/" + jObj.getString("userid") + ".png?u=" + AppConstant.imageExt(), jObj.getString("name"), "", null, jObj.getString("userid"));
                                 popularModels.add(new PopularModel(jObj.getString("url"), jObj.getString("name"), jObj.getString("amount"), jObj.getString("userid")));
-                             }
+                            }
                             Collections.sort(popularModels, new Comparator<PopularModel>() {
                                 @Override
                                 public int compare(PopularModel o1, PopularModel o2) {
@@ -735,10 +797,6 @@ public class MainActivity extends BaseActivity {
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
-//                String url = notificationModelList.get(position).getDiscord_url();
-//                Intent i = new Intent(Intent.ACTION_VIEW);
-//                i.setData(Uri.parse(url));
-//                startActivity(i);
                 Intent intent = new Intent(MainActivity.this, EventInfo.class);
                 String transitionName = "fade";
                 View transitionView = view.findViewById(R.id.images);
@@ -755,6 +813,7 @@ public class MainActivity extends BaseActivity {
 
             }
         }));
+
     }
 
     private void inflateView(int layout) {
@@ -808,7 +867,6 @@ public class MainActivity extends BaseActivity {
         if (requestCode == PROFILE_IMAGE && resultCode == RESULT_OK
                 && null != data) {
             Uri selectedImg = data.getData();
-            filePath = data.getData();
             String[] filePathColumn = {MediaStore.Images.Media.DATA};
             Cursor cursor = getContentResolver().query(selectedImg,
                     filePathColumn, null, null, null);
@@ -978,8 +1036,7 @@ public class MainActivity extends BaseActivity {
             }
             if (new AppConstant(MainActivity.this).checkLogin() && intent.getBooleanExtra(AppConstant.amount, false)) {
                 coins.setText(withSuffix(AppController.getInstance().amount));
-                TextView kill = findViewById(R.id.kill);
-                kill.setText(Html.fromHtml( "<img src='"+AppConstant.getRank(AppController.getInstance().rank) + "'/> " +  AppController.getInstance().rank + " points", new Html.ImageGetter() {
+                kill.setText(Html.fromHtml("<img src='" + AppConstant.getRank(AppController.getInstance().rank) + "'/> " + AppController.getInstance().rank + " points", new Html.ImageGetter() {
                     @Override
                     public Drawable getDrawable(String source) {
                         int resourceId = getResources().getIdentifier(source, "drawable", getPackageName());
@@ -989,12 +1046,7 @@ public class MainActivity extends BaseActivity {
                     }
                 }, null));
                 //  AppController.getInstance().rank + " points"
-                kill.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        showRankChat();
-                    }
-                });
+
                 return;
             }
             if (intent.getBooleanExtra(AppConstant.teamMember, false)) {
@@ -1005,6 +1057,7 @@ public class MainActivity extends BaseActivity {
             }
         }
     };
+
 
     //    private void setRoomVideo(final String roomPlan) {
 //        AppController.getInstance().uploadUrl = AppConstant.live_stream + "/" + AppController.getInstance().channelId + "/" + roomPlan + "/";
@@ -1134,7 +1187,7 @@ public class MainActivity extends BaseActivity {
         final BottomSheetDialog dialogBottom = new BottomSheetDialog(MainActivity.this, R.style.BottomSheetDialog);
         dialogBottom.setContentView(view);
         dialogBottom.show();
-        Button btn_ok = view.findViewById(R.id.ok);
+        TextView btn_ok = view.findViewById(R.id.ok);
         btn_ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

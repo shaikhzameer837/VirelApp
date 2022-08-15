@@ -38,7 +38,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView name, lastMess;
+        TextView name, lastMess,nCount;
         ImageView iv_profile;
         CheckBox checkbox;
 
@@ -48,6 +48,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
             lastMess = view.findViewById(R.id.lastMess);
             iv_profile = view.findViewById(R.id.profile);
             checkbox = view.findViewById(R.id.checkbox);
+            nCount = view.findViewById(R.id.nCount);
         }
     }
 
@@ -71,10 +72,10 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         holder.name.setText(contactModel.get(position).getName());
+        holder.lastMess.setText(contactModel.get(position).getBio());
         Log.e("contactModel", contactModel.get(position).getProfile());
         holder.checkbox.setChecked(checkBoxList.contains(contactModel.get(position).getUserid()));
         holder.checkbox.setVisibility(isCheckBoxVisible ? View.VISIBLE : View.GONE);
-        holder.lastMess.setText("Hey Folk! I m here");
         Glide.with(mContext).load("http://y-ral-gaming.com/admin/api/images/" + contactModel.get(position).getUserid() + ".png?u=" + AppConstant.imageExt()).placeholder(R.drawable.game_avatar).apply(new RequestOptions().circleCrop()).into(holder.iv_profile);
     }
 

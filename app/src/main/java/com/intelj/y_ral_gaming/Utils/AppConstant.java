@@ -17,6 +17,13 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -26,6 +33,8 @@ import com.intelj.y_ral_gaming.PaymentActivity;
 import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AppConstant {
     public static String follow = "follow";
@@ -81,6 +90,7 @@ public class AppConstant {
             pinfo = "pinfo",
             noti = "noti",
             realTime = "realTime",
+            recent = "recent",
             msg = "msg",
             discordId = "discordId",
             bio = "bio",
@@ -128,7 +138,7 @@ public class AppConstant {
     }
 
     public static long imageExt() {
-        return (System.currentTimeMillis() / 60000);
+        return (System.currentTimeMillis() / 120000);
     }
 
     public static boolean isProduction = false;
@@ -147,7 +157,38 @@ public class AppConstant {
         this._context = _context;
         setSharedPref();
     }
+    public void callingPingApi(String userId){
+        RequestQueue queue = Volley.newRequestQueue(_context);
+        String url = "http://y-ral-gaming.com/admin/api/firebase/not.php";
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.e("success", response);
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("success", error.getLocalizedMessage());
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                HashMap<String, String> hashMap = new HashMap<>();
+                hashMap.put("userId", userId);
+                return hashMap;
+            }
 
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Content-Type", "application/x-www-form-urlencoded");
+                return params;
+            }
+        };
+
+        queue.add(stringRequest);
+    }
     public void setSharedPref() {
         sharedPreferences = _context.getSharedPreferences(AppName, Context.MODE_PRIVATE);
     }

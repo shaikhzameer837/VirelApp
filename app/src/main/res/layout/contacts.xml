@@ -12,20 +12,36 @@
     app:behavior_peekHeight="356dp"
     app:layout_behavior="@string/bottom_sheet_behavior">
 
-    <TextView
-        android:id="@+id/title"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:enabled="false"
-        android:gravity="center_horizontal"
-        android:lines="1"
-        android:paddingTop="15dp"
-        android:singleLine="true"
-        android:text="Recent Chat"
-        android:textColor="@color/colorPrimary"
-        android:textColorHint="@color/grey_black"
-        android:textSize="12sp"
-        android:textStyle="bold" />
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:layout_weight="1"
+            android:enabled="false"
+            android:gravity="center_horizontal"
+            android:lines="1"
+            android:paddingLeft="25dp"
+            android:paddingTop="15dp"
+            android:paddingRight="25dp"
+            android:paddingBottom="50dp"
+            android:singleLine="true"
+            android:text="Recent Chat"
+            android:textColor="@color/colorPrimary"
+            android:textColorHint="@color/grey_black"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+        <ImageView android:id="@+id/newChat"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="25dp"
+            android:src="@drawable/forum_plus_outline"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -37,6 +53,7 @@
         android:paddingRight="10dp">
 
         <LinearLayout
+            android:id="@+id/lin"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -54,13 +71,15 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/fMessage"
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:backgroundTint="@color/appColor"
-                android:textColor="@color/colorPrimary"
-                app:cornerRadius="10dp"
-                android:textSize="12sp"
+                android:layout_height="45dp"
                 android:layout_gravity="center_horizontal"
-                android:text="Start Your first Message" />
+                android:backgroundTint="@color/appColor"
+                android:drawableLeft="@drawable/forum_plus_outline"
+                android:drawableRight="@drawable/arrow_right"
+                android:text="Start Your first Message"
+                android:textColor="@color/colorPrimary"
+                android:textSize="12sp"
+                app:cornerRadius="10dp" />
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView

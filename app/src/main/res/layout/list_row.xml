@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginLeft="10dp"
-    android:layout_marginTop="5dp"
     android:layout_marginRight="10dp"
+    android:layout_marginTop="5dp"
     android:background="@color/colorPrimary"
     android:clickable="true"
     android:focusable="true"
@@ -18,29 +18,31 @@
         android:layout_height="55dp"
         android:layout_marginRight="10dp"
         android:scaleType="centerCrop" />
+
     <TextView
         android:id="@+id/type"
         android:layout_width="70dp"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="-80dp"
-        android:gravity="center_vertical"
-        android:background="#80000000"
-        android:textColor="@color/colorPrimary"
-        android:drawableLeft="@drawable/account"
         android:layout_toRightOf="@+id/imgs"
+        android:background="#80000000"
+        android:drawableLeft="@drawable/account"
+        android:gravity="center_vertical"
         android:text="Solo"
+        android:textColor="@color/colorPrimary"
         android:textSize="11dp"
         android:textStyle="bold" />
+
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/type"
         android:text="..."
         android:textColor="@color/black"
-        android:layout_toRightOf="@+id/type"
         android:textSize="12sp"
         android:textStyle="bold" />
 
@@ -55,20 +57,17 @@
         android:text=" [Free Entry]"
         android:textColor="@color/black"
         android:textSize="11sp" />
-<!--    <TextView-->
-<!--        android:id="@+id/pp"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginLeft="10dp"-->
-<!--        android:layout_toRightOf="@id/entry"-->
-<!--        android:drawableLeft="@drawable/star"-->
-<!--        android:gravity="center_vertical"-->
-<!--        android:text=" PP [Top 10]"-->
-<!--        android:textColor="@color/black"-->
-<!--        android:textSize="11sp" />-->
-
-
-
+    <!--    <TextView-->
+    <!--        android:id="@+id/pp"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginLeft="10dp"-->
+    <!--        android:layout_toRightOf="@id/entry"-->
+    <!--        android:drawableLeft="@drawable/star"-->
+    <!--        android:gravity="center_vertical"-->
+    <!--        android:text=" PP [Top 10]"-->
+    <!--        android:textColor="@color/black"-->
+    <!--        android:textSize="11sp" />-->
 
 
     <TextView
@@ -76,22 +75,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/title"
+        android:layout_marginTop="2dp"
         android:layout_toRightOf="@+id/imgs"
         android:text="../.."
-        android:layout_marginTop="2dp"
         android:textColor="@color/darkgreen"
         android:textSize="11sp" />
 
 
-   <TextView
+    <TextView
         android:id="@+id/count"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@id/prizepool"
-        android:layout_toRightOf="@+id/imgs"
-        android:text="../.."
-        android:gravity="bottom"
         android:layout_marginTop="2dp"
+        android:layout_toRightOf="@+id/imgs"
+        android:gravity="bottom"
+        android:text="../.."
         android:textColor="@color/appColor"
         android:textSize="11sp" />
 
@@ -99,40 +98,26 @@
         android:id="@+id/info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/prizepool"
-        android:layout_marginLeft="10dp"
         android:layout_alignParentRight="true"
-        android:text="Register now"
-        android:layout_marginTop="5dp"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center"
+        android:drawableRight="@drawable/arrow_right_black"
+        android:gravity="center"
+        android:text=" Join Now "
         android:textColor="@color/appColor"
         android:textSize="13sp"
         android:textStyle="bold" />
 
-    <soup.neumorphism.NeumorphCardView
-        style="@style/Widget.Neumorph.Button"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_alignParentRight="true"
-        android:background="@color/color_dialog_gray"
-        app:neumorph_shapeType="pressed">
 
-        <ImageView
-            android:id="@+id/reg"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/info"
-            android:textColor="@color/textcolor" />
-    </soup.neumorphism.NeumorphCardView>
-
-<!--    <ImageView-->
-<!--        android:id="@+id/reg"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_alignParentRight="true"-->
-<!--        android:layout_centerVertical="true"-->
-<!--        android:background="@drawable/round_drawable"-->
-<!--        android:src="@drawable/arrow"-->
-<!--        android:textColor="@color/textcolor" />-->
+    <!--    <ImageView-->
+    <!--        android:id="@+id/reg"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_alignParentRight="true"-->
+    <!--        android:layout_centerVertical="true"-->
+    <!--        android:background="@drawable/round_drawable"-->
+    <!--        android:src="@drawable/arrow"-->
+    <!--        android:textColor="@color/textcolor" />-->
 
 
 </RelativeLayout>

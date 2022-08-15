@@ -74,24 +74,26 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder> 
         params.gravity = chat.owner.equals(myId) ? Gravity.RIGHT : Gravity.LEFT;
         holder.out_layer.setLayoutParams(params);
         holder.chat_layout.setGravity(chat.owner.equals(myId) ? Gravity.RIGHT : Gravity.LEFT);
-        holder.chatBubble.setBackgroundColor(Color.parseColor("#000000"));
+        holder.chatBubble.setBackgroundColor(chat.owner.equals(myId) ? Color.parseColor("#000000") : Color.parseColor("#ffffff"));
         //   holder.chat_layout.setBackgroundResource(chat.owner.equals(myId) ? R.drawable.chat_right : R.drawable.left_message);
         holder.title.setText(chat.messages);
         holder.title.setTextColor(chat.owner.equals(myId) ?  Color.WHITE : Color.BLACK );
       //  holder.time.setTextColor(chat.owner.equals(myId) ? Color.parseColor("#ffffff") : Color.parseColor("#000000"));
         holder.time.setText(AppConstant.getTimeAgo(Long.parseLong(chat.times)));
+        holder.time.setGravity(chat.owner.equals(myId) ? Gravity.RIGHT : Gravity.LEFT);
+        holder.time.setLayoutParams(params);
         holder.img.setVisibility(chat.subject == 1 ? View.VISIBLE : View.GONE);
         holder.title.setVisibility(chat.subject == 0 ? View.VISIBLE : View.GONE);
-        if (chat.subject == 1) {
-            if (new File(chat.messages).exists()) {
-                Glide.with(mContext).load(chat.messages).into(holder.img);
-            } else {
-                byte[] decodedString = Base64.decode(chat.blurImg
-                        , Base64.DEFAULT);
-                Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                holder.img.setImageBitmap(decodedByte);
-            }
-        }
+//        if (chat.subject == 1) {
+//            if (new File(chat.messages).exists()) {
+//                Glide.with(mContext).load(chat.messages).into(holder.img);
+//            } else {
+//                byte[] decodedString = Base64.decode(chat.blurImg
+//                        , Base64.DEFAULT);
+//                Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+//                holder.img.setImageBitmap(decodedByte);
+//            }
+//        }
     }
 
     @Override

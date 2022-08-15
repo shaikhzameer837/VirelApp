@@ -57,6 +57,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import soup.neumorphism.NeumorphCardView;
+
 public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyViewHolder> {
     Context mContext;
     AppConstant appConstant;
@@ -68,14 +70,13 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView title, info, type, count, prizepool;
-        ImageView reg, imgs;
+        ImageView imgs;
 
         public MyViewHolder(View view) {
             super(view);
             title = view.findViewById(R.id.title);
             count = view.findViewById(R.id.count);
             prizepool = view.findViewById(R.id.prizepool);
-            reg = view.findViewById(R.id.reg);
             imgs = view.findViewById(R.id.imgs);
             info = view.findViewById(R.id.info);
             type = view.findViewById(R.id.type);
@@ -105,8 +106,6 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
     public void onBindViewHolder(MyViewHolder holder, int position) {
         holder.title.setText(gameItem.get(position).getTime());
         holder.prizepool.setText("Per Kill \u20B9" + gameItem.get(position).getPerKill());
-//        String strDate = title + " " + date + " " + movieList.get(position).getTime().replace("pm", ":00:00 pm")
-//                .replace("am", ":00:00 am");
         Glide.with(mContext).load(gameItem.get(position).getYt_url().equals("") ? R.drawable.placeholder : "https://i.ytimg.com/vi/" + gameItem.get(position).getYt_url() + "/hqdefault_live.jpg").placeholder(R.mipmap.app_logo).into(holder.imgs);
         holder.imgs.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -144,63 +143,31 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
                 break;
         }
         holder.count.setText(gameItem.get(position).getCount() + "/" + gameItem.get(position).getMax());
-        // holder.reg.setImageResource(movieList.get(position).getIsexist().equals("1") ? R.drawable.check : R.drawable.arrow);
-        holder.info.setText(gameItem.get(position).getIsexist().equals("0") ? "Join now" : "Aready Joined");
+        holder.info.setText(gameItem.get(position).getIsexist().equals("0") ? "Join now  " : "Aready Joined  ");
         holder.info.setTextColor(gameItem.get(position).getIsexist().equals("0") ? Color.parseColor("#7e241c") : Color.parseColor("#097969"));
-        holder.reg.setOnClickListener(new View.OnClickListener() {
+        holder.info.setTag(position);
+        holder.info.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!new AppConstant(mContext).checkLogin()) {
-                    Intent intent = new Intent("custom-event-name");
-                    intent.putExtra(AppConstant.AppName, true);
-                    LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);
-                    return;
+                if (gameItem.get((int) v.getTag()).getIsexist().equals("0"))
+                    registerTeam(position);
+                else {
+                    Toast.makeText(v.getContext(), "You have already registered", Toast.LENGTH_LONG).show();
+                    GameInfo BottomSheetFragment = new GameInfo();
+                    BottomSheetFragment.show(((AppCompatActivity) mContext).getSupportFragmentManager(), "");
                 }
-//                AppController.getInstance().gameItem = gameItem.get(position);
-//                Intent intent = new Intent(mContext, ResultActivity.class);
-//                intent.putExtra("title", title);
-//                mContext.startActivity(intent);
             }
         });
-        if (gameItem.get(position).getIsexist().equals("1")) {
-            //holder.reg.setBackgroundResource(0);
-            holder.info.setOnClickListener(null);
-        } else {
-            // holder.reg.setBackgroundResource(R.drawable.round_drawable);
-            holder.info.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (!new AppConstant(mContext).checkLogin()) {
-                        Intent intent = new Intent("custom-event-name");
-                        intent.putExtra(AppConstant.AppName, true);
-                        LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);
-                        return;
-                    }
-                    showBottomSheetDialog(position);
+    }
 
-//                    SharedPreferences sharedPreferences = mContext.getSharedPreferences(AppConstant.AppName, 0);
-//                    if (sharedPreferences.getString(title, "").equals("")) {
-//                        Log.e("onClick3: ", "no bgmi id");
-//                        Intent intent = new Intent("custom-event-name");
-//                        intent.putExtra(AppConstant.userName, true);
-//                        LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);
-//                        return;
-//                    }
-//                    saveUserInfo(position, v, sharedPreferences.getString(title, ""), strDate);
-//                        BottomSheetFragment bottomSheetFragment = new BottomSheetFragment();
-//                        bottomSheetFragment.show(((AppCompatActivity)mContext).getSupportFragmentManager(), bottomSheetFragment.getTag());
-//                    }
-////                        showTeamList(strDate);
-////                        viewpagerbottomsheet();
-//                    else {
-//                                              Intent intent = new Intent("custom-event-name");
-//                        intent.putExtra(AppConstant.AppName, true);
-//                        LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);
-
-                }
-            });
+    private void registerTeam(int position) {
+        if (!new AppConstant(mContext).checkLogin()) {
+            Intent intent = new Intent("custom-event-name");
+            intent.putExtra(AppConstant.AppName, true);
+            LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);
+            return;
         }
-//        holder.info.setText("Entry Free Prize pool per kill \u20B9" + movieList.get(position).getPerKill());
+        showBottomSheetDialog(position);
     }
 
     private void showBottomSheetDialog(int position) {
@@ -208,14 +175,13 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
         bottomSheetDialog.setContentView(R.layout.register_match);
         TextView textView = bottomSheetDialog.findViewById(R.id.integer_number);
         TextView infos = bottomSheetDialog.findViewById(R.id.infos);
-        AppCompatButton btn_next = bottomSheetDialog.findViewById(R.id.btn_next);
+        NeumorphCardView btn_next = bottomSheetDialog.findViewById(R.id.btn_next);
         LinearLayout lin = bottomSheetDialog.findViewById(R.id.lin);
         EditText gamename = bottomSheetDialog.findViewById(R.id.ingameName);
         SharedPreferences prefs = mContext.getSharedPreferences(AppConstant.AppName, 0);
         gamename.setHint("Enter your " + title + " player 1 in game name");
         gamename.setText(prefs.getString("GameName", ""));
-        AppCompatButton add_money = bottomSheetDialog.findViewById(R.id.add_money);
-        setViews(infos, btn_next, position, textView, add_money);
+        setViews(infos, position, textView);
         btn_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -223,17 +189,19 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
                     JSONObject obj1 = new JSONObject();
                     final int childCount = lin.getChildCount();
                     for (int i = 0; i < childCount; i++) {
-                        EditText editText = (EditText) lin.getChildAt(i);
-                        if (editText.getText().toString().trim().equals("")) {
-                            editText.requestFocus();
-                            editText.setError("This cannot be empty");
-                            return;
-                        } else {
-                            JSONObject obj = new JSONObject();
-                            obj.put("ingName", editText.getText().toString());
-                            obj.put("count", i == 0 ? textView.getText().toString() : 0);
-                            obj.put("kill", 0);
-                            obj1.put(i == 0 ? new AppConstant(mContext).getId() : new AppConstant(mContext).randomString(5) + "", obj);
+                        if (lin.getChildAt(i) instanceof EditText) {
+                            EditText editText = (EditText) lin.getChildAt(i);
+                            if (editText.getText().toString().trim().equals("")) {
+                                editText.requestFocus();
+                                editText.setError("This cannot be empty");
+                                return;
+                            } else {
+                                JSONObject obj = new JSONObject();
+                                obj.put("ingName", editText.getText().toString());
+                                obj.put("count", 0);
+                                obj.put("kill", 0);
+                                obj1.put(new AppConstant(mContext).getId(), obj);
+                            }
                         }
                     }
                     SharedPreferences.Editor editor = prefs.edit();
@@ -242,7 +210,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
                     Log.e("jsonObject", new AppConstant(mContext).getId());
                     saveUserInfo(position, obj1.toString(), textView.getText().toString(), childCount);
                 } catch (Exception e) {
-
+                    e.getMessage();
                 }
             }
         });
@@ -255,7 +223,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
                 View namebar = bottomSheetDialog.findViewById(Integer.parseInt(textView.getText().toString()));
                 ((ViewGroup) namebar.getParent()).removeView(namebar);
                 textView.setText((Integer.parseInt(textView.getText().toString()) - 1) + "");
-                setViews(infos, btn_next, position, textView, add_money);
+                setViews(infos, position, textView);
             }
         });
         bottomSheetDialog.findViewById(R.id.increase).setOnClickListener(new View.OnClickListener() {
@@ -273,30 +241,21 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
                 et.setHint("Enter your " + title + " player " + textView.getText().toString() + " in game name");
                 et.setId(Integer.parseInt(textView.getText().toString()));
                 lin.addView(et);
-                setViews(infos, btn_next, position, textView, add_money);
+                setViews(infos, position, textView);
             }
         });
-        bottomSheetDialog.findViewById(R.id.add_money).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new AppConstant(mContext).addMoney(mContext);
-            }
-        });
+//        bottomSheetDialog.findViewById(R.id.add_money).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                new AppConstant(mContext).addMoney(mContext);
+//            }
+//        });
         bottomSheetDialog.show();
     }
 
-    private void setViews(TextView infos, Button btn_next, int position, TextView textView, Button add_money) {
+    private void setViews(TextView infos, int position, TextView textView) {
         cost = Integer.parseInt(textView.getText().toString()) * Integer.parseInt(gameItem.get(position).getEntryFees());
-//        if (cost > amount) {
-//            btn_next.setVisibility(View.GONE);
-//          //  add_money.setText("ADD Money (" + (cost - amount) + ")");
-//        } else {
-//            btn_next.setVisibility(View.VISIBLE);
-        //  btn_next.setText("NEXT");
-        //  add_money.setText("ADD Money");
-        // }
         if (Integer.parseInt(gameItem.get(position).getType()) != 1) {
-           // bottomSheetDialog.findViewById(R.id.rel_increment).setVisibility(View.VISIBLE);
             switch (Integer.parseInt(textView.getText().toString())) {
                 case 2:
                     infos.setText("Play as Duo");

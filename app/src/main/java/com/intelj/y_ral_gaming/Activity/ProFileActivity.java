@@ -32,6 +32,7 @@ import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
@@ -45,9 +46,11 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -61,14 +64,18 @@ import com.intelj.y_ral_gaming.FollowActivity;
 import com.intelj.y_ral_gaming.Fragment.PostFragment;
 import com.intelj.y_ral_gaming.R;
 import com.intelj.y_ral_gaming.SigninActivity;
+import com.intelj.y_ral_gaming.TournamentAdapter;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 import com.intelj.y_ral_gaming.Utils.RecyclerTouchListener;
+import com.intelj.y_ral_gaming.model.TournamentModel;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -180,9 +187,9 @@ public class ProFileActivity extends AppCompatActivity {
                 if (!userid.equals(appConstant.getId())) {
                     if (!appConstant.checkLogin()) {
                         edit_profile.setText("Login to follow");
-                        edit_profile.setTextColor(Color.parseColor("#333333"));
+                        edit_profile.setTextColor(Color.parseColor("#ffffff"));
                         iconImage.setImageResource(R.drawable.lock_outline);
-                        findViewById(R.id.rel_button).setBackgroundResource(R.drawable.curved_white);
+                        findViewById(R.id.rel_button).setBackgroundResource(R.drawable.curved_red);
                     } else if (!snapshot.child(AppConstant.profile).child(AppConstant.follower).child(appConstant.getId()).exists()) {
                         edit_profile.setText("follow");
                         edit_profile.setTextColor(Color.WHITE);
@@ -215,6 +222,7 @@ public class ProFileActivity extends AppCompatActivity {
                                 edit_profile.setTextColor(Color.parseColor("#333333"));
                                 iconImage.setImageResource(R.drawable.account_minus);
                                 findViewById(R.id.rel_button).setBackgroundResource(R.drawable.curved_gray);
+                                appConstant.callingPingApi(userid);
                             } else {
                                 FirebaseDatabase.getInstance().getReference(AppConstant.users).child(userid).child(AppConstant.profile).child(AppConstant.follower).child(appConstant.getId()).removeValue();
                                 FirebaseDatabase.getInstance().getReference(AppConstant.users).child(appConstant.getId()).child(AppConstant.profile).child(AppConstant.following).child(userid).removeValue();
@@ -307,7 +315,6 @@ public class ProFileActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         Log.e("response", response);
                         try {
-                            JSONObject json = new JSONObject(response);
                             if (userid.equals(appConstant.getId())) {
                                 chatIcon.setImageResource(R.drawable.group);
                                 rank_button.setText("My Team");
@@ -497,9 +504,68 @@ public class ProFileActivity extends AppCompatActivity {
         });
     }
     public void showTeamList() {
-        View view = getLayoutInflater().inflate(R.layout.rank_row, null);
+        View inflated = getLayoutInflater().inflate(R.layout.tournament, null);
         final BottomSheetDialog dialogBottom = new BottomSheetDialog(ProFileActivity.this);
-        dialogBottom.setContentView(view);
+        List<TournamentModel> tournamentModelList = new ArrayList<>();
+        TextView title = inflated.findViewById(R.id.title);
+        title.setText("Tournament");
+        RecyclerView recyclerView = inflated.findViewById(R.id.recycler_view);
+        ShimmerFrameLayout shimmerFrameLayout = inflated.findViewById(R.id.shimmer_layout);
+        shimmerFrameLayout.startShimmer();
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = "http://y-ral-gaming.com/admin/api/get_team.php";
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                        shimmerFrameLayout.hideShimmer();
+                        shimmerFrameLayout.setVisibility(View.GONE);
+                        try {
+
+                        } catch (Exception e) {
+                            Log.e("error Rec", e.getMessage());
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+/*                shimmer_container.hideShimmer();
+                shimmer_container.setVisibility(View.GONE);*/
+                error.printStackTrace();
+                FirebaseCrashlytics.getInstance().recordException(error);
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                return new HashMap<>();
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Content-Type", "application/x-www-form-urlencoded");
+                return params;
+            }
+        };
+
+        queue.add(stringRequest);
+
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new RecyclerTouchListener.ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+
+            }
+        }));
+        dialogBottom.setContentView(inflated);
         dialogBottom.show();
     }
     public void readContacts() {

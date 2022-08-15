@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingTop="20dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:showIn="@layout/signin">
     <com.airbnb.lottie.LottieAnimationView
@@ -47,16 +48,33 @@
         android:textColor="@color/colorPrimary"
         android:text="By clicking on Next you accept our terms and condition" />
 
-    <Button
+
+    <soup.neumorphism.NeumorphCardView
         android:id="@+id/btn_next"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/Widget.Neumorph.Button"
+        android:layout_width="wrap_content"
+        android:layout_height="75dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:background="@color/appColor"
-        android:textColor="@color/colorPrimary"
-        android:layout_marginTop="25dp"
-        android:drawableRight="@drawable/arrow_right"
-        android:scaleType="centerCrop"
-        android:text="Next" />
+        android:padding="20dp"
+        app:neumorph_backgroundColor="@color/black"
+        app:neumorph_shapeType="flat"
+        app:neumorph_strokeColor="@color/darkgrey"
+        app:neumorph_strokeWidth="1dp">
+
+        <TextView
+            android:id="@+id/ok"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:drawableLeft="@drawable/login"
+            android:drawableRight="@drawable/arrow_right"
+            android:gravity="center"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:text="    Login     "
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+    </soup.neumorphism.NeumorphCardView>
+
 </RelativeLayout>

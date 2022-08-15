@@ -1,6 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <TextView
@@ -19,20 +20,37 @@
         android:padding="10dp"
         android:text="* Once you entered your in game name you cannot change it untill match end"
         android:textColor="#000" />
-    <LinearLayout android:id="@+id/lin"
+    <soup.neumorphism.NeumorphCardView
+        style="@style/Widget.Neumorph.Button"
         android:layout_width="match_parent"
-        android:layout_height="55dp"
-        android:layout_margin="10dp"
-        android:orientation="vertical">
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/ingameName"
-            android:singleLine="true"
+        android:layout_height="65dp"
+        app:neumorph_shapeType="pressed"
+        app:neumorph_strokeColor="@color/darkgrey"
+        app:neumorph_strokeWidth="1dp">
+        <LinearLayout android:id="@+id/lin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint=""
-            android:maxLength="20"
-            android:textSize="14sp" />
-    </LinearLayout>
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:padding="10dp"
+                android:src="@drawable/account_box" />
+            <EditText
+                android:id="@+id/ingameName"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:maxLength="20"
+                android:singleLine="true"
+                android:hint=" Enter your Ingame Name"
+                android:textColorHint="@color/textcolor"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+    </soup.neumorphism.NeumorphCardView>
+
+
     <TextView android:id="@+id/rules"
         android:layout_width="match_parent"
         android:layout_margin="7dp"
@@ -96,33 +114,29 @@ BY CLICKING NEXT YOU AGREE THE ABOVE TERMS AND CONDTION"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textStyle="bold" />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:orientation="horizontal">
-        <Button
-            android:id="@+id/add_money"
-            android:layout_width="0dp"
-            android:layout_height="45dp"
-            android:visibility="gone"
-            android:layout_weight="1"
-            android:layout_marginTop="25dp"
-            android:background="@drawable/border"
-            android:onClick="sendNumber"
-            android:scaleType="centerCrop"
-            android:text="Add money"
-            android:textColor="#000000" />
-        <androidx.appcompat.widget.AppCompatButton
+
+        <soup.neumorphism.NeumorphCardView
+            style="@style/Widget.Neumorph.Button"
+            android:layout_width="wrap_content"
             android:id="@+id/btn_next"
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="45dp"
-            android:layout_marginTop="13dp"
-            android:background="#000000"
-            android:onClick="sendNumber"
-            android:scaleType="centerCrop"
-            android:text="Next"
-            android:textColor="#fff" />
-    </LinearLayout>
+            android:layout_height="75dp"
+            android:padding="20dp"
+            app:neumorph_backgroundColor="@color/black"
+            android:layout_gravity="center"
+            app:neumorph_strokeWidth="1dp"
+            app:neumorph_strokeColor="@color/darkgrey"
+            app:neumorph_shapeType="flat">
+            <TextView
+                android:layout_width="wrap_content"
+                android:text=" Join Giveaway "
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:drawableRight="@drawable/arrow_white"
+                android:textColor="@color/white"
+                android:drawableLeft="@drawable/controller"
+                android:textStyle="bold"
+                android:layout_height="match_parent"/>
+        </soup.neumorphism.NeumorphCardView>
 </LinearLayout>

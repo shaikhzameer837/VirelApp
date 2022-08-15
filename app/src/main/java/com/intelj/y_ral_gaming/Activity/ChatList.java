@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,10 +32,13 @@ import com.google.firebase.database.ValueEventListener;
 import com.intelj.y_ral_gaming.ChatActivity;
 import com.intelj.y_ral_gaming.ContactListModel;
 import com.intelj.y_ral_gaming.R;
+import com.intelj.y_ral_gaming.SigninActivity;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 import com.intelj.y_ral_gaming.Utils.RecyclerTouchListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -48,12 +52,14 @@ public class ChatList extends AppCompatActivity {
     private static final int REQUEST = 112;
     ContactListAdapter contactListAdapter;
     AppConstant appConstant;
+    ProgressBar progress;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chat_list);
         shd = getSharedPreferences(AppConstant.id, MODE_PRIVATE);
         rv_contact = findViewById(R.id.rv_contact);
+        progress = findViewById(R.id.progress);
         appConstant = new AppConstant(this);
         findViewById(R.id.refresh).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,6 +84,10 @@ public class ChatList extends AppCompatActivity {
         rv_contact.addOnItemTouchListener(new RecyclerTouchListener(ChatList.this, rv_contact, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
+                if (!appConstant.checkLogin()) {
+                    startActivity(new Intent(ChatList.this, SigninActivity.class));
+                    return;
+                }
                 Intent intent = new Intent(ChatList.this, ChatActivity.class);
                 String transitionName = "fade";
                 View transitionView = view.findViewById(R.id.profile);
@@ -108,6 +118,14 @@ public class ChatList extends AppCompatActivity {
                 SharedPreferences userInfo = getSharedPreferences(s, Context.MODE_PRIVATE);
                 contactModel.add(new ContactListModel(userInfo.getString(AppConstant.myPicUrl, ""), appConstant.getContactName(userInfo.getString(AppConstant.phoneNumber, "")), userInfo.getString(AppConstant.id, ""), userInfo.getString(AppConstant.bio, "")));
             }
+            Collections.sort(contactModel, new Comparator<ContactListModel>() {
+                @Override
+                public int compare(final ContactListModel object1, final ContactListModel object2) {
+                    Log.e("Collections",object1.getName() + " " + object2.getName());
+                    return object1.getName().compareTo(object2.getName());
+                }
+            });
+
             contactListAdapter.notifyDataSetChanged();
         } else
             new readContactTask().execute();
@@ -130,6 +148,7 @@ public class ChatList extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
             contactModel.clear();
+            progress.setVisibility(View.VISIBLE);
             Log.d(TAG + " PreExceute", "On pre Exceute......");
         }
 
@@ -145,6 +164,7 @@ public class ChatList extends AppCompatActivity {
 
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
+            progress.setVisibility(View.GONE);
             contactListAdapter.notifyDataSetChanged();
         }
     }
@@ -172,6 +192,7 @@ public class ChatList extends AppCompatActivity {
                     SharedPreferences.Editor setEditor = shd.edit();
                     setEditor.putStringSet(AppConstant.contact, originalContact);
                     setEditor.apply();
+                    loadChats();
                 }
             }
 

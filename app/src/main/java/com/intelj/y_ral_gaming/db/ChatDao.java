@@ -17,4 +17,7 @@ public interface ChatDao {
 
     @Delete
     void delete(Chat chat);
+
+    @Query("Select * From chat order by cid DESC limit 1")
+    List<Chat> getlastMess();
 }

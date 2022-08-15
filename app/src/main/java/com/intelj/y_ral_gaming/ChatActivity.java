@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -19,6 +20,7 @@ import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
 import android.transition.Fade;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -34,21 +36,38 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.intelj.y_ral_gaming.Activity.MainActivity;
 import com.intelj.y_ral_gaming.Adapter.ChatAdapter;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 import com.intelj.y_ral_gaming.db.AppDataBase;
 import com.intelj.y_ral_gaming.db.Chat;
+import com.intelj.y_ral_gaming.model.TournamentModel;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileDescriptor;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -63,7 +82,9 @@ public class ChatActivity extends AppCompatActivity {
     AppDataBase appDataBase;
     String userId;
     TextView name;
-
+    HashSet<String> originalContact = new HashSet<>();
+    SharedPreferences shd;
+    AppConstant appConstant;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,7 +100,7 @@ public class ChatActivity extends AppCompatActivity {
         profile = findViewById(R.id.profile);
         recyclerView = findViewById(R.id.recycler_view);
         fileSelect = findViewById(R.id.fileSelect);
-        userId = "95";//getIntent().getStringExtra(AppConstant.id);
+        userId = getIntent().getStringExtra(AppConstant.id);
         appDataBase = AppDataBase.getDBInstance(ChatActivity.this, userId + "_chats");
         message = findViewById(R.id.message);
         mAdapter = new ChatAdapter(this);
@@ -87,6 +108,7 @@ public class ChatActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
+        appConstant = new AppConstant(this);
         fileSelect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,7 +120,6 @@ public class ChatActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
                 new IntentFilter("chat"));
         mAdapter.setAllChat(appDataBase);
-        scrollToBottom();
         findViewById(R.id.send).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -109,7 +130,6 @@ public class ChatActivity extends AppCompatActivity {
                 Chat chat = new Chat();
                 chat.messages = message.getText().toString();
                 chat.msgStatus = 0;
-               // chat.owner = new AppConstant(ChatActivity.this).getId();
                 chat.subject = 0;
                 chat.owner = new AppConstant(ChatActivity.this).getId();
                 chat.times = System.currentTimeMillis() + "";
@@ -119,6 +139,19 @@ public class ChatActivity extends AppCompatActivity {
                 scrollToBottom();
                 FirebaseDatabase.getInstance().getReference(AppConstant.users).child(userId)
                         .child(AppConstant.realTime).child(AppConstant.msg).child("" + (System.currentTimeMillis() / 1000)).setValue(chat);
+                appConstant.callingPingApi(userId);
+                shd = getSharedPreferences(AppConstant.recent, MODE_PRIVATE);
+                Set<String> set = shd.getStringSet(AppConstant.contact, null);
+                if (set != null) {
+                    originalContact.addAll(set);
+                }
+                if(originalContact.size() == 0 || !originalContact.toArray()[0].equals(userId)) {
+                    originalContact.remove(userId);
+                    originalContact.add(userId);
+                    SharedPreferences.Editor setEditor = shd.edit();
+                    setEditor.putStringSet(AppConstant.contact, originalContact);
+                    setEditor.apply();
+                }
             }
         });
         FirebaseDatabase.getInstance().getReference(AppConstant.users).child(userId).child(AppConstant.pinfo)
@@ -134,7 +167,10 @@ public class ChatActivity extends AppCompatActivity {
 
                     }
                 });
+        scrollToBottom();
     }
+
+
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
@@ -152,7 +188,7 @@ public class ChatActivity extends AppCompatActivity {
                         public void run() {
                             recyclerView.smoothScrollToPosition(appDataBase.chatDao().getAllChat().size() - 1);
                         }
-                    }, 500);
+                    }, 100);
         }
     }
 

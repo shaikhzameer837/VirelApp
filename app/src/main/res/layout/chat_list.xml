@@ -88,7 +88,11 @@
                 android:textSize="11sp" />
         </LinearLayout>
     </soup.neumorphism.NeumorphCardView>
-
+    <ProgressBar android:id="@+id/progress"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:layout_height="wrap_content"/>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_contact"
         android:layout_width="match_parent"

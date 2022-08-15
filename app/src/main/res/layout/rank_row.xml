@@ -4,7 +4,15 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="1dp">
-
+    <TextView
+        android:layout_width="match_parent"
+        android:text="  Rank List"
+        android:background="#c0c0c0"
+        android:padding="10dp"
+        android:textColor="@color/black"
+        android:drawableLeft="@drawable/rank"
+        android:layout_margin="5dp"
+        android:layout_height="match_parent"/>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

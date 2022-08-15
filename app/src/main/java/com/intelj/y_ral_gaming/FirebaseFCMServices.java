@@ -56,8 +56,13 @@ public class FirebaseFCMServices extends FirebaseMessagingService {
             // db = new DatabaseHelper(this, "notifications");
             try {
                 JSONObject json = new JSONObject(remoteMessage.getData().toString());
-                String title = json.getJSONObject("data").getString("title");
                 subject = json.getJSONObject("data").getString("subject");
+                if(subject.equals("ping")){
+                    Log.e("ping","ping");
+                    AppController.getInstance().getUserInfo();
+                    return;
+                }
+                String title = json.getJSONObject("data").getString("title");
                 String image = json.getJSONObject("data").getString("image");
                 String message = json.getJSONObject("data").getString("payload");//.getString("title");
                 if (subject.equals("notification")) {
