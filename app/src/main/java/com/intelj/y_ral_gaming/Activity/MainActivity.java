@@ -275,35 +275,42 @@ public class MainActivity extends BaseActivity {
                                 inflated.findViewById(R.id.fMessage).setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        startActivity(new Intent(MainActivity.this, ChatList.class));
+
+                                        startActivity(new Intent(MainActivity.this, new AppConstant(MainActivity.this).checkLogin() ? ChatList.class : SigninActivity.class));
                                     }
                                 });
                                 ImageView newChat = inflated.findViewById(R.id.newChat);
                                 newChat.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        startActivity(new Intent(MainActivity.this, ChatList.class));
+                                        startActivity(new Intent(MainActivity.this, new AppConstant(MainActivity.this).checkLogin() ? ChatList.class : SigninActivity.class));
                                     }
                                 });
 
                                 SharedPreferences shd = getSharedPreferences(AppConstant.recent, MODE_PRIVATE);
                                 Set<String> set = shd.getStringSet(AppConstant.contact, null);
                                 ArrayList<ContactListModel> contactModel = new ArrayList<>();
-                                if (set != null) {
-                                    for (String s : set) {
-                                        SharedPreferences userInfo = getSharedPreferences(s, Context.MODE_PRIVATE);
-                                        AppDataBase appDataBase = AppDataBase.getDBInstance(MainActivity.this, s + "_chats");
-                                        Log.e("messages", s);
-                                        contactModel.add(0, new ContactListModel(userInfo.getString(AppConstant.myPicUrl, ""), appConstant.getContactName(userInfo.getString(AppConstant.phoneNumber, "")), userInfo.getString(AppConstant.id, ""), appDataBase.chatDao().getlastMess().size() > 0 ? appDataBase.chatDao().getlastMess().get(0).messages : ""));
-                                    }
-                                    Collections.sort(contactModel, new Comparator<ContactListModel>() {
-                                        @Override
-                                        public int compare(final ContactListModel object1, final ContactListModel object2) {
-                                            Log.e("Collections", object1.getName() + " " + object2.getName());
-                                            return object1.getName().compareTo(object2.getName());
+                                try {
+                                    if (set != null) {
+                                        for (String s : set) {
+                                            SharedPreferences userInfo = getSharedPreferences(s, Context.MODE_PRIVATE);
+                                            AppDataBase appDataBase = AppDataBase.getDBInstance(MainActivity.this, s + "_chats");
+                                            Log.e("messages", s);
+                                            contactModel.add(0, new ContactListModel(userInfo.getString(AppConstant.myPicUrl, ""), appConstant.getContactName(userInfo.getString(AppConstant.phoneNumber, "")), userInfo.getString(AppConstant.id, ""), appDataBase.chatDao().getlastMess().size() > 0 ? appDataBase.chatDao().getlastMess().get(0).messages : ""));
                                         }
-                                    });
-                                    inflated.findViewById(R.id.lin).setVisibility(View.GONE);
+                                        Collections.sort(contactModel, new Comparator<ContactListModel>() {
+                                            @Override
+                                            public int compare(final ContactListModel object1, final ContactListModel object2) {
+                                                Log.e("Collections", object1.getName() + " " + object2.getName());
+                                                return object1.getName().compareTo(object2.getName());
+                                            }
+                                        });
+                                        inflated.findViewById(R.id.lin).setVisibility(View.GONE);
+                                    }
+                                }catch (Exception e){
+                                    SharedPreferences.Editor setEditor = shd.edit();
+                                    setEditor.putStringSet(AppConstant.contact, null);
+                                    setEditor.apply();
                                 }
                                 RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(MainActivity.this);
                                 RecyclerView rv_contact = inflated.findViewById(R.id.rv_contact);
@@ -642,14 +649,12 @@ public class MainActivity extends BaseActivity {
 //        startActivityForResult(gallery, RESULT_LOAD_IMAGE);
 //    }
 
-
     @Override
     protected void onResume() {
         super.onResume();
         if (appConstant.checkLogin() && imgProfile != null) {
             if (sharedPreferences.getString(AppConstant.name, "").equals("")) {
-                startActivity(new Intent(MainActivity.this, EditProfile.class));
-                return;
+                findViewById(R.id.complete).setVisibility(View.VISIBLE);
             }
             Glide.with(MainActivity.this).load(sharedPreferences.getString(AppConstant.myPicUrl, "") == null ? "" : sharedPreferences.getString(AppConstant.myPicUrl, "")).placeholder(R.drawable.game_avatar).apply(new RequestOptions().circleCrop()).into(imgProfile);
             playerName = findViewById(R.id.playerName);
@@ -953,6 +958,10 @@ public class MainActivity extends BaseActivity {
         });
     }
 
+    public void editProfile(View view) {
+        startActivity(new Intent(MainActivity.this,EditProfile.class));
+    }
+
     class ViewPagerAdapter extends FragmentStatePagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();
         private final List<String> mFragmentTitleList = new ArrayList<>();
@@ -1045,6 +1054,7 @@ public class MainActivity extends BaseActivity {
                         return drawable;
                     }
                 }, null));
+             //   kill.setText(appConstant.getCountryCode());
                 //  AppController.getInstance().rank + " points"
 
                 return;

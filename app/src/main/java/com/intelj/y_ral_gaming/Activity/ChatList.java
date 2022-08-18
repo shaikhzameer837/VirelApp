@@ -1,9 +1,13 @@
 package com.intelj.y_ral_gaming.Activity;
 
+import static com.intelj.y_ral_gaming.Activity.MainActivity.PERMISSIONS_REQUEST_READ_CONTACTS;
+
 import android.Manifest;
+import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -16,10 +20,12 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.view.ViewCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -53,6 +59,7 @@ public class ChatList extends AppCompatActivity {
     ContactListAdapter contactListAdapter;
     AppConstant appConstant;
     ProgressBar progress;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,28 +114,49 @@ public class ChatList extends AppCompatActivity {
         if (!hasPermissions(ChatList.this, PERMISSIONS)) {
             ActivityCompat.requestPermissions(ChatList.this, PERMISSIONS, REQUEST);
         } else {
-           loadChats();
+            loadChats();
         }
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
+                new IntentFilter("refresh"));
+    }
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            progress.setVisibility(View.GONE);
+            loadChats();
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        // Unregister since the activity is about to be closed.
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+        super.onDestroy();
     }
 
     private void loadChats() {
         Set<String> set = shd.getStringSet(AppConstant.contact, null);
-        if (set != null) {
-            for (String s : set) {
-                SharedPreferences userInfo = getSharedPreferences(s, Context.MODE_PRIVATE);
-                contactModel.add(new ContactListModel(userInfo.getString(AppConstant.myPicUrl, ""), appConstant.getContactName(userInfo.getString(AppConstant.phoneNumber, "")), userInfo.getString(AppConstant.id, ""), userInfo.getString(AppConstant.bio, "")));
-            }
-            Collections.sort(contactModel, new Comparator<ContactListModel>() {
-                @Override
-                public int compare(final ContactListModel object1, final ContactListModel object2) {
-                    Log.e("Collections",object1.getName() + " " + object2.getName());
-                    return object1.getName().compareTo(object2.getName());
+        try {
+            if (set != null) {
+                for (String s : set) {
+                    SharedPreferences userInfo = getSharedPreferences(s, Context.MODE_PRIVATE);
+                    contactModel.add(new ContactListModel(userInfo.getString(AppConstant.myPicUrl, ""), appConstant.getContactName(userInfo.getString(AppConstant.phoneNumber, "")), userInfo.getString(AppConstant.id, ""), userInfo.getString(AppConstant.bio, "")));
                 }
-            });
+                Collections.sort(contactModel, new Comparator<ContactListModel>() {
+                    @Override
+                    public int compare(final ContactListModel object1, final ContactListModel object2) {
+                        Log.e("Collections", object1.getName() + " " + object2.getName());
+                        return object1.getName().compareTo(object2.getName());
+                    }
+                });
 
-            contactListAdapter.notifyDataSetChanged();
-        } else
+                contactListAdapter.notifyDataSetChanged();
+            } else
+                new readContactTask().execute();
+        } catch (Exception e) {
             new readContactTask().execute();
+        }
     }
 
     private static boolean hasPermissions(Context context, String... permissions) {
@@ -154,18 +182,13 @@ public class ChatList extends AppCompatActivity {
 
         protected String doInBackground(Void... arg0) {
             readContacts();
-            returnPhone = 0;
-            originalContact.clear();
-            for (String phoneNo : contactArrayList.keySet()) {
-                serverContact(phoneNo, contactArrayList.get(phoneNo));
-            }
+
             return "You are at PostExecute";
         }
 
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            progress.setVisibility(View.GONE);
-            contactListAdapter.notifyDataSetChanged();
+
         }
     }
 
@@ -185,14 +208,15 @@ public class ChatList extends AppCompatActivity {
                         Log.e("number//---", postSnapshot.getKey());
                         originalContact.add(postSnapshot.getKey());
                         appConstant.saveUserInfo(original, postSnapshot.getKey(), "http://y-ral-gaming.com/admin/api/images/" + postSnapshot.getKey() + ".png?u=" + AppConstant.imageExt(), null, "", postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue() != null ? postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue().toString() : null, postSnapshot.child(AppConstant.userName).getValue() != null ? postSnapshot.child(AppConstant.userName).getValue().toString() : System.currentTimeMillis() + "");
-                        contactModel.add(new ContactListModel("http://y-ral-gaming.com/admin/api/images/" + postSnapshot.getKey() + ".png?u=" + AppConstant.imageExt(), appConstant.getContactName(postSnapshot.child(AppConstant.phoneNumber).getValue(String.class)), postSnapshot.getKey(), postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue() != null ? postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue().toString() : ""));
                     }
                 }
+                Log.e("originalContact", contactArrayList.size() + " " + returnPhone);
                 if (contactArrayList.size() == returnPhone) {
                     SharedPreferences.Editor setEditor = shd.edit();
                     setEditor.putStringSet(AppConstant.contact, originalContact);
                     setEditor.apply();
-                    loadChats();
+                    Intent intent = new Intent("refresh");
+                    LocalBroadcastManager.getInstance(ChatList.this).sendBroadcast(intent);
                 }
             }
 
@@ -232,10 +256,12 @@ public class ChatList extends AppCompatActivity {
                                 phoneNo = phoneNo.substring(1);
                             if (!phoneNo.startsWith("+"))
                                 phoneNo = appConstant.getCountryCode() + phoneNo;
-                            Log.i("Phone Number: ", appConstant.getCountryCode());
-                            contactArrayList.put(phoneNo, original);
+                            Log.e("Phone_Number: ", phoneNo);
+                            if (!phoneNo.equals(appConstant.getCountryCode() + appConstant.getPhoneNumber()) || !contactArrayList.containsKey(original)) {
+                                contactArrayList.put(phoneNo, original);
+                                Log.e("Phone_Number_add: ", phoneNo);
+                            }
                         }
-
                     }
                     pCur.close();
                 }
@@ -243,6 +269,11 @@ public class ChatList extends AppCompatActivity {
         }
         if (cur != null) {
             cur.close();
+        }
+        returnPhone = 0;
+        originalContact.clear();
+        for (String phoneNo : contactArrayList.keySet()) {
+            serverContact(phoneNo, contactArrayList.get(phoneNo));
         }
     }
 

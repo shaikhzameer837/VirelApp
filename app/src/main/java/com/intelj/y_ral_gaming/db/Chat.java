@@ -14,6 +14,9 @@ public class Chat {
     @ColumnInfo(name = "subject")
     public int subject;
 
+    @ColumnInfo(name = "status")
+    public int status = 0;
+
     @ColumnInfo(name = "owner")
     public String owner;
 

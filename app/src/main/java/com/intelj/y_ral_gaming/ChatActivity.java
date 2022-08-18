@@ -85,6 +85,7 @@ public class ChatActivity extends AppCompatActivity {
     HashSet<String> originalContact = new HashSet<>();
     SharedPreferences shd;
     AppConstant appConstant;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,6 +103,7 @@ public class ChatActivity extends AppCompatActivity {
         fileSelect = findViewById(R.id.fileSelect);
         userId = getIntent().getStringExtra(AppConstant.id);
         appDataBase = AppDataBase.getDBInstance(ChatActivity.this, userId + "_chats");
+        Log.e("userId", userId);
         message = findViewById(R.id.message);
         mAdapter = new ChatAdapter(this);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -120,6 +122,14 @@ public class ChatActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
                 new IntentFilter("chat"));
         mAdapter.setAllChat(appDataBase);
+        new Timer().schedule(
+                new TimerTask() {
+                    @Override
+                    public void run() {
+                        if (recyclerView.getAdapter().getItemCount() != 0)
+                            recyclerView.smoothScrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
+                    }
+                }, 500);
         findViewById(R.id.send).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -145,7 +155,7 @@ public class ChatActivity extends AppCompatActivity {
                 if (set != null) {
                     originalContact.addAll(set);
                 }
-                if(originalContact.size() == 0 || !originalContact.toArray()[0].equals(userId)) {
+                if (originalContact.size() == 0 || !originalContact.toArray()[0].equals(userId)) {
                     originalContact.remove(userId);
                     originalContact.add(userId);
                     SharedPreferences.Editor setEditor = shd.edit();
@@ -154,22 +164,21 @@ public class ChatActivity extends AppCompatActivity {
                 }
             }
         });
-        FirebaseDatabase.getInstance().getReference(AppConstant.users).child(userId).child(AppConstant.pinfo)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        name.setText(dataSnapshot.child(AppConstant.name).getValue(String.class));
-                        Glide.with(ChatActivity.this).load("http://y-ral-gaming.com/admin/api/images/" + userId + ".png?u=" + (System.currentTimeMillis() / 1000)).apply(new RequestOptions().circleCrop()).placeholder(R.drawable.game_avatar).into(profile);
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
+//        FirebaseDatabase.getInstance().getReference(AppConstant.users).child(userId).child(AppConstant.pinfo)
+//                .addListenerForSingleValueEvent(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                        name.setText(dataSnapshot.child(AppConstant.name).getValue(String.class));
+//                        Glide.with(ChatActivity.this).load("http://y-ral-gaming.com/admin/api/images/" + userId + ".png?u=" + (System.currentTimeMillis() / 1000)).apply(new RequestOptions().circleCrop()).placeholder(R.drawable.game_avatar).into(profile);
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError error) {
+//
+//                    }
+//                });
         scrollToBottom();
     }
-
 
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {

@@ -194,11 +194,7 @@ public class AppConstant {
     }
 
     public static boolean isTimeAutomatic(Context c) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            return Settings.Global.getInt(c.getContentResolver(), Settings.Global.AUTO_TIME, 0) == 1;
-        } else {
             return Settings.System.getInt(c.getContentResolver(), Settings.System.AUTO_TIME, 0) == 1;
-        }
     }
 
     public void saveLogin(String user_id) {
@@ -209,7 +205,7 @@ public class AppConstant {
 
     public String getCountryCode() {
         myInfo = _context.getSharedPreferences(getId(), Context.MODE_PRIVATE);
-        return myInfo.getString(countryCode, "");
+        return myInfo.getString(countryCode, "+91");
     }
 
     public void saveUserInfo(String phoneNum, String userid, String profile, String name, String _countryCode, String user_bio, String userName) {

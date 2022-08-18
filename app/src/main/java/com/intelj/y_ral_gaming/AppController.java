@@ -17,6 +17,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -30,6 +32,9 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.danikula.videocache.HttpProxyCacheServer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
@@ -181,7 +186,23 @@ public class AppController extends Application implements Application.ActivityLi
                         SharedPreferences notificationPref = getSharedPreferences("notificationPref", MODE_PRIVATE);
                         SharedPreferences.Editor myEdit = notificationPref.edit();
                         if (!notificationPref.getBoolean(dataSnapshots.getKey(), false)) {
-                            showNotification(subtitle, dataSnapshots.child(AppConstant.name).getValue(String.class), null, dataSnapshots.getKey());
+                            String finalSubtitle = subtitle;
+                            Glide.with(getApplicationContext())
+                                    .asBitmap()
+                                    .load("http://y-ral-gaming.com/admin/api/images/"+dataSnapshots.getKey()+".png?u=" + System.currentTimeMillis())
+                                    .into(new CustomTarget<Bitmap>() {
+                                        @Override
+                                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                                            showNotification(finalSubtitle, dataSnapshots.child(AppConstant.name).getValue(String.class), resource, dataSnapshots.getKey());
+                                        }
+
+                                        @Override
+                                        public void onLoadCleared(@Nullable Drawable placeholder) {
+                                            Bitmap icon = BitmapFactory.decodeResource(getResources(),
+                                                    R.drawable.game_avatar);
+                                            showNotification(finalSubtitle, dataSnapshots.child(AppConstant.name).getValue(String.class), icon, dataSnapshots.getKey());
+                                        }
+                                    });
                             myEdit.putBoolean(dataSnapshots.getKey(), true);
                             myEdit.apply();
                         }
@@ -229,12 +250,12 @@ public class AppController extends Application implements Application.ActivityLi
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
+
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "1")
                 .setSmallIcon(R.drawable.common_google_signin_btn_text_light_focused)
                 .setContentTitle(title)
                 .setContentText(msg)
                 .setContentIntent(pendingIntent)
-
                 .setDefaults(DEFAULT_SOUND | DEFAULT_VIBRATE) //Important for heads-up notification
                 .setPriority(Notification.PRIORITY_MAX);
         if (bitImage != null) {
