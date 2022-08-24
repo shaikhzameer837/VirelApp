@@ -1,6 +1,7 @@
 package com.intelj.y_ral_gaming;
 
 import android.Manifest;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -85,7 +86,7 @@ public class ChatActivity extends AppCompatActivity {
     HashSet<String> originalContact = new HashSet<>();
     SharedPreferences shd;
     AppConstant appConstant;
-
+    String phoneNumber = "";
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,8 +103,12 @@ public class ChatActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recycler_view);
         fileSelect = findViewById(R.id.fileSelect);
         userId = getIntent().getStringExtra(AppConstant.id);
+        phoneNumber = getIntent().getStringExtra(AppConstant.phoneNumber);
         appDataBase = AppDataBase.getDBInstance(ChatActivity.this, userId + "_chats");
         Log.e("userId", userId);
+        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(Integer.parseInt(userId));
+        Glide.with(ChatActivity.this).load("http://y-ral-gaming.com/admin/api/images/" + userId + ".png?u=" + AppConstant.imageExt()).apply(new RequestOptions().circleCrop()).placeholder(R.drawable.game_avatar).into(profile);
         message = findViewById(R.id.message);
         mAdapter = new ChatAdapter(this);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -143,6 +148,7 @@ public class ChatActivity extends AppCompatActivity {
                 chat.subject = 0;
                 chat.owner = new AppConstant(ChatActivity.this).getId();
                 chat.times = System.currentTimeMillis() + "";
+                chat.phone = phoneNumber;
                 appDataBase.chatDao().insertUser(chat);
                 mAdapter.setAllChat(appDataBase);
                 message.setText(null);

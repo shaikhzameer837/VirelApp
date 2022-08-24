@@ -296,7 +296,7 @@ public class MainActivity extends BaseActivity {
                                             SharedPreferences userInfo = getSharedPreferences(s, Context.MODE_PRIVATE);
                                             AppDataBase appDataBase = AppDataBase.getDBInstance(MainActivity.this, s + "_chats");
                                             Log.e("messages", s);
-                                            contactModel.add(0, new ContactListModel(userInfo.getString(AppConstant.myPicUrl, ""), appConstant.getContactName(userInfo.getString(AppConstant.phoneNumber, "")), userInfo.getString(AppConstant.id, ""), appDataBase.chatDao().getlastMess().size() > 0 ? appDataBase.chatDao().getlastMess().get(0).messages : ""));
+                                            contactModel.add(0, new ContactListModel(s,userInfo.getString(AppConstant.myPicUrl, ""), appConstant.getContactName(userInfo.getString(AppConstant.phoneNumber, "")), userInfo.getString(AppConstant.id, ""), appDataBase.chatDao().getlastMess().size() > 0 ? appDataBase.chatDao().getlastMess().get(0).messages : ""));
                                         }
                                         Collections.sort(contactModel, new Comparator<ContactListModel>() {
                                             @Override
@@ -307,7 +307,7 @@ public class MainActivity extends BaseActivity {
                                         });
                                         inflated.findViewById(R.id.lin).setVisibility(View.GONE);
                                     }
-                                }catch (Exception e){
+                                } catch (Exception e) {
                                     SharedPreferences.Editor setEditor = shd.edit();
                                     setEditor.putStringSet(AppConstant.contact, null);
                                     setEditor.apply();
@@ -653,9 +653,7 @@ public class MainActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         if (appConstant.checkLogin() && imgProfile != null) {
-            if (sharedPreferences.getString(AppConstant.name, "").equals("")) {
-                findViewById(R.id.complete).setVisibility(View.VISIBLE);
-            }
+            findViewById(R.id.complete).setVisibility(sharedPreferences.getString(AppConstant.name, "").equals("") ? View.VISIBLE : View.GONE);
             Glide.with(MainActivity.this).load(sharedPreferences.getString(AppConstant.myPicUrl, "") == null ? "" : sharedPreferences.getString(AppConstant.myPicUrl, "")).placeholder(R.drawable.game_avatar).apply(new RequestOptions().circleCrop()).into(imgProfile);
             playerName = findViewById(R.id.playerName);
             playerName.setText(sharedPreferences.getString(AppConstant.name, "Player"));
@@ -959,7 +957,7 @@ public class MainActivity extends BaseActivity {
     }
 
     public void editProfile(View view) {
-        startActivity(new Intent(MainActivity.this,EditProfile.class));
+        startActivity(new Intent(MainActivity.this, EditProfile.class));
     }
 
     class ViewPagerAdapter extends FragmentStatePagerAdapter {
@@ -1054,7 +1052,7 @@ public class MainActivity extends BaseActivity {
                         return drawable;
                     }
                 }, null));
-             //   kill.setText(appConstant.getCountryCode());
+                //   kill.setText(appConstant.getCountryCode());
                 //  AppController.getInstance().rank + " points"
 
                 return;

@@ -141,7 +141,7 @@ public class ChatList extends AppCompatActivity {
             if (set != null) {
                 for (String s : set) {
                     SharedPreferences userInfo = getSharedPreferences(s, Context.MODE_PRIVATE);
-                    contactModel.add(new ContactListModel(userInfo.getString(AppConstant.myPicUrl, ""), appConstant.getContactName(userInfo.getString(AppConstant.phoneNumber, "")), userInfo.getString(AppConstant.id, ""), userInfo.getString(AppConstant.bio, "")));
+                    contactModel.add(new ContactListModel(s,userInfo.getString(AppConstant.myPicUrl, ""), appConstant.getContactName(userInfo.getString(AppConstant.phoneNumber, "")), userInfo.getString(AppConstant.id, ""), userInfo.getString(AppConstant.bio, "")));
                 }
                 Collections.sort(contactModel, new Comparator<ContactListModel>() {
                     @Override

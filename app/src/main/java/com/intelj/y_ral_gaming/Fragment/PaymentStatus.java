@@ -37,7 +37,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PaymentStatus extends Fragment  {
+public class PaymentStatus extends Fragment {
     SharedPreferences sharedPreferences;
     private static final String ARG_SECTION_NUMBER = "section_number";
     List<TournamentModel> tournamentModelList = new ArrayList<>();
@@ -112,7 +112,9 @@ public class PaymentStatus extends Fragment  {
                                                 obj.getString("image_url"),
                                                 obj.getString("date"),
                                                 obj.getString("status"),
-                                                obj.getString("comment"), "", "", "", 0, 0));
+                                                obj.getString("comment"),
+                                                "", "", "",
+                                                0, 0));
                             }
                             TournamentAdapter pAdapter = new TournamentAdapter(getActivity(), tournamentModelList, false);
                             binding.recyclerView.setAdapter(pAdapter);

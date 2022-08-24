@@ -5,7 +5,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 32
     defaultConfig {
         applicationId "com.intelj.y_ral_gaming"
         minSdkVersion 21
@@ -46,11 +46,11 @@ repositories {
 def mediaVersion = "1.0.0-alpha03"
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation 'androidx.appcompat:appcompat:1.4.2'
+    implementation 'androidx.appcompat:appcompat:1.5.0'
     implementation 'androidx.navigation:navigation-fragment:2.5.0'
     implementation 'androidx.navigation:navigation-ui:2.5.0'
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
-    implementation 'com.google.firebase:firebase-messaging:23.0.6'
+    implementation 'com.google.firebase:firebase-messaging:23.0.7'
     implementation 'com.google.firebase:firebase-database:20.0.5'
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
@@ -58,7 +58,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:21.0.6'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'com.google.firebase:firebase-config:21.1.0'
-    implementation 'com.google.firebase:firebase-firestore:24.2.1'
+    implementation 'com.google.firebase:firebase-firestore:24.2.2'
     implementation 'com.google.android.gms:play-services-ads-lite:21.1.0'
     testImplementation 'junit:junit:4.13.2'
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"

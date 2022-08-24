@@ -12,10 +12,10 @@
         android:id="@+id/images"
         android:layout_width="60dp"
         android:layout_height="90dp"
-        android:transitionName="fade"
         android:layout_marginRight="10dp"
         android:scaleType="centerCrop"
-        android:src="@mipmap/app_logo" />
+        android:src="@mipmap/app_logo"
+        android:transitionName="fade" />
 
     <TextView
         android:id="@+id/name"
@@ -64,7 +64,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/time"
         android:layout_toRightOf="@+id/images"
-        android:text="...................."
         android:textColor="@color/black"
         android:textSize="12sp" />
 </RelativeLayout>

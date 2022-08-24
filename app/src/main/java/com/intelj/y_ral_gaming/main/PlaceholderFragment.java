@@ -140,6 +140,14 @@ public class PlaceholderFragment extends Fragment implements View.OnClickListene
             }
         });
         moneyList = binding.moneyList;
+        for (int i = 0; i < moneyList.getChildCount(); i++) {
+            moneyList.getChildAt(i).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    WidthDrawAmount((TextView) v);
+                }
+            });
+        }
         payOptionList = binding.payOptionList;
         binding.btnNext.setOnClickListener(new View.OnClickListener() {
             @Override

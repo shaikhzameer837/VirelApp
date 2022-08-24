@@ -88,7 +88,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/outline"
-                    android:onClick="WidthDrawAmount"
                     android:padding="18dp"
                     android:tag="0"
                     android:contentDescription="Iron"
@@ -99,7 +98,6 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:onClick="WidthDrawAmount"
                     android:padding="18dp"
                     android:tag="1000"
                     android:contentDescription="Bronze"
@@ -110,7 +108,6 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:onClick="WidthDrawAmount"
                     android:padding="18dp"
                     android:tag="2000"
                     android:contentDescription="Silver"
@@ -121,7 +118,6 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:onClick="WidthDrawAmount"
                     android:padding="18dp"
                     android:tag="3000"
                     android:text="150"
@@ -132,7 +128,6 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:onClick="WidthDrawAmount"
                     android:padding="18dp"
                     android:tag="4000"
                     android:text="200"

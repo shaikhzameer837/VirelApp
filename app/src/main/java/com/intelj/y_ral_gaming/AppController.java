@@ -18,7 +18,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -30,6 +32,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
+import androidx.core.graphics.drawable.IconCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.bumptech.glide.Glide;
@@ -186,21 +189,23 @@ public class AppController extends Application implements Application.ActivityLi
                         SharedPreferences notificationPref = getSharedPreferences("notificationPref", MODE_PRIVATE);
                         SharedPreferences.Editor myEdit = notificationPref.edit();
                         if (!notificationPref.getBoolean(dataSnapshots.getKey(), false)) {
+                            Intent intent = new Intent(AppController.this, NotificationActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             String finalSubtitle = subtitle;
                             Glide.with(getApplicationContext())
                                     .asBitmap()
-                                    .load("http://y-ral-gaming.com/admin/api/images/"+dataSnapshots.getKey()+".png?u=" + System.currentTimeMillis())
+                                    .load("http://y-ral-gaming.com/admin/api/images/"+dataSnapshots.getKey()+".png?u=" +  AppConstant.imageExt())
                                     .into(new CustomTarget<Bitmap>() {
                                         @Override
                                         public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                                            showNotification(finalSubtitle, dataSnapshots.child(AppConstant.name).getValue(String.class), resource, dataSnapshots.getKey());
+                                            showNotification(intent,finalSubtitle, dataSnapshots.child(AppConstant.name).getValue(String.class), resource, dataSnapshots.child("owner").getValue(String.class));
                                         }
 
                                         @Override
                                         public void onLoadCleared(@Nullable Drawable placeholder) {
                                             Bitmap icon = BitmapFactory.decodeResource(getResources(),
                                                     R.drawable.game_avatar);
-                                            showNotification(finalSubtitle, dataSnapshots.child(AppConstant.name).getValue(String.class), icon, dataSnapshots.getKey());
+                                            showNotification(intent,finalSubtitle, dataSnapshots.child(AppConstant.name).getValue(String.class), icon, dataSnapshots.child("owner").getValue(String.class));
                                         }
                                     });
                             myEdit.putBoolean(dataSnapshots.getKey(), true);
@@ -211,9 +216,36 @@ public class AppController extends Application implements Application.ActivityLi
                 DataSnapshot msgData = dataSnapshot.child(AppConstant.realTime).child(AppConstant.msg);
                 if (msgData.getChildrenCount() != 0) {
                     for (DataSnapshot dataSnapshots : msgData.getChildren()) {
+                        Intent intent = new Intent(AppController.this, ChatActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         appDataBase = AppDataBase.getDBInstance(AppController.this, dataSnapshots.child("owner").getValue() + "_chats");
-                        showNotification(dataSnapshots.child("messages").getValue(String.class), dataSnapshots.child(AppConstant.name).getValue(String.class), null, dataSnapshots.getKey());
-                        appDataBase.chatDao().insertUser(dataSnapshots.getValue(Chat.class));
+                        intent.putExtra(AppConstant.phoneNumber,dataSnapshots.child(AppConstant.phoneNumber).getValue(String.class));
+                        intent.putExtra(AppConstant.id,dataSnapshots.child("owner").getValue(String.class));
+                        Glide.with(getApplicationContext())
+                                .asBitmap()
+                                .load("http://y-ral-gaming.com/admin/api/images/"+ dataSnapshots.child("owner").getValue(String.class) +".png?u=" +  AppConstant.imageExt())
+                                .into(new CustomTarget<Bitmap>() {
+                                    @Override
+                                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                                        showNotification(intent,dataSnapshots.child("messages").getValue(String.class), dataSnapshots.child(AppConstant.phoneNumber).getValue(String.class), resource,  dataSnapshots.child("owner").getValue(String.class));
+                                    }
+
+                                    @Override
+                                    public void onLoadCleared(@Nullable Drawable placeholder) {
+                                        Bitmap icon = BitmapFactory.decodeResource(getResources(),
+                                                R.drawable.game_avatar);
+                                        showNotification(intent,dataSnapshots.child("messages").getValue(String.class), dataSnapshots.child(AppConstant.phoneNumber).getValue(String.class), icon,dataSnapshots.child("owner").getValue(String.class));
+                                    }
+
+                                    @Override
+                                    public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                                        super.onLoadFailed(errorDrawable);
+                                        Bitmap icon = BitmapFactory.decodeResource(getResources(),
+                                                R.drawable.game_avatar);
+                                        showNotification(intent,dataSnapshots.child("messages").getValue(String.class), dataSnapshots.child(AppConstant.phoneNumber).getValue(String.class), icon, dataSnapshots.child("owner").getValue(String.class));
+                                    }
+                                });
+                       appDataBase.chatDao().insertUser(dataSnapshots.getValue(Chat.class));
                     }
                     Intent intent = new Intent("chat");
                     LocalBroadcastManager.getInstance(AppController.this).sendBroadcast(intent);
@@ -228,9 +260,8 @@ public class AppController extends Application implements Application.ActivityLi
         });
     }
 
-    public void showNotification(String msg, String title, Bitmap bitImage, String url) {
-        Intent intent = new Intent(AppController.this, NotificationActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+    public void showNotification(Intent intent,String msg, String title, Bitmap bitImage, String owner) {
+
         PendingIntent pendingIntent;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             pendingIntent =PendingIntent.getActivity(this,
@@ -250,22 +281,18 @@ public class AppController extends Application implements Application.ActivityLi
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
-
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "1")
-                .setSmallIcon(R.drawable.common_google_signin_btn_text_light_focused)
+                .setSmallIcon(R.drawable.ic_stat_logo)
                 .setContentTitle(title)
                 .setContentText(msg)
+                .setLargeIcon(bitImage)
                 .setContentIntent(pendingIntent)
                 .setDefaults(DEFAULT_SOUND | DEFAULT_VIBRATE) //Important for heads-up notification
                 .setPriority(Notification.PRIORITY_MAX);
-        if (bitImage != null) {
-            mBuilder.setLargeIcon(bitImage);
-            mBuilder.setStyle(new NotificationCompat.BigPictureStyle()
-                    .bigPicture(bitImage));
-        }
+
         Notification buildNotification = mBuilder.build();
         NotificationManager mNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        mNotifyMgr.notify((int) (System.currentTimeMillis() / 1000), buildNotification);
+        mNotifyMgr.notify(Integer.parseInt(owner.replaceAll("[\\D]", "")), buildNotification);
     }
 
     public void startToRunActivity() {

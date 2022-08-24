@@ -66,17 +66,17 @@ public class TournamentAdapter extends RecyclerView.Adapter<TournamentAdapter.My
         holder.slot.setText(!isTour? "" :tournamentModel.getTeam_count()+"/"+tournamentModel.getMax());
         holder.gameName.setText(tournamentModel.getGame_name());
         if(tournamentModel.getStatus().equals("0")) {
-            holder.status.setText("Upcoming");
-            holder.status.setTextColor(Color.parseColor("#7e241c"));
+            holder.time.setText("Upcoming");
+            holder.time.setTextColor(Color.parseColor("#7e241c"));
         }else if(tournamentModel.getStatus().equals("1")) {
-            holder.status.setText("OnGoing");
-            holder.status.setTextColor(Color.parseColor("#228B22"));
+            holder.time.setText("OnGoing");
+            holder.time.setTextColor(Color.parseColor("#228B22"));
         }else if(tournamentModel.getStatus().equals("2")){
-            holder.status.setText("Completed");
-            holder.status.setTextColor(Color.parseColor("#888888"));
+            holder.time.setText("Completed");
+            holder.time.setTextColor(Color.parseColor("#888888"));
         }else{
-            holder.status.setText(tournamentModel.getStatus());
-            holder.status.setTextColor(Color.parseColor("#333333"));
+            holder.time.setText(tournamentModel.getStatus());
+            holder.time.setTextColor(Color.parseColor("#333333"));
         }
         Glide.with(context)
                 .load(tournamentModel.getImage_url())

@@ -78,7 +78,7 @@ public class EventTeamAdapter extends RecyclerView.Adapter<EventTeamAdapter.MyVi
                         try {
                             if (jsonObject.get(key) instanceof JSONObject) {
                                 Log.e("lcat teamObj", ((JSONObject) jsonObject.get(key)).getString("ingName"));
-                                contactModel.add(new ContactListModel("http://y-ral-gaming.com/admin/api/images/" + key + ".png?u=" + AppConstant.imageExt(), ((JSONObject) jsonObject.get(key)).getString("ingName"), key, ""));
+                                contactModel.add(new ContactListModel("","http://y-ral-gaming.com/admin/api/images/" + key + ".png?u=" + AppConstant.imageExt(), ((JSONObject) jsonObject.get(key)).getString("ingName"), key, ""));
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();

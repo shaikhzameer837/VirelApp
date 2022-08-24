@@ -1,13 +1,22 @@
 package com.intelj.y_ral_gaming;
 
 public class ContactListModel {
-    private String profile, name, userid,bio;
+    private String phoneNumber, profile, name, userid,bio;
 
-    public ContactListModel(String profile, String name, String userid, String bio) {
+    public ContactListModel(String phoneNumber,String profile, String name, String userid, String bio) {
         this.profile = profile;
+        this.phoneNumber = phoneNumber;
         this.name = name;
         this.userid = userid;
         this.bio = bio;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public String getBio() {
