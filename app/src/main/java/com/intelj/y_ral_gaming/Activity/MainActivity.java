@@ -751,7 +751,8 @@ public class MainActivity extends BaseActivity {
                             for (int i = 0; i < array.length(); i++) {
                                 JSONObject obj = array.getJSONObject(i);
                                 Log.e("team_count", obj.getInt("team_count") + "");
-                                tournamentModelList.add(new TournamentModel(obj.getString("name"),
+                                tournamentModelList.add(
+                                        new TournamentModel(obj.getString("name"),
                                         obj.getString("game_name"),
                                         obj.getString("image_url"),
                                         obj.getString("date"),
@@ -791,9 +792,7 @@ public class MainActivity extends BaseActivity {
                 return params;
             }
         };
-
         queue.add(stringRequest);
-
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -919,28 +918,25 @@ public class MainActivity extends BaseActivity {
         tabLayout.setupWithViewPager(gameViewpager);
         ArrayList<String> titleList = new ArrayList<>();
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        FirebaseDatabase.getInstance().getReference("masters").child("gameList").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                FirebaseDatabase.getInstance().getReference("masters").keepSynced(true);
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    Log.e("index", (long) snapshot.getValue() + " " + snapshot.getKey());
-                    titleList.add(snapshot.getKey());
-                    adapter.addFragment((long) snapshot.getValue(), new OneFragment(snapshot.getKey(), (long) snapshot.getValue()), snapshot.getKey());
-                    // adapter.addFragment(new PaidScrims(snapshot.getKey(), (boolean) snapshot.getValue()), snapshot.getKey());
-                }
-                gameViewpager.setAdapter(adapter);
-                Intent intent = new Intent("custom-event-name");
-                if (titleList.size() > 1)
-                    intent.putExtra(AppConstant.title, titleList.get(0));
-                LocalBroadcastManager.getInstance(MainActivity.this).sendBroadcast(intent);
-            }
+        HashMap<String,String> gameList = new HashMap<>();
+        gameList.put("BGMI","1");
+        gameList.put("Valorant","0");
+        gameList.put("Apex Legend","0");
+        gameList.put("COD","0");
+        for (Map.Entry<String,String> entry : gameList.entrySet()){
+            titleList.add(entry.getKey());
+            adapter.addFragment(Long.parseLong(entry.getValue()), new OneFragment(entry.getKey(), Long.parseLong(entry.getValue())), entry.getKey());
+        }
+        gameList.put("FREE FIRE","1");
+        titleList.add("FREE FIRE");
+        adapter.addFragment(1L, new OneFragment("FREE FIRE", 1), "FREE FIRE");
 
-            @Override
-            public void onCancelled(DatabaseError error) {
+        gameViewpager.setAdapter(adapter);
+        Intent intent = new Intent("custom-event-name");
+        if (titleList.size() > 1)
+            intent.putExtra(AppConstant.title, titleList.get(0));
+        LocalBroadcastManager.getInstance(MainActivity.this).sendBroadcast(intent);
 
-            }
-        });
         gameViewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             public void onPageScrollStateChanged(int state) {
             }

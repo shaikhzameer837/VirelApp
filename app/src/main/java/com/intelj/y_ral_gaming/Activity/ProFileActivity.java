@@ -599,7 +599,6 @@ public class ProFileActivity extends AppCompatActivity {
                             Log.i("Phone Number: ", appConstant.getCountryCode());
                             contactArrayList.put(phoneNo, original);
                         }
-
                     }
                     pCur.close();
                 }

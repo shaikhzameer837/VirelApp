@@ -198,6 +198,15 @@ public class PlaceholderFragment extends Fragment implements View.OnClickListene
                 new AppConstant(getActivity()).addMoney(getActivity());
             }
         });
+
+        for (int i = 0; i < binding.payOptionList.getChildCount(); i++) {
+            binding.payOptionList.getChildAt(i).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    selectPayM(v);
+                }
+            });
+        }
         View root = binding.getRoot();
         return root;
     }

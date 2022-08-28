@@ -2,18 +2,11 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@drawable/grad"
     android:layout_height="match_parent"
-    android:paddingTop="20dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:showIn="@layout/signin">
-    <com.airbnb.lottie.LottieAnimationView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        app:lottie_autoPlay="true"
-        app:lottie_fileName="background.json"
-        app:lottie_loop="true"/>
-    <com.airbnb.lottie.LottieAnimationView
+       <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/animationView"
         android:layout_centerHorizontal="true"
         android:layout_width="180dp"
@@ -57,10 +50,12 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:padding="20dp"
+        app:neumorph_shadowColorDark="#00000000"
+        app:neumorph_shadowColorLight="#00000000"
         app:neumorph_backgroundColor="@color/black"
         app:neumorph_shapeType="flat"
-        app:neumorph_strokeColor="@color/darkgrey"
-        app:neumorph_strokeWidth="1dp">
+        app:neumorph_strokeColor="#00000000"
+        app:neumorph_strokeWidth="0dp">
 
         <TextView
             android:id="@+id/ok"

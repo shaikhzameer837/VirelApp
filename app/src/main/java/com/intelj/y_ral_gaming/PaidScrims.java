@@ -126,7 +126,7 @@ public class PaidScrims extends Fragment {
                                             public void onClick(DialogInterface dialog, int which) {
                                                 dialog.dismiss();
                                                 if (key.equals("Click Download new version")) {
-                                                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://y-ral-gaming.com/scrims.apk"));
+                                                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.intelj.y_ral_gaming"));
                                                     startActivity(browserIntent);
                                                 } else {
                                                     Intent startMain = new Intent(Intent.ACTION_MAIN);

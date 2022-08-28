@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/colorPrimary">
+    android:background="@drawable/grad"
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:id="@+id/linear"
@@ -34,7 +34,7 @@
             android:layout_gravity="center"
             android:layout_marginBottom="5dp"
             android:text="First login in the app !!!"
-            android:textColor="#000"
+            android:textColor="#fff"
             android:textSize="19sp"
             android:textStyle="bold" />
 
@@ -45,13 +45,13 @@
             android:layout_marginBottom="15dp"
             android:drawableRight="@drawable/arrow_down"
             android:text="It will take just 2 min to login...."
-            android:textColor="#99000000" />
+            android:textColor="#fff" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginBottom="15dp"
-            android:background="#555555" />
+            android:background="#fff" />
     </LinearLayout>
 
 
@@ -64,6 +64,9 @@
         android:layout_centerHorizontal="true"
         android:onClick="sendNumber"
         android:padding="20dp"
+        app:neumorph_shadowColorDark="#00000000"
+        app:neumorph_shadowColorLight="#00000000"
+
         app:neumorph_backgroundColor="@color/black"
         app:neumorph_shapeType="flat"
         app:neumorph_strokeColor="@color/darkgrey"

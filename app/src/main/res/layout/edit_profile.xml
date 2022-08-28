@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    android:background="@drawable/grad"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
@@ -14,33 +15,6 @@
 <!--        app:lottie_fileName="background.json"-->
 <!--        app:lottie_loop="true" />-->
 
-    <RelativeLayout
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:gravity="center">
-
-        <ImageView
-            android:id="@+id/back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:rotation="-180"
-            android:src="@drawable/arrow"
-            app:tint="@color/black" />
-
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:gravity="center_horizontal"
-            android:text="Edit PRofile"
-            android:textColor="@color/black"
-            android:textStyle="bold" />
-
-
-    </RelativeLayout>
     <!--    <LinearLayout-->
     <!--        android:id="@+id/lin"-->
     <!--        android:layout_width="match_parent"-->
@@ -58,8 +32,8 @@
     <!--            android:gravity="center_vertical"-->
     <!--            android:padding="10dp"-->
     <!--            android:text="My Profile"-->
-    <!--            android:textColor="@color/black"-->
-    <!--            android:textColorHint="@color/grey_black"-->
+    <!--            android:textColor="@color/white"-->
+    <!--            android:textColorHint="@color/grey_white"-->
     <!--            android:textSize="14sp"-->
     <!--            android:textStyle="bold" />-->
 
@@ -71,8 +45,36 @@
     <!--            android:layout_margin="5dp"-->
     <!--            android:gravity="center_vertical"-->
     <!--            android:src="@drawable/ic_edit"-->
-    <!--            android:textColor="@color/black" />-->
+    <!--            android:textColor="@color/white" />-->
     <!--    </LinearLayout>-->
+
+    <RelativeLayout
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:rotation="-180"
+            android:src="@drawable/arrow"
+            app:tint="@color/white" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:gravity="center_horizontal"
+            android:text="Edit PRofile"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+
+    </RelativeLayout>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/imgCover"
@@ -101,7 +103,7 @@
         android:layout_marginTop="20dp"
         android:layout_toRightOf="@+id/imgCover"
         android:text="Gaming Title"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textStyle="bold" />
 
 
@@ -119,7 +121,7 @@
         android:hint="Gaming Title"
         android:paddingLeft="10dp"
         android:text=""
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="13sp" />
     <View
         android:layout_width="wrap_content"
@@ -129,7 +131,7 @@
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
         android:layout_toRightOf="@+id/imgCover"
-        android:background="@color/black" />
+        android:background="@color/white" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -148,9 +150,9 @@
             android:layout_marginRight="15dp"
             android:background="#00000000"
             android:backgroundTint="#00000000"
-            android:textColorHint="@color/black"
+            android:textColorHint="@color/white"
             android:visibility="gone"
-            app:hintTextColor="@color/black">
+            app:hintTextColor="@color/white">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/bios"
@@ -159,7 +161,7 @@
                 android:background="#00000000"
                 android:enabled="false"
                 android:hint="Bios"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:textSize="14sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -210,8 +212,8 @@
                 android:layout_marginRight="15dp"
                 android:background="#00000000"
                 android:backgroundTint="#00000000"
-                android:textColorHint="@color/black"
-                app:hintTextColor="@color/black">
+                android:textColorHint="@color/white"
+                app:hintTextColor="@color/white">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/name"
@@ -221,8 +223,8 @@
                     android:enabled="false"
                     android:hint="Name"
                     android:singleLine="true"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/black"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white"
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -235,8 +237,8 @@
                 android:layout_marginRight="15dp"
                 android:background="#00000000"
                 android:backgroundTint="#00000000"
-                android:textColorHint="@color/black"
-                app:hintTextColor="@color/black">
+                android:textColorHint="@color/white"
+                app:hintTextColor="@color/white">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/userName"
@@ -248,8 +250,8 @@
                     android:hint="user name"
                     android:inputType="text|textEmailAddress"
                     android:singleLine="true"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/black"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white"
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -262,8 +264,8 @@
                 android:layout_marginRight="15dp"
                 android:background="#00000000"
                 android:backgroundTint="#00000000"
-                android:textColorHint="@color/black"
-                app:hintTextColor="@color/black">
+                android:textColorHint="@color/white"
+                app:hintTextColor="@color/white">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/bio"
@@ -271,7 +273,7 @@
                     android:layout_height="wrap_content"
                     android:background="#00000000"
                     android:hint="Bio (About Me)"
-                    android:textColor="@color/black"
+                    android:textColor="@color/white"
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -282,7 +284,7 @@
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="15dp"
                 android:text="Games You play"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:textStyle="bold" />
 
             <HorizontalScrollView
@@ -410,23 +412,25 @@
 
     <soup.neumorphism.NeumorphButton
         android:id="@+id/done"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="20dp"
         style="@style/Widget.Neumorph.Button"
         android:layout_width="wrap_content"
         android:layout_height="75dp"
-        android:padding="25dp"
-        app:neumorph_backgroundColor="@color/black"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
         android:layout_gravity="center"
-        app:neumorph_strokeWidth="1dp"
-        android:drawableRight="@drawable/arrow_white"
-        android:text="  Update Profile "
+        android:layout_marginBottom="20dp"
         android:drawableLeft="@drawable/account"
-        android:textColor="@color/white"
+        android:drawableRight="@drawable/arrow_white"
         android:onClick="sendNumber"
+        android:padding="25dp"
+        app:neumorph_shadowColorDark="#00000000"
+        app:neumorph_shadowColorLight="#00000000"
+        android:text="  Update Profile "
+        android:textColor="@color/white"
+        app:neumorph_backgroundColor="@color/black"
+        app:neumorph_shapeType="flat"
         app:neumorph_strokeColor="@color/darkgrey"
-        app:neumorph_shapeType="flat">
+        app:neumorph_strokeWidth="1dp">
 
 
     </soup.neumorphism.NeumorphButton>
