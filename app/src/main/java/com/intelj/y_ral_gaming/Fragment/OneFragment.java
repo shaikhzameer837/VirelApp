@@ -51,7 +51,6 @@ public class OneFragment extends Fragment {
     View rootView;
     private TimeSlotAdapter mAdapter;
     public ArrayList<GameItem> GameItem = new ArrayList<>();
-    private SwipeRefreshLayout mSwipeRefreshLayout;
     ShimmerFrameLayout shimmerFrameLayout;
     String title;
     String key;
@@ -89,7 +88,6 @@ public class OneFragment extends Fragment {
     }
     public void onResumeView() {
         shimmerFrameLayout = rootView.findViewById(R.id.shimmer_layout);
-        mSwipeRefreshLayout = rootView.findViewById(R.id.swiperefresh_items);
         date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
         recyclerView = rootView.findViewById(R.id.recycler_view);
         tv_coming_soon = rootView.findViewById(R.id.tv_coming_soon);
@@ -141,6 +139,7 @@ public class OneFragment extends Fragment {
                             if (json.getBoolean("success") && !json.has("msg")) {
                                 AppController.getInstance().amount = Integer.parseInt(json.getString("amount"));
                                 AppController.getInstance().rank = Integer.parseInt(json.getString("rank"));
+                                Log.e( "onReceive: R ", json.getString("rank"));
                                 JSONArray ja_data = json.getJSONArray("match_info");
                                  GameItem.clear();
                                 for (int i = 0; i < ja_data.length(); i++) {

@@ -40,6 +40,7 @@ public class AppConstant {
     public static String follow = "follow";
     public static String following_count = "following_count";
     public static String follower_count = "follower_count";
+    public static String AppUrl = "http://y-ral-gaming.com/admin/api/";
      private Context _context;
     private SharedPreferences sharedPreferences;
     private SharedPreferences myInfo;
@@ -342,15 +343,15 @@ public class AppConstant {
         if (rankPoint < 1000) {
             return "rank1";
         } else if (rankPoint < 2000) {
-            return rankPoint + "rank2" ;
+            return  "rank2" ;
         } else if (rankPoint < 3000) {
-            return rankPoint + "rank3" ;
+            return  "rank3" ;
         } else if (rankPoint < 4000) {
-            return rankPoint + "rank4" ;
+            return  "rank4" ;
         } else if (rankPoint < 5000) {
-            return rankPoint + "rank5"  ;
+            return  "rank5"  ;
         } else if (rankPoint < 6000) {
-            return rankPoint + "rank6" ;
+            return  "rank6" ;
         }
         return "";
     }

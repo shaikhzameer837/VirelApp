@@ -118,7 +118,6 @@
                 android:focusableInTouchMode="true"
                 android:freezesText="true"
                 android:singleLine="true"
-                android:visibility="gone"
                 android:marqueeRepeatLimit="marquee_forever"
                 android:gravity="center_vertical"
                 android:drawableLeft="@drawable/account_edit_outline"

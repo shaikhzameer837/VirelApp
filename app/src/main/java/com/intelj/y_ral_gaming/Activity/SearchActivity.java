@@ -113,7 +113,7 @@ public class SearchActivity extends AppCompatActivity {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             recyclerDataArrayList.add(new SuggesstionModel(snapshot.child(AppConstant.name).getValue(String.class),
-                                    "http://y-ral-gaming.com/admin/api/images/" + userIDs.get(m) + ".png?u=" + System.currentTimeMillis(),userIDs.get(m),snapshot.child(AppConstant.verified).exists()));
+                                    "http://y-ral-gaming.com/admin/api/images/" + userIDs.get(m) + ".png?u=" + AppConstant.imageExt(),userIDs.get(m),snapshot.child(AppConstant.verified).exists()));
                             adapter.notifyDataSetChanged();
                         }
 
@@ -138,7 +138,7 @@ public class SearchActivity extends AppCompatActivity {
                         if (AppController.getInstance().follow == null || !AppController.getInstance().follow.child(dataSnapshot.getKey()).exists()) {
                             DataSnapshot snapshot = dataSnapshot.child(AppConstant.pinfo);
                             recyclerDataArrayList.add(new SuggesstionModel(snapshot.child(AppConstant.name).getValue(String.class),
-                                    "http://y-ral-gaming.com/admin/api/images/" + dataSnapshot.getKey() + ".png?u=" + System.currentTimeMillis(), dataSnapshot.getKey(),snapshot.child(AppConstant.verified).exists()));
+                                    "http://y-ral-gaming.com/admin/api/images/" + dataSnapshot.getKey() + ".png?u=" + AppConstant.imageExt(), dataSnapshot.getKey(),snapshot.child(AppConstant.verified).exists()));
                             adapter.notifyDataSetChanged();
                         }
                     }

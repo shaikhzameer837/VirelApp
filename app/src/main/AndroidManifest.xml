@@ -112,6 +112,9 @@
         <activity android:name=".Activity.ChatList" />
         <activity android:name="com.intelj.y_ral_gaming.Congrats" />
         <activity android:name="com.intelj.y_ral_gaming.main.PaymentWithdraw" />
+        <activity android:name="com.intelj.y_ral_gaming.Activity.ReferralActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemes" />
 
         <service
             android:name=".FirebaseFCMServices"

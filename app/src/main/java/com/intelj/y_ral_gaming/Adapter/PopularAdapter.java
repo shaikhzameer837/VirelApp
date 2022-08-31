@@ -19,6 +19,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.intelj.y_ral_gaming.Activity.ProFileActivity;
 import com.intelj.y_ral_gaming.PopularModel;
 import com.intelj.y_ral_gaming.R;
+import com.intelj.y_ral_gaming.Utils.AppConstant;
 
 import java.util.List;
 
@@ -74,8 +75,7 @@ public class PopularAdapter extends RecyclerView.Adapter<PopularAdapter.MyViewHo
                 mContext.startActivity(intent, options.toBundle());
             }
         });
-        Log.e("getImg_url", "http://y-ral-gaming.com/admin/api/images/"+movie.getUser_id()+".png?u=" + System.currentTimeMillis());
-        Glide.with(mContext).load("http://y-ral-gaming.com/admin/api/images/"+movie.getUser_id()+".png?u=" + System.currentTimeMillis()).apply(new RequestOptions().circleCrop()).placeholder(R.drawable.game_avatar).into(holder.imgs);
+        Glide.with(mContext).load("http://y-ral-gaming.com/admin/api/images/"+movie.getUser_id()+".png?u=" + AppConstant.imageExt()).apply(new RequestOptions().circleCrop()).placeholder(R.drawable.game_avatar).into(holder.imgs);
     }
 
     @Override

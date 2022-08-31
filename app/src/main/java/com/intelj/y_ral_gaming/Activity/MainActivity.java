@@ -653,7 +653,12 @@ public class MainActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         if (appConstant.checkLogin() && imgProfile != null) {
-            findViewById(R.id.complete).setVisibility(sharedPreferences.getString(AppConstant.name, "").equals("") ? View.VISIBLE : View.GONE);
+           if(!sharedPreferences.getString(AppConstant.name, "").equals("")){
+               ((TextView)findViewById(R.id.complete)).setText(" Refer a Friend & 50 rs per invite");
+               Drawable img = getResources().getDrawable(R.drawable.refer);
+               Drawable img1 = getResources().getDrawable(R.drawable.arrow_right);
+               ((TextView)findViewById(R.id.complete)).setCompoundDrawablesWithIntrinsicBounds(img, null, img1, null);
+           }
             Glide.with(MainActivity.this).load(sharedPreferences.getString(AppConstant.myPicUrl, "") == null ? "" : sharedPreferences.getString(AppConstant.myPicUrl, "")).placeholder(R.drawable.game_avatar).apply(new RequestOptions().circleCrop()).into(imgProfile);
             playerName = findViewById(R.id.playerName);
             playerName.setText(sharedPreferences.getString(AppConstant.name, "Player"));
@@ -953,7 +958,11 @@ public class MainActivity extends BaseActivity {
     }
 
     public void editProfile(View view) {
-        startActivity(new Intent(MainActivity.this, EditProfile.class));
+        if(sharedPreferences.getString(AppConstant.name, "").equals("")) {
+            startActivity(new Intent(MainActivity.this, EditProfile.class));
+        }else{
+            startActivity(new Intent(MainActivity.this, ReferralActivity.class));
+        }
     }
 
     class ViewPagerAdapter extends FragmentStatePagerAdapter {
@@ -1039,15 +1048,19 @@ public class MainActivity extends BaseActivity {
             }
             if (new AppConstant(MainActivity.this).checkLogin() && intent.getBooleanExtra(AppConstant.amount, false)) {
                 coins.setText(withSuffix(AppController.getInstance().amount));
-                kill.setText(Html.fromHtml("<img src='" + AppConstant.getRank(AppController.getInstance().rank) + "'/> " + AppController.getInstance().rank + " points", new Html.ImageGetter() {
-                    @Override
-                    public Drawable getDrawable(String source) {
-                        int resourceId = getResources().getIdentifier(source, "drawable", getPackageName());
-                        Drawable drawable = getResources().getDrawable(resourceId);
-                        drawable.setBounds(0, 0, 40, 30);
-                        return drawable;
-                    }
-                }, null));
+                try {
+                    kill.setText(Html.fromHtml("<img src='" + AppConstant.getRank(AppController.getInstance().rank) + "'/> " + AppController.getInstance().rank + " points", new Html.ImageGetter() {
+                        @Override
+                        public Drawable getDrawable(String source) {
+                            int resourceId = getResources().getIdentifier(source, "drawable", getPackageName());
+                            Drawable drawable = getResources().getDrawable(resourceId);
+                            drawable.setBounds(0, 0, 40, 30);
+                            return drawable;
+                        }
+                    }, null));
+                }catch (Exception e){
+                    Log.e("onReceive: ", AppConstant.getRank(AppController.getInstance().rank));
+                }
                 //   kill.setText(appConstant.getCountryCode());
                 //  AppController.getInstance().rank + " points"
 
