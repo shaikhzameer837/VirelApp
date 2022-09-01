@@ -18,47 +18,49 @@
             android:layout_marginTop="10dp"
             android:layout_marginRight="15dp"
             android:gravity="center_vertical"
-            app:ccp_textColor="@color/colorPrimary"
-            app:ccp_showFullName="true" />
+            app:ccp_showFullName="true"
+            app:ccp_textColor="@color/black" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/name_text_input"
-            style="@style/TextInputLayoutStyle"
+        <soup.neumorphism.NeumorphCardView
+            style="@style/Widget.Neumorph.Button"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="10dp"
-            app:hintTextColor="@color/colorPrimary"
-            android:layout_marginRight="15dp">
-
-            <com.google.android.material.textfield.TextInputEditText
+            android:layout_height="65dp"
+            app:neumorph_shapeType="pressed"
+            app:neumorph_strokeColor="@color/darkgrey"
+            app:neumorph_strokeWidth="1dp">
+            <EditText
                 android:id="@+id/phoneNumber"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:paddingLeft="10dp"
                 android:hint="Enter your phone number"
                 android:inputType="number"
-                android:textColorHint="@color/colorPrimary"
-                android:textColor="@color/colorPrimary"
-                android:textSize="14sp" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_gravity="center_vertical"
+                android:textColor="@color/black"
+                android:textColorHint="@color/black"
+                android:textSize="13sp" />
+        </soup.neumorphism.NeumorphCardView>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/ref"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        <soup.neumorphism.NeumorphCardView
+            style="@style/Widget.Neumorph.Button"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="15dp">
-
-            <com.google.android.material.textfield.TextInputEditText
+            android:layout_height="65dp"
+            app:neumorph_shapeType="pressed"
+            app:neumorph_strokeColor="@color/darkgrey"
+            app:neumorph_strokeWidth="1dp">
+            <EditText
                 android:id="@+id/referal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Referal ID"
+                android:hint="Enter Referal ID"
+                android:background="@null"
+                android:layout_gravity="center_vertical"
+                android:paddingLeft="10dp"
+                android:textColor="@color/black"
+                android:textColorHint="@color/black"
                 android:textSize="14sp" />
-        </com.google.android.material.textfield.TextInputLayout>
+        </soup.neumorphism.NeumorphCardView>
     </LinearLayout>
 
 

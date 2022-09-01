@@ -1,75 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@drawable/grad"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     tools:showIn="@layout/signin">
-       <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/animationView"
-        android:layout_centerHorizontal="true"
-        android:layout_width="180dp"
-        android:layout_height="180dp"
-        android:layout_marginTop="40dp"
-        app:lottie_fileName="phone.json"
-        app:lottie_autoPlay="true"
-        app:lottie_loop="true"/>
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:padding="10dp"
-        android:layout_below="@+id/animationView"
-        android:gravity="center"
-        android:text="Welcome to Y-RAL gaming"
-        android:textColor="@color/colorPrimary"
-        android:textSize="19sp" />
 
     <androidx.viewpager.widget.ViewPager
-        android:id="@+id/view_pager"
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/grad" />
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="-50dp"
+        android:layout_marginRight="10dp"
+        android:layout_weight="1"
+        android:elevation="2dp"
+        app:cardElevation="2dp">
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/title" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/btn_next"
-        android:gravity="center"
-        android:textColor="@color/colorPrimary"
-        android:text="By clicking on Next you accept our terms and condition" />
-
-
-    <soup.neumorphism.NeumorphCardView
-        android:id="@+id/btn_next"
-        style="@style/Widget.Neumorph.Button"
-        android:layout_width="wrap_content"
-        android:layout_height="75dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:padding="20dp"
-        app:neumorph_shadowColorDark="#00000000"
-        app:neumorph_shadowColorLight="#00000000"
-        app:neumorph_backgroundColor="@color/black"
-        app:neumorph_shapeType="flat"
-        app:neumorph_strokeColor="#00000000"
-        app:neumorph_strokeWidth="0dp">
+        android:layout_marginTop="5dp"
+        android:orientation="vertical">
 
         <TextView
-            android:id="@+id/ok"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:drawableLeft="@drawable/login"
-            android:drawableRight="@drawable/arrow_right"
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:gravity="center"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:text="    Login     "
-            android:textColor="@color/white"
-            android:textStyle="bold" />
-    </soup.neumorphism.NeumorphCardView>
+            android:padding="10dp"
+            android:text="Welcome to Y-RAL gaming"
+            android:textColor="@color/black"
+            android:textSize="19sp" />
 
-</RelativeLayout>
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/view_pager"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="0dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="By clicking on Next you accept our terms and condition"
+            android:textColor="@color/black" />
+        <soup.neumorphism.NeumorphCardView
+            android:id="@+id/btn_next"
+            style="@style/Widget.Neumorph.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="75dp"
+            android:padding="20dp"
+            android:layout_gravity="center_horizontal"
+            app:neumorph_backgroundColor="@color/black"
+            app:neumorph_shadowColorDark="#00000000"
+            app:neumorph_shadowColorLight="#00000000"
+            app:neumorph_shapeType="flat"
+            app:neumorph_strokeColor="#00000000"
+            app:neumorph_strokeWidth="0dp">
+
+            <TextView
+                android:id="@+id/ok"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:drawableLeft="@drawable/login"
+                android:drawableRight="@drawable/arrow_right"
+                android:gravity="center"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:text="    Login     "
+                android:textColor="@color/white"
+                android:textStyle="bold" />
+        </soup.neumorphism.NeumorphCardView>
+    </LinearLayout>
+    </androidx.cardview.widget.CardView>
+</LinearLayout>

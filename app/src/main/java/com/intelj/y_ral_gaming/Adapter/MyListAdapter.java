@@ -36,6 +36,9 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.name.setText(listdata.get(position).getName());
+        holder.amount.setVisibility(listdata.get(position).getPlaying_status().equals("1") ? View.VISIBLE : View.GONE);
+       // holder.amount.setText(listdata.get(position).getPlaying_status());
+        holder.status.setText(listdata.get(position).getPlaying_status().equals("1") ? "Played" : "Regsitered");
         Glide.with(holder.imgs.getContext()).load("http://y-ral-gaming.com/admin/api/images/"+listdata.get(position).getUserId()+".png?u=" + AppConstant.imageExt()).apply(new RequestOptions().circleCrop()).placeholder(R.drawable.game_avatar).into(holder.imgs);
     }
 
@@ -46,11 +49,12 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView name,status;
+        public TextView name,status,amount;
         ImageView imgs;
         public ViewHolder(View itemView) {
             super(itemView);
             this.name =  itemView.findViewById(R.id.name);
+            this.amount =  itemView.findViewById(R.id.amount);
             this.status =  itemView.findViewById(R.id.status);
             this.imgs =  itemView.findViewById(R.id.imgs);
         }

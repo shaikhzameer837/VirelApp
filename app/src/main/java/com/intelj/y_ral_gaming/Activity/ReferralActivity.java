@@ -45,19 +45,20 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class ReferralActivity extends AppCompatActivity {
-    ArrayList<String> imageUrls = new ArrayList<>();
+    HashMap<String, String> contentList = new HashMap<>();
     TextView refer;
     RecyclerView recyclerView;
-    ArrayList<MyListData> myListData =new ArrayList<>();
+    ArrayList<MyListData> myListData = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.referral_activity);
         recyclerView = findViewById(R.id.recyclerView);
         ViewPager viewPager = findViewById(R.id.viewpager);
-        imageUrls.add("referral.json");
-        imageUrls.add("login.json");
-        imageUrls.add("cash.json");
+        contentList.put("referral.json", "Refer a friend");
+        contentList.put("login.json", "Register & play Game");
+        contentList.put("cash.json", "You earn 50rs after game played");
         refer = findViewById(R.id.refer);
         refer.setText("YRAL" + new AppConstant(this).getId());
         viewPager.setAdapter(new CustomPagerAdapter(ReferralActivity.this));
@@ -65,7 +66,7 @@ public class ReferralActivity extends AppCompatActivity {
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
-                viewPager.setCurrentItem(viewPager.getCurrentItem() == (imageUrls.size() - 1) ? 0 : viewPager.getCurrentItem() + 1);
+                viewPager.setCurrentItem(viewPager.getCurrentItem() == (contentList.size() - 1) ? 0 : viewPager.getCurrentItem() + 1);
                 handler.postDelayed(this, 2000); //now is every 2 minutes
             }
         }, 2000);
@@ -75,7 +76,7 @@ public class ReferralActivity extends AppCompatActivity {
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
         sendIntent.putExtra(Intent.EXTRA_TEXT,
-                "Hey check out Y-ral Gaming app play BGMI , Free Fire game with Free entry and earn per kill : https://play.google.com/store/apps/details?id=com.intelj.y_ral_gaming");
+                "Hey check out Y-ral Gaming app play BGMI , Free Fire game with Free entry and earn per kill and use 'YRAL" + new AppConstant(this).getId() + "' as a Referral code : https://play.google.com/store/apps/details?id=com.intelj.y_ral_gaming");
         sendIntent.setType("text/plain");
         startActivity(sendIntent);
     }
@@ -98,13 +99,17 @@ public class ReferralActivity extends AppCompatActivity {
                         try {
                             JSONArray json = new JSONArray(response);
                             findViewById(R.id.animationView).setVisibility(json.length() > 0 ? View.GONE : View.VISIBLE);
-
+                            TextView totalAmount = findViewById(R.id.totalAmount);
+                            int totalSuccessInvite = 0;
                             for (int i = 0; i < json.length(); i++) {
-                                JSONObject jsonObject = (JSONObject)json.get(i);
-                                myListData.add(new MyListData(jsonObject.getString("name"),jsonObject.getString("name"),jsonObject.getString("name")));
-                                Log.e("responses",jsonObject.getString("name"));
+                                JSONObject jsonObject = (JSONObject) json.get(i);
+                                if(jsonObject.getString("playing_status").equals("1"))
+                                    totalSuccessInvite = totalSuccessInvite+1;
+                                myListData.add(new MyListData(jsonObject.getString("name"), jsonObject.getString("userId"), jsonObject.getString("playing_status")));
+                                Log.e("responses", jsonObject.getString("name"));
                             }
-                            Log.e("responses",myListData.size()+"");
+                            totalAmount.setText("+" + (totalSuccessInvite * 50));
+                            Log.e("responses", totalSuccessInvite + "");
                             MyListAdapter adapter = new MyListAdapter(myListData);
                             recyclerView.setHasFixedSize(true);
                             recyclerView.setLayoutManager(new LinearLayoutManager(ReferralActivity.this));
@@ -149,11 +154,13 @@ public class ReferralActivity extends AppCompatActivity {
 
         @Override
         public Object instantiateItem(ViewGroup collection, int position) {
-            String imageUrl = imageUrls.get(position);
             LayoutInflater inflater = LayoutInflater.from(mContext);
             ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.image_view, collection, false);
+            TextView textView  = layout.findViewById(R.id.title);
             LottieAnimationView lottieAnimationView = layout.findViewById(R.id.animationView);
-            lottieAnimationView.setAnimation(imageUrl);
+            String firstKey = contentList.keySet().toArray()[position].toString();
+            lottieAnimationView.setAnimation(firstKey);
+            textView.setText(contentList.get(firstKey));
             collection.addView(layout);
             return layout;
         }
@@ -165,7 +172,7 @@ public class ReferralActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return imageUrls.size();
+            return contentList.size();
         }
 
         @Override

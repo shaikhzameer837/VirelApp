@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.intelj.y_ral_gaming.R;
+import com.intelj.y_ral_gaming.SigninActivity;
 
 public class SplashScreen extends AppCompatActivity {
     ImageView img;

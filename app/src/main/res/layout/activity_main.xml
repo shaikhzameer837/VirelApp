@@ -90,7 +90,7 @@
                 android:id="@+id/help"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableTop="@drawable/drop_down"
+                android:drawableTop="@drawable/rotate"
                 android:text="More"
                 android:layout_marginRight="10dp"
                 android:textSize="11sp" />

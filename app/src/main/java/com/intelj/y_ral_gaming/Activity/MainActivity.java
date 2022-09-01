@@ -144,36 +144,6 @@ public class MainActivity extends BaseActivity {
                 showRankChat();
             }
         });
-//        AppController.getInstance().shortsUrlList.add("https://cdn.discordapp.com/attachments/911308156855005195/981386524530716702/weirdest_things_astronauts_have_seen_cdn.320mp3converter.com.mp4");
-//        AppController.getInstance().shortsUrlList.add("https://cdn.discordapp.com/attachments/911308156855005195/981387457994047539/videoplayback.mp4");
-//        Map<String, Object> city = new HashMap<>();
-//        Map<String, Object> details = new HashMap<>();
-//        details.put("userid",appConstant.getId());
-//        details.put("likes",0);
-//        details.put("comment",0);
-//        details.put("caption","Gaming Zone");
-//        city.put("981594891480104980",details);
-//        FirebaseFirestore db = FirebaseFirestore.getInstance();
-//        db.collection("yral_web").document("video")
-//                .set(city, SetOptions.merge())
-//                .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                    @Override
-//                    public void onSuccess(Void aVoid) {
-//                        Log.d(TAG, "DocumentSnapshot successfully written!");
-//                    }
-//                })
-//                .addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e) {
-//                        Log.w(TAG, "Error writing document", e);
-//                    }
-//                });
-
-//        getYoutubeVid("hdltisKb2bc");
-//        getYoutubeVid("ICqjw7zGEbA");
-//        getYoutubeVid("9Q8CYILXfh8");
-        // requestWindowFeature(Window.FEATURE_NO_TITLE);
-        //this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         sharedPreferences = getSharedPreferences(appConstant.getId(), 0);
         Fade fade = new Fade();
         View decor = getWindow().getDecorView();
@@ -190,7 +160,6 @@ public class MainActivity extends BaseActivity {
 
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
                 new IntentFilter("custom-event-name"));
-        //setUpNavigationView();
         if (savedInstanceState == null) {
             invalidateOptionsMenu();
         }
@@ -654,7 +623,7 @@ public class MainActivity extends BaseActivity {
         super.onResume();
         if (appConstant.checkLogin() && imgProfile != null) {
            if(!sharedPreferences.getString(AppConstant.name, "").equals("")){
-               ((TextView)findViewById(R.id.complete)).setText(" Refer a Friend & 50 rs per invite");
+               ((TextView)findViewById(R.id.complete)).setText(" Refer a Friend & 25 rs per invite");
                Drawable img = getResources().getDrawable(R.drawable.refer);
                Drawable img1 = getResources().getDrawable(R.drawable.arrow_right);
                ((TextView)findViewById(R.id.complete)).setCompoundDrawablesWithIntrinsicBounds(img, null, img1, null);

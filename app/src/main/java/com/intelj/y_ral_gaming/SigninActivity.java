@@ -7,10 +7,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.provider.Settings;
 import android.telephony.PhoneNumberUtils;
 import android.util.Log;
@@ -21,7 +21,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +29,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -37,23 +37,19 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.intelj.y_ral_gaming.Activity.MainActivity;
+import com.intelj.y_ral_gaming.Activity.ReferralActivity;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 import com.rilixtech.widget.countrycodepicker.Country;
 import com.rilixtech.widget.countrycodepicker.CountryCodePicker;
@@ -70,12 +66,12 @@ import java.util.concurrent.TimeUnit;
 
 
 public class SigninActivity extends AppCompatActivity {
-    private ViewPager viewPager;
+    HashMap<String, String> contentList = new HashMap<>();
+    private ViewPager viewPagerLogin;
     private MyViewPagerAdapter myViewPagerAdapter;
     int[] layouts;
     AppConstant appConstant;
-    TextInputEditText phoneNumber, otp;
-    EditText pgUsername;
+    EditText phoneNumber, otp;
     CountryCodePicker ccp;
     TextView et_countdown, resend_btn, referal;
     String _phoneNumber = "", _otp = "", token = "", _pgUsername = "", _countryCode = "+91";
@@ -87,10 +83,11 @@ public class SigninActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (Build.VERSION.SDK_INT >= 21) {
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-        }
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         setContentView(R.layout.signin);
+        contentList.put("phone.json", "Join now");
+        contentList.put("login.json", "Register & play Game");
+        contentList.put("cash.json", "You earn 50rs after game played");
         FirebaseMessaging.getInstance().getToken()
                 .addOnCompleteListener(new OnCompleteListener<String>() {
                     @Override
@@ -99,15 +96,11 @@ public class SigninActivity extends AppCompatActivity {
                             Log.w("TAG", "Fetching FCM registration token failed", task.getException());
                             return;
                         }
-
-                        // Get new FCM registratiupion token
                         token = task.getResult();
-
-
                     }
                 });
         appConstant = new AppConstant(SigninActivity.this);
-        viewPager = findViewById(R.id.view_pager);
+        viewPagerLogin = findViewById(R.id.view_pager);
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference(appConstant.users);
         layouts = new int[]{
@@ -117,9 +110,9 @@ public class SigninActivity extends AppCompatActivity {
 
         changeStatusBarColor();
         myViewPagerAdapter = new MyViewPagerAdapter();
-        viewPager.setAdapter(myViewPagerAdapter);
-        viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
-        viewPager.setOnTouchListener(new View.OnTouchListener() {
+        viewPagerLogin.setAdapter(myViewPagerAdapter);
+        viewPagerLogin.addOnPageChangeListener(viewPagerPageChangeListener);
+        viewPagerLogin.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 return true;
@@ -131,11 +124,61 @@ public class SigninActivity extends AppCompatActivity {
                 myViewPagerAdapter.checkError();
             }
         });
+        ViewPager viewPager = findViewById(R.id.viewpager);
+        viewPager.setAdapter(new CustomPagerAdapter(SigninActivity.this));
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                viewPager.setCurrentItem(viewPager.getCurrentItem() == (contentList.size() - 1) ? 0 : viewPager.getCurrentItem() + 1);
+                handler.postDelayed(this, 2000); //now is every 2 minutes
+            }
+        }, 2000);
     }
 
+    public class CustomPagerAdapter extends PagerAdapter {
 
+        private Context mContext;
+
+        public CustomPagerAdapter(Context context) {
+            mContext = context;
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup collection, int position) {
+            LayoutInflater inflater = LayoutInflater.from(mContext);
+            ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.image_view, collection, false);
+            TextView textView  = layout.findViewById(R.id.title);
+            LottieAnimationView lottieAnimationView = layout.findViewById(R.id.animationView);
+            String firstKey = contentList.keySet().toArray()[position].toString();
+            lottieAnimationView.setAnimation(firstKey);
+            textView.setText(contentList.get(firstKey));
+            collection.addView(layout);
+            return layout;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup collection, int position, Object view) {
+            collection.removeView((View) view);
+        }
+
+        @Override
+        public int getCount() {
+            return contentList.size();
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object object) {
+            return view == object;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return "";
+        }
+
+    }
     private int getItem(int i) {
-        return viewPager.getCurrentItem() + i;
+        return viewPagerLogin.getCurrentItem() + i;
     }
 
     ViewPager.OnPageChangeListener viewPagerPageChangeListener = new ViewPager.OnPageChangeListener() {
@@ -201,7 +244,7 @@ public class SigninActivity extends AppCompatActivity {
         }
 
         public void checkError() {
-            if (viewPager.getCurrentItem() == 0) {
+            if (viewPagerLogin.getCurrentItem() == 0) {
                 phoneNumber = layout_view.get(0).findViewById(R.id.phoneNumber);
                 referal = layout_view.get(0).findViewById(R.id.referal);
                 ccp = layout_view.get(0).findViewById(R.id.ccp);
@@ -210,7 +253,7 @@ public class SigninActivity extends AppCompatActivity {
                     Toast.makeText(SigninActivity.this, "Please Fill Proper phone number", Toast.LENGTH_LONG).show();
                     return;
                 }
-                if (viewPager.getCurrentItem() < layouts.length) {
+                if (viewPagerLogin.getCurrentItem() < layouts.length) {
                     mobileConfirmationPopup();
                     resend_btn = findViewById(R.id.resend_btn);
                     resend_btn.setOnClickListener(new View.OnClickListener() {
@@ -222,93 +265,15 @@ public class SigninActivity extends AppCompatActivity {
                     });
                     countdown_timer();
                 }
-            } else if (viewPager.getCurrentItem() == 2) {
-                pgUsername = layout_view.get(2).findViewById(R.id.pgUsername);
-                _pgUsername = pgUsername.getText().toString();
-                if (_pgUsername.equals("")) {
-                    Toast.makeText(SigninActivity.this, "Please fill pubg id", Toast.LENGTH_LONG).show();
-                    return;
-                }
-                mDatabase.orderByChild(appConstant.getId()).equalTo(_pgUsername).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.exists()) {
-                            for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                                if (AppController.getInstance().userId.equals(postSnapshot.getKey())) {
-                                    // registerdOnServer();
-//                                    Intent intent = new Intent(SigninActivity.this, MainActivity.class);
-//                                    startActivity(intent);
-                                    return;
-                                } else {
-                                    Toast.makeText(SigninActivity.this, "Pubg id already exist", Toast.LENGTH_LONG).show();
-                                    return;
-                                }
-                            }
-                        }
-                        mDatabase.child(AppController.getInstance().userId).child(appConstant.getId()).
-                                setValue(_pgUsername);
-                        registerdOnServer();
-
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError error) {
-
-                    }
-                });
-
-            } else if (viewPager.getCurrentItem() == 1) {
+            }  else if (viewPagerLogin.getCurrentItem() == 1) {
                 otp = layout_view.get(1).findViewById(R.id.otp);
                 _otp = otp.getText().toString();
-
-
-//                if (!_otp.equals("1234")) {
-//                    Toast.makeText(SigninActivity.this, "Wrong otp", Toast.LENGTH_LONG).show();
-//                    return;
-//                }
                 if (_otp.trim().length() != 0) {
                     if (skey.equals(_otp))
                         registerdOnServer();
                     else verifyVerificationCode(_otp);
                 } else
                     Toast.makeText(SigninActivity.this, "Please enter the OTP", Toast.LENGTH_LONG).show();
-                /*AppController.getInstance().userId = System.currentTimeMillis() + "";
-                final ProgressDialog progressDialog = new ProgressDialog(SigninActivity.this);
-                progressDialog.setMessage("Signing...");
-                progressDialog.show();
-                AppController.getInstance().progressDialog = progressDialog;
-                mDatabase.orderByChild(appConstant.phoneNumber).equalTo(_phoneNumber).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        HashMap<String, Object> login = new HashMap<>();
-                        login.put("model" , Build.MODEL);
-                        login.put("brand" , Build.BRAND);
-                        login.put("type" , Build.TYPE);
-                        login.put("version" , Build.VERSION.RELEASE);
-                        if (dataSnapshot.exists()) {
-                            for (DataSnapshot postSnapshot : dataSnapshot.getChildren())
-                                AppController.getInstance().userId = postSnapshot.getKey();
-                        } else
-                            login.put(appConstant.myPicUrl, "");
-                        login.put(appConstant.userName, _userName);
-                        login.put(appConstant.token, token);
-                        login.put(appConstant.deviceId, Settings.Secure.getString(getContentResolver(),
-                                Settings.Secure.ANDROID_ID));
-                        mDatabase.child(AppController.getInstance().userId).child(AppConstant.pinfo).
-                                updateChildren(login);
-                        mDatabase.child(AppController.getInstance().userId).child(appConstant.phoneNumber).setValue(_phoneNumber);
-                        appConstant.saveLogin(AppController.getInstance().userId,_phoneNumber);
-                        AppController.getInstance().getReadyForCheckin();
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError error) {
-                        AppController.getInstance().progressDialog = null;
-                        progressDialog.cancel();
-                        Toast.makeText(SigninActivity.this,"Something went wrong try again later...",Toast.LENGTH_LONG).show();
-                    }
-                });*/
-
             }
         }
 
@@ -583,7 +548,7 @@ public class SigninActivity extends AppCompatActivity {
                         // if (AppController.getInstance().is_production.equals("true"))
                         sendVerificationCode(_phoneNumber);
                         //registerdOnServer();
-                        viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
+                        viewPagerLogin.setCurrentItem(viewPagerLogin.getCurrentItem() + 1);
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
