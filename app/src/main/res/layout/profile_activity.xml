@@ -177,15 +177,16 @@
                     android:id="@+id/iconImage"
                     android:src="@drawable/chat"
                     />
+
                     <TextView
                         android:id="@+id/edit_profile"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:layout_toRightOf="@+id/iconImage"
                         android:gravity="center"
                         android:text="Edit Profile"
-                        android:textSize="12sp"
-                        android:layout_toRightOf="@+id/iconImage"
                         android:textColor="@color/black"
+                        android:textSize="12sp"
                         android:textStyle="bold" />
                 </RelativeLayout>
 

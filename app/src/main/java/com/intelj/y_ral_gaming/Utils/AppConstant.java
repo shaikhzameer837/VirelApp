@@ -13,6 +13,7 @@ import android.provider.Settings;
 import android.text.InputType;
 import android.util.Log;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -22,13 +23,18 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.intelj.y_ral_gaming.Activity.MainActivity;
 import com.intelj.y_ral_gaming.AppController;
 import com.intelj.y_ral_gaming.PaymentActivity;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
@@ -158,37 +164,8 @@ public class AppConstant {
         this._context = _context;
         setSharedPref();
     }
-    public void callingPingApi(String userId){
-        RequestQueue queue = Volley.newRequestQueue(_context);
-        String url = "http://y-ral-gaming.com/admin/api/firebase/not.php";
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.e("success", response);
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("success", error.getLocalizedMessage());
-            }
-        }) {
-            @Override
-            protected Map<String, String> getParams() {
-                HashMap<String, String> hashMap = new HashMap<>();
-                hashMap.put("userId", userId);
-                return hashMap;
-            }
+    public void callingPingApi(String token){
 
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-                params.put("Content-Type", "application/x-www-form-urlencoded");
-                return params;
-            }
-        };
-
-        queue.add(stringRequest);
     }
     public void setSharedPref() {
         sharedPreferences = _context.getSharedPreferences(AppName, Context.MODE_PRIVATE);
@@ -209,10 +186,10 @@ public class AppConstant {
         return myInfo.getString(countryCode, "+91");
     }
 
-    public void saveUserInfo(String phoneNum, String userid, String profile, String name, String _countryCode, String user_bio, String userName) {
+    public void saveUserInfo(String phoneNum, String userid, String tokenId, String name, String _countryCode, String user_bio, String userName) {
         SharedPreferences userInfo = _context.getSharedPreferences(userid, Context.MODE_PRIVATE);
         userInfo.edit().putString(id, userid).apply();
-        userInfo.edit().putString(myPicUrl, profile).apply();
+        userInfo.edit().putString(token, tokenId).apply();
         userInfo.edit().putString(phoneNumber, phoneNum).apply();
         if (user_bio != null)
             userInfo.edit().putString(bio, user_bio).apply();

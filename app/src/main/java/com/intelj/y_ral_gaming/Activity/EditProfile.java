@@ -112,19 +112,6 @@ public class EditProfile extends AppCompatActivity {
             }
         });
 
-        TI_userName.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                final int DRAWABLE_RIGHT = 2;
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if (event.getRawX() >= (tv_title.getRight() - tv_title.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
-                        checkUserName();
-                        return true;
-                    }
-                }
-                return false;
-            }
-        });
         tv_title.setKeyListener(null);
         mDatabase = FirebaseDatabase.getInstance().getReference(appConstant.users);
         findViewById(R.id.done).setOnClickListener(new View.OnClickListener() {
@@ -196,12 +183,11 @@ public class EditProfile extends AppCompatActivity {
                         1);
             }
         });
-        String[] imgList = {"https://m.media-amazon.com/images/I/81yGe-kXLiS._SL1500_.jpg",
-                "https://indianesports.indialivedaily.com/wp-content/uploads/2021/06/Battlegrounds-Mobile-India-Poster.jpg"};
         Glide.with(this).load(sharedPreferences.getString(AppConstant.myPicUrl, ""))
+                .apply(new RequestOptions().circleCrop())
                 .placeholder(R.drawable.game_avatar).into(imgProfile);
         for (int i = 0; i < gameList.getChildCount(); i++) {
-            MaterialTextView textView =  (MaterialTextView)gameList.getChildAt(i);
+            MaterialTextView textView = (MaterialTextView) gameList.getChildAt(i);
 //            Glide.with(this).load(imgList[i])
 //                    .placeholder(R.drawable.game_avatar).into(imageView);
             if (prefs.getString(textView.getText().toString(), "0").equals("0")) {
@@ -500,5 +486,10 @@ public class EditProfile extends AppCompatActivity {
         Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
         parcelFileDescriptor.close();
         return image;
+    }
+
+    public void checkAvail(View view) {
+        if (!TI_userName.getText().toString().trim().equals(""))
+            checkUserName();
     }
 }

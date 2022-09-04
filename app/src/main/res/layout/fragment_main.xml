@@ -68,12 +68,7 @@
                     android:shadowRadius = "1"
                     android:textColor="@color/colorPrimary"
                     android:textStyle="bold" />
-                <TextView android:id="@+id/ranks"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="15sp"
-                    android:textColor="@color/colorPrimary"
-                    android:textStyle="bold" />
+
             </LinearLayout>
 
             <LinearLayout
@@ -90,7 +85,7 @@
                     android:background="@drawable/outline"
                     android:padding="18dp"
                     android:tag="0"
-                    android:contentDescription="Iron"
+                    android:contentDescription="25"
                     android:text="25"
                     android:textColor="@color/colorPrimary"
                     android:textStyle="bold" />
@@ -100,7 +95,7 @@
                     android:layout_height="wrap_content"
                     android:padding="18dp"
                     android:tag="1000"
-                    android:contentDescription="Bronze"
+                    android:contentDescription="500"
                     android:text="50"
                     android:textColor="@color/colorPrimary"
                     android:textStyle="bold" />
@@ -110,7 +105,7 @@
                     android:layout_height="wrap_content"
                     android:padding="18dp"
                     android:tag="2000"
-                    android:contentDescription="Silver"
+                    android:contentDescription="1000"
                     android:text="100"
                     android:textColor="@color/colorPrimary"
                     android:textStyle="bold" />
@@ -121,7 +116,7 @@
                     android:padding="18dp"
                     android:tag="3000"
                     android:text="150"
-                    android:contentDescription="Gold"
+                    android:contentDescription="1500"
                     android:textColor="@color/colorPrimary"
                     android:textStyle="bold" />
 
@@ -131,7 +126,7 @@
                     android:padding="18dp"
                     android:tag="4000"
                     android:text="200"
-                    android:contentDescription="Diamond"
+                    android:contentDescription="2000"
                     android:textColor="@color/colorPrimary"
                     android:textStyle="bold" />
             </LinearLayout>

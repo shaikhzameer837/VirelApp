@@ -207,7 +207,7 @@ public class ChatList extends AppCompatActivity {
                         Log.e("number//", original);
                         Log.e("number//---", postSnapshot.getKey());
                         originalContact.add(postSnapshot.getKey());
-                        appConstant.saveUserInfo(original, postSnapshot.getKey(), "http://y-ral-gaming.com/admin/api/images/" + postSnapshot.getKey() + ".png?u=" + AppConstant.imageExt(), null, "", postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue() != null ? postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue().toString() : null, postSnapshot.child(AppConstant.userName).getValue() != null ? postSnapshot.child(AppConstant.userName).getValue().toString() : System.currentTimeMillis() + "");
+                        appConstant.saveUserInfo(original, postSnapshot.getKey(), postSnapshot.child(AppConstant.token).exists() ? postSnapshot.child(AppConstant.token).getValue(String.class) : "", null, "", postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue() != null ? postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue().toString() : null, postSnapshot.child(AppConstant.userName).getValue() != null ? postSnapshot.child(AppConstant.userName).getValue().toString() : System.currentTimeMillis() + "");
                     }
                 }
                 Log.e("originalContact", contactArrayList.size() + " " + returnPhone);

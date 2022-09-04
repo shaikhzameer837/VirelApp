@@ -265,7 +265,7 @@ public class MainActivity extends BaseActivity {
                                             SharedPreferences userInfo = getSharedPreferences(s, Context.MODE_PRIVATE);
                                             AppDataBase appDataBase = AppDataBase.getDBInstance(MainActivity.this, s + "_chats");
                                             Log.e("messages", s);
-                                            contactModel.add(0, new ContactListModel(s,userInfo.getString(AppConstant.myPicUrl, ""), appConstant.getContactName(userInfo.getString(AppConstant.phoneNumber, "")), userInfo.getString(AppConstant.id, ""), appDataBase.chatDao().getlastMess().size() > 0 ? appDataBase.chatDao().getlastMess().get(0).messages : ""));
+                                            contactModel.add(0, new ContactListModel(s, userInfo.getString(AppConstant.myPicUrl, ""), appConstant.getContactName(userInfo.getString(AppConstant.phoneNumber, "")), userInfo.getString(AppConstant.id, ""), appDataBase.chatDao().getlastMess().size() > 0 ? appDataBase.chatDao().getlastMess().get(0).messages : ""));
                                         }
                                         Collections.sort(contactModel, new Comparator<ContactListModel>() {
                                             @Override
@@ -622,12 +622,12 @@ public class MainActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         if (appConstant.checkLogin() && imgProfile != null) {
-           if(!sharedPreferences.getString(AppConstant.name, "").equals("")){
-               ((TextView)findViewById(R.id.complete)).setText(" Refer a Friend & 25 rs per invite");
-               Drawable img = getResources().getDrawable(R.drawable.refer);
-               Drawable img1 = getResources().getDrawable(R.drawable.arrow_right);
-               ((TextView)findViewById(R.id.complete)).setCompoundDrawablesWithIntrinsicBounds(img, null, img1, null);
-           }
+            if (!sharedPreferences.getString(AppConstant.name, "").equals("")) {
+                ((TextView) findViewById(R.id.complete)).setText(" Refer a Friend & 25 rs per invite");
+                Drawable img = getResources().getDrawable(R.drawable.refer);
+                Drawable img1 = getResources().getDrawable(R.drawable.arrow_right);
+                ((TextView) findViewById(R.id.complete)).setCompoundDrawablesWithIntrinsicBounds(img, null, img1, null);
+            }
             Glide.with(MainActivity.this).load(sharedPreferences.getString(AppConstant.myPicUrl, "") == null ? "" : sharedPreferences.getString(AppConstant.myPicUrl, "")).placeholder(R.drawable.game_avatar).apply(new RequestOptions().circleCrop()).into(imgProfile);
             playerName = findViewById(R.id.playerName);
             playerName.setText(sharedPreferences.getString(AppConstant.name, "Player"));
@@ -727,17 +727,17 @@ public class MainActivity extends BaseActivity {
                                 Log.e("team_count", obj.getInt("team_count") + "");
                                 tournamentModelList.add(
                                         new TournamentModel(obj.getString("name"),
-                                        obj.getString("game_name"),
-                                        obj.getString("image_url"),
-                                        obj.getString("date"),
-                                        obj.getString("status"),
-                                        obj.getString("discord_url"),
-                                        obj.getString("prize_pool"),
-                                        obj.getString("info"),
-                                        obj.getString("id"),
-                                        obj.getInt("max"),
-                                        obj.getInt("team_count")
-                                ));
+                                                obj.getString("game_name"),
+                                                obj.getString("image_url"),
+                                                obj.getString("date"),
+                                                obj.getString("status"),
+                                                obj.getString("discord_url"),
+                                                obj.getString("prize_pool"),
+                                                obj.getString("info"),
+                                                obj.getString("id"),
+                                                obj.getInt("max"),
+                                                obj.getInt("team_count")
+                                        ));
                             }
                             TournamentAdapter pAdapter = new TournamentAdapter(MainActivity.this, tournamentModelList, true);
                             recyclerView.setAdapter(pAdapter);
@@ -892,16 +892,16 @@ public class MainActivity extends BaseActivity {
         tabLayout.setupWithViewPager(gameViewpager);
         ArrayList<String> titleList = new ArrayList<>();
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        HashMap<String,String> gameList = new HashMap<>();
-        gameList.put("BGMI","1");
-        gameList.put("Valorant","0");
-        gameList.put("Apex Legend","0");
-        gameList.put("COD","0");
-        for (Map.Entry<String,String> entry : gameList.entrySet()){
+        HashMap<String, String> gameList = new HashMap<>();
+        gameList.put("BGMI", "1");
+        gameList.put("Valorant", "0");
+        gameList.put("Apex Legend", "0");
+        gameList.put("COD", "0");
+        for (Map.Entry<String, String> entry : gameList.entrySet()) {
             titleList.add(entry.getKey());
             adapter.addFragment(Long.parseLong(entry.getValue()), new OneFragment(entry.getKey(), Long.parseLong(entry.getValue())), entry.getKey());
         }
-        gameList.put("FREE FIRE","1");
+        gameList.put("FREE FIRE", "1");
         titleList.add("FREE FIRE");
         adapter.addFragment(1L, new OneFragment("FREE FIRE", 1), "FREE FIRE");
 
@@ -927,9 +927,12 @@ public class MainActivity extends BaseActivity {
     }
 
     public void editProfile(View view) {
-        if(sharedPreferences.getString(AppConstant.name, "").equals("")) {
-            startActivity(new Intent(MainActivity.this, EditProfile.class));
-        }else{
+        if (sharedPreferences.getString(AppConstant.name, "").equals("")) {
+            if (appConstant.checkLogin())
+                startActivity(new Intent(MainActivity.this, EditProfile.class));
+            else
+                showBottomSheetDialog();
+        } else {
             startActivity(new Intent(MainActivity.this, ReferralActivity.class));
         }
     }
@@ -1027,7 +1030,7 @@ public class MainActivity extends BaseActivity {
                             return drawable;
                         }
                     }, null));
-                }catch (Exception e){
+                } catch (Exception e) {
                     Log.e("onReceive: ", AppConstant.getRank(AppController.getInstance().rank));
                 }
                 //   kill.setText(appConstant.getCountryCode());

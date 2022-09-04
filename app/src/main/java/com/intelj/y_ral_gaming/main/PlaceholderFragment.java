@@ -93,17 +93,17 @@ public class PlaceholderFragment extends Fragment implements View.OnClickListene
 
         TextView user_name = binding.userName;
         TextView coins = binding.coins;
-        TextView ranks = binding.ranks;
+//        TextView ranks = binding.ranks;
         coins.setText(AppController.getInstance().amount + "");
-        ranks.setText(Html.fromHtml("<img src='"+AppConstant.getRank(AppController.getInstance().rank) + "'/> " , new Html.ImageGetter() {
-            @Override
-            public Drawable getDrawable(String source) {
-                int resourceId = getResources().getIdentifier(source, "drawable", getActivity().getPackageName());
-                Drawable drawable = getResources().getDrawable(resourceId);
-                drawable.setBounds(0, 0, 40, 30);
-                return drawable;
-            }
-        }, null));
+//        ranks.setText(Html.fromHtml("<img src='"+AppConstant.getRank(AppController.getInstance().rank) + "'/> " , new Html.ImageGetter() {
+//            @Override
+//            public Drawable getDrawable(String source) {
+//                int resourceId = getResources().getIdentifier(source, "drawable", getActivity().getPackageName());
+//                Drawable drawable = getResources().getDrawable(resourceId);
+//                drawable.setBounds(0, 0, 40, 30);
+//                return drawable;
+//            }
+//        }, null));
         user_name.setText(sharedPreferences.getString(AppConstant.name, "Player"));
         EditText upi = binding.upi;
         upi.addTextChangedListener(new TextWatcher() {
@@ -213,19 +213,20 @@ public class PlaceholderFragment extends Fragment implements View.OnClickListene
 
     public void WidthDrawAmount(View view) {
         TextView selected = ((TextView) view);
-        if (Integer.parseInt(selected.getTag() + "") < AppController.getInstance().rank) {
-            selected.setBackgroundColor(Color.parseColor("#000000"));
+        if (Integer.parseInt(selected.getTag() + "") < AppController.getInstance().amount) {
+            selected.setBackgroundResource(R.drawable.outline);
             selected.setTextColor(Color.parseColor("#ffffff"));
             for (int i = 0; i < moneyList.getChildCount(); i++) {
                 TextView unselected = (TextView) moneyList.getChildAt(i);
                 if (selected != moneyList.getChildAt(i)) {
-                    unselected.setBackgroundResource(R.drawable.outline);
+                    unselected.setBackground(null);
                     unselected.setTextColor(Color.parseColor("#000000"));
+                    unselected.setTextColor(Color.parseColor("#ffffff"));
                 }
             }
             wAmount = selected.getText().toString();
         } else {
-            Toast.makeText(getActivity(), "You need " + selected.getContentDescription() + " rank to withdraw this amount", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "You need more than " + selected.getContentDescription() + " coins to withdraw this amount", Toast.LENGTH_LONG).show();
         }
     }
 

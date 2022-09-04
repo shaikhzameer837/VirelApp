@@ -71,9 +71,9 @@ public class SigninActivity extends AppCompatActivity {
     private MyViewPagerAdapter myViewPagerAdapter;
     int[] layouts;
     AppConstant appConstant;
-    EditText phoneNumber, otp;
+    EditText phoneNumber,referal, otp;
     CountryCodePicker ccp;
-    TextView et_countdown, resend_btn, referal;
+    TextView et_countdown, resend_btn;
     String _phoneNumber = "", _otp = "", token = "", _pgUsername = "", _countryCode = "+91";
     DatabaseReference mDatabase;
     private String mVerificationId;
@@ -85,9 +85,9 @@ public class SigninActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         setContentView(R.layout.signin);
-        contentList.put("phone.json", "Join now");
+        contentList.put("phone.json", "Enter just phone number");
         contentList.put("login.json", "Register & play Game");
-        contentList.put("cash.json", "You earn 50rs after game played");
+        contentList.put("cash.json", "You earn coins as joining bonus");
         FirebaseMessaging.getInstance().getToken()
                 .addOnCompleteListener(new OnCompleteListener<String>() {
                     @Override

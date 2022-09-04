@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.intelj.y_ral_gaming.R;
 import com.intelj.y_ral_gaming.SigninActivity;
+import com.intelj.y_ral_gaming.Utils.AppConstant;
 
 public class SplashScreen extends AppCompatActivity {
     ImageView img;
@@ -23,6 +25,7 @@ public class SplashScreen extends AppCompatActivity {
         img = findViewById(R.id.img);
         Glide.with(this).load(R.drawable.intro)
                 .placeholder(R.mipmap.app_logo).into(img);
+        Log.e("useriD",new AppConstant(this).getId());
     }
 
 

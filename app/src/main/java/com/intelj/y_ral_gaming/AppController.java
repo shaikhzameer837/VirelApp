@@ -60,6 +60,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.storage.FirebaseStorage;
 import com.intelj.y_ral_gaming.Activity.MainActivity;
@@ -112,6 +113,7 @@ public class AppController extends Application implements Application.ActivityLi
         instance = this;
         remoteConfig = FirebaseRemoteConfig.getInstance();
         remoteConfig.fetchAndActivate();
+        FirebaseDatabase.getInstance().setPersistenceEnabled(false);
         getReadyForCheckin();
         getGameName();
         getTournamentTime();
@@ -143,6 +145,19 @@ public class AppController extends Application implements Application.ActivityLi
         x = 0;
         Log.e("userId1s", userId);
         mDatabase = FirebaseDatabase.getInstance().getReference(AppConstant.users).child(userId);
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "Fetching FCM registration token failed", task.getException());
+                            return;
+                        }
+                        String token = task.getResult();
+                        Log.e("userIdx", task.getResult());
+                        mDatabase.child(AppConstant.token).setValue(token);
+                    }
+                });
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -160,6 +175,7 @@ public class AppController extends Application implements Application.ActivityLi
                     new AppConstant(AppController.this).logout();
                     return;
                 }
+
                 SharedPreferences sharedPreferences = getSharedPreferences(userId, 0);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 if (dataSnapshot.child(AppConstant.userName).getValue() == null) {
