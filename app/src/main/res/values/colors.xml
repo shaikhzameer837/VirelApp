@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <color name="colorPrimary">#fff</color>
-    <color name="colorPrimaryDark">#7e241c</color>
+    <color name="colorPrimaryDark">#ab578b</color>
     <color name="colorAccent">#cb7069</color>
     <color name="appColor">#810d0e</color>
     <color name="black">#000000</color>

@@ -21,6 +21,8 @@ import com.intelj.y_ral_gaming.Utils.AppConstant;
 import java.util.ArrayList;
 import java.util.List;
 
+import soup.neumorphism.NeumorphCardView;
+
 public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.MyViewHolder> {
     private List<ContactListModel> contactModel;
     private List<String> checkBoxList = new ArrayList<>();
@@ -40,6 +42,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
     public class MyViewHolder extends RecyclerView.ViewHolder {
         TextView name, lastMess,nCount;
         ImageView iv_profile;
+        NeumorphCardView arrow;
         CheckBox checkbox;
 
         public MyViewHolder(View view) {
@@ -47,6 +50,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
             name = view.findViewById(R.id.name);
             lastMess = view.findViewById(R.id.lastMess);
             iv_profile = view.findViewById(R.id.profile);
+            arrow = view.findViewById(R.id.arrow);
             checkbox = view.findViewById(R.id.checkbox);
             nCount = view.findViewById(R.id.nCount);
         }
@@ -75,7 +79,19 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         holder.lastMess.setText(contactModel.get(position).getBio());
         Log.e("contactModel", contactModel.get(position).getProfile());
         holder.checkbox.setChecked(checkBoxList.contains(contactModel.get(position).getUserid()));
+        holder.checkbox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(checkBoxList.contains(contactModel.get(position).getUserid())){
+                    checkBoxList.remove(contactModel.get(position).getUserid());
+                }else{
+                    checkBoxList.add(contactModel.get(position).getUserid());
+                }
+                notifyDataSetChanged();
+            }
+        });
         holder.checkbox.setVisibility(isCheckBoxVisible ? View.VISIBLE : View.GONE);
+        holder.arrow.setVisibility(isCheckBoxVisible ? View.GONE : View.VISIBLE);
         Glide.with(mContext).load(AppConstant.AppUrl + "images/" + contactModel.get(position).getUserid() + ".png?u=" + AppConstant.imageExt()).placeholder(R.drawable.game_avatar).apply(new RequestOptions().circleCrop()).into(holder.iv_profile);
     }
 

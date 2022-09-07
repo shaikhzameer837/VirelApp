@@ -263,17 +263,6 @@ public class AppConstant {
         myInfo = _context.getSharedPreferences(AppController.getInstance().userId, Context.MODE_PRIVATE);
         return myInfo.getInt(coin, 0);
     }
-
-    public void setCoins(int _coin, long _nextCoinTime) {
-        myInfo = _context.getSharedPreferences(AppController.getInstance().userId, Context.MODE_PRIVATE);
-        myInfo.edit().putInt(coin, _coin).apply();
-        sharedPreferences.edit().putLong(nextCoinTime, _nextCoinTime).apply();
-    }
-
-    public long getNextCoinTime() {
-        return sharedPreferences.getLong(nextCoinTime, 0);
-    }
-
     public String getUserName() {
         setSharedPref();
         return sharedPreferences.getString(userName, "");
@@ -297,11 +286,6 @@ public class AppConstant {
     public void setPhoneNumber(String phoneN) {
         myInfo = _context.getSharedPreferences(getId(), Context.MODE_PRIVATE);
         myInfo.edit().putString(phoneNumber, phoneN).apply();
-    }
-
-    public boolean getFriendCheck() {
-        myInfo = _context.getSharedPreferences(AppController.getInstance().userId, Context.MODE_PRIVATE);
-        return myInfo.getBoolean(friends, false);
     }
     public static String getRank(int rankPoint) {
         if (rankPoint < 1000) {

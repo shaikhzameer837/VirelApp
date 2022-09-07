@@ -624,7 +624,7 @@ public class MainActivity extends BaseActivity {
         if (appConstant.checkLogin() && imgProfile != null) {
             if (!sharedPreferences.getString(AppConstant.name, "").equals("")) {
                 ((TextView) findViewById(R.id.complete)).setText(" Refer a Friend & 25 rs per invite");
-                Drawable img = getResources().getDrawable(R.drawable.refer);
+                Drawable img = getResources().getDrawable(R.drawable.refer_friend);
                 Drawable img1 = getResources().getDrawable(R.drawable.arrow_right);
                 ((TextView) findViewById(R.id.complete)).setCompoundDrawablesWithIntrinsicBounds(img, null, img1, null);
             }

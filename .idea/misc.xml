@@ -153,6 +153,7 @@
         <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/drawable/background_with_shadow.xml" value="0.14666666666666667" />
         <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/drawable/bell.xml" value="0.173" />
         <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/drawable/bullhorn_outline.xml" value="0.173" />
+        <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/drawable/button_round.xml" value="0.178" />
         <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/drawable/cards_heart.xml" value="0.1" />
         <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/drawable/cards_heart_outline.xml" value="0.1585" />
         <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/drawable/chat.xml" value="0.1" />
@@ -193,6 +194,7 @@
         <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/drawable/rank.xml" value="0.1" />
         <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/drawable/red_round_corner.xml" value="0.142" />
         <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/drawable/refer.xml" value="0.125" />
+        <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/drawable/rename_box.xml" value="0.1" />
         <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/drawable/rotate.xml" value="0.125" />
         <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/drawable/rounded_corners_shape.xml" value="0.199" />
         <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/drawable/send.xml" value="0.199" />
@@ -214,6 +216,7 @@
         <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/layout/congrats.xml" value="0.19010416666666666" />
         <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/layout/contact_list.xml" value="0.3333333333333333" />
         <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/layout/contacts.xml" value="0.3333333333333333" />
+        <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/layout/create_team.xml" value="0.22" />
         <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/layout/delete_demo.xml" value="0.16666666666666666" />
         <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/layout/edit_profile.xml" value="0.22" />
         <entry key="..\:/Yral-gaming/y-ral-gaming/app/src/main/res/layout/event_info.xml" value="0.19114583333333332" />

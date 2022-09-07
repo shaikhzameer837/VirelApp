@@ -73,6 +73,7 @@
         style="@style/Widget.Neumorph.Button"
         android:layout_width="50dp"
         android:layout_height="50dp"
+        android:id="@+id/arrow"
         android:layout_alignParentRight="true"
         android:background="@color/color_dialog_gray"
         app:neumorph_shapeType="flat"

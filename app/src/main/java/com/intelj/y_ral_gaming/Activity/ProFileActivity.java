@@ -331,7 +331,8 @@ public class ProFileActivity extends AppCompatActivity {
                                 rank_button.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        showTeamList();
+                                       // showTeamList();
+                                        startActivity(new Intent(ProFileActivity.this,CreateTeam.class));
                                     }
                                 });
                             }
@@ -453,6 +454,10 @@ public class ProFileActivity extends AppCompatActivity {
         } else
             new readContactTask().execute();
     }
+
+    public void createTeam(View view) {
+    }
+
     class readContactTask extends AsyncTask<Void, Integer, String> {
         String TAG = getClass().getSimpleName();
 

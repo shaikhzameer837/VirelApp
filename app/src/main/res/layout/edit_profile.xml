@@ -356,36 +356,25 @@
                     </LinearLayout>
 
 
-                    <soup.neumorphism.NeumorphCardView
-                        android:id="@+id/done"
-                        style="@style/Widget.Neumorph.Button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="75dp"
-                        android:padding="20dp"
-                        android:layout_gravity="center_horizontal"
-                        app:neumorph_backgroundColor="@color/black"
-                        app:neumorph_shadowColorDark="#00000000"
-                        app:neumorph_shadowColorLight="#00000000"
-                        app:neumorph_shapeType="flat"
-                        app:neumorph_strokeColor="#00000000"
-                        app:neumorph_strokeWidth="0dp">
 
-                        <TextView
-                            android:id="@+id/ok"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="center"
-                            android:drawableLeft="@drawable/account"
-                            android:drawableRight="@drawable/arrow_white"
-                            android:gravity="center"
-                            android:paddingLeft="10dp"
-                            android:paddingRight="10dp"
-                            android:text="  Update Profile "
-                            android:textColor="@color/white"
-                            android:textStyle="bold" />
-                    </soup.neumorphism.NeumorphCardView>
                 </LinearLayout>
             </ScrollView>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
+    <Button
+        android:id="@+id/done"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:drawableLeft="@drawable/account"
+        android:drawableRight="@drawable/arrow_white"
+        android:gravity="center"
+        android:layout_marginTop="-30dp"
+        android:layout_marginBottom="-50dp"
+        android:background="@drawable/button_round"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="  Create Team "
+        android:textColor="@color/white"
+        android:textStyle="bold" />
 </LinearLayout>

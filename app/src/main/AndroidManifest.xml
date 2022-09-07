@@ -115,6 +115,7 @@
         <activity android:name="com.intelj.y_ral_gaming.Activity.ReferralActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemes" />
+        <activity android:name="com.intelj.y_ral_gaming.Activity.CreateTeam" />
 
         <service
             android:name=".FirebaseFCMServices"

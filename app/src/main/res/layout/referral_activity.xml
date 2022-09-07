@@ -39,9 +39,10 @@
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_marginLeft="5dp"
+                    android:drawableLeft="@drawable/refer"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="Refer to a friend"
+                    android:text=" Refer to a friend"
                     android:textColor="@color/white"
                     android:textStyle="bold" />
                 <TextView android:id="@+id/totalAmount"
