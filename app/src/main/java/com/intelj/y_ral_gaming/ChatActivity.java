@@ -108,7 +108,7 @@ public class ChatActivity extends AppCompatActivity {
         Log.e("userId", userId);
         NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(Integer.parseInt(userId));
-        Glide.with(ChatActivity.this).load("http://y-ral-gaming.com/admin/api/images/" + userId + ".png?u=" + AppConstant.imageExt()).apply(new RequestOptions().circleCrop()).placeholder(R.drawable.game_avatar).into(profile);
+        Glide.with(ChatActivity.this).load(AppConstant.AppUrl + "images/" + userId + ".png?u=" + AppConstant.imageExt()).apply(new RequestOptions().circleCrop()).placeholder(R.drawable.game_avatar).into(profile);
         message = findViewById(R.id.message);
         mAdapter = new ChatAdapter(this);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -175,7 +175,7 @@ public class ChatActivity extends AppCompatActivity {
 //                    @Override
 //                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 //                        name.setText(dataSnapshot.child(AppConstant.name).getValue(String.class));
-//                        Glide.with(ChatActivity.this).load("http://y-ral-gaming.com/admin/api/images/" + userId + ".png?u=" + (System.currentTimeMillis() / 1000)).apply(new RequestOptions().circleCrop()).placeholder(R.drawable.game_avatar).into(profile);
+//                        Glide.with(ChatActivity.this).load(AppConstant.AppUrl + "images/" + userId + ".png?u=" + (System.currentTimeMillis() / 1000)).apply(new RequestOptions().circleCrop()).placeholder(R.drawable.game_avatar).into(profile);
 //                    }
 //
 //                    @Override

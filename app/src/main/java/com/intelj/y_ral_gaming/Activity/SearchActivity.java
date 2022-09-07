@@ -113,7 +113,7 @@ public class SearchActivity extends AppCompatActivity {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             recyclerDataArrayList.add(new SuggesstionModel(snapshot.child(AppConstant.name).getValue(String.class),
-                                    "http://y-ral-gaming.com/admin/api/images/" + userIDs.get(m) + ".png?u=" + AppConstant.imageExt(),userIDs.get(m),snapshot.child(AppConstant.verified).exists()));
+                                    AppConstant.AppUrl + "images/" + userIDs.get(m) + ".png?u=" + AppConstant.imageExt(),userIDs.get(m),snapshot.child(AppConstant.verified).exists()));
                             adapter.notifyDataSetChanged();
                         }
 
@@ -138,7 +138,7 @@ public class SearchActivity extends AppCompatActivity {
                         if (AppController.getInstance().follow == null || !AppController.getInstance().follow.child(dataSnapshot.getKey()).exists()) {
                             DataSnapshot snapshot = dataSnapshot.child(AppConstant.pinfo);
                             recyclerDataArrayList.add(new SuggesstionModel(snapshot.child(AppConstant.name).getValue(String.class),
-                                    "http://y-ral-gaming.com/admin/api/images/" + dataSnapshot.getKey() + ".png?u=" + AppConstant.imageExt(), dataSnapshot.getKey(),snapshot.child(AppConstant.verified).exists()));
+                                    AppConstant.AppUrl + "images/" + dataSnapshot.getKey() + ".png?u=" + AppConstant.imageExt(), dataSnapshot.getKey(),snapshot.child(AppConstant.verified).exists()));
                             adapter.notifyDataSetChanged();
                         }
                     }
@@ -163,7 +163,7 @@ public class SearchActivity extends AppCompatActivity {
                     result.setText("result found");
                     for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                         userInfoList.add(postSnapshot);
-                        new AppConstant(SearchActivity.this).saveUserInfo("", postSnapshot.getKey(), "http://y-ral-gaming.com/admin/api/images/" + postSnapshot.getKey() + ".png?u=" + AppConstant.imageExt(), null, "", postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue() != null ? postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue().toString() : null, postSnapshot.child(AppConstant.userName).getValue() != null ? postSnapshot.child(AppConstant.userName).getValue().toString() : System.currentTimeMillis() + "");
+                        new AppConstant(SearchActivity.this).saveUserInfo("", postSnapshot.getKey(), AppConstant.AppUrl + "images/" + postSnapshot.getKey() + ".png?u=" + AppConstant.imageExt(), null, "", postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue() != null ? postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue().toString() : null, postSnapshot.child(AppConstant.userName).getValue() != null ? postSnapshot.child(AppConstant.userName).getValue().toString() : System.currentTimeMillis() + "");
                         mAdapter = new TeamAdapter(SearchActivity.this, userInfoList, AppConstant.search);
                         recyclerView.setAdapter(mAdapter);
                     }

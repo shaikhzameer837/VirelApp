@@ -89,7 +89,7 @@ public class PaymentStatus extends Fragment {
 
     private void requestMoney() {
         RequestQueue queue = Volley.newRequestQueue(getActivity());
-        String url = "http://y-ral-gaming.com/admin/api/get_status.php";
+        String url = AppConstant.AppUrl + "get_status.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override

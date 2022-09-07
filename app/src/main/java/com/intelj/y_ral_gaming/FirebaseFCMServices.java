@@ -154,7 +154,7 @@ public class FirebaseFCMServices extends FirebaseMessagingService {
 
     public void updateFcm(String token) {
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://y-ral-gaming.com/admin/api/update_fcm.php";
+        String url = AppConstant.AppUrl + "update_fcm.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override

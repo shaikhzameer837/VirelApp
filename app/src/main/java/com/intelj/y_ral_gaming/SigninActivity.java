@@ -343,7 +343,7 @@ public class SigninActivity extends AppCompatActivity {
         dialog.setMessage("Registering for App, please wait.");
         dialog.show();
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://y-ral-gaming.com/admin/api/reg.php";
+        String url = AppConstant.AppUrl + "reg.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
@@ -386,7 +386,7 @@ public class SigninActivity extends AppCompatActivity {
                                 mDatabase.child(AppController.getInstance().userId).child(AppConstant.realTime).
                                         updateChildren(realTime);
                                 appConstant.saveLogin(AppController.getInstance().userId);
-                                appConstant.saveUserInfo(_phoneNumber, AppController.getInstance().userId, "http://y-ral-gaming.com/admin/api/images/" + AppController.getInstance().userId + ".png?u=" + AppConstant.imageExt(), name, _countryCode, null, userName);
+                                appConstant.saveUserInfo(_phoneNumber, AppController.getInstance().userId, AppConstant.AppUrl + "images/" + AppController.getInstance().userId + ".png?u=" + AppConstant.imageExt(), name, _countryCode, null, userName);
                                 AppController.getInstance().getReadyForCheckin();
                                 Log.e("Exception", "success 2");
                                 AppController.getInstance().progressDialog = null;

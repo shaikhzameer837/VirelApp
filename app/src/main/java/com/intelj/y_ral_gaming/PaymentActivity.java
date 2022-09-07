@@ -101,7 +101,7 @@ public class PaymentActivity extends AppCompatActivity {
         progressDialog.setTitle("loading...");
         progressDialog.show();
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://y-ral-gaming.com/admin/api/load_free_matches.php";
+        String url = AppConstant.AppUrl + "load_free_matches.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override

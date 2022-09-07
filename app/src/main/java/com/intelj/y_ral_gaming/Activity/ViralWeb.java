@@ -158,7 +158,7 @@ public class ViralWeb extends AppCompatActivity {
 
     private void reloadData(String s) {
         RequestQueue queue = Volley.newRequestQueue(ViralWeb.this);
-        String url = "http://y-ral-gaming.com/admin/api/comment_list.php";
+        String url = AppConstant.AppUrl + "comment_list.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
@@ -209,7 +209,7 @@ public class ViralWeb extends AppCompatActivity {
     }
     private void postComment(String s, String gameId) {
         RequestQueue queue = Volley.newRequestQueue(ViralWeb.this);
-        String url = "http://y-ral-gaming.com/admin/api/post_comment.php";
+        String url = AppConstant.AppUrl + "post_comment.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override

@@ -246,7 +246,7 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MyViewHolder
         progressDialog.setTitle("loading...");
         progressDialog.show();
         RequestQueue queue = Volley.newRequestQueue(mContext);
-        String url = "http://y-ral-gaming.com/admin/api/join_game.php";
+        String url = AppConstant.AppUrl + "join_game.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override

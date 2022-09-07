@@ -43,9 +43,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AppConstant {
-    public static String follow = "follow";
-    public static String following_count = "following_count";
-    public static String follower_count = "follower_count";
     public static String AppUrl = "http://y-ral-gaming.com/admin/api/";
      private Context _context;
     private SharedPreferences sharedPreferences;
@@ -56,12 +53,9 @@ public class AppConstant {
             phoneNumber = "phoneNumber",
             yralWeb = "yral_web",
             likes = "likes",
-            comments = "comments",
             id = "id",
             amount = "amount",
             payment = "payment",
-            ad_mobs = "ca-app-pub-4340305355612346/9283952361",
-            google_ad_mobs = "ca-app-pub-3940256099942544/2247696110",
             applyMatches = "applyMatches",
             title = "title",
             user = "user",
@@ -73,13 +67,10 @@ public class AppConstant {
             success = "success",
             message = "message",
             subject = "subject",
-            uniqueId = "uniqueId",
             friends = "friends",
             deviceId = "deviceId",
-            ign = "ign",
             saveYTid = "saveYTid",
             search = "search",
-            myTeam = "myTeam",
             teamName = "teamName",
             teamMember = "teamMember",
             team = "team",
@@ -102,11 +93,9 @@ public class AppConstant {
             discordId = "discordId",
             bio = "bio",
             verified = "verified",
-            pubgId = "pubgId",
-            youtubeApiKey = "AIzaSyBQiqtYCe51DtHvGhJOjO20Vv9Y_uzRyks",
+       //     youtubeApiKey = "AIzaSyBQiqtYCe51DtHvGhJOjO20Vv9Y_uzRyks",
             name = "userName",
-            userName = "un",
-            username_search = "username";
+            userName = "un";
     public static final String[] player_title = {"Sniper", "Noob", "Sentinel", "Camper", "Pro", "Smurf", "Strategic"};
     private static final int SECOND_MILLIS = 1000;
     private static final int MINUTE_MILLIS = 60 * SECOND_MILLIS;
@@ -148,8 +137,6 @@ public class AppConstant {
         return (System.currentTimeMillis() / 120000);
     }
 
-    public static boolean isProduction = false;
-    public static SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss aa");
     static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     static SecureRandom rnd = new SecureRandom();
 

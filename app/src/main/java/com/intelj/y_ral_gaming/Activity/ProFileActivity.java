@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -92,6 +93,7 @@ public class ProFileActivity extends AppCompatActivity {
     long following = 0;
     ImageView iconImage,chatIcon;
     TextView  rank,rank_button;
+    ProgressBar progress;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,6 +103,7 @@ public class ProFileActivity extends AppCompatActivity {
         userName = findViewById(R.id.userName);
         rank_button = findViewById(R.id.rank_button);
         chatIcon = findViewById(R.id.chatIcon);
+        progress = findViewById(R.id.progress);
         bio = findViewById(R.id.bio);
         rank = findViewById(R.id.rank);
         follower_count = findViewById(R.id.follower_count);
@@ -139,6 +142,7 @@ public class ProFileActivity extends AppCompatActivity {
             iconImage.setImageResource(R.drawable.ic_edit);
             findViewById(R.id.rel_button).setBackgroundResource(R.drawable.curved_red);
             edit_profile.setTextColor(Color.parseColor("#ffffff"));
+            edit_profile.setText("Edit Profile");
             findViewById(R.id.rel_button).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -152,6 +156,8 @@ public class ProFileActivity extends AppCompatActivity {
                     Toast.makeText(ProFileActivity.this,"Coming Soon",Toast.LENGTH_LONG).show();
                 }
             });
+            chatIcon.setImageResource(R.drawable.chat);
+            rank_button.setText("Message");
         }
         findViewById(R.id.chat).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -293,7 +299,7 @@ public class ProFileActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         sharedPreferences = getSharedPreferences(userid, 0);
-        Glide.with(ProFileActivity.this).load("http://y-ral-gaming.com/admin/api/images/" + userid + ".png?u=" + AppConstant.imageExt()).apply(new RequestOptions().circleCrop()).placeholder(R.drawable.game_avatar).into(imgProfile);
+        Glide.with(ProFileActivity.this).load(AppConstant.AppUrl + "images/" + userid + ".png?u=" + AppConstant.imageExt()).apply(new RequestOptions().circleCrop()).placeholder(R.drawable.game_avatar).into(imgProfile);
         if (userid.equals(appConstant.getId()))
             name.setText(sharedPreferences.getString(AppConstant.name, ""));
         else
@@ -304,16 +310,15 @@ public class ProFileActivity extends AppCompatActivity {
     }
 
     public void getProfileInfo() {
-        ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Updating...");
-        progressDialog.show();
+        progress.setVisibility(View.VISIBLE);
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://y-ral-gaming.com/admin/api/profile_info.php";
+        String url = AppConstant.AppUrl + "profile_info.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         Log.e("response", response);
+                        progress.setVisibility(View.GONE);
                         try {
                             if (userid.equals(appConstant.getId())) {
                                 chatIcon.setImageResource(R.drawable.group);
@@ -333,12 +338,11 @@ public class ProFileActivity extends AppCompatActivity {
                         } catch (Exception e) {
 
                         }
-                        progressDialog.cancel();
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                progressDialog.cancel();
+                progress.setVisibility(View.GONE);
             }
         }) {
             @Override
@@ -486,8 +490,8 @@ public class ProFileActivity extends AppCompatActivity {
                         Log.e("number//", original);
                         Log.e("number//---", postSnapshot.getKey());
                         originalContact.add(postSnapshot.getKey());
-                        appConstant.saveUserInfo(original, postSnapshot.getKey(), "http://y-ral-gaming.com/admin/api/images/" + postSnapshot.getKey() + ".png?u=" + AppConstant.imageExt(), null, "", postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue() != null ? postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue().toString() : null, postSnapshot.child(AppConstant.userName).getValue() != null ? postSnapshot.child(AppConstant.userName).getValue().toString() : System.currentTimeMillis() + "");
-                        contactModel.add(new ContactListModel(original,"http://y-ral-gaming.com/admin/api/images/" + postSnapshot.getKey() + ".png?u=" + AppConstant.imageExt(), appConstant.getContactName(postSnapshot.child(AppConstant.phoneNumber).getValue(String.class)), postSnapshot.getKey(), postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue() != null ? postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue().toString() : ""));
+                        appConstant.saveUserInfo(original, postSnapshot.getKey(), AppConstant.AppUrl + "images/" + postSnapshot.getKey() + ".png?u=" + AppConstant.imageExt(), null, "", postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue() != null ? postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue().toString() : null, postSnapshot.child(AppConstant.userName).getValue() != null ? postSnapshot.child(AppConstant.userName).getValue().toString() : System.currentTimeMillis() + "");
+                        contactModel.add(new ContactListModel(original,AppConstant.AppUrl + "images/" + postSnapshot.getKey() + ".png?u=" + AppConstant.imageExt(), appConstant.getContactName(postSnapshot.child(AppConstant.phoneNumber).getValue(String.class)), postSnapshot.getKey(), postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue() != null ? postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue().toString() : ""));
                     }
                 }
                 if (contactArrayList.size() == returnPhone) {
@@ -513,7 +517,7 @@ public class ProFileActivity extends AppCompatActivity {
         ShimmerFrameLayout shimmerFrameLayout = inflated.findViewById(R.id.shimmer_layout);
         shimmerFrameLayout.startShimmer();
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://y-ral-gaming.com/admin/api/get_team.php";
+        String url = AppConstant.AppUrl + "get_team.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
@@ -139,7 +138,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center_horizontal"
-                    android:text="0 \n following"
+                    android:text="--- \n following"
                     android:textSize="12sp" />
 
                 <TextView
@@ -148,7 +147,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center_horizontal"
-                    android:text="0 \n follower"
+                    android:text="--- \n follower"
                     android:textSize="12sp" />
 
             </LinearLayout>
@@ -175,7 +174,6 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="10dp"
                     android:id="@+id/iconImage"
-                    android:src="@drawable/chat"
                     />
 
                     <TextView
@@ -184,7 +182,6 @@
                         android:layout_height="match_parent"
                         android:layout_toRightOf="@+id/iconImage"
                         android:gravity="center"
-                        android:text="Edit Profile"
                         android:textColor="@color/black"
                         android:textSize="12sp"
                         android:textStyle="bold" />
@@ -203,9 +200,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="10dp"
-                        android:id="@+id/chatIcon"
-                        android:src="@drawable/chat"
-                        />
+                        android:id="@+id/chatIcon" />
 
                     <TextView
                         android:id="@+id/rank_button"
@@ -213,7 +208,6 @@
                         android:layout_height="match_parent"
                         android:layout_toRightOf="@+id/chatIcon"
                         android:gravity="center"
-                        android:text="Message"
                         android:textColor="@color/black"
                         android:textSize="12sp"
                         android:textStyle="bold" />
@@ -237,7 +231,10 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         app:tabMode="auto" />
-
+    <ProgressBar android:id="@+id/progress"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_height="wrap_content"/>
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewPager"
         android:layout_width="match_parent"

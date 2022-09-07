@@ -125,7 +125,7 @@ public class OneFragment extends Fragment {
     private void reloadData() {
         String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         RequestQueue queue = Volley.newRequestQueue(getActivity());
-        String url = "http://y-ral-gaming.com/admin/api/load_free_matches.php";
+        String url = AppConstant.AppUrl + "load_free_matches.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override

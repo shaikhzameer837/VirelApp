@@ -276,7 +276,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
         progressDialog.setTitle("loading...");
         progressDialog.show();
         RequestQueue queue = Volley.newRequestQueue(mContext);
-        String url = "http://y-ral-gaming.com/admin/api/join.php";
+        String url = AppConstant.AppUrl + "join.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
@@ -343,7 +343,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
 //        progressDialog.setTitle("Uploading...");
 //        progressDialog.show();
 //        RequestQueue queue = Volley.newRequestQueue(mContext);
-//        String url = "http://y-ral-gaming.com/admin/api/register_give_away.php";
+//        String url = AppConstant.AppUrl + "register_give_away.php";
 //        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
 //                new Response.Listener<String>() {
 //                    @Override
@@ -503,7 +503,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
 //        dialog.setMessage("Registering for App, please wait.");
 //        dialog.show();
 //        RequestQueue queue = Volley.newRequestQueue(mContext);
-//        String url = "http://y-ral-gaming.com/admin/api/register_matches.php";
+//        String url = AppConstant.AppUrl + "register_matches.php";
 //        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
 //                new Response.Listener<String>() {
 //                    @Override

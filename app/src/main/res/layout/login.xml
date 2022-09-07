@@ -67,6 +67,4 @@
                 android:textSize="14sp" />
         </soup.neumorphism.NeumorphCardView>
     </LinearLayout>
-
-
 </RelativeLayout>

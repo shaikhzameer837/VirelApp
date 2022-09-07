@@ -75,7 +75,7 @@ public class PopularAdapter extends RecyclerView.Adapter<PopularAdapter.MyViewHo
                 mContext.startActivity(intent, options.toBundle());
             }
         });
-        Glide.with(mContext).load("http://y-ral-gaming.com/admin/api/images/"+movie.getUser_id()+".png?u=" + AppConstant.imageExt()).apply(new RequestOptions().circleCrop()).placeholder(R.drawable.game_avatar).into(holder.imgs);
+        Glide.with(mContext).load(AppConstant.AppUrl + "images/"+movie.getUser_id()+".png?u=" + AppConstant.imageExt()).apply(new RequestOptions().circleCrop()).placeholder(R.drawable.game_avatar).into(holder.imgs);
     }
 
     @Override

@@ -369,8 +369,8 @@ public class EventInfo extends AppCompatActivity {
                         Log.e("contactArrayList//", original);
                         Log.e("contactArrayList//---", postSnapshot.getKey());
                         originalContact.add(postSnapshot.getKey());
-                        appConstant.saveUserInfo(original, postSnapshot.getKey(), "http://y-ral-gaming.com/admin/api/images/" + postSnapshot.getKey() + ".png?u=" + AppConstant.imageExt(), null, "", postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue() != null ? postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue().toString() : null, postSnapshot.child(AppConstant.userName).getValue() != null ? postSnapshot.child(AppConstant.userName).getValue().toString() : System.currentTimeMillis() + "");
-                        contactModel.add(new ContactListModel(original,"http://y-ral-gaming.com/admin/api/images/" + postSnapshot.getKey() + ".png?u=" + AppConstant.imageExt(), appConstant.getContactName(postSnapshot.child(AppConstant.phoneNumber).getValue(String.class)), postSnapshot.getKey(), postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue() != null ? postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue().toString() : ""));
+                        appConstant.saveUserInfo(original, postSnapshot.getKey(), AppConstant.AppUrl + "images/" + postSnapshot.getKey() + ".png?u=" + AppConstant.imageExt(), null, "", postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue() != null ? postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue().toString() : null, postSnapshot.child(AppConstant.userName).getValue() != null ? postSnapshot.child(AppConstant.userName).getValue().toString() : System.currentTimeMillis() + "");
+                        contactModel.add(new ContactListModel(original,AppConstant.AppUrl + "images/" + postSnapshot.getKey() + ".png?u=" + AppConstant.imageExt(), appConstant.getContactName(postSnapshot.child(AppConstant.phoneNumber).getValue(String.class)), postSnapshot.getKey(), postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue() != null ? postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue().toString() : ""));
                     }
                 }
                 if (contactArrayList.size() == returnPhone) {
@@ -465,7 +465,7 @@ public class EventInfo extends AppCompatActivity {
             e.printStackTrace();
         }
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://y-ral-gaming.com/admin/api/join_event.php";
+        String url = AppConstant.AppUrl + "join_event.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override

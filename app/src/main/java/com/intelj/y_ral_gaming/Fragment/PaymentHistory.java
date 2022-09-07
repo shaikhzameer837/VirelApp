@@ -87,7 +87,7 @@ public class PaymentHistory extends Fragment {
 
     private void requestMoney() {
         RequestQueue queue = Volley.newRequestQueue(getActivity());
-        String url = "http://y-ral-gaming.com/admin/api/get_payment_list.php";
+        String url = AppConstant.AppUrl + "get_payment_list.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override

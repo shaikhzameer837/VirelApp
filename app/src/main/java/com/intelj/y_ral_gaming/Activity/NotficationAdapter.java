@@ -53,7 +53,7 @@ public class NotficationAdapter extends RecyclerView.Adapter<NotficationAdapter.
         holder.sub_title.setText(movie.getSubtitle());
         holder.time.setText(movie.getTime() == null ? "" : AppConstant.getTimeAgo(Long.parseLong(movie.getTime())) + "");
         Glide.with(mContext)
-                .load("http://y-ral-gaming.com/admin/api/images/" + movie.getUserId() + ".png?u=" +AppConstant.imageExt())
+                .load(AppConstant.AppUrl + "images/" + movie.getUserId() + ".png?u=" +AppConstant.imageExt())
                 .apply(new RequestOptions().circleCrop()).placeholder(R.drawable.game_avatar).into(holder.profile);
     }
 

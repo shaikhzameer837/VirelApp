@@ -301,7 +301,7 @@ class ViewPagerAdapter extends PagerAdapter {
         dialog.setMessage("Registering for App, please wait.");
         dialog.show();
         RequestQueue queue = Volley.newRequestQueue(context);
-        String url = "http://y-ral-gaming.com/admin/api/register_matches.php";
+        String url = AppConstant.AppUrl + "register_matches.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override

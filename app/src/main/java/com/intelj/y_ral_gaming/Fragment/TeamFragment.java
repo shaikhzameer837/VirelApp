@@ -71,14 +71,14 @@ public class TeamFragment extends Fragment {
             String key = intent.getStringExtra("key");
             String teamName = intent.getStringExtra("teamName");
             String teams = intent.getStringExtra("teams");
-            eventTeamList.add(new EventTeamModel("http://y-ral-gaming.com/admin/api/images/" + key + ".png?u=" + AppConstant.imageExt(), teamName, teams, key));
+            eventTeamList.add(new EventTeamModel(AppConstant.AppUrl + "images/" + key + ".png?u=" + AppConstant.imageExt(), teamName, teams, key));
             eventTeamAdapter.notifyDataSetChanged();
         }
     };
 
     private void loadTeam() {
         RequestQueue queue = Volley.newRequestQueue(getActivity());
-        String url = "http://y-ral-gaming.com/admin/api/tournament_team.php";
+        String url = AppConstant.AppUrl + "tournament_team.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
@@ -96,7 +96,7 @@ public class TeamFragment extends Fragment {
                                     if (((JSONObject) teamJson.get("teams")).has(new AppConstant(getActivity()).getId())) {
                                         joined_event = true;
                                     }
-                                    eventTeamList.add(new EventTeamModel("http://y-ral-gaming.com/admin/api/images/" + key + ".png?u=" + AppConstant.imageExt(), teamName, teamJson.getString("teams"), key));
+                                    eventTeamList.add(new EventTeamModel(AppConstant.AppUrl + "images/" + key + ".png?u=" + AppConstant.imageExt(), teamName, teamJson.getString("teams"), key));
                                 }
                             }
                         } catch (Exception e) {

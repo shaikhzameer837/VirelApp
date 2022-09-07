@@ -253,7 +253,7 @@ public class PlaceholderFragment extends Fragment implements View.OnClickListene
         progressDialog.setTitle("loading...");
         progressDialog.show();
         RequestQueue queue = Volley.newRequestQueue(getActivity());
-        String url = "http://y-ral-gaming.com/admin/api/request_payment.php";
+        String url = AppConstant.AppUrl + "request_payment.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override

@@ -95,7 +95,7 @@ public class FreeScrims extends Fragment {
 //        progressDialog.setTitle("loading...");
 //        progressDialog.show();
         RequestQueue queue = Volley.newRequestQueue(getActivity());
-        String url = "http://y-ral-gaming.com/admin/api/load_free_matches.php";
+        String url = AppConstant.AppUrl + "load_free_matches.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override

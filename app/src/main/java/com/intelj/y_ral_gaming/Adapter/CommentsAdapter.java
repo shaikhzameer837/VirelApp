@@ -51,7 +51,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.MyView
     public void onBindViewHolder(CommentsAdapter.MyViewHolder holder, int position) {
         Comments comments = commentsArrayList.get(position);
         Glide.with(mContext)
-                .load("http://y-ral-gaming.com/admin/api/images/" + comments.getUser_id() + ".png?u=" +AppConstant.imageExt())
+                .load(AppConstant.AppUrl + "images/" + comments.getUser_id() + ".png?u=" +AppConstant.imageExt())
                 .apply(new RequestOptions().circleCrop()).placeholder(R.drawable.game_avatar).into(holder.iv_profile);
 
         holder.name.setText(comments.getName());

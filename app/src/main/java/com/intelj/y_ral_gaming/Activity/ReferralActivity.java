@@ -108,7 +108,7 @@ public class ReferralActivity extends AppCompatActivity {
                                 myListData.add(new MyListData(jsonObject.getString("name"), jsonObject.getString("userId"), jsonObject.getString("playing_status")));
                                 Log.e("responses", jsonObject.getString("name"));
                             }
-                            totalAmount.setText("+" + (totalSuccessInvite * 50));
+                            totalAmount.setText("+" + (totalSuccessInvite * 25));
                             Log.e("responses", totalSuccessInvite + "");
                             MyListAdapter adapter = new MyListAdapter(myListData);
                             recyclerView.setHasFixedSize(true);

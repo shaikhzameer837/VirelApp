@@ -393,7 +393,7 @@ public class MainActivity extends BaseActivity {
     private void getPopularFace() {
         AppController.getInstance().popularList.clear();
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://y-ral-gaming.com/admin/api/popular.php";
+        String url = AppConstant.AppUrl + "popular.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
@@ -406,7 +406,7 @@ public class MainActivity extends BaseActivity {
                             JSONArray ja_data = json.getJSONArray("info");
                             for (int i = 0; i < ja_data.length(); i++) {
                                 JSONObject jObj = ja_data.getJSONObject(i);
-                                appConstant.saveUserInfo("", jObj.getString("userid"), "http://y-ral-gaming.com/admin/api/images/" + jObj.getString("userid") + ".png?u=" + AppConstant.imageExt(), jObj.getString("name"), "", null, jObj.getString("userid"));
+                                appConstant.saveUserInfo("", jObj.getString("userid"), AppConstant.AppUrl + "images/" + jObj.getString("userid") + ".png?u=" + AppConstant.imageExt(), jObj.getString("name"), "", null, jObj.getString("userid"));
                                 popularModels.add(new PopularModel(jObj.getString("url"), jObj.getString("name"), jObj.getString("amount"), jObj.getString("userid")));
                             }
                             Collections.sort(popularModels, new Comparator<PopularModel>() {
@@ -710,7 +710,7 @@ public class MainActivity extends BaseActivity {
         ShimmerFrameLayout shimmerFrameLayout = inflated.findViewById(R.id.shimmer_layout);
         shimmerFrameLayout.startShimmer();
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://y-ral-gaming.com/admin/api/get_tournament.php";
+        String url = AppConstant.AppUrl + "get_tournament.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override

@@ -282,7 +282,7 @@ public class EditProfile extends AppCompatActivity {
         progressDialog.setTitle("Updating...");
         progressDialog.show();
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://y-ral-gaming.com/admin/api/profile_update.php";
+        String url = AppConstant.AppUrl + "profile_update.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
@@ -323,7 +323,7 @@ public class EditProfile extends AppCompatActivity {
         dialog.setMessage("Uploading file, please wait.");
         dialog.show();
         VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST,
-                "http://y-ral-gaming.com/admin/api/profile_pic.php?" +
+                AppConstant.AppUrl + "profile_pic.php?" +
                         "userid=" + appConstant.getId() + "&&name=" + playerName.getText().toString() + "&&userName=" + TI_userName.getText().toString()
                 ,
                 new Response.Listener<NetworkResponse>() {

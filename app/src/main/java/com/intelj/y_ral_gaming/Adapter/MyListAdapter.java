@@ -39,7 +39,7 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
         holder.amount.setVisibility(listdata.get(position).getPlaying_status().equals("1") ? View.VISIBLE : View.GONE);
        // holder.amount.setText(listdata.get(position).getPlaying_status());
         holder.status.setText(listdata.get(position).getPlaying_status().equals("1") ? "Played" : "Regsitered");
-        Glide.with(holder.imgs.getContext()).load("http://y-ral-gaming.com/admin/api/images/"+listdata.get(position).getUserId()+".png?u=" + AppConstant.imageExt()).apply(new RequestOptions().circleCrop()).placeholder(R.drawable.game_avatar).into(holder.imgs);
+        Glide.with(holder.imgs.getContext()).load(AppConstant.AppUrl + "images/"+listdata.get(position).getUserId()+".png?u=" + AppConstant.imageExt()).apply(new RequestOptions().circleCrop()).placeholder(R.drawable.game_avatar).into(holder.imgs);
     }
 
 

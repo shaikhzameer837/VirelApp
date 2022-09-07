@@ -210,7 +210,7 @@ public class AppController extends Application implements Application.ActivityLi
                             String finalSubtitle = subtitle;
                             Glide.with(getApplicationContext())
                                     .asBitmap()
-                                    .load("http://y-ral-gaming.com/admin/api/images/"+dataSnapshots.getKey()+".png?u=" +  AppConstant.imageExt())
+                                    .load(AppConstant.AppUrl + "images/"+dataSnapshots.getKey()+".png?u=" +  AppConstant.imageExt())
                                     .into(new CustomTarget<Bitmap>() {
                                         @Override
                                         public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
@@ -239,7 +239,7 @@ public class AppController extends Application implements Application.ActivityLi
                         intent.putExtra(AppConstant.id,dataSnapshots.child("owner").getValue(String.class));
                         Glide.with(getApplicationContext())
                                 .asBitmap()
-                                .load("http://y-ral-gaming.com/admin/api/images/"+ dataSnapshots.child("owner").getValue(String.class) +".png?u=" +  AppConstant.imageExt())
+                                .load(AppConstant.AppUrl + "images/"+ dataSnapshots.child("owner").getValue(String.class) +".png?u=" +  AppConstant.imageExt())
                                 .into(new CustomTarget<Bitmap>() {
                                     @Override
                                     public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {

@@ -41,6 +41,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.intelj.y_ral_gaming.R;
+import com.intelj.y_ral_gaming.Utils.AppConstant;
 import com.intelj.y_ral_gaming.VolleyMultipartRequest;
 
 import net.alhazmy13.mediapicker.Image.ImagePicker;
@@ -66,7 +67,6 @@ public class ClaimNowFragment extends DialogFragment {
     private Button upload_file;
     private Context context;
     private AlertDialog dialog;
-    private static final String ROOT_URL = "http://y-ral-gaming.com/admin/api/upload.php";
     private static final int REQUEST_PERMISSIONS = 100;
     private static final int PICK_IMAGE_REQUEST = 1;
     ImageView imageView;
@@ -270,7 +270,7 @@ public class ClaimNowFragment extends DialogFragment {
         ProgressDialog dialog = new ProgressDialog(getActivity());
         dialog.setMessage("Uploading file, please wait.");
         dialog.show();
-        VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, ROOT_URL,
+        VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, AppConstant.AppUrl + "upload.php",
                 new Response.Listener<NetworkResponse>() {
                     @Override
                     public void onResponse(NetworkResponse response) {
