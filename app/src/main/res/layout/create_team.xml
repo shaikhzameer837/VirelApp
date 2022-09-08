@@ -48,7 +48,7 @@
                 android:padding="10dp">
 
                 <EditText
-                    android:id="@+id/refer"
+                    android:id="@+id/teamName"
                     android:layout_width="0dp"
                     android:drawableLeft="@drawable/rename_box"
                     android:layout_height="wrap_content"

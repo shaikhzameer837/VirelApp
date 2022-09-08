@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -72,6 +71,10 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
     public void checkVisible(){
         isCheckBoxVisible = true;
         notifyDataSetChanged();
+    }
+    public List<String> getSelectedList(){
+
+        return checkBoxList;
     }
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {

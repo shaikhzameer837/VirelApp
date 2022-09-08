@@ -33,7 +33,9 @@ import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
@@ -58,6 +60,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.intelj.y_ral_gaming.Adapter.EventTeamAdapter;
 import com.intelj.y_ral_gaming.AppController;
 import com.intelj.y_ral_gaming.ChatActivity;
 import com.intelj.y_ral_gaming.ContactListModel;
@@ -68,14 +71,17 @@ import com.intelj.y_ral_gaming.SigninActivity;
 import com.intelj.y_ral_gaming.TournamentAdapter;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 import com.intelj.y_ral_gaming.Utils.RecyclerTouchListener;
+import com.intelj.y_ral_gaming.model.EventTeamModel;
 import com.intelj.y_ral_gaming.model.TournamentModel;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -91,9 +97,10 @@ public class ProFileActivity extends AppCompatActivity {
     TextView name, bio, title, userName, follower_count, following_count, edit_profile;
     long followers = 0;
     long following = 0;
-    ImageView iconImage,chatIcon;
-    TextView  rank,rank_button;
+    ImageView iconImage, chatIcon;
+    TextView rank, rank_button;
     ProgressBar progress;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -137,7 +144,7 @@ public class ProFileActivity extends AppCompatActivity {
         viewPager.setAdapter(adapter);
         if (userid.equals(appConstant.getId())) {
             int id = getResources().getIdentifier(AppConstant.getRank(AppController.getInstance().rank), "drawable", getPackageName());
-            rank.setCompoundDrawablesWithIntrinsicBounds(0,id,0,0);
+            rank.setCompoundDrawablesWithIntrinsicBounds(0, id, 0, 0);
             // findViewById(R.id.chat).setVisibility(View.GONE);
             iconImage.setImageResource(R.drawable.ic_edit);
             findViewById(R.id.rel_button).setBackgroundResource(R.drawable.curved_red);
@@ -149,11 +156,11 @@ public class ProFileActivity extends AppCompatActivity {
                     startActivity(new Intent(ProFileActivity.this, EditProfile.class));
                 }
             });
-        }else{
+        } else {
             findViewById(R.id.rel_mess).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(ProFileActivity.this,"Coming Soon",Toast.LENGTH_LONG).show();
+                    Toast.makeText(ProFileActivity.this, "Coming Soon", Toast.LENGTH_LONG).show();
                 }
             });
             chatIcon.setImageResource(R.drawable.chat);
@@ -331,8 +338,8 @@ public class ProFileActivity extends AppCompatActivity {
                                 rank_button.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                       // showTeamList();
-                                        startActivity(new Intent(ProFileActivity.this,CreateTeam.class));
+                                        // showTeamList();
+                                        showTeamList();
                                     }
                                 });
                             }
@@ -363,156 +370,9 @@ public class ProFileActivity extends AppCompatActivity {
 
         queue.add(stringRequest);
     }
-    RecyclerView rv_contact;
-    SharedPreferences shd;
-    LinearLayout lin;
-    ArrayList<EditText> editTextList = new ArrayList<>();
-    ArrayList<TextInputLayout> textInputLayouts = new ArrayList<>();
-    ArrayList<ContactListModel> contactModel;
-    HashMap<String, String> contactArrayList = new HashMap<>();
-    HashSet<String> originalContact = new HashSet<>();
-    ContactListAdapter contactListAdapter;
-    int returnPhone = 0;
-    EditText teamName;
-    private static final int REQUEST = 112;
-    private void createTeam() {
-            editTextList.clear();
-            contactModel = new ArrayList<>();
-            BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(ProFileActivity.this);
-            bottomSheetDialog.setContentView(R.layout.add_team_info);
-            lin = bottomSheetDialog.findViewById(R.id.lin);
-            bottomSheetDialog.findViewById(R.id.refresh).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String[] PERMISSIONS = {android.Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS};
-                    if (!hasPermissions(ProFileActivity.this, PERMISSIONS)) {
-                        ActivityCompat.requestPermissions(ProFileActivity.this, PERMISSIONS, REQUEST);
-                    } else {
-                        loadChats();
-                    }
-                }
-            });
-            teamName = bottomSheetDialog.findViewById(R.id.teamName);
-            shd = getSharedPreferences(AppConstant.id, MODE_PRIVATE);
-            rv_contact = bottomSheetDialog.findViewById(R.id.rv_contact);
-            appConstant = new AppConstant(this);
-            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(ProFileActivity.this);
-            rv_contact.setLayoutManager(mLayoutManager);
-            contactModel = new ArrayList<>();
 
-            contactListAdapter = new ContactListAdapter(ProFileActivity.this, contactModel);
-            rv_contact.setAdapter(contactListAdapter);
-            contactListAdapter.checkVisible();
-            rv_contact.addOnItemTouchListener(new RecyclerTouchListener(ProFileActivity.this, rv_contact, new RecyclerTouchListener.ClickListener() {
-                @Override
-                public void onClick(View view, int position) {
-                    int slectedContact = contactListAdapter.setChecBox(editTextList.size() == 6 ? -1 : position);
-                    if (slectedContact != -1) {
-                        addEditText(contactModel.get(position).getName(), contactModel.get(position).getUserid());
-                    } else
-                        Toast.makeText(ProFileActivity.this, "Max 6 players can register", Toast.LENGTH_LONG).show();
-                }
-
-                @Override
-                public void onLongClick(View view, int position) {
-
-                }
-            }));
-            bottomSheetDialog.findViewById(R.id.submit).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (teamName.getText().toString().trim().equals("")) {
-                        teamName.setError("Enter your team name");
-                        teamName.requestFocus();
-                        return;
-                    }
-                    if (editTextList.size() < 4) {
-                        Toast.makeText(ProFileActivity.this, "Minimum 4 players are required", Toast.LENGTH_LONG).show();
-                        return;
-                    }
-                    for (int x = 0; x < editTextList.size(); x++) {
-                        if (editTextList.get(x).getText().toString().trim().equals("")) {
-                            editTextList.get(x).setError("Player Name cannot be empty");
-                            editTextList.get(x).requestFocus();
-                            return;
-                        }
-                    }
-                    bottomSheetDialog.cancel();
-                }
-            });
-            addEditText("", new AppConstant(ProFileActivity.this).getId());
-            bottomSheetDialog.show();
-    }
-    private void loadChats() {
-        Set<String> set = shd.getStringSet(AppConstant.contact, null);
-        if (set != null) {
-            for (String s : set) {
-                SharedPreferences userInfo = getSharedPreferences(s, Context.MODE_PRIVATE);
-                contactModel.add(new ContactListModel(s,userInfo.getString(AppConstant.myPicUrl, ""), appConstant.getContactName(userInfo.getString(AppConstant.phoneNumber, "")), userInfo.getString(AppConstant.id, ""), userInfo.getString(AppConstant.bio, "")));
-            }
-            contactListAdapter.notifyDataSetChanged();
-        } else
-            new readContactTask().execute();
-    }
-
-    public void createTeam(View view) {
-    }
-
-    class readContactTask extends AsyncTask<Void, Integer, String> {
-        String TAG = getClass().getSimpleName();
-
-        protected void onPreExecute() {
-            super.onPreExecute();
-            contactModel.clear();
-            Log.d(TAG + " PreExceute", "On pre Exceute......");
-        }
-
-        protected String doInBackground(Void... arg0) {
-            readContacts();
-            returnPhone = 0;
-            originalContact.clear();
-            for (String phoneNo : contactArrayList.keySet()) {
-                serverContact(phoneNo, contactArrayList.get(phoneNo));
-            }
-            return "You are at PostExecute";
-        }
-
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            contactListAdapter.notifyDataSetChanged();
-        }
-    }
-    public void serverContact(String number, String original) {
-        Log.e("userNum", number);
-        DatabaseReference mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
-        Query query = mFirebaseDatabaseReference.child("users").orderByChild("phoneNumber").equalTo(number);
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                returnPhone++;
-                if (dataSnapshot != null) {
-                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                        Log.e("number//", original);
-                        Log.e("number//---", postSnapshot.getKey());
-                        originalContact.add(postSnapshot.getKey());
-                        appConstant.saveUserInfo(original, postSnapshot.getKey(), AppConstant.AppUrl + "images/" + postSnapshot.getKey() + ".png?u=" + AppConstant.imageExt(), null, "", postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue() != null ? postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue().toString() : null, postSnapshot.child(AppConstant.userName).getValue() != null ? postSnapshot.child(AppConstant.userName).getValue().toString() : System.currentTimeMillis() + "");
-                        contactModel.add(new ContactListModel(original,AppConstant.AppUrl + "images/" + postSnapshot.getKey() + ".png?u=" + AppConstant.imageExt(), appConstant.getContactName(postSnapshot.child(AppConstant.phoneNumber).getValue(String.class)), postSnapshot.getKey(), postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue() != null ? postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue().toString() : ""));
-                    }
-                }
-                if (contactArrayList.size() == returnPhone) {
-                    SharedPreferences.Editor setEditor = shd.edit();
-                    setEditor.putStringSet(AppConstant.contact, originalContact);
-                    setEditor.apply();
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
     public void showTeamList() {
+        //  startActivity(new Intent(ProFileActivity.this,CreateTeam.class));
         View inflated = getLayoutInflater().inflate(R.layout.tournament, null);
         final BottomSheetDialog dialogBottom = new BottomSheetDialog(ProFileActivity.this);
         List<TournamentModel> tournamentModelList = new ArrayList<>();
@@ -527,10 +387,20 @@ public class ProFileActivity extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-
+                        Log.e("responseT", response);
                         shimmerFrameLayout.hideShimmer();
                         shimmerFrameLayout.setVisibility(View.GONE);
                         try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            if (jsonObject.getBoolean("success")) {
+                                List<String> myList = new ArrayList<>(Arrays.asList(jsonObject.getString("teamMember").split(",")));
+                                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+                                recyclerView.setLayoutManager(mLayoutManager);
+                                recyclerView.setItemAnimator(new DefaultItemAnimator());
+                               // recyclerView.setAdapter();
+                            } else {
+                                Toast.makeText(ProFileActivity.this, "No Team Found", Toast.LENGTH_LONG).show();
+                            }
 
                         } catch (Exception e) {
                             Log.e("error Rec", e.getMessage());
@@ -547,7 +417,9 @@ public class ProFileActivity extends AppCompatActivity {
         }) {
             @Override
             protected Map<String, String> getParams() {
-                return new HashMap<>();
+                Map<String, String> params = new HashMap<>();
+                params.put("teamId", "275");
+                return params;
             }
 
             @Override
@@ -560,9 +432,7 @@ public class ProFileActivity extends AppCompatActivity {
 
         queue.add(stringRequest);
 
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
+
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
@@ -577,85 +447,8 @@ public class ProFileActivity extends AppCompatActivity {
         dialogBottom.setContentView(inflated);
         dialogBottom.show();
     }
-    public void readContacts() {
-        contactArrayList.clear();
-        ContentResolver cr = getContentResolver();
-        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
-                null, null, null, null);
-        if ((cur != null ? cur.getCount() : 0) > 0) {
-            while (cur != null && cur.moveToNext()) {
-                String id = cur.getString(
-                        cur.getColumnIndex(ContactsContract.Contacts._ID));
-                String name = cur.getString(cur.getColumnIndex(
-                        ContactsContract.Contacts.DISPLAY_NAME));
 
-                if (cur.getInt(cur.getColumnIndex(
-                        ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0) {
-                    Cursor pCur = cr.query(
-                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                            null,
-                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
-                            new String[]{id}, null);
-                    while (pCur.moveToNext()) {
-                        String phoneNo = pCur.getString(pCur.getColumnIndex(
-                                ContactsContract.CommonDataKinds.Phone.NUMBER)).replace(" ", "");
-                        if (phoneNo.length() > 8) {
-                            String original = phoneNo;
-                            if (phoneNo.startsWith("0"))
-                                phoneNo = phoneNo.substring(1);
-                            if (!phoneNo.startsWith("+"))
-                                phoneNo = appConstant.getCountryCode() + phoneNo;
-                            Log.i("Phone Number: ", appConstant.getCountryCode());
-                            contactArrayList.put(phoneNo, original);
-                        }
-                    }
-                    pCur.close();
-                }
-            }
-        }
-        if (cur != null) {
-            cur.close();
-        }
-    }
-    private static boolean hasPermissions(Context context, String... permissions) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
-            for (String permission : permissions) {
-                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-    public void addEditText(String userName, String userId) {
-        for (int i = 0; i < editTextList.size(); i++) {
-            if (editTextList.get(i).getTag().equals(userId)) {
-                lin.removeView(textInputLayouts.get(i));
-                editTextList.remove(editTextList.get(i));
-                return;
-            }
-        }
-        EditText editText = new EditText(ProFileActivity.this);
-        editText.setTextSize(12);
-        editText.setSingleLine(true);
-        editText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
-        editText.setTag(userId);
-        LinearLayout.LayoutParams editTextParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT);
-        TextInputLayout textInputLayout = new TextInputLayout(ProFileActivity.this, null, R.style.Widget_MaterialComponents_TextInputLayout_OutlinedBox);
-        textInputLayout.setBoxBackgroundMode(TextInputLayout.BOX_BACKGROUND_OUTLINE);
-        textInputLayout.setBoxCornerRadii(5, 5, 5, 5);
-        LinearLayout.LayoutParams textInputLayoutParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
-        textInputLayout.setLayoutParams(textInputLayoutParams);
-        textInputLayout.addView(editText, editTextParams);
-        textInputLayout.setHint(editTextList.size() == 0 ? "Enter your ingame name" : "Enter " + userName + "'s ingame name");
-        editTextList.add(editText);
-        lin.addView(textInputLayout);
-        textInputLayouts.add(textInputLayout);
-    }
+
     public class MyAdapter extends FragmentPagerAdapter {
 
         private Context myContext;
