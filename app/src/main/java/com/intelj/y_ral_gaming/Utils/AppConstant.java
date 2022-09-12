@@ -11,6 +11,7 @@ import android.os.Build;
 import android.provider.ContactsContract;
 import android.provider.Settings;
 import android.text.InputType;
+import android.util.Base64;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -36,6 +37,7 @@ import com.intelj.y_ral_gaming.PaymentActivity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.nio.charset.Charset;
 import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -205,15 +207,16 @@ public class AppConstant {
         return contactName;
     }
 
-    public void savePackage(String packageId, String expiryDate, String uniqueId, String referal) {
+    public void savePackage(String uniqueId, String referal) {
         setSharedPref();
         myInfo = _context.getSharedPreferences(getId(), Context.MODE_PRIVATE);
-        sharedPreferences.edit().putString(package_id, packageId).apply();
-        sharedPreferences.edit().putString(expiry_date, expiryDate).apply();
         sharedPreferences.edit().putString(referal_id, referal).apply();
         sharedPreferences.edit().putString(id, uniqueId).apply();
     }
-
+    public String getReferal(){
+        setSharedPref();
+        return sharedPreferences.getString(referal_id,"");
+    }
     public void addMoney(Context mContext) {
         EditText amountText = new EditText(mContext);
         amountText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_NUMBER_FLAG_SIGNED);

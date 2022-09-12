@@ -390,8 +390,7 @@ public class SigninActivity extends AppCompatActivity {
                                 AppController.getInstance().getReadyForCheckin();
                                 Log.e("Exception", "success 2");
                                 AppController.getInstance().progressDialog = null;
-                                Log.e("Exception", "success 3");
-                                appConstant.savePackage(package_id, expiry_date, uniqueId, referal);
+                                appConstant.savePackage(uniqueId, referal);
                                 if (dialog.isShowing()) {
                                     dialog.dismiss();
                                 }

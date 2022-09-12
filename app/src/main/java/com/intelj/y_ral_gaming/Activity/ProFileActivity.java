@@ -1,41 +1,27 @@
 package com.intelj.y_ral_gaming.Activity;
 
-import android.Manifest;
-import android.app.ProgressDialog;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Color;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.text.Html;
-import android.text.InputFilter;
 import android.transition.Fade;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
@@ -52,26 +38,23 @@ import com.bumptech.glide.request.RequestOptions;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.intelj.y_ral_gaming.Adapter.EventTeamAdapter;
+import com.intelj.y_ral_gaming.Adapter.MyListAdapter;
+import com.intelj.y_ral_gaming.Adapter.TeamDisplayList;
 import com.intelj.y_ral_gaming.AppController;
 import com.intelj.y_ral_gaming.ChatActivity;
-import com.intelj.y_ral_gaming.ContactListModel;
 import com.intelj.y_ral_gaming.FollowActivity;
 import com.intelj.y_ral_gaming.Fragment.PostFragment;
 import com.intelj.y_ral_gaming.R;
 import com.intelj.y_ral_gaming.SigninActivity;
-import com.intelj.y_ral_gaming.TournamentAdapter;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 import com.intelj.y_ral_gaming.Utils.RecyclerTouchListener;
-import com.intelj.y_ral_gaming.model.EventTeamModel;
+import com.intelj.y_ral_gaming.model.MyListData;
 import com.intelj.y_ral_gaming.model.TournamentModel;
 
 import org.json.JSONArray;
@@ -80,11 +63,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class ProFileActivity extends AppCompatActivity {
     TextView txt;
@@ -100,6 +80,7 @@ public class ProFileActivity extends AppCompatActivity {
     ImageView iconImage, chatIcon;
     TextView rank, rank_button;
     ProgressBar progress;
+    String teamIdList = "";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -156,6 +137,22 @@ public class ProFileActivity extends AppCompatActivity {
                     startActivity(new Intent(ProFileActivity.this, EditProfile.class));
                 }
             });
+            if (userid.equals(appConstant.getId())) {
+                chatIcon.setImageResource(R.drawable.group);
+                rank_button.setText("My Team");
+                findViewById(R.id.rel_mess).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                    }
+                });
+                rank_button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // showTeamList();
+                        showTeamList();
+                    }
+                });
+            }
         } else {
             findViewById(R.id.rel_mess).setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -327,22 +324,8 @@ public class ProFileActivity extends AppCompatActivity {
                         Log.e("response", response);
                         progress.setVisibility(View.GONE);
                         try {
-                            if (userid.equals(appConstant.getId())) {
-                                chatIcon.setImageResource(R.drawable.group);
-                                rank_button.setText("My Team");
-                                findViewById(R.id.rel_mess).setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                    }
-                                });
-                                rank_button.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        // showTeamList();
-                                        showTeamList();
-                                    }
-                                });
-                            }
+                            JSONObject jsonObject = new JSONObject(response);
+                            teamIdList = jsonObject.getString("teamIdList");
                         } catch (Exception e) {
 
                         }
@@ -373,16 +356,13 @@ public class ProFileActivity extends AppCompatActivity {
 
     public void showTeamList() {
         //  startActivity(new Intent(ProFileActivity.this,CreateTeam.class));
-        View inflated = getLayoutInflater().inflate(R.layout.tournament, null);
+        View inflated = getLayoutInflater().inflate(R.layout.team_list, null);
         final BottomSheetDialog dialogBottom = new BottomSheetDialog(ProFileActivity.this);
-        List<TournamentModel> tournamentModelList = new ArrayList<>();
-        TextView title = inflated.findViewById(R.id.title);
-        title.setText("Tournament");
-        RecyclerView recyclerView = inflated.findViewById(R.id.recycler_view);
+        RecyclerView recyclerView = inflated.findViewById(R.id.rv_teamlist);
         ShimmerFrameLayout shimmerFrameLayout = inflated.findViewById(R.id.shimmer_layout);
         shimmerFrameLayout.startShimmer();
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = AppConstant.AppUrl + "get_team.php";
+        String url = AppConstant.AppUrl + "get_team_list.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
@@ -391,13 +371,19 @@ public class ProFileActivity extends AppCompatActivity {
                         shimmerFrameLayout.hideShimmer();
                         shimmerFrameLayout.setVisibility(View.GONE);
                         try {
+                            ArrayList<MyListData> myListData = new ArrayList<>();
                             JSONObject jsonObject = new JSONObject(response);
                             if (jsonObject.getBoolean("success")) {
-                                List<String> myList = new ArrayList<>(Arrays.asList(jsonObject.getString("teamMember").split(",")));
+                                JSONArray jsonArray = new JSONArray(jsonObject.getString("teamList"));
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    JSONObject jsonObject2 = (JSONObject) jsonArray.get(i);
+                                    myListData.add(new MyListData(jsonObject2.getString("teamName"), jsonObject2.getString("teamId"), jsonObject2.getString("teamMember").split(",").length +" Member"));
+                                }
+                                TeamDisplayList adapter = new TeamDisplayList(myListData);
                                 RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
                                 recyclerView.setLayoutManager(mLayoutManager);
                                 recyclerView.setItemAnimator(new DefaultItemAnimator());
-                               // recyclerView.setAdapter();
+                                recyclerView.setAdapter(adapter);
                             } else {
                                 Toast.makeText(ProFileActivity.this, "No Team Found", Toast.LENGTH_LONG).show();
                             }
@@ -409,8 +395,8 @@ public class ProFileActivity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-/*                shimmer_container.hideShimmer();
-                shimmer_container.setVisibility(View.GONE);*/
+                shimmerFrameLayout.hideShimmer();
+                shimmerFrameLayout.setVisibility(View.GONE);
                 error.printStackTrace();
                 FirebaseCrashlytics.getInstance().recordException(error);
             }
@@ -418,7 +404,8 @@ public class ProFileActivity extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put("teamId", "275");
+                Log.e("teamIdList", teamIdList);
+                params.put("teamIdList", teamIdList);
                 return params;
             }
 

@@ -21,7 +21,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -43,18 +42,13 @@ import com.intelj.y_ral_gaming.AppController;
 import com.intelj.y_ral_gaming.Fragment.OneFragment;
 import com.intelj.y_ral_gaming.GameItem;
 import com.intelj.y_ral_gaming.R;
-import com.intelj.y_ral_gaming.ResultActivity;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 
 import org.json.JSONObject;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import soup.neumorphism.NeumorphCardView;
@@ -92,7 +86,6 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
                 mContext.getSharedPreferences
                         (AppConstant.AppName, Context.MODE_PRIVATE);
         appConstant = new AppConstant(mContext);
-        // mDatabase = FirebaseDatabase.getInstance().getReference(AppConstant.live_stream);
     }
 
     @Override
@@ -185,33 +178,13 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
         btn_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    JSONObject obj1 = new JSONObject();
-                    final int childCount = lin.getChildCount();
-                    for (int i = 0; i < childCount; i++) {
-                        if (lin.getChildAt(i) instanceof EditText) {
-                            EditText editText = (EditText) lin.getChildAt(i);
-                            if (editText.getText().toString().trim().equals("")) {
-                                editText.requestFocus();
-                                editText.setError("This cannot be empty");
-                                return;
-                            } else {
-                                JSONObject obj = new JSONObject();
-                                obj.put("ingName", editText.getText().toString());
-                                obj.put("count", 0);
-                                obj.put("kill", 0);
-                                obj1.put(new AppConstant(mContext).getId(), obj);
-                            }
-                        }
-                    }
-                    SharedPreferences.Editor editor = prefs.edit();
-                    editor.putString("GameName", gamename.getText().toString()).apply();
-                    Log.e("jsonObject", obj1.toString());
-                    Log.e("jsonObject", new AppConstant(mContext).getId());
-                    saveUserInfo(position, obj1.toString(), textView.getText().toString(), childCount);
-                } catch (Exception e) {
-                    e.getMessage();
+                if (gamename.getText().toString().trim().equals("")) {
+                    gamename.requestFocus();
+                    gamename.setError("This cannot be empty");
+                    return;
                 }
+                 registerForMatch(position, gamename.getText().toString());
+
             }
         });
         bottomSheetDialog.findViewById(R.id.decrease).setOnClickListener(new View.OnClickListener() {
@@ -271,21 +244,22 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
             bottomSheetDialog.findViewById(R.id.rel_increment).setVisibility(View.GONE);
     }
 
-    private void saveUserInfo(int position, String userJson, String totalPlayer, int childCount) {
+    private void registerForMatch(int position, String inGameName) {
         ProgressDialog progressDialog = new ProgressDialog(mContext);
         progressDialog.setTitle("loading...");
         progressDialog.show();
         RequestQueue queue = Volley.newRequestQueue(mContext);
-        String url = AppConstant.AppUrl + "join.php";
+        String url = AppConstant.AppUrl + "join_game.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.v("onClick3", response);
+                        Log.e("onClick3", response);
                         progressDialog.cancel();
                         try {
                             JSONObject json = new JSONObject(response);
                             if (json.getBoolean("success")) {
+                                appConstant.savePackage(appConstant.getId(),"");
                                 int player_count = json.getInt("player_count");
                                 AppController.getInstance().amount = AppController.getInstance().amount - json.getInt("entryFees");
                                 Intent intent = new Intent("custom-event-name");
@@ -311,20 +285,12 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                //params.put("entry", gameItem.get(position).getEntryFees());
-                // params.put("userId", new AppConstant(mContext).getId());
-//                Date c = Calendar.getInstance().getTime();
-//                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-//                String formattedDate = df.format(c);
-                //params.put("date", formattedDate);
-                //Log.e("formattedDate", formattedDate);
-                //params.put("time", gameItem.get(position).getTime());
-                params.put("userJson", userJson);
+                params.put("inGameName", inGameName);
+                appConstant.savePackage(appConstant.getId(),"YRAL95");
                 params.put("gameId", gameItem.get(position).getGameId());
-                params.put("count", totalPlayer);
-                //params.put("entryFees", "entryFees = 0");
-                // params.put("game_type", title);
-                params.put("player_count", childCount + "");
+                params.put("userId", appConstant.getId());
+                if(!appConstant.getReferal().equals(""))
+                    params.put("referral", appConstant.getReferal());
                 return params;
             }
 

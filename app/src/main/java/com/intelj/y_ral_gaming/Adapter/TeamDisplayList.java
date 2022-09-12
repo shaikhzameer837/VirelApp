@@ -5,9 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,28 +17,28 @@ import com.intelj.y_ral_gaming.model.MyListData;
 
 import java.util.ArrayList;
 
-public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder>{
+public class TeamDisplayList extends RecyclerView.Adapter<TeamDisplayList.ViewHolder>{
     private ArrayList<MyListData> listdata;
 
     // RecyclerView recyclerView;
-    public MyListAdapter(ArrayList<MyListData> listdata) {
+    public TeamDisplayList(ArrayList<MyListData> listdata) {
         this.listdata = listdata;
     }
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View listItem= layoutInflater.inflate(R.layout.list_item, parent, false);
-        ViewHolder viewHolder = new ViewHolder(listItem);
+        TeamDisplayList.ViewHolder viewHolder = new TeamDisplayList.ViewHolder(listItem);
         return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(TeamDisplayList.ViewHolder holder, int position) {
         holder.name.setText(listdata.get(position).getName());
         Log.e("holder.name",listdata.get(position).getName());
         holder.amount.setVisibility(listdata.get(position).getPlaying_status().equals("1") ? View.VISIBLE : View.GONE);
-       // holder.amount.setText(listdata.get(position).getPlaying_status());
-        holder.status.setText(listdata.get(position).getPlaying_status().equals("1") ? "Played" : "Regsitered");
+        // holder.amount.setText(listdata.get(position).getPlaying_status());
+        holder.status.setText(listdata.get(position).getPlaying_status());
         Glide.with(holder.imgs.getContext()).load(AppConstant.AppUrl + "images/"+listdata.get(position).getUserId()+".png?u=" + AppConstant.imageExt()).apply(new RequestOptions().circleCrop()).placeholder(R.drawable.game_avatar).into(holder.imgs);
     }
 
@@ -62,3 +60,4 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
         }
     }
 }
+

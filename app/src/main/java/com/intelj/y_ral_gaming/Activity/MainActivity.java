@@ -1,7 +1,6 @@
 package com.intelj.y_ral_gaming.Activity;
 
 import android.Manifest;
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -28,7 +27,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.ViewStub;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -63,14 +61,7 @@ import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import com.intelj.y_ral_gaming.Adapter.MemberListAdapter;
 import com.intelj.y_ral_gaming.Adapter.PopularAdapter;
 import com.intelj.y_ral_gaming.AppController;
@@ -172,7 +163,7 @@ public class MainActivity extends BaseActivity {
                 if (new AppConstant(MainActivity.this).checkLogin())
                     startActivity(new Intent(MainActivity.this, NotificationActivity.class));
                 else
-                    showBottomSheetDialog();
+                    LoginSheet();
             }
         });
         findViewById(R.id.fab).setOnClickListener(new View.OnClickListener() {
@@ -206,7 +197,7 @@ public class MainActivity extends BaseActivity {
                 if (new AppConstant(MainActivity.this).checkLogin())
                     showCoins();
                 else
-                    showBottomSheetDialog();
+                    LoginSheet();
             }
         });
 
@@ -635,7 +626,7 @@ public class MainActivity extends BaseActivity {
                 @Override
                 public void onClick(View v) {
                     if (!appConstant.checkLogin()) {
-                        showBottomSheetDialog();
+                        LoginSheet();
                         return;
                     }
                     wayToProfile();
@@ -931,7 +922,7 @@ public class MainActivity extends BaseActivity {
             if (appConstant.checkLogin())
                 startActivity(new Intent(MainActivity.this, EditProfile.class));
             else
-                showBottomSheetDialog();
+                LoginSheet();
         } else {
             startActivity(new Intent(MainActivity.this, ReferralActivity.class));
         }
@@ -1015,7 +1006,7 @@ public class MainActivity extends BaseActivity {
                 return;
             }
             if (intent.getBooleanExtra(AppConstant.AppName, false)) {
-                showBottomSheetDialog();
+                LoginSheet();
                 return;
             }
             if (new AppConstant(MainActivity.this).checkLogin() && intent.getBooleanExtra(AppConstant.amount, false)) {
@@ -1171,12 +1162,12 @@ public class MainActivity extends BaseActivity {
         super.onDestroy();
     }
 
-    public void showBottomSheetDialog() {
-        View view = getLayoutInflater().inflate(R.layout.fragment_login_bottom_sheet_fragment, null);
+    public void LoginSheet() {
+        View view = getLayoutInflater().inflate(R.layout.login_sheet, null);
         final BottomSheetDialog dialogBottom = new BottomSheetDialog(MainActivity.this, R.style.BottomSheetDialog);
         dialogBottom.setContentView(view);
         dialogBottom.show();
-        TextView btn_ok = view.findViewById(R.id.ok);
+        TextView btn_ok = view.findViewById(R.id.loginBtn);
         btn_ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

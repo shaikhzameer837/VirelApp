@@ -1,6 +1,5 @@
 package com.intelj.y_ral_gaming.Activity;
 
-import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -29,7 +28,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.intelj.y_ral_gaming.Adapter.MyListAdapter;
-import com.intelj.y_ral_gaming.CustomPagerAdapter;
 import com.intelj.y_ral_gaming.R;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 import com.intelj.y_ral_gaming.model.MyListData;
@@ -41,8 +39,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class ReferralActivity extends AppCompatActivity {
     HashMap<String, String> contentList = new HashMap<>();

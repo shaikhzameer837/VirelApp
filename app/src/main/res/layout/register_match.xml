@@ -5,19 +5,27 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/amount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#ddd"
-        android:gravity="center"
-        android:padding="10dp"
+        android:layout_gravity="center_vertical"
+        android:background="@color/black"
+        android:padding="14dp"
         android:text="Register for game"
-        android:textColor="#000" />
+        android:textSize="17sp"
+        android:textColor="@color/white"
+        android:textStyle="bold" />
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="80dp"
+        android:layout_marginLeft="-2dp"
+        android:background="@drawable/shape" />
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:padding="10dp"
+        android:layout_marginTop="-20dp"
         android:text="* Once you entered your in game name you cannot change it untill match end"
         android:textColor="#000" />
     <soup.neumorphism.NeumorphCardView
@@ -128,7 +136,7 @@ BY CLICKING NEXT YOU AGREE THE ABOVE TERMS AND CONDTION"
             app:neumorph_shapeType="flat">
             <TextView
                 android:layout_width="wrap_content"
-                android:text=" Join Giveaway "
+                android:text=" Join Free Giveaway "
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:paddingLeft="10dp"
