@@ -61,7 +61,6 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.storage.FirebaseStorage;
 import com.intelj.y_ral_gaming.Activity.MainActivity;
 import com.intelj.y_ral_gaming.Activity.NotificationActivity;
@@ -88,21 +87,16 @@ public class AppController extends Application implements Application.ActivityLi
     public String userId = "";
     AppConstant appConstant;
     DatabaseReference mDatabase;
-    public ArrayList<String> timeArray = new ArrayList<>();
-    public DataSnapshot mySnapShort;
     public DataSnapshot notification;
-    public ArrayList<DataSnapshot> userInfoList;
     public DataSnapshot follow;
-    public HashMap<String, Boolean> gameNameHashmap = new HashMap<>();
     public ProgressDialog progressDialog = null;
     public Intent mIntent;
     public String uploadUrl;
-    public FirebaseRemoteConfig remoteConfig;
     public DataSnapshot dataSnapshot;
-    public String is_production;
     public AlertDialog.Builder builder;
     public int amount = 0;
     public int rank = 0;
+    public String referral = "0";
     public List<GameItem> movieList = new ArrayList<>();
     public TournamentModel tournamentModel;
     AppDataBase appDataBase;
@@ -111,13 +105,8 @@ public class AppController extends Application implements Application.ActivityLi
     public void onCreate() {
         super.onCreate();
         instance = this;
-        remoteConfig = FirebaseRemoteConfig.getInstance();
-        remoteConfig.fetchAndActivate();
         FirebaseDatabase.getInstance().setPersistenceEnabled(false);
         getReadyForCheckin();
-        getGameName();
-        getTournamentTime();
-        is_production = remoteConfig.getString("is_production");
     }
     private HttpProxyCacheServer proxy;
 
@@ -140,11 +129,9 @@ public class AppController extends Application implements Application.ActivityLi
         }
     }
 
-    int x = 0;
     public void getUserInfo() {
-        x = 0;
-        Log.e("userId1s", userId);
-        mDatabase = FirebaseDatabase.getInstance().getReference(AppConstant.users).child(userId);
+        mDatabase = FirebaseDatabase.getInstance().getReference(AppConstant.users)
+                .child(userId).child(AppConstant.realTime);
         FirebaseMessaging.getInstance().getToken()
                 .addOnCompleteListener(new OnCompleteListener<String>() {
                     @Override
@@ -155,48 +142,25 @@ public class AppController extends Application implements Application.ActivityLi
                         }
                         String token = task.getResult();
                         Log.e("userIdx", task.getResult());
-                        mDatabase.child(AppConstant.token).setValue(token);
+                        FirebaseDatabase.getInstance().getReference(AppConstant.users).child(userId).child(AppConstant.token).setValue(token);
                     }
                 });
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                mDatabase.keepSynced(true);
-                mySnapShort = dataSnapshot.child(AppConstant.pinfo);
-                follow = dataSnapshot.child(AppConstant.profile).child(AppConstant.following);
-                userInfoList = new ArrayList<>();
-                if (!dataSnapshot.exists()) {
-                    new AppConstant(AppController.this).logout();
-                    return;
-                }
-                if (!dataSnapshot.child(AppConstant.realTime).child(AppConstant.deviceId).getValue(String.class).equals(Settings.Secure.getString(getContentResolver(),
+                //mySnapShort = dataSnapshot.child(AppConstant.pinfo);
+               // follow = dataSnapshot.child(AppConstant.profile).child(AppConstant.following);
+//                if (!dataSnapshot.exists()) {
+//                    new AppConstant(AppController.this).logout();
+//                    return;
+//                }
+                if (!dataSnapshot.child(AppConstant.deviceId).getValue(String.class).equals(Settings.Secure.getString(getContentResolver(),
                         Settings.Secure.ANDROID_ID))) {
                     Log.e("statusLog", "Logout");
                     new AppConstant(AppController.this).logout();
                     return;
                 }
-
-                SharedPreferences sharedPreferences = getSharedPreferences(userId, 0);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                if (dataSnapshot.child(AppConstant.userName).getValue() == null) {
-                    String userName = "Player" + System.currentTimeMillis();
-                    mDatabase.child(AppConstant.userName).setValue("Player" + System.currentTimeMillis());
-                    editor.putString(AppConstant.userName, userName).apply();
-                } else
-                    editor.putString(AppConstant.userName, dataSnapshot.child(AppConstant.userName).getValue(String.class)).apply();
-                if (mySnapShort.child(AppConstant.bio).getValue() != null) {
-                    editor.putString(AppConstant.bio, mySnapShort.child(AppConstant.bio).getValue().toString()).apply();
-                }
-                if (mySnapShort.child(AppConstant.title).getValue() != null) {
-                    editor.putString(AppConstant.title, mySnapShort.child(AppConstant.title).getValue().toString()).apply();
-                } else
-                    mDatabase.child(AppConstant.pinfo).child(AppConstant.title).setValue(AppConstant.player_title[new Random().nextInt(AppConstant.player_title.length)]);
-                if (!dataSnapshot.child(AppConstant.phoneNumber).getValue(String.class).startsWith("+")) {
-                    HashMap<String, Object> phoneNumberUpdate = new HashMap<>();
-                    phoneNumberUpdate.put(AppConstant.phoneNumber, appConstant.getCountryCode() + appConstant.getPhoneNumber());
-                    mDatabase.updateChildren(phoneNumberUpdate);
-                }
-                notification = dataSnapshot.child(AppConstant.realTime).child(AppConstant.noti);
+                notification = dataSnapshot.child(AppConstant.noti);
                 if (notification.getChildrenCount() != 0) {
                     for (DataSnapshot dataSnapshots : notification.getChildren()) {
                         String subtitle = "";
@@ -229,7 +193,7 @@ public class AppController extends Application implements Application.ActivityLi
                         }
                     }
                 }
-                DataSnapshot msgData = dataSnapshot.child(AppConstant.realTime).child(AppConstant.msg);
+                DataSnapshot msgData = dataSnapshot.child(AppConstant.msg);
                 if (msgData.getChildrenCount() != 0) {
                     for (DataSnapshot dataSnapshots : msgData.getChildren()) {
                         Intent intent = new Intent(AppController.this, ChatActivity.class);
@@ -317,24 +281,6 @@ public class AppController extends Application implements Application.ActivityLi
         startActivity(intent);
     }
 
-    public void getGameName() {
-        gameNameHashmap.clear();
-        String game_name = remoteConfig.getString(AppConstant.gameStreaming).equals("") ? new AppConstant(this).getDataFromShared(AppConstant.gameStreaming, "") : remoteConfig.getString(AppConstant.gameStreaming);
-        Log.e("game_name_cont", game_name);
-        try {
-            JSONObject jsonObject = new JSONObject(game_name);
-            JSONArray keys = jsonObject.names();
-            for (int i = 0; i < keys.length(); i++) {
-                String key = keys.getString(i); // Here's your key
-                boolean value = jsonObject.getBoolean(key);
-                gameNameHashmap.put(key, value);
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-            FirebaseCrashlytics.getInstance().recordException(e);
-        }
-    }
 
     @Override
     public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState) {
@@ -374,24 +320,7 @@ public class AppController extends Application implements Application.ActivityLi
 
     }
 
-    public void getTournamentTime() {
-        timeArray.clear();
-        String game_name = remoteConfig.getString(AppConstant.game_slot).equals("") ? new AppConstant(this).getDataFromShared(AppConstant.game_slot, "") : remoteConfig.getString(AppConstant.game_slot);
-        try {
-            JSONObject jsonObject = new JSONObject(game_name);
-            JSONArray keys = jsonObject.names();
-            for (int i = 0; i < keys.length(); i++) {
-                String key = keys.getString(i); // Here's your key
-                boolean value = jsonObject.getBoolean(key);
-                if (value)
-                    timeArray.add(key);
-            }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            FirebaseCrashlytics.getInstance().recordException(e);
-        }
-    }
 
     public static AppController getInstance() {
         return instance;

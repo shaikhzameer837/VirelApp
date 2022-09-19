@@ -22,20 +22,13 @@ import com.intelj.y_ral_gaming.Utils.AppConstant;
 import java.util.ArrayList;
 
 public class TeamAdapter extends RecyclerView.Adapter<TeamAdapter.MyViewHolder> {
-    private final DatabaseReference mDatabase =  FirebaseDatabase.getInstance().getReference(AppConstant.users);
     Context mContext;
     ArrayList<DataSnapshot> userInfoList;
-    ArrayList<String> idList ;
     String type;
     public TeamAdapter(Context mContext, ArrayList<DataSnapshot> userInfoList, String type) {
         this.mContext = mContext;
         this.userInfoList = userInfoList;
         this.type = type;
-        idList = new ArrayList<>();
-        for (DataSnapshot dataSnapshot : AppController.getInstance().userInfoList) {
-            idList.add(dataSnapshot.getKey()+"");
-            Log.d("dataSnapshot",dataSnapshot.getKey()+"");
-        }
      }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {

@@ -256,6 +256,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
                     public void onResponse(String response) {
                         Log.e("onClick3", response);
                         progressDialog.cancel();
+
                         try {
                             JSONObject json = new JSONObject(response);
                             if (json.getBoolean("success")) {
@@ -286,7 +287,6 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
                 params.put("inGameName", inGameName);
-                appConstant.savePackage(appConstant.getId(),"YRAL95");
                 params.put("gameId", gameItem.get(position).getGameId());
                 params.put("userId", appConstant.getId());
                 if(!appConstant.getReferal().equals(""))

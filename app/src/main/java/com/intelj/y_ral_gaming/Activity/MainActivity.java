@@ -109,7 +109,6 @@ public class MainActivity extends BaseActivity {
     String picturePath = null;
     TextView playerName, ncount;
     AlertDialog dialog;
-    public static final int PERMISSIONS_REQUEST_READ_CONTACTS = 15;
     TextView kill;
     int oldId;
     ImageView imageView;
@@ -146,9 +145,6 @@ public class MainActivity extends BaseActivity {
         getWindow().setEnterTransition(fade);
 
         getWindow().setExitTransition(fade);
-        AppController.getInstance().getGameName();
-        AppController.getInstance().getTournamentTime();
-
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
                 new IntentFilter("custom-event-name"));
         if (savedInstanceState == null) {
@@ -613,12 +609,6 @@ public class MainActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         if (appConstant.checkLogin() && imgProfile != null) {
-            if (!sharedPreferences.getString(AppConstant.name, "").equals("")) {
-                ((TextView) findViewById(R.id.complete)).setText(" Refer a Friend & 25 rs per invite");
-                Drawable img = getResources().getDrawable(R.drawable.refer_friend);
-                Drawable img1 = getResources().getDrawable(R.drawable.arrow_right);
-                ((TextView) findViewById(R.id.complete)).setCompoundDrawablesWithIntrinsicBounds(img, null, img1, null);
-            }
             Glide.with(MainActivity.this).load(sharedPreferences.getString(AppConstant.myPicUrl, "") == null ? "" : sharedPreferences.getString(AppConstant.myPicUrl, "")).placeholder(R.drawable.game_avatar).apply(new RequestOptions().circleCrop()).into(imgProfile);
             playerName = findViewById(R.id.playerName);
             playerName.setText(sharedPreferences.getString(AppConstant.name, "Player"));
@@ -640,19 +630,6 @@ public class MainActivity extends BaseActivity {
             }
 
         }
-        //        if (AppController.getInstance().mySnapShort != null && recyclerviewTeam != null) {
-//            teamModel.clear();
-//            for (DataSnapshot snapshot : AppController.getInstance().mySnapShort.child(AppConstant.team).getChildren()) {
-//                SharedPreferences prefs = getSharedPreferences(snapshot.getKey(), Context.MODE_PRIVATE);
-//                teamModel.add(new UserListModel(prefs.getString(AppConstant.teamName, null),
-//                        prefs.getString(AppConstant.myPicUrl, null),
-//                        snapshot.getKey(),
-//                        prefs.getStringSet(AppConstant.teamMember, null)));
-//            }
-//            userAdapter.notifyDataSetChanged();
-//        }
-
-        //  setPackagename();
     }
 
     private void wayToProfile() {
@@ -810,16 +787,6 @@ public class MainActivity extends BaseActivity {
                     startActivityForResult(i, PROFILE_IMAGE);
                 } else {
                     Toast.makeText(MainActivity.this, "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();
-                }
-                break;
-
-            case PERMISSIONS_REQUEST_READ_CONTACTS:
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Intent intent = new Intent(MainActivity.this, SearchFriendActivity.class);
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(this, "You have disabled a contacts permission", Toast.LENGTH_LONG).show();
                 }
                 break;
         }
@@ -1024,9 +991,12 @@ public class MainActivity extends BaseActivity {
                 } catch (Exception e) {
                     Log.e("onReceive: ", AppConstant.getRank(AppController.getInstance().rank));
                 }
-                //   kill.setText(appConstant.getCountryCode());
-                //  AppController.getInstance().rank + " points"
-
+                if (appConstant.checkLogin() && !sharedPreferences.getString(AppConstant.name, "").equals("")) {
+                    ((TextView) findViewById(R.id.complete)).setText(" Refer a Friend & earn "+AppController.getInstance().referral+" rs per invite");
+                    Drawable img = getResources().getDrawable(R.drawable.refer_friend);
+                    Drawable img1 = getResources().getDrawable(R.drawable.arrow_right);
+                    ((TextView) findViewById(R.id.complete)).setCompoundDrawablesWithIntrinsicBounds(img, null, img1, null);
+                }
                 return;
             }
             if (intent.getBooleanExtra(AppConstant.teamMember, false)) {
@@ -1035,6 +1005,7 @@ public class MainActivity extends BaseActivity {
                 bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
                 return;
             }
+
         }
     };
 

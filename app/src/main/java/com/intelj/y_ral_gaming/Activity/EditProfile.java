@@ -77,12 +77,13 @@ public class EditProfile extends AppCompatActivity {
     AutoCompleteTextView tv_title;
     LinearLayout gameList;
     SharedPreferences prefs;
-
+    TextView avail;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         appConstant = new AppConstant(this);
         setContentView(R.layout.edit_profile);
         imgProfile = findViewById(R.id.imgs);
+        avail = findViewById(R.id.avail);
         playerName = findViewById(R.id.name);
         TI_userName = findViewById(R.id.userName);
         bio = findViewById(R.id.bio);
@@ -94,7 +95,7 @@ public class EditProfile extends AppCompatActivity {
                 (this, android.R.layout.simple_list_item_1, AppConstant.player_title);
         tv_title = findViewById(R.id.autoCompleteTextView1);
         tv_title.setThreshold(0);//will start working from first character
-        tv_title.setAdapter(adapter);//setting the adapter data into the AutoCompleteTextView
+        tv_title.setAdapter(adapter);
         SharedPreferences sharedPreferences = getSharedPreferences(new AppConstant(EditProfile.this).getId(), 0);
         prefs = getSharedPreferences(AppConstant.AppName, MODE_PRIVATE);
         tv_title.setOnTouchListener(new View.OnTouchListener() {
@@ -150,13 +151,13 @@ public class EditProfile extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
                 if (TI_userName.getText().toString().equals(sharedPreferences.getString(AppConstant.userName, ""))) {
                     userName = TI_userName.getText().toString();
-                    TI_userName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check, 0);
+                    TI_userName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.card_account_details_outline, 0, R.drawable.ic_check, 0);
                     TI_userName.setError(null);
                     return;
                 }
-                TI_userName.setError("Click to check username availability", null);
+                avail.setError("Click to check username availability", null);
                 userName = "";
-                TI_userName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.info, 0);
+                TI_userName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.card_account_details_outline, 0, R.drawable.info, 0);
             }
 
             @Override
@@ -174,7 +175,13 @@ public class EditProfile extends AppCompatActivity {
         tv_title.setText(sharedPreferences.getString(AppConstant.title, ""));
         userName = sharedPreferences.getString(AppConstant.userName, "");
         TI_userName.setText(userName);
-        TI_userName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check, 0);
+        avail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        TI_userName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.card_account_details_outline, 0, R.drawable.ic_check, 0);
         imgProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -255,17 +262,17 @@ public class EditProfile extends AppCompatActivity {
                         Log.e("number//---", postSnapshot.getKey());
                         if (postSnapshot.getKey().equals(appConstant.getId())) {
                             Toast.makeText(EditProfile.this, "User name available ", Toast.LENGTH_SHORT).show();
-                            TI_userName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check, 0);
+                            TI_userName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.card_account_details_outline, 0, R.drawable.ic_check, 0);
                             TI_userName.setError(null);
                         } else {
                             Toast.makeText(EditProfile.this, "User name unavailable ", Toast.LENGTH_SHORT).show();
-                            TI_userName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.close, 0);
+                            TI_userName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.card_account_details_outline, 0, R.drawable.close, 0);
                         }
                     }
                 } else {
                     userName = TI_userName.getText().toString();
                     Toast.makeText(EditProfile.this, "User name available ", Toast.LENGTH_SHORT).show();
-                    TI_userName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check, 0);
+                    TI_userName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.card_account_details_outline, 0, R.drawable.ic_check, 0);
                     TI_userName.setError(null);
                 }
             }

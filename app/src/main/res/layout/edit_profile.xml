@@ -7,8 +7,7 @@
 
     <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="210dp"
         android:background="@drawable/grad">
 
         <RelativeLayout
@@ -39,28 +38,20 @@
 
         </RelativeLayout>
 
-        <soup.neumorphism.NeumorphCardView
-            style="@style/Widget.Neumorph.Button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_marginBottom="90dp"
-            android:padding="20dp"
-            android:layout_gravity="center_horizontal"
-            app:neumorph_backgroundColor="@color/black"
-            app:neumorph_shadowColorDark="#00000000"
-            app:neumorph_shadowColorLight="#00000000"
-            app:neumorph_shapeType="flat"
-            app:neumorph_strokeColor="#00000000"
-            app:neumorph_strokeWidth="0dp">
 
-            <ImageView
-                android:id="@+id/imgs"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:src="@drawable/game_avatar" />
-        </soup.neumorphism.NeumorphCardView>
+        <ImageView
+            android:id="@+id/imgs"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_below="@+id/toolbar"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/game_avatar" />
+
+
     </RelativeLayout>
 
     <androidx.cardview.widget.CardView
@@ -124,172 +115,124 @@
                         android:textColor="@color/black"
                         android:textStyle="bold" />s
 
-                    <com.intelj.y_ral_gaming.Utils.TextInputAutoCompleteTextView
-                        android:id="@+id/autoCompleteTextView1"
+                    <soup.neumorphism.NeumorphCardView
+                        style="@style/Widget.Neumorph.Button"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginRight="10dp"
-                        android:background="#00000000"
-                        android:drawableRight="@drawable/close"
-                        android:hint="Gaming Title"
-                        android:paddingLeft="10dp"
-                        android:text=""
-                        android:textColor="@color/black"
-                        android:textSize="13sp" />
+                        android:layout_height="65dp"
+                        app:neumorph_shapeType="pressed"
+                        app:neumorph_strokeColor="@color/darkgrey"
+                        app:neumorph_strokeWidth="1dp">
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/ref"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginRight="15dp"
-                        android:background="#00000000"
-                        android:backgroundTint="#00000000"
-                        android:textColorHint="@color/black"
-                        android:visibility="gone"
-                        app:hintTextColor="@color/black">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/bios"
+                        <com.intelj.y_ral_gaming.Utils.TextInputAutoCompleteTextView
+                            android:id="@+id/autoCompleteTextView1"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginRight="10dp"
                             android:background="#00000000"
-                            android:enabled="false"
-                            android:hint="Bios"
+                            android:drawableLeft="@drawable/shield_star_outline"
+                            android:drawableRight="@drawable/close"
+                            android:drawablePadding="5dip"
+                            android:hint=" Gaming Title"
+                            android:paddingLeft="10dp"
+                            android:text=""
                             android:textColor="@color/black"
-                            android:textSize="14sp" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginRight="15dp"
-                        android:visibility="gone">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/referal"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="15dp"
-                            android:drawableRight="@drawable/content_copy"
-                            android:editable="false"
-                            android:enabled="true"
-                            android:hint=" Referal Id"
-                            android:singleLine="false"
-                            android:textColor="#aaaaaa"
-                            android:textSize="14sp" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/ref"
-                        android:layout_marginLeft="30dp"
-                        android:text="Invite friends and win 25rs per invite"
-                        android:textSize="12sp"
-                        android:visibility="gone" />
+                            android:textSize="13sp" />
+                    </soup.neumorphism.NeumorphCardView>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/imgs"
                         android:orientation="vertical">
 
-                        <com.google.android.material.textfield.TextInputLayout
-                            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+                        <soup.neumorphism.NeumorphCardView
+                            style="@style/Widget.Neumorph.Button"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="15dp"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginRight="15dp"
-                            android:background="#00000000"
-                            android:backgroundTint="#00000000"
-                            android:textColorHint="@color/black"
-                            app:hintTextColor="@color/black">
+                            android:layout_height="65dp"
+                            app:neumorph_shapeType="pressed"
+                            app:neumorph_strokeColor="@color/darkgrey"
+                            app:neumorph_strokeWidth="1dp">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/name"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
+                                android:layout_height="match_parent"
                                 android:background="#00000000"
+                                android:drawableLeft="@drawable/account"
+                                android:drawableTint="@color/black"
                                 android:enabled="false"
-                                android:hint="Name"
+                                android:hint=" Name"
+                                android:drawablePadding="5dip"
+                                android:paddingLeft="15dp"
                                 android:singleLine="true"
                                 android:textColor="@color/black"
-                                android:textColorHint="@color/black"
                                 android:textSize="14sp" />
-                        </com.google.android.material.textfield.TextInputLayout>
+                        </soup.neumorphism.NeumorphCardView>
 
-                        <com.google.android.material.textfield.TextInputLayout
-                            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+                        <soup.neumorphism.NeumorphCardView
+                            style="@style/Widget.Neumorph.Button"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="15dp"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginRight="15dp"
-                            android:background="#00000000"
-                            android:backgroundTint="#00000000"
-                            android:textColorHint="@color/black"
-                            app:hintTextColor="@color/black">
+                            android:layout_height="65dp"
+                            app:neumorph_shapeType="pressed"
+                            app:neumorph_strokeColor="@color/darkgrey"
+                            app:neumorph_strokeWidth="1dp">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/userName"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
+                                android:layout_height="match_parent"
                                 android:background="#00000000"
                                 android:digits="abcdefghijklmnopqrstuvwxyz_.1234567890"
                                 android:enabled="false"
-                                android:hint="user name"
+                                android:paddingRight="10dp"
+                                android:hint=" user name"
+                                android:drawablePadding="5dip"
+                                android:drawableLeft="@drawable/card_account_details_outline"
+                                android:paddingLeft="15dp"
                                 android:inputType="text|textEmailAddress"
                                 android:singleLine="true"
                                 android:textColor="@color/black"
-                                android:textColorHint="@color/black"
                                 android:textSize="14sp" />
-                        </com.google.android.material.textfield.TextInputLayout>
-                        <TextView
-                            android:text="check username Availability"
-                            android:background="@drawable/curved_red"
-                            android:textColor="@color/white"
-                            android:paddingLeft="5dp"
-                            android:layout_marginTop="5dp"
-                            android:layout_marginRight="5dp"
+                        </soup.neumorphism.NeumorphCardView>
+
+                        <TextView android:id="@+id/avail"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_gravity="right"
                             android:layout_marginLeft="10dp"
-                            android:paddingTop="3dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginRight="5dp"
+                            android:background="@drawable/curved_red"
                             android:onClick="checkAvail"
+                            android:paddingLeft="5dp"
+                            android:paddingTop="3dp"
                             android:paddingRight="5dp"
                             android:paddingBottom="3dp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
-                        <com.google.android.material.textfield.TextInputLayout
-                            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+                            android:text="check username Availability"
+                            android:textColor="@color/white" />
+
+                        <soup.neumorphism.NeumorphCardView
+                            style="@style/Widget.Neumorph.Button"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="15dp"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginRight="15dp"
-                            android:background="#00000000"
-                            android:backgroundTint="#00000000"
-                            android:textColorHint="@color/black"
-                            app:hintTextColor="@color/black">
+                            android:layout_height="65dp"
+                            app:neumorph_shapeType="pressed"
+                            app:neumorph_strokeColor="@color/darkgrey"
+                            app:neumorph_strokeWidth="1dp">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/bio"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
+                                android:layout_height="match_parent"
                                 android:background="#00000000"
-                                android:hint="Bio (About Me)"
+                                android:paddingLeft="15dp"
+                                android:drawablePadding="5dip"
+                                android:drawableTint="@color/black"
+                                android:drawableLeft="@drawable/account_edit_outline"
+                                android:hint=" Bio (About Me)"
                                 android:textColor="@color/black"
                                 android:textSize="14sp" />
-                        </com.google.android.material.textfield.TextInputLayout>
-
+                        </soup.neumorphism.NeumorphCardView>
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -357,24 +300,24 @@
                     </LinearLayout>
 
 
-
                 </LinearLayout>
             </ScrollView>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
+
     <TextView
         android:id="@+id/done"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:drawableLeft="@drawable/account"
-        android:drawableRight="@drawable/arrow_white"
-        android:gravity="center"
-        android:elevation="2dp"
-        android:padding="12dp"
         android:layout_marginTop="-30dp"
         android:layout_marginBottom="-40dp"
         android:background="@drawable/button_round"
+        android:drawableLeft="@drawable/account"
+        android:drawableRight="@drawable/arrow_white"
+        android:elevation="2dp"
+        android:gravity="center"
+        android:padding="12dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:text="  Update Profile "

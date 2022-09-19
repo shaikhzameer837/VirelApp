@@ -49,7 +49,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.intelj.y_ral_gaming.Activity.MainActivity;
-import com.intelj.y_ral_gaming.Activity.ReferralActivity;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 import com.rilixtech.widget.countrycodepicker.Country;
 import com.rilixtech.widget.countrycodepicker.CountryCodePicker;
@@ -71,7 +70,7 @@ public class SigninActivity extends AppCompatActivity {
     private MyViewPagerAdapter myViewPagerAdapter;
     int[] layouts;
     AppConstant appConstant;
-    EditText phoneNumber,referal, otp;
+    EditText phoneNumber, referral, otp;
     CountryCodePicker ccp;
     TextView et_countdown, resend_btn;
     String _phoneNumber = "", _otp = "", token = "", _pgUsername = "", _countryCode = "+91";
@@ -246,7 +245,7 @@ public class SigninActivity extends AppCompatActivity {
         public void checkError() {
             if (viewPagerLogin.getCurrentItem() == 0) {
                 phoneNumber = layout_view.get(0).findViewById(R.id.phoneNumber);
-                referal = layout_view.get(0).findViewById(R.id.referal);
+                referral = layout_view.get(0).findViewById(R.id.referral);
                 ccp = layout_view.get(0).findViewById(R.id.ccp);
                 _phoneNumber = phoneNumber.getText().toString();
                 if (_phoneNumber.length() != 10) {
@@ -343,7 +342,7 @@ public class SigninActivity extends AppCompatActivity {
         dialog.setMessage("Registering for App, please wait.");
         dialog.show();
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = AppConstant.AppUrl + "reg.php";
+        String url = AppConstant.AppUrl + "register.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
@@ -352,20 +351,14 @@ public class SigninActivity extends AppCompatActivity {
                         try {
                             JSONObject obj = new JSONObject(response);
                             if (obj.getBoolean("success")) {
-                                String package_id = obj.getString("package_id");
-                                String expiry_date = obj.getString("expiry_date");
-                                String referal = obj.getString("referal");
-                                String discord = obj.getString("discord");
+                                String referral = obj.getString("referral");
                                 String userName = obj.getString("userName");
                                 String name = obj.getString("name");
-                                String profile = obj.getString("profile");
                                 String uniqueId = obj.getString("id");
                                 boolean isNew = obj.getBoolean("isNew");
                                 SharedPreferences sharedPreferences = getSharedPreferences(uniqueId, 0);
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
                                 editor.putString(AppConstant.name, name);
-                                editor.putString(AppConstant.discordId, discord);
-                                editor.putString(AppConstant.myPicUrl, profile);
                                 editor.apply();
                                 HashMap<String, Object> login = new HashMap<>();
                                 HashMap<String, Object> realTime = new HashMap<>();
@@ -377,20 +370,15 @@ public class SigninActivity extends AppCompatActivity {
                                 login.put(AppConstant.countryCode, _countryCode);
                                 realTime.put(AppConstant.deviceId, Settings.Secure.getString(getContentResolver(),
                                         Settings.Secure.ANDROID_ID));
-
                                 mDatabase.child(AppController.getInstance().userId).child(AppConstant.pinfo).
                                         updateChildren(login);
-                                mDatabase.child(AppController.getInstance().userId).child(AppConstant.pinfo).
-                                        updateChildren(login);
-                                Log.e("Exception", "success 1");
                                 mDatabase.child(AppController.getInstance().userId).child(AppConstant.realTime).
                                         updateChildren(realTime);
                                 appConstant.saveLogin(AppController.getInstance().userId);
                                 appConstant.saveUserInfo(_phoneNumber, AppController.getInstance().userId, AppConstant.AppUrl + "images/" + AppController.getInstance().userId + ".png?u=" + AppConstant.imageExt(), name, _countryCode, null, userName);
                                 AppController.getInstance().getReadyForCheckin();
-                                Log.e("Exception", "success 2");
                                 AppController.getInstance().progressDialog = null;
-                                appConstant.savePackage(uniqueId, referal);
+                                appConstant.savePackage(uniqueId, referral);
                                 if (dialog.isShowing()) {
                                     dialog.dismiss();
                                 }
@@ -398,7 +386,7 @@ public class SigninActivity extends AppCompatActivity {
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
                             } else {
-
+                                Toast.makeText(SigninActivity.this,"Something Went Wrong",Toast.LENGTH_LONG).show();
                             }
                         } catch (Exception e) {
                             if (dialog.isShowing()) {
@@ -422,7 +410,7 @@ public class SigninActivity extends AppCompatActivity {
                 params.put("token", token);
                 params.put("uniqueId", (System.currentTimeMillis() / 1000) + "");
                 params.put("phoneNumber", _phoneNumber);
-                params.put("referal", referal.getText().toString());
+                params.put("referral", referral.getText().toString());
                 return params;
             }
 

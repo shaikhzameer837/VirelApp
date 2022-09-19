@@ -7,42 +7,24 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
 import android.provider.ContactsContract;
 import android.provider.Settings;
 import android.text.InputType;
-import android.util.Base64;
 import android.util.Log;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.intelj.y_ral_gaming.Activity.MainActivity;
 import com.intelj.y_ral_gaming.AppController;
 import com.intelj.y_ral_gaming.PaymentActivity;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.nio.charset.Charset;
 import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 
 public class AppConstant {
     public static String AppUrl = "http://y-ral-gaming.com/admin/api/";
@@ -99,6 +81,7 @@ public class AppConstant {
             name = "userName",
             userName = "un";
     public static final String[] player_title = {"Sniper", "Noob", "Sentinel", "Camper", "Pro", "Smurf", "Strategic"};
+    public static final String[] user_title = {"Gamer", "Content Creator","Streamer","GFX","E-sport Manager"};
     private static final int SECOND_MILLIS = 1000;
     private static final int MINUTE_MILLIS = 60 * SECOND_MILLIS;
     private static final int HOUR_MILLIS = 60 * MINUTE_MILLIS;

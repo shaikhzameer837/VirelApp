@@ -56,6 +56,7 @@ public class OneFragment extends Fragment {
     String key;
     long show_listview = 0;
     String date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
+
     public OneFragment() {
         // Required empty public constructor
     }
@@ -64,7 +65,7 @@ public class OneFragment extends Fragment {
     public OneFragment(String title, long show_listview) {
         this.title = title;
         this.show_listview = show_listview;
-        Log.e("show_listview",show_listview + "");
+        Log.e("show_listview", show_listview + "");
     }
 
     @Override
@@ -74,6 +75,7 @@ public class OneFragment extends Fragment {
 
         }
     }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,6 +88,7 @@ public class OneFragment extends Fragment {
         onResumeView();
         return rootView;
     }
+
     public void onResumeView() {
         shimmerFrameLayout = rootView.findViewById(R.id.shimmer_layout);
         date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
@@ -94,8 +97,8 @@ public class OneFragment extends Fragment {
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(mLayoutManager);
         initializedata();
-       // Glide.with(this).load(R.drawable.coming_soon).diskCacheStrategy(DiskCacheStrategy.ALL).centerCrop().into(imageView);
-        Log.e("show_listview",show_listview + "--"+title);
+        // Glide.with(this).load(R.drawable.coming_soon).diskCacheStrategy(DiskCacheStrategy.ALL).centerCrop().into(imageView);
+        Log.e("show_listview", show_listview + "--" + title);
         if (show_listview != 0) {
             shimmerFrameLayout.startShimmer();
             recyclerView.setVisibility(View.VISIBLE);
@@ -108,7 +111,7 @@ public class OneFragment extends Fragment {
             recyclerView.setVisibility(View.GONE);
             tv_coming_soon.setVisibility(View.VISIBLE);
             rootView.findViewById(R.id.coming_soon).setVisibility(View.VISIBLE);
-        //    rootView.findViewById(R.id.entry).setVisibility(View.GONE);
+            //    rootView.findViewById(R.id.entry).setVisibility(View.GONE);
         }
 //        for (String s : AppController.getInstance().timeArray) {
 //            if (AppController.getInstance().userId != null) {
@@ -139,9 +142,10 @@ public class OneFragment extends Fragment {
                             if (json.getBoolean("success") && !json.has("msg")) {
                                 AppController.getInstance().amount = Integer.parseInt(json.getString("amount"));
                                 AppController.getInstance().rank = Integer.parseInt(json.getString("rank"));
-                                Log.e( "onReceive: R ", json.getString("rank"));
+                                AppController.getInstance().referral = json.getString("referral");
+                                Log.e("onReceive: R ", json.getString("rank"));
                                 JSONArray ja_data = json.getJSONArray("match_info");
-                                 GameItem.clear();
+                                GameItem.clear();
                                 for (int i = 0; i < ja_data.length(); i++) {
                                     JSONObject jObj = ja_data.getJSONObject(i);
                                     GameItem.add(new GameItem("BGMI match " + (1 + i),
@@ -215,7 +219,7 @@ public class OneFragment extends Fragment {
                 params.put("user_id", new AppConstant(getActivity()).getId());
                 int versionCode = BuildConfig.VERSION_CODE;
                 params.put("version", versionCode + "");
-                params.put("debug", BuildConfig.DEBUG+"");
+                params.put("debug", BuildConfig.DEBUG + "");
                 params.put("match_id", date);
                 params.put("game_type", title);
                 return params;
@@ -231,7 +235,6 @@ public class OneFragment extends Fragment {
 
         queue.add(stringRequest);
     }
-
 
 
     private void initializedata() {

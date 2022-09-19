@@ -28,6 +28,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.intelj.y_ral_gaming.Adapter.MyListAdapter;
+import com.intelj.y_ral_gaming.AppController;
 import com.intelj.y_ral_gaming.R;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 import com.intelj.y_ral_gaming.model.MyListData;
@@ -42,10 +43,9 @@ import java.util.Map;
 
 public class ReferralActivity extends AppCompatActivity {
     HashMap<String, String> contentList = new HashMap<>();
-    TextView refer;
+    TextView refer,referal;
     RecyclerView recyclerView;
     ArrayList<MyListData> myListData = new ArrayList<>();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +56,9 @@ public class ReferralActivity extends AppCompatActivity {
         contentList.put("login.json", "Register & play Game");
         contentList.put("cash.json", "You earn 50rs after game played");
         refer = findViewById(R.id.refer);
-        refer.setText("YRAL" + new AppConstant(this).getId());
+        referal = findViewById(R.id.referal);
+        refer.setText(" YRAL" + new AppConstant(this).getId());
+        referal.setText(" My Referral id [YRAL" + new AppConstant(this).getId() +"]  ");
         viewPager.setAdapter(new CustomPagerAdapter(ReferralActivity.this));
         getReferalList();
         final Handler handler = new Handler();
@@ -92,20 +94,24 @@ public class ReferralActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         Log.e("responses", response);
+                        findViewById(R.id.progress).setVisibility(View.GONE);
+                        if(response.equals("[]")){
+                            findViewById(R.id.anim).setVisibility(View.VISIBLE);
+                            findViewById(R.id.recyclerView).setVisibility(View.GONE);
+                            return;
+                        }
                         try {
                             JSONArray json = new JSONArray(response);
-                            findViewById(R.id.animationView).setVisibility(json.length() > 0 ? View.GONE : View.VISIBLE);
                             TextView totalAmount = findViewById(R.id.totalAmount);
                             int totalSuccessInvite = 0;
                             for (int i = 0; i < json.length(); i++) {
                                 JSONObject jsonObject = (JSONObject) json.get(i);
-                                if(jsonObject.getString("playing_status").equals("1"))
-                                    totalSuccessInvite = totalSuccessInvite+1;
+                                if(!jsonObject.getString("playing_status").equals("0"))
+                                    totalSuccessInvite = totalSuccessInvite + Integer.parseInt(jsonObject.getString("playing_status"));
                                 myListData.add(new MyListData(jsonObject.getString("name"), jsonObject.getString("userId"), jsonObject.getString("playing_status")));
                                 Log.e("responses", jsonObject.getString("name"));
                             }
-                            totalAmount.setText("+" + (totalSuccessInvite * 25));
-                            Log.e("responses", totalSuccessInvite + "");
+                            totalAmount.setText("+" + totalSuccessInvite);
                             MyListAdapter adapter = new MyListAdapter(myListData);
                             recyclerView.setHasFixedSize(true);
                             recyclerView.setLayoutManager(new LinearLayoutManager(ReferralActivity.this));
@@ -113,7 +119,6 @@ public class ReferralActivity extends AppCompatActivity {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        findViewById(R.id.progress).setVisibility(View.GONE);
                     }
                 }, new Response.ErrorListener() {
             @Override

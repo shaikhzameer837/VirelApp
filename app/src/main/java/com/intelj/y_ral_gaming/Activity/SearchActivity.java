@@ -1,6 +1,5 @@
 package com.intelj.y_ral_gaming.Activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,7 +8,6 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,14 +24,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.intelj.y_ral_gaming.Adapter.DemoRecyclerviewAdapter;
 import com.intelj.y_ral_gaming.AppController;
 import com.intelj.y_ral_gaming.R;
-import com.intelj.y_ral_gaming.RecyclerData;
-import com.intelj.y_ral_gaming.RecyclerViewAdapter;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 import com.intelj.y_ral_gaming.Utils.RecyclerTouchListener;
-import com.intelj.y_ral_gaming.model.DemoRecyclerviewModel;
 import com.intelj.y_ral_gaming.model.SuggesstionModel;
 import com.intelj.y_ral_gaming.model.SuggestionViewAdapter;
 

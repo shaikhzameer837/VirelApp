@@ -1,7 +1,4 @@
 package com.intelj.y_ral_gaming.Activity;
-
-import static com.intelj.y_ral_gaming.Activity.MainActivity.PERMISSIONS_REQUEST_READ_CONTACTS;
-
 import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;

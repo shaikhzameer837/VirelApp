@@ -38,9 +38,9 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.name.setText(listdata.get(position).getName());
         Log.e("holder.name",listdata.get(position).getName());
-        holder.amount.setVisibility(listdata.get(position).getPlaying_status().equals("1") ? View.VISIBLE : View.GONE);
-       // holder.amount.setText(listdata.get(position).getPlaying_status());
-        holder.status.setText(listdata.get(position).getPlaying_status().equals("1") ? "Played" : "Regsitered");
+        holder.amount.setVisibility(!listdata.get(position).getPlaying_status().equals("0") ? View.VISIBLE : View.GONE);
+        holder.amount.setText(listdata.get(position).getPlaying_status());
+        holder.status.setText(!listdata.get(position).getPlaying_status().equals("0") ? "Played" : "Regsitered");
         Glide.with(holder.imgs.getContext()).load(AppConstant.AppUrl + "images/"+listdata.get(position).getUserId()+".png?u=" + AppConstant.imageExt()).apply(new RequestOptions().circleCrop()).placeholder(R.drawable.game_avatar).into(holder.imgs);
     }
 
