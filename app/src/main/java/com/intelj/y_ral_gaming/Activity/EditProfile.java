@@ -114,7 +114,6 @@ public class EditProfile extends AppCompatActivity {
         });
 
         tv_title.setKeyListener(null);
-        mDatabase = FirebaseDatabase.getInstance().getReference(appConstant.users);
         findViewById(R.id.done).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -254,7 +253,7 @@ public class EditProfile extends AppCompatActivity {
     private void checkUserName() {
         DatabaseReference mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
         Query query = mFirebaseDatabaseReference.child("users").orderByChild(AppConstant.userName).equalTo(TI_userName.getText().toString());
-        query.addValueEventListener(new ValueEventListener() {
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue() != null) {
@@ -296,7 +295,7 @@ public class EditProfile extends AppCompatActivity {
                     public void onResponse(String response) {
                         Log.e("response", response);
                         progressDialog.cancel();
-                        saveToProfile(null);
+                        saveToProfile();
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -338,7 +337,7 @@ public class EditProfile extends AppCompatActivity {
                     public void onResponse(NetworkResponse response) {
                         if (dialog.isShowing())
                             dialog.dismiss();
-                        saveToProfile(new String(response.data));
+                        saveToProfile();
                     }
                 },
                 new Response.ErrorListener() {
@@ -397,18 +396,15 @@ public class EditProfile extends AppCompatActivity {
         return Bitmap.createScaledBitmap(image, width, height, true);
     }
 
-    private void saveToProfile(String imageUrl) {
+    private void saveToProfile() {
+        mDatabase = FirebaseDatabase.getInstance().getReference(appConstant.users);
         SharedPreferences sharedPreferences = getSharedPreferences(new AppConstant(this).getId(), 0);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(AppConstant.name, playerName.getText().toString());
         editor.putString(AppConstant.userName, TI_userName.getText().toString());
         editor.putString(AppConstant.bio, bio.getText().toString());
         editor.putString(AppConstant.title, tv_title.getText().toString());
-        if (imageUrl != null) {
-//            FirebaseDatabase.getInstance().getReference(AppConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.myPicUrl).setValue(imageUrl);
-            editor.putString(AppConstant.myPicUrl, imageUrl);
             picturePath = null;
-        }
         editor.apply();
         mDatabase.child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.bio).
                 setValue(bio.getText().toString());

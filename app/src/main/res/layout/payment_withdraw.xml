@@ -7,6 +7,7 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
+        android:background="@color/appColor"
         android:layout_height="wrap_content">
 
         <TextView
@@ -16,12 +17,16 @@
             android:gravity="center"
             android:minHeight="?actionBarSize"
             android:padding="10dp"
-            android:text="payment Withdraw"
-            android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
+            android:textColor="@color/white"
+            android:text="Payment Withdraw" />
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabs"
             android:layout_width="match_parent"
+            app:tabTextColor="@color/white"
+            app:tabBackground="@color/appColor"
+            app:tabIndicatorColor="@color/white"
+            app:tabSelectedTextColor="@color/white"
             android:layout_height="wrap_content" />
     </com.google.android.material.appbar.AppBarLayout>
 

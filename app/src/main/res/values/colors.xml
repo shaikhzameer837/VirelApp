@@ -7,19 +7,13 @@
     <color name="black">#000000</color>
     <color name="grey_black">#777777</color>
     <color name="grey">#ebecef</color>-
-    <color name="green">#228B22</color>
     <color name="darkgreen">#097969</color>
-    <color name="greyish_green">#768E73</color>
     <color name="textcolor">#333333</color>
     <color name="darkgrey">#9f9f9f</color>
     <color name="gray_scale">#8affffff</color>
     <color name="progress_primary">#ffffff</color>
     <color name="progress_secondary">@color/gray_scale</color>
     <color name="progress_max_active">#ffffff</color>
-    <color name="text_color">#1E4175</color>
-    <color name="background_color">#ecf0f3</color>
-    <color name="highlight">#ffffff</color>
-    <color name="shadow_color">#d9dbde</color>
     <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">#fff</color>
 
 </resources>

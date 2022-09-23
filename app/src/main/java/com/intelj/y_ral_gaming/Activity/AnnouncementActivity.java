@@ -24,7 +24,6 @@ public class AnnouncementActivity extends AppCompatActivity {
         setContentView(R.layout.activity_announcement);
 
         recyclerView = findViewById(R.id.recyclerView);
-        Chat chat = new Chat();
         announcementModelArrayList = new ArrayList<>();
         announcementModelArrayList.add(new AnnouncementModel("Email", android.R.drawable.ic_menu_help));
 

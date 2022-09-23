@@ -88,9 +88,7 @@ public class SearchActivity extends AppCompatActivity {
         userIDs.add("184");
         userIDs.add("47");
         userIDs.add("255");
-        userIDs.add("159");
         userIDs.add("324");
-        userIDs.add("75");
         Collections.shuffle(userIDs);
         ArrayList<SuggesstionModel> recyclerDataArrayList = new ArrayList<>();
         SuggestionViewAdapter adapter = new SuggestionViewAdapter(recyclerDataArrayList, this);
@@ -103,7 +101,7 @@ public class SearchActivity extends AppCompatActivity {
                     final int m = i;
                     DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference(AppConstant.users)
                             .child(userIDs.get(i)).child(AppConstant.pinfo);
-                    mDatabase.addValueEventListener(new ValueEventListener() {
+                    mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             recyclerDataArrayList.add(new SuggesstionModel(snapshot.child(AppConstant.name).getValue(String.class),
@@ -119,32 +117,32 @@ public class SearchActivity extends AppCompatActivity {
                 }
             }
         }
-        final  DatabaseReference conversationsRef = FirebaseDatabase.getInstance().getReference(AppConstant.users);
-        Query getLastMessagesQuery = conversationsRef.orderByKey().limitToLast(5);
-        getLastMessagesQuery.addListenerForSingleValueEvent(new ValueEventListener()
-        {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snap)
-            {
-                for (DataSnapshot dataSnapshot : snap.getChildren())
-                {
-                    if(!dataSnapshot.getKey().equals(new AppConstant(SearchActivity.this).getId())) {
-                        if (AppController.getInstance().follow == null || !AppController.getInstance().follow.child(dataSnapshot.getKey()).exists()) {
-                            DataSnapshot snapshot = dataSnapshot.child(AppConstant.pinfo);
-                            recyclerDataArrayList.add(new SuggesstionModel(snapshot.child(AppConstant.name).getValue(String.class),
-                                    AppConstant.AppUrl + "images/" + dataSnapshot.getKey() + ".png?u=" + AppConstant.imageExt(), dataSnapshot.getKey(),snapshot.child(AppConstant.verified).exists()));
-                            adapter.notifyDataSetChanged();
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError)
-            {
-
-            }
-        });
+//        final  DatabaseReference conversationsRef = FirebaseDatabase.getInstance().getReference(AppConstant.users);
+//        Query getLastMessagesQuery = conversationsRef.orderByKey().limitToLast(5);
+//        getLastMessagesQuery.addListenerForSingleValueEvent(new ValueEventListener()
+//        {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snap)
+//            {
+//                for (DataSnapshot dataSnapshot : snap.getChildren())
+//                {
+//                    if(!dataSnapshot.getKey().equals(new AppConstant(SearchActivity.this).getId())) {
+//                        if (AppController.getInstance().follow == null || !AppController.getInstance().follow.child(dataSnapshot.getKey()).exists()) {
+//                            DataSnapshot snapshot = dataSnapshot.child(AppConstant.pinfo);
+//                            recyclerDataArrayList.add(new SuggesstionModel(snapshot.child(AppConstant.name).getValue(String.class),
+//                                    AppConstant.AppUrl + "images/" + dataSnapshot.getKey() + ".png?u=" + AppConstant.imageExt(), dataSnapshot.getKey(),snapshot.child(AppConstant.verified).exists()));
+//                            adapter.notifyDataSetChanged();
+//                        }
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError)
+//            {
+//
+//            }
+//        });
     }
 
     private void performSearch() {

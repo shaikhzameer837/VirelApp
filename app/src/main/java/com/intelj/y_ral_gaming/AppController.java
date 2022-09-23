@@ -35,6 +35,13 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.graphics.drawable.IconCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
@@ -107,6 +114,7 @@ public class AppController extends Application implements Application.ActivityLi
         instance = this;
         FirebaseDatabase.getInstance().setPersistenceEnabled(false);
         getReadyForCheckin();
+        getVideo();
     }
     private HttpProxyCacheServer proxy;
 
@@ -148,12 +156,6 @@ public class AppController extends Application implements Application.ActivityLi
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                //mySnapShort = dataSnapshot.child(AppConstant.pinfo);
-               // follow = dataSnapshot.child(AppConstant.profile).child(AppConstant.following);
-//                if (!dataSnapshot.exists()) {
-//                    new AppConstant(AppController.this).logout();
-//                    return;
-//                }
                 if (!dataSnapshot.child(AppConstant.deviceId).getValue(String.class).equals(Settings.Secure.getString(getContentResolver(),
                         Settings.Secure.ANDROID_ID))) {
                     Log.e("statusLog", "Logout");
@@ -319,8 +321,51 @@ public class AppController extends Application implements Application.ActivityLi
     public void onActivityDestroyed(@NonNull Activity activity) {
 
     }
+    public void getVideo(){
+        AppDataBase appDataBase = AppDataBase.getDBInstance(AppController.this,  "video");
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = AppConstant.AppUrl + "get_video.php";
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.e("onClick3", response);
+                        try {
+                            JSONObject json = new JSONObject(response);
+                            if (json.getBoolean("success")) {
+                                //appDataBase.videoDao().insertUser();
+                                JSONArray jsonArr = json.getJSONArray("value");
+                                for (int x = 0 ; x < jsonArr.length() ; x++){
+                                    JSONObject jsonObj = (JSONObject) jsonArr.get(x);
+                                    Log.e("onResponse: ", jsonObj.getString("uid"));
+                                }
+                            }
+                        } catch (Exception e) {
+                            Log.e("logMess", e.getMessage());
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("user_id", new AppConstant(AppController.this).getId());
+                return params;
+            }
 
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Content-Type", "application/x-www-form-urlencoded");
+                return params;
+            }
+        };
 
+        queue.add(stringRequest);
+    }
 
     public static AppController getInstance() {
         return instance;

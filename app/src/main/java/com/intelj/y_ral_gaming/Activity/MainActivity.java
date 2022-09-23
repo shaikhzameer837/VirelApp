@@ -609,7 +609,7 @@ public class MainActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         if (appConstant.checkLogin() && imgProfile != null) {
-            Glide.with(MainActivity.this).load(sharedPreferences.getString(AppConstant.myPicUrl, "") == null ? "" : sharedPreferences.getString(AppConstant.myPicUrl, "")).placeholder(R.drawable.game_avatar).apply(new RequestOptions().circleCrop()).into(imgProfile);
+            Glide.with(MainActivity.this).load(AppConstant.AppUrl + "images/" + appConstant.getId() + ".png?u=" + AppConstant.imageExt()).placeholder(R.drawable.game_avatar).apply(new RequestOptions().circleCrop()).into(imgProfile);
             playerName = findViewById(R.id.playerName);
             playerName.setText(sharedPreferences.getString(AppConstant.name, "Player"));
             imgProfile.setOnClickListener(new View.OnClickListener() {
@@ -639,37 +639,6 @@ public class MainActivity extends BaseActivity {
         intent.putExtra("userid", appConstant.getId());
         startActivity(intent, options.toBundle());
     }
-
-    private void showTeam() {
-        inflated.findViewById(R.id.newTeam).setVisibility(View.GONE);
-        inflated.findViewById(R.id.bott_button).setVisibility(View.GONE);
-        inflated.findViewById(R.id.create_team).setVisibility(View.VISIBLE);
-        recyclerviewTeam = inflated.findViewById(R.id.recyclerview);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
-        recyclerviewTeam.setLayoutManager(mLayoutManager);
-        teamModel = new ArrayList<>();
-        userAdapter = new MemberListAdapter(this, teamModel, AppConstant.applyMatches);
-        onResume();
-        recyclerviewTeam.setAdapter(userAdapter);
-//        recyclerviewTeam.addOnItemTouchListener(new RecyclerTouchListener(this, recyclerviewTeam, new RecyclerTouchListener.ClickListener() {
-//            @Override
-//            public void onClick(View view, int position) {
-//                wayToProfile();
-//            }
-//
-//            @Override
-//            public void onLongClick(View view, int position) {
-//
-//            }
-//        }));
-        inflated.findViewById(R.id.create_team).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //requestContactPermission();
-            }
-        });
-    }
-
     private void showTournament() {
         List<TournamentModel> tournamentModelList = new ArrayList<>();
         TextView title = inflated.findViewById(R.id.title);

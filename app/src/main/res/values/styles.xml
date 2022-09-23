@@ -19,12 +19,7 @@
     <style name="bottomSheetStyleWrapper" parent="Widget.Design.BottomSheet.Modal">
         <item name="android:background">@android:color/transparent</item>
     </style>
-    <style name="TextShadowStyle">
-        <item name="android:shadowColor">@color/black</item>
-        <item name="android:shadowDx">10</item>
-        <item name="android:shadowDy">10</item>
-        <item name="android:shadowRadius">3</item>
-    </style>
+
     <style name="EditTextHintStyle" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
         <!-- The color of the label when it is collapsed and the text field is active -->
         <item name="hintTextColor">@color/colorPrimary</item>
@@ -32,13 +27,7 @@
         <!-- The color of the label in all other text field states (such as resting and disabled) -->
         <item name="android:textColorHint">@color/colorPrimary</item>
     </style>
-    <style name="CustomShapeAppearance">
-        <item name="neumorph_cornerFamily">rounded</item>
-        <item name="neumorph_cornerSizeTopLeft">64dp</item>
-        <item name="neumorph_cornerSizeTopRight">64dp</item>
-        <item name="neumorph_cornerSizeBottomLeft">64dp</item>
-        <item name="neumorph_cornerSizeBottomRight">64dp</item>
-    </style>
+
     <style name="AppThemes" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimaryDark</item>
@@ -50,11 +39,6 @@
         <item name="colorPrimary">@color/colorPrimaryDark</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-    </style>
-
-    <style name="Animation.Design.TopSheetDialog" parent="Animation.AppCompat.Dialog">
-        <item name="android:windowEnterAnimation">@anim/top_sheet_slide_in</item>
-        <item name="android:windowExitAnimation">@anim/top_sheet_slide_out</item>
     </style>
 
     <style name="Widget.Design.TopSheet.Modal" parent="android:Widget">
@@ -72,35 +56,6 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
     styles.xml
 
-    <style name="MyMaterialTheme" parent="MyMaterialTheme.Base">
-
-    </style>
-    <style name="CustomBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
-        <item name="bottomSheetStyle">@style/AppTheme</item>
-    </style>
-
-    <style name="CustomBottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
-        <item name="android:background">@android:color/transparent</item>
-    </style>
-    <style name="MyMaterialTheme.Base" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="windowNoTitle">false</item>
-        <item name="windowActionBar">false</item>
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-    </style>
-    <style name="Theme.AppCompat.Transparent.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowIsFloating">true</item>
-        <item name="android:backgroundDimEnabled">false</item>
-    </style>
 </resources>

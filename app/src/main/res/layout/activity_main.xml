@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -105,27 +106,30 @@
             android:id="@+id/lin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/color_dialog_gray"
+            android:background="@drawable/gray"
             android:orientation="vertical"
             android:paddingBottom="5dp">
-            <TextView android:id="@+id/complete"
+
+            <TextView
+                android:id="@+id/complete"
                 android:layout_width="match_parent"
-                android:padding="10dp"
-                android:onClick="editProfile"
-                android:ellipsize="marquee"
-                android:focusable="true"
-                android:scrollHorizontally="true"
-                android:focusableInTouchMode="true"
-                android:freezesText="true"
-                android:singleLine="true"
-                android:marqueeRepeatLimit="marquee_forever"
-                android:gravity="center_vertical"
+                android:layout_height="wrap_content"
+                android:background="@color/appColor"
                 android:drawableLeft="@drawable/account_edit_outline"
                 android:drawableRight="@drawable/arrow_right"
-                android:background="@color/appColor"
-                android:textColor="@color/white"
+                android:ellipsize="marquee"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:freezesText="true"
+                android:gravity="center_vertical"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:onClick="editProfile"
+                android:padding="10dp"
+                android:scrollHorizontally="true"
+                android:singleLine="true"
                 android:text=" Complete Your Profile"
-                android:layout_height="wrap_content"/>
+                android:textColor="@color/white"
+                tools:ignore="TouchTargetSizeCheck" />
             <soup.neumorphism.NeumorphCardView
                 style="@style/Widget.Neumorph.Button"
                 android:layout_width="match_parent"
@@ -188,8 +192,7 @@
             layout="@layout/bottom_sheet"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:background="@color/black" />
+            android:layout_weight="1" />
     </LinearLayout>
 
     <com.google.android.material.bottomappbar.BottomAppBar
@@ -198,7 +201,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:background="@color/colorPrimary"
-        app:elevation="5dp"
         app:fabAlignmentMode="center"
         app:fabCradleMargin="5dp"
         app:fabCradleRoundedCornerRadius="5dp"
@@ -222,8 +224,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
-        android:backgroundTint="@color/colorPrimary"
+        android:backgroundTint="@color/appColor"
+        android:tint="@color/white"
+        app:tint="@color/white"
         android:elevation="3dp"
+        app:backgroundTint="@color/appColor"
         android:src="@drawable/folder_play_outline"
         app:layout_anchor="@id/bottomAppBar" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

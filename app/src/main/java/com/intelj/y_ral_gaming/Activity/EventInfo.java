@@ -360,7 +360,7 @@ public class EventInfo extends AppCompatActivity {
         Log.e("userNum", number);
         DatabaseReference mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
         Query query = mFirebaseDatabaseReference.child("users").orderByChild("phoneNumber").equalTo(number);
-        query.addValueEventListener(new ValueEventListener() {
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 returnPhone++;
