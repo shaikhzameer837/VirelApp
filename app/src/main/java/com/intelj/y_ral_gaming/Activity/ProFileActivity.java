@@ -36,6 +36,7 @@ import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
@@ -44,6 +45,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.intelj.y_ral_gaming.Adapter.MyListAdapter;
 import com.intelj.y_ral_gaming.Adapter.TeamDisplayList;
 import com.intelj.y_ral_gaming.AppController;
@@ -67,7 +71,6 @@ import java.util.List;
 import java.util.Map;
 
 public class ProFileActivity extends AppCompatActivity {
-    TextView txt;
     String userid;
     SharedPreferences sharedPreferences;
     ImageView imgProfile;
@@ -86,7 +89,6 @@ public class ProFileActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile_activity);
-        txt = findViewById(R.id.info);
         imgProfile = findViewById(R.id.profPic);
         userName = findViewById(R.id.userName);
         rank_button = findViewById(R.id.rank_button);
@@ -178,6 +180,9 @@ public class ProFileActivity extends AppCompatActivity {
             popular.setVisibility(View.VISIBLE);
             popular.setText("Popularity #" + (AppController.getInstance().popularList.get(userid)));
         }
+
+
+
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference(AppConstant.users).child(userid);
         mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -219,12 +224,16 @@ public class ProFileActivity extends AppCompatActivity {
                                 return;
                             }
                             if (edit_profile.getText().toString().equals("follow")) {
-                                FirebaseDatabase.getInstance().getReference(AppConstant.users).child(userid).child(AppConstant.profile).child(AppConstant.follower).child(appConstant.getId()).setValue((System.currentTimeMillis() / 1000));
-                                FirebaseDatabase.getInstance().getReference(AppConstant.users).child(appConstant.getId()).child(AppConstant.profile).child(AppConstant.following).child(userid).setValue((System.currentTimeMillis() / 1000));
                                 HashMap<String, String> hashMap = new HashMap<>();
                                 hashMap.put(AppConstant.subject, "follow");
                                 hashMap.put(AppConstant.id, appConstant.getId());
                                 hashMap.put(AppConstant.name, appConstant.getName());
+                                FirebaseFirestore.getInstance().collection(AppConstant.realTime)
+                                        .document(userid).collection(AppConstant.noti)
+                                                .document((System.currentTimeMillis() / 1000)+"").set(hashMap);
+                                                  FirebaseDatabase.getInstance().getReference(AppConstant.users).child(userid).child(AppConstant.profile).child(AppConstant.follower).child(appConstant.getId()).setValue((System.currentTimeMillis() / 1000));
+                                FirebaseDatabase.getInstance().getReference(AppConstant.users).child(appConstant.getId()).child(AppConstant.profile).child(AppConstant.following).child(userid).setValue((System.currentTimeMillis() / 1000));
+
                                 FirebaseDatabase.getInstance().getReference(AppConstant.users).child(userid).child(AppConstant.realTime).child(AppConstant.noti).child((System.currentTimeMillis() / 1000) + "").setValue(hashMap);
                                 followers = followers + 1;
                                 follower_count.setText(Html.fromHtml("<b><font size='14' color='#000000'>" + followers + "</font></b> <br/>Follower"));

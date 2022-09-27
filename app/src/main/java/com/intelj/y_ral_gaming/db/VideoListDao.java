@@ -9,15 +9,16 @@ import java.util.List;
 
 @Dao
 public interface VideoListDao {
-    @Query("Select * From videolist ")
+    @Query("Select * From videolist")
     List<VideoList> getAllVideo();
 
     @Insert()
-    void insertUser(VideoList...videos);
+    void insertVideo(VideoList...videos);
 
     @Delete
     void delete(VideoList videoList);
 
-    @Query("Select * From videolist order by cid DESC limit 1")
-    List<VideoList> getLastVideo();
+    @Query("Select count(*) From videolist where videoId = :videoId limit 1")
+    List<Integer> getLastVideo(String videoId);
+
 }

@@ -18,21 +18,16 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.Icon;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
-import android.util.SparseArray;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
-import androidx.core.graphics.drawable.IconCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.android.volley.AuthFailureError;
@@ -46,19 +41,10 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.danikula.videocache.HttpProxyCacheServer;
-import com.google.android.exoplayer2.ExoPlayerFactory;
-import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
-import com.google.android.exoplayer2.extractor.ExtractorsFactory;
-import com.google.android.exoplayer2.source.ExtractorMediaSource;
-import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
-import com.google.android.exoplayer2.trackselection.TrackSelector;
-import com.google.android.exoplayer2.upstream.BandwidthMeter;
-import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
-import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -68,25 +54,22 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.storage.FirebaseStorage;
 import com.intelj.y_ral_gaming.Activity.MainActivity;
 import com.intelj.y_ral_gaming.Activity.NotificationActivity;
-import com.intelj.y_ral_gaming.Activity.ViralWeb;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 import com.intelj.y_ral_gaming.Utils.Utils;
 import com.intelj.y_ral_gaming.db.AppDataBase;
 import com.intelj.y_ral_gaming.db.Chat;
+import com.intelj.y_ral_gaming.db.VideoList;
 import com.intelj.y_ral_gaming.model.TournamentModel;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 
 public class AppController extends Application implements Application.ActivityLifecycleCallbacks {
@@ -108,6 +91,7 @@ public class AppController extends Application implements Application.ActivityLi
     public TournamentModel tournamentModel;
     AppDataBase appDataBase;
     public HashMap<String, Integer> popularList = new HashMap<>();
+    public AppDataBase videoDataBase;
     @Override
     public void onCreate() {
         super.onCreate();
@@ -116,6 +100,7 @@ public class AppController extends Application implements Application.ActivityLi
         getReadyForCheckin();
         getVideo();
     }
+
     private HttpProxyCacheServer proxy;
 
     public static HttpProxyCacheServer getProxy(Context context) {
@@ -128,6 +113,7 @@ public class AppController extends Application implements Application.ActivityLi
                 .cacheDirectory(Utils.getVideoCacheDir(AppController.this))
                 .build();
     }
+
     public void getReadyForCheckin() {
         appConstant = new AppConstant(this);
         if (new AppConstant(this).checkLogin()) {
@@ -153,6 +139,28 @@ public class AppController extends Application implements Application.ActivityLi
                         FirebaseDatabase.getInstance().getReference(AppConstant.users).child(userId).child(AppConstant.token).setValue(token);
                     }
                 });
+
+
+        DocumentReference docRef = FirebaseFirestore.getInstance().collection(AppConstant.realTime)
+                .document(appConstant.getId());
+        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                Map<String, Object> ds = (Map<String, Object>) documentSnapshot.get(AppConstant.noti);
+                for (Object x: ds.values()) {
+                    for (Object value: ((Map<String, Object>)x).values()){
+                        System.out.println("values");
+                        System.out.println(value);
+                    }
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -176,18 +184,18 @@ public class AppController extends Application implements Application.ActivityLi
                             String finalSubtitle = subtitle;
                             Glide.with(getApplicationContext())
                                     .asBitmap()
-                                    .load(AppConstant.AppUrl + "images/"+dataSnapshots.getKey()+".png?u=" +  AppConstant.imageExt())
+                                    .load(AppConstant.AppUrl + "images/" + dataSnapshots.getKey() + ".png?u=" + AppConstant.imageExt())
                                     .into(new CustomTarget<Bitmap>() {
                                         @Override
                                         public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                                            showNotification(intent,finalSubtitle, dataSnapshots.child(AppConstant.name).getValue(String.class), resource, dataSnapshots.child("owner").getValue(String.class));
+                                            showNotification(intent, finalSubtitle, dataSnapshots.child(AppConstant.name).getValue(String.class), resource, dataSnapshots.child("owner").getValue(String.class));
                                         }
 
                                         @Override
                                         public void onLoadCleared(@Nullable Drawable placeholder) {
                                             Bitmap icon = BitmapFactory.decodeResource(getResources(),
                                                     R.drawable.game_avatar);
-                                            showNotification(intent,finalSubtitle, dataSnapshots.child(AppConstant.name).getValue(String.class), icon, dataSnapshots.child("owner").getValue(String.class));
+                                            showNotification(intent, finalSubtitle, dataSnapshots.child(AppConstant.name).getValue(String.class), icon, dataSnapshots.child("owner").getValue(String.class));
                                         }
                                     });
                             myEdit.putBoolean(dataSnapshots.getKey(), true);
@@ -201,22 +209,22 @@ public class AppController extends Application implements Application.ActivityLi
                         Intent intent = new Intent(AppController.this, ChatActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         appDataBase = AppDataBase.getDBInstance(AppController.this, dataSnapshots.child("owner").getValue() + "_chats");
-                        intent.putExtra(AppConstant.phoneNumber,dataSnapshots.child(AppConstant.phoneNumber).getValue(String.class));
-                        intent.putExtra(AppConstant.id,dataSnapshots.child("owner").getValue(String.class));
+                        intent.putExtra(AppConstant.phoneNumber, dataSnapshots.child(AppConstant.phoneNumber).getValue(String.class));
+                        intent.putExtra(AppConstant.id, dataSnapshots.child("owner").getValue(String.class));
                         Glide.with(getApplicationContext())
                                 .asBitmap()
-                                .load(AppConstant.AppUrl + "images/"+ dataSnapshots.child("owner").getValue(String.class) +".png?u=" +  AppConstant.imageExt())
+                                .load(AppConstant.AppUrl + "images/" + dataSnapshots.child("owner").getValue(String.class) + ".png?u=" + AppConstant.imageExt())
                                 .into(new CustomTarget<Bitmap>() {
                                     @Override
                                     public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                                        showNotification(intent,dataSnapshots.child("messages").getValue(String.class), dataSnapshots.child(AppConstant.phoneNumber).getValue(String.class), resource,  dataSnapshots.child("owner").getValue(String.class));
+                                        showNotification(intent, dataSnapshots.child("messages").getValue(String.class), dataSnapshots.child(AppConstant.phoneNumber).getValue(String.class), resource, dataSnapshots.child("owner").getValue(String.class));
                                     }
 
                                     @Override
                                     public void onLoadCleared(@Nullable Drawable placeholder) {
                                         Bitmap icon = BitmapFactory.decodeResource(getResources(),
                                                 R.drawable.game_avatar);
-                                        showNotification(intent,dataSnapshots.child("messages").getValue(String.class), dataSnapshots.child(AppConstant.phoneNumber).getValue(String.class), icon,dataSnapshots.child("owner").getValue(String.class));
+                                        showNotification(intent, dataSnapshots.child("messages").getValue(String.class), dataSnapshots.child(AppConstant.phoneNumber).getValue(String.class), icon, dataSnapshots.child("owner").getValue(String.class));
                                     }
 
                                     @Override
@@ -224,10 +232,10 @@ public class AppController extends Application implements Application.ActivityLi
                                         super.onLoadFailed(errorDrawable);
                                         Bitmap icon = BitmapFactory.decodeResource(getResources(),
                                                 R.drawable.game_avatar);
-                                        showNotification(intent,dataSnapshots.child("messages").getValue(String.class), dataSnapshots.child(AppConstant.phoneNumber).getValue(String.class), icon, dataSnapshots.child("owner").getValue(String.class));
+                                        showNotification(intent, dataSnapshots.child("messages").getValue(String.class), dataSnapshots.child(AppConstant.phoneNumber).getValue(String.class), icon, dataSnapshots.child("owner").getValue(String.class));
                                     }
                                 });
-                       appDataBase.chatDao().insertUser(dataSnapshots.getValue(Chat.class));
+                        appDataBase.chatDao().insertUser(dataSnapshots.getValue(Chat.class));
                     }
                     Intent intent = new Intent("chat");
                     LocalBroadcastManager.getInstance(AppController.this).sendBroadcast(intent);
@@ -242,14 +250,14 @@ public class AppController extends Application implements Application.ActivityLi
         });
     }
 
-    public void showNotification(Intent intent,String msg, String title, Bitmap bitImage, String owner) {
+    public void showNotification(Intent intent, String msg, String title, Bitmap bitImage, String owner) {
 
         PendingIntent pendingIntent;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            pendingIntent =PendingIntent.getActivity(this,
-                    0, intent,PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+            pendingIntent = PendingIntent.getActivity(this,
+                    0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
-        }else {
+        } else {
             pendingIntent = PendingIntent.getActivity(this,
                     0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -321,8 +329,9 @@ public class AppController extends Application implements Application.ActivityLi
     public void onActivityDestroyed(@NonNull Activity activity) {
 
     }
-    public void getVideo(){
-        AppDataBase appDataBase = AppDataBase.getDBInstance(AppController.this,  "video");
+
+    public void getVideo() {
+        videoDataBase = AppDataBase.getDBInstance(AppController.this, AppConstant.AppName);
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = AppConstant.AppUrl + "get_video.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
@@ -335,9 +344,11 @@ public class AppController extends Application implements Application.ActivityLi
                             if (json.getBoolean("success")) {
                                 //appDataBase.videoDao().insertUser();
                                 JSONArray jsonArr = json.getJSONArray("value");
-                                for (int x = 0 ; x < jsonArr.length() ; x++){
+                                for (int x = 0; x < jsonArr.length(); x++) {
                                     JSONObject jsonObj = (JSONObject) jsonArr.get(x);
                                     Log.e("onResponse: ", jsonObj.getString("uid"));
+                                   if (videoDataBase.videosDao().getLastVideo(jsonObj.getString("uid")).size() == 0)
+                                       videoDataBase.videosDao().insertVideo(new VideoList(jsonObj.getString("uid"), jsonObj.getString("owner"), jsonObj.getString("time")));
                                 }
                             }
                         } catch (Exception e) {
