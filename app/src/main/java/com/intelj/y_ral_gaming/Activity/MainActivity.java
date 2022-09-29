@@ -13,6 +13,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -94,6 +95,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -635,6 +637,9 @@ public class MainActivity extends BaseActivity {
         showGameSelection();
     }
     public void showGameSelection(){
+        SharedPreferences sharedPreferences = getSharedPreferences("",0);
+        Set<String> set = sharedPreferences.getStringSet("key", null);
+        SharedPreferences.Editor shared = sharedPreferences.edit();
         ArrayList<String> gameList = new ArrayList<>();
         gameList.add("https://media.discordapp.net/attachments/1024724326957715567/1024724437498609664/54f31449f5f91cf0cc223cc635cd5952jpg_1655955051259_1655955067513.jpeg");
         gameList.add("https://media.discordapp.net/attachments/1024724326957715567/1024728236741099620/BGMI-Ban1659073440553.jpg");
@@ -645,18 +650,28 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 view.findViewById(R.id.rel1).setBackgroundResource(R.drawable.curved_red);
+                ((TextView)view.findViewById(R.id.text1)).setTextColor(Color.parseColor("#ffffff"));
             }
         });
        view.findViewById(R.id.rel2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 view.findViewById(R.id.rel2).setBackgroundResource(R.drawable.curved_red);
+                ((TextView)view.findViewById(R.id.text2)).setTextColor(Color.parseColor("#ffffff"));
             }
         });
        view.findViewById(R.id.rel3).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 view.findViewById(R.id.rel3).setBackgroundResource(R.drawable.curved_red);
+                ((TextView)view.findViewById(R.id.text3)).setTextColor(Color.parseColor("#ffffff"));
+            }
+        });
+        view.findViewById(R.id.rel4).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                view.findViewById(R.id.rel4).setBackgroundResource(R.drawable.curved_red);
+                ((TextView) view.findViewById(R.id.text4)).setTextColor(Color.parseColor("#ffffff"));
             }
         });
         final BottomSheetDialog dialogBottom = new RoundedBottomSheetDialog(MainActivity.this);

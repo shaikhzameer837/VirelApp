@@ -51,25 +51,25 @@
             android:padding="10dp"
             app:cardBackgroundColor="@drawable/grad">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal">
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:gravity="center"-->
+<!--                android:orientation="horizontal">-->
 
-                <TextView android:id="@+id/user_name"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:shadowColor = "#000"
-                    android:shadowDx = "-2"
-                    android:shadowDy = "-2"
-                    android:ellipsize="end"
-                    android:shadowRadius = "1"
-                    android:textColor="@color/colorPrimary"
-                    android:textStyle="bold" />
+<!--                <TextView android:id="@+id/user_name"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:shadowColor = "#000"-->
+<!--                    android:shadowDx = "-2"-->
+<!--                    android:shadowDy = "-2"-->
+<!--                    android:ellipsize="end"-->
+<!--                    android:shadowRadius = "1"-->
+<!--                    android:textColor="@color/colorPrimary"-->
+<!--                    android:textStyle="bold" />-->
 
-            </LinearLayout>
+<!--            </LinearLayout>-->
 
             <LinearLayout
                 android:id="@+id/moneyList"
@@ -186,6 +186,39 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
         android:layout_marginTop="8dp"
+        android:text="Hey Player What should we call you"
+        android:textColor="@color/black" />
+    <soup.neumorphism.NeumorphCardView
+        style="@style/Widget.Neumorph.Button"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        app:neumorph_shapeType="pressed"
+        app:neumorph_strokeColor="@color/darkgrey"
+        app:neumorph_strokeWidth="1dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/userName"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#00000000"
+            android:digits="abcdefghijklmnopqrstuvwxyz_.1234567890"
+            android:enabled="false"
+            android:paddingRight="10dp"
+            android:hint=" user name"
+            android:drawablePadding="5dip"
+            android:drawableLeft="@drawable/card_account_details_outline"
+            android:paddingLeft="15dp"
+            android:inputType="text|textEmailAddress"
+            android:singleLine="true"
+            android:textColor="@color/black"
+            android:textSize="14sp" />
+    </soup.neumorphism.NeumorphCardView>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="8dp"
         android:text="Payment receiving option"
         android:textColor="@color/black" />
 
@@ -245,6 +278,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp" />
+
     <View
         android:layout_width="match_parent"
         android:layout_weight="1"
