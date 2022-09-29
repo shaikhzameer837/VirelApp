@@ -35,6 +35,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialog;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -366,7 +367,7 @@ public class ProFileActivity extends AppCompatActivity {
     public void showTeamList() {
         //  startActivity(new Intent(ProFileActivity.this,CreateTeam.class));
         View inflated = getLayoutInflater().inflate(R.layout.team_list, null);
-        final BottomSheetDialog dialogBottom = new BottomSheetDialog(ProFileActivity.this);
+        final BottomSheetDialog dialogBottom = new RoundedBottomSheetDialog(ProFileActivity.this);
         RecyclerView recyclerView = inflated.findViewById(R.id.rv_teamlist);
         ShimmerFrameLayout shimmerFrameLayout = inflated.findViewById(R.id.shimmer_layout);
         shimmerFrameLayout.startShimmer();

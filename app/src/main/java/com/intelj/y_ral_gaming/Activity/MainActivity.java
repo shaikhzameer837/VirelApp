@@ -1,5 +1,7 @@
 package com.intelj.y_ral_gaming.Activity;
 
+import static androidx.fragment.app.DialogFragment.STYLE_NORMAL;
+
 import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -57,6 +59,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialog;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -372,7 +375,7 @@ public class MainActivity extends BaseActivity {
 
     public void showRankChat() {
         View view = getLayoutInflater().inflate(R.layout.rank_row, null);
-        final BottomSheetDialog dialogBottom = new BottomSheetDialog(MainActivity.this);
+        final BottomSheetDialog dialogBottom = new RoundedBottomSheetDialog(MainActivity.this);
         dialogBottom.setContentView(view);
         dialogBottom.show();
     }
@@ -441,7 +444,7 @@ public class MainActivity extends BaseActivity {
     private void showCoins() {
         startActivity(new Intent(MainActivity.this, PaymentWithdraw.class));
 //        View paymentBottomSheet = getLayoutInflater().inflate(R.layout.delete_demo, null);
-//        final BottomSheetDialog dialogBottom = new BottomSheetDialog(MainActivity.this,R.style. BottomSheetDialog);
+//        final BottomSheetDialog dialogBottom = new RoundedBottomSheetDialog(MainActivity.this,R.style. BottomSheetDialog);
 //
 //
 //      //  tabs.setupWithViewPager(viewPager);
@@ -628,8 +631,41 @@ public class MainActivity extends BaseActivity {
                 ncount.setText(AppController.getInstance().notification.getChildrenCount() + "");
                 ncount.setVisibility(View.VISIBLE);
             }
-
         }
+        showGameSelection();
+    }
+    public void showGameSelection(){
+        ArrayList<String> gameList = new ArrayList<>();
+        gameList.add("https://media.discordapp.net/attachments/1024724326957715567/1024724437498609664/54f31449f5f91cf0cc223cc635cd5952jpg_1655955051259_1655955067513.jpeg");
+        gameList.add("https://media.discordapp.net/attachments/1024724326957715567/1024728236741099620/BGMI-Ban1659073440553.jpg");
+        gameList.add("https://media.discordapp.net/attachments/1024724326957715567/1024729236805791744/Valorant_2022_E5A2_PlayVALORANT_ContentStackThumbnail_1200x625_MB01.png");
+        gameList.add("https://media.discordapp.net/attachments/1024724326957715567/1024875824031219732/COD-LAUNCH-TOUT.jpg");
+        View view = getLayoutInflater().inflate(R.layout.select_game, null);
+        view.findViewById(R.id.rel1).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                view.findViewById(R.id.rel1).setBackgroundResource(R.drawable.curved_red);
+            }
+        });
+       view.findViewById(R.id.rel2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                view.findViewById(R.id.rel2).setBackgroundResource(R.drawable.curved_red);
+            }
+        });
+       view.findViewById(R.id.rel3).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                view.findViewById(R.id.rel3).setBackgroundResource(R.drawable.curved_red);
+            }
+        });
+        final BottomSheetDialog dialogBottom = new RoundedBottomSheetDialog(MainActivity.this);
+        Glide.with(this).load(gameList.get(0)).placeholder(R.drawable.game_avatar).into((ImageView) view.findViewById(R.id.img1));
+        Glide.with(this).load(gameList.get(1)).placeholder(R.drawable.game_avatar).into((ImageView) view.findViewById(R.id.img2));
+        Glide.with(this).load(gameList.get(2)).placeholder(R.drawable.game_avatar).into((ImageView) view.findViewById(R.id.img3));
+        Glide.with(this).load(gameList.get(3)).placeholder(R.drawable.game_avatar).into((ImageView) view.findViewById(R.id.img4));
+        dialogBottom.setContentView(view);
+        dialogBottom.show();
     }
 
     private void wayToProfile() {
@@ -1104,7 +1140,7 @@ public class MainActivity extends BaseActivity {
 
     public void LoginSheet() {
         View view = getLayoutInflater().inflate(R.layout.login_sheet, null);
-        final BottomSheetDialog dialogBottom = new BottomSheetDialog(MainActivity.this, R.style.BottomSheetDialog);
+        final BottomSheetDialog dialogBottom = new RoundedBottomSheetDialog(MainActivity.this);
         dialogBottom.setContentView(view);
         dialogBottom.show();
         TextView btn_ok = view.findViewById(R.id.loginBtn);

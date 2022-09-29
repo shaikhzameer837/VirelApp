@@ -32,6 +32,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialog;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
@@ -342,7 +343,7 @@ public class ViralWeb extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         View view = getLayoutInflater().inflate(R.layout.comments, null);
-                        BottomSheetDialog dialog = new BottomSheetDialog(ViralWeb.this);
+                        BottomSheetDialog dialog = new RoundedBottomSheetDialog(ViralWeb.this);
                         comments = view.findViewById(R.id.comments);
                         recyclerView = view.findViewById(R.id.rv);
                         commentsAdapter = new CommentsAdapter(ViralWeb.this, commentsArrayList);

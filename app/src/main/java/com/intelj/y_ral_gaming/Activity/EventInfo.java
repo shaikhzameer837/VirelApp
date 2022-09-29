@@ -51,6 +51,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.tabs.TabLayout;
@@ -160,7 +161,7 @@ public class EventInfo extends AppCompatActivity {
     private void addTeamList() {
         editTextList.clear();
         contactModel = new ArrayList<>();
-        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(EventInfo.this);
+        BottomSheetDialog bottomSheetDialog = new RoundedBottomSheetDialog(EventInfo.this);
         bottomSheetDialog.setContentView(R.layout.add_team_info);
         lin = bottomSheetDialog.findViewById(R.id.lin);
         bottomSheetDialog.findViewById(R.id.refresh).setOnClickListener(new View.OnClickListener() {

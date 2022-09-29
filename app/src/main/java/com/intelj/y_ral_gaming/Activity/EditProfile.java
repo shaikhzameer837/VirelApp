@@ -118,6 +118,7 @@ public class EditProfile extends AppCompatActivity {
         });
 
         tv_title.setKeyListener(null);
+        mDatabase = FirebaseDatabase.getInstance().getReference(appConstant.users);
         findViewById(R.id.done).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -410,22 +411,30 @@ public class EditProfile extends AppCompatActivity {
         editor.putString(AppConstant.title, tv_title.getText().toString());
             picturePath = null;
         editor.apply();
-        HashMap<String,Object> basicDetail = new HashMap<>();
-        HashMap<String,Object> data = new HashMap<>();
-        data.put(AppConstant.name,playerName.getText().toString());
-        data.put(AppConstant.bio,bio.getText().toString());
-        data.put(AppConstant.userName,TI_userName.getText().toString());
-        data.put(AppConstant.title,tv_title.getText().toString());
-        basicDetail.put("basicDetails",data);
-        FirebaseFirestore.getInstance().collection("users").document(appConstant.getId()).set(basicDetail, SetOptions.merge());
-        HashMap<String,Object> profileDetail = new HashMap<>();
-        HashMap<String,Object> profileData = new HashMap<>();
-        profileData.put(AppConstant.followerCount, FieldValue.increment(1));
-        profileData.put(AppConstant.followingCount,FieldValue.increment(1));
-        profileDetail.put("profileDetail",profileData);
-        DocumentReference users = FirebaseFirestore.getInstance().collection("users").document(appConstant.getId());
-        users.set(basicDetail, SetOptions.merge());
-        users.set(profileDetail, SetOptions.merge());
+        mDatabase.child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.bio).
+                setValue(bio.getText().toString());
+        mDatabase.child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.title).
+                setValue(tv_title.getText().toString());
+        mDatabase.child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.name).
+                setValue(playerName.getText().toString());
+        mDatabase.child(AppController.getInstance().userId).child(AppConstant.userName).
+                setValue(TI_userName.getText().toString());
+//        HashMap<String,Object> basicDetail = new HashMap<>();
+//        HashMap<String,Object> data = new HashMap<>();
+//        data.put(AppConstant.name,playerName.getText().toString());
+//        data.put(AppConstant.bio,bio.getText().toString());
+//        data.put(AppConstant.userName,TI_userName.getText().toString());
+//        data.put(AppConstant.title,tv_title.getText().toString());
+//        basicDetail.put("basicDetails",data);
+//        FirebaseFirestore.getInstance().collection("users").document(appConstant.getId()).set(basicDetail, SetOptions.merge());
+//        HashMap<String,Object> profileDetail = new HashMap<>();
+//        HashMap<String,Object> profileData = new HashMap<>();
+//        profileData.put(AppConstant.followerCount, FieldValue.increment(1));
+//        profileData.put(AppConstant.followingCount,FieldValue.increment(1));
+//        profileDetail.put("profileDetail",profileData);
+//        DocumentReference users = FirebaseFirestore.getInstance().collection("users").document(appConstant.getId());
+//        users.set(basicDetail, SetOptions.merge());
+//        users.set(profileDetail, SetOptions.merge());
         for (int i = 0; i < gameList.getChildCount(); i++) {
             TextView textView = (TextView) gameList.getChildAt(i);
             SharedPreferences.Editor editors = getSharedPreferences(AppConstant.AppName, MODE_PRIVATE).edit();

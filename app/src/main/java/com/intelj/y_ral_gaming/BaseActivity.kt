@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.intelj.y_ral_gaming.Activity.MainActivity
 import com.yalantis.contextmenu.lib.ContextMenuDialogFragment
@@ -76,7 +77,7 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     fun showSupport() {
-        val bottomSheetDialog = BottomSheetDialog(this)
+        val bottomSheetDialog = RoundedBottomSheetDialog(this)
         bottomSheetDialog.setContentView(R.layout.support)
         bottomSheetDialog.findViewById<View>(R.id.discord)!!.setOnClickListener {
             val browserIntent =

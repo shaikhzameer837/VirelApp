@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.intelj.y_ral_gaming.Activity.ContactListAdapter;
 import com.intelj.y_ral_gaming.ContactListModel;
@@ -65,7 +66,7 @@ public class EventTeamAdapter extends RecyclerView.Adapter<EventTeamAdapter.MyVi
             holder.imgs.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(mContext);
+                    BottomSheetDialog bottomSheetDialog = new RoundedBottomSheetDialog(mContext);
                     bottomSheetDialog.setContentView(R.layout.contacts);
                     TextView title = bottomSheetDialog.findViewById(R.id.refresh);
                     title.setText(eventTeamModel.getImg_name());

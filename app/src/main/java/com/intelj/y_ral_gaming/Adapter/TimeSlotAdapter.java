@@ -36,6 +36,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.intelj.y_ral_gaming.Activity.GameInfo;
 import com.intelj.y_ral_gaming.AppController;
@@ -160,11 +161,11 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
             LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);
             return;
         }
-        showBottomSheetDialog(position);
+        showRoundedBottomSheetDialog(position);
     }
 
-    private void showBottomSheetDialog(int position) {
-        bottomSheetDialog = new BottomSheetDialog(mContext);
+    private void showRoundedBottomSheetDialog(int position) {
+        bottomSheetDialog = new RoundedBottomSheetDialog(mContext);
         bottomSheetDialog.setContentView(R.layout.register_match);
         TextView textView = bottomSheetDialog.findViewById(R.id.integer_number);
         TextView infos = bottomSheetDialog.findViewById(R.id.infos);
@@ -368,7 +369,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
 //    }
 
 //    private void showTeamList(String strDate) {
-//        bottomSheetDialog = new BottomSheetDialog(mContext);
+//        bottomSheetDialog = new RoundedBottomSheetDialog(mContext);
 //        bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog);
 //        bottomSheetDialog.findViewById(R.id.newTeam).setVisibility(View.GONE);
 //        bottomSheetDialog.findViewById(R.id.bott_button).setVisibility(View.GONE);
@@ -417,7 +418,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
 //    }
 
     private void viewpagerbottomsheet() {
-        bottomSheetDialog = new BottomSheetDialog(mContext);
+        bottomSheetDialog = new RoundedBottomSheetDialog(mContext);
         bottomSheetDialog.setContentView(R.layout.main_bottom_sheet_dialoglayout);
         ViewPager viewPager = bottomSheetDialog.findViewById(R.id.vpPager);
         Button next_button = bottomSheetDialog.findViewById(R.id.nextpage);
@@ -556,7 +557,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
     private void showBottomSheet(final int position) {
         final SharedPreferences shd = mContext.getSharedPreferences(AppConstant.saveYTid, 0);
         View myView = LayoutInflater.from(mContext).inflate(R.layout.my_view, null);
-        final BottomSheetDialog dialog = new BottomSheetDialog(mContext);
+        final BottomSheetDialog dialog = new RoundedBottomSheetDialog(mContext);
         final EditText gameId = myView.findViewById(R.id.gameId);
         TextView textId = myView.findViewById(R.id.textId);
         textId.setText("Enter your " + title + " id");

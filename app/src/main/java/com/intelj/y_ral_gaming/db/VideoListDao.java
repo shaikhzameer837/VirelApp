@@ -9,7 +9,7 @@ import java.util.List;
 
 @Dao
 public interface VideoListDao {
-    @Query("Select * From videolist")
+    @Query("Select * From videolist ORDER BY RANDOM() LIMIT 200")
     List<VideoList> getAllVideo();
 
     @Insert()
