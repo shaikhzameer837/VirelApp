@@ -1,0 +1,51 @@
+-- Merging decision tree log ---
+manifest
+ADDED from D:\Android Projects\ChiliPhotoPicker-master\ChiliPhotoPicker-master\photopicker\src\main\AndroidManifest.xml:1:1-13:12
+INJECTED from D:\Android Projects\ChiliPhotoPicker-master\ChiliPhotoPicker-master\photopicker\src\main\AndroidManifest.xml:1:1-13:12
+INJECTED from D:\Android Projects\ChiliPhotoPicker-master\ChiliPhotoPicker-master\photopicker\src\main\AndroidManifest.xml:1:1-13:12
+INJECTED from D:\Android Projects\ChiliPhotoPicker-master\ChiliPhotoPicker-master\photopicker\src\main\AndroidManifest.xml:1:1-13:12
+INJECTED from D:\Android Projects\ChiliPhotoPicker-master\ChiliPhotoPicker-master\photopicker\src\main\AndroidManifest.xml:1:1-13:12
+INJECTED from D:\Android Projects\ChiliPhotoPicker-master\ChiliPhotoPicker-master\photopicker\src\main\AndroidManifest.xml:1:1-13:12
+INJECTED from D:\Android Projects\ChiliPhotoPicker-master\ChiliPhotoPicker-master\photopicker\src\main\AndroidManifest.xml:1:1-13:12
+	package
+		ADDED from D:\Android Projects\ChiliPhotoPicker-master\ChiliPhotoPicker-master\photopicker\src\main\AndroidManifest.xml:2:5-33
+		INJECTED from D:\Android Projects\ChiliPhotoPicker-master\ChiliPhotoPicker-master\photopicker\src\main\AndroidManifest.xml
+		INJECTED from D:\Android Projects\ChiliPhotoPicker-master\ChiliPhotoPicker-master\photopicker\src\main\AndroidManifest.xml
+	android:versionName
+		INJECTED from D:\Android Projects\ChiliPhotoPicker-master\ChiliPhotoPicker-master\photopicker\src\main\AndroidManifest.xml
+		ADDED from D:\Android Projects\ChiliPhotoPicker-master\ChiliPhotoPicker-master\photopicker\src\main\AndroidManifest.xml:1:1-13:12
+		INJECTED from D:\Android Projects\ChiliPhotoPicker-master\ChiliPhotoPicker-master\photopicker\src\main\AndroidManifest.xml
+	android:versionCode
+		INJECTED from D:\Android Projects\ChiliPhotoPicker-master\ChiliPhotoPicker-master\photopicker\src\main\AndroidManifest.xml
+		ADDED from D:\Android Projects\ChiliPhotoPicker-master\ChiliPhotoPicker-master\photopicker\src\main\AndroidManifest.xml:1:1-13:12
+		INJECTED from D:\Android Projects\ChiliPhotoPicker-master\ChiliPhotoPicker-master\photopicker\src\main\AndroidManifest.xml
+	xmlns:android
+		ADDED from D:\Android Projects\ChiliPhotoPicker-master\ChiliPhotoPicker-master\photopicker\src\main\AndroidManifest.xml:1:11-69
+uses-permission#android.permission.CAMERA
+ADDED from D:\Android Projects\ChiliPhotoPicker-master\ChiliPhotoPicker-master\photopicker\src\main\AndroidManifest.xml:4:5-65
+	android:name
+		ADDED from D:\Android Projects\ChiliPhotoPicker-master\ChiliPhotoPicker-master\photopicker\src\main\AndroidManifest.xml:4:22-62
+application
+ADDED from D:\Android Projects\ChiliPhotoPicker-master\ChiliPhotoPicker-master\photopicker\src\main\AndroidManifest.xml:6:5-12:19
+activity#lv.chi.photopicker.utils.CameraActivity
+ADDED from D:\Android Projects\ChiliPhotoPicker-master\ChiliPhotoPicker-master\photopicker\src\main\AndroidManifest.xml:8:9-11:65
+	android:screenOrientation
+		ADDED from D:\Android Projects\ChiliPhotoPicker-master\ChiliPhotoPicker-master\photopicker\src\main\AndroidManifest.xml:10:13-49
+	android:theme
+		ADDED from D:\Android Projects\ChiliPhotoPicker-master\ChiliPhotoPicker-master\photopicker\src\main\AndroidManifest.xml:11:13-63
+	android:name
+		ADDED from D:\Android Projects\ChiliPhotoPicker-master\ChiliPhotoPicker-master\photopicker\src\main\AndroidManifest.xml:9:13-49
+uses-sdk
+INJECTED from D:\Android Projects\ChiliPhotoPicker-master\ChiliPhotoPicker-master\photopicker\src\main\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from D:\Android Projects\ChiliPhotoPicker-master\ChiliPhotoPicker-master\photopicker\src\main\AndroidManifest.xml
+INJECTED from D:\Android Projects\ChiliPhotoPicker-master\ChiliPhotoPicker-master\photopicker\src\main\AndroidManifest.xml
+INJECTED from D:\Android Projects\ChiliPhotoPicker-master\ChiliPhotoPicker-master\photopicker\src\main\AndroidManifest.xml
+INJECTED from D:\Android Projects\ChiliPhotoPicker-master\ChiliPhotoPicker-master\photopicker\src\main\AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from D:\Android Projects\ChiliPhotoPicker-master\ChiliPhotoPicker-master\photopicker\src\main\AndroidManifest.xml
+		ADDED from D:\Android Projects\ChiliPhotoPicker-master\ChiliPhotoPicker-master\photopicker\src\main\AndroidManifest.xml
+		INJECTED from D:\Android Projects\ChiliPhotoPicker-master\ChiliPhotoPicker-master\photopicker\src\main\AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from D:\Android Projects\ChiliPhotoPicker-master\ChiliPhotoPicker-master\photopicker\src\main\AndroidManifest.xml
+		ADDED from D:\Android Projects\ChiliPhotoPicker-master\ChiliPhotoPicker-master\photopicker\src\main\AndroidManifest.xml
+		INJECTED from D:\Android Projects\ChiliPhotoPicker-master\ChiliPhotoPicker-master\photopicker\src\main\AndroidManifest.xml

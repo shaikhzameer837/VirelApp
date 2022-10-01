@@ -45,6 +45,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -92,11 +93,13 @@ public class AppController extends Application implements Application.ActivityLi
     AppDataBase appDataBase;
     public HashMap<String, Integer> popularList = new HashMap<>();
     public AppDataBase videoDataBase;
+    private FirebaseAnalytics mFirebaseAnalytics;
     @Override
     public void onCreate() {
         super.onCreate();
         instance = this;
         FirebaseDatabase.getInstance().setPersistenceEnabled(false);
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         getReadyForCheckin();
         getVideo();
     }
