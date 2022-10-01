@@ -34,6 +34,7 @@ public class AppConstant {
     public static String AppName = "Y-Ral Gaming",
             login = "login",
             profile = "profile",
+            gameList = "gameList",
             phoneNumber = "phoneNumber",
             followerCount = "followerCount",
             followingCount = "followingCount",

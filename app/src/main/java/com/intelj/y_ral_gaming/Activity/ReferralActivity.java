@@ -54,7 +54,7 @@ public class ReferralActivity extends AppCompatActivity {
         ViewPager viewPager = findViewById(R.id.viewpager);
         contentList.put("referral.json", "Refer a friend");
         contentList.put("login.json", "Register & play Game");
-        contentList.put("cash.json", "You earn 50rs after game played");
+        contentList.put("cash.json", "You earn 10rs after game played");
         refer = findViewById(R.id.refer);
         referal = findViewById(R.id.referal);
         refer.setText(" YRAL" + new AppConstant(this).getId());

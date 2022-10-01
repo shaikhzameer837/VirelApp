@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.intelj.y_ral_gaming.Activity.ProFileActivity;
 import com.intelj.y_ral_gaming.R;
 import com.intelj.y_ral_gaming.SigninActivity;
@@ -84,6 +85,9 @@ public class SuggestionViewAdapter extends RecyclerView.Adapter<SuggestionViewAd
                     hashMap.put(AppConstant.subject, "follow");
                     hashMap.put(AppConstant.id, appConstant.getId());
                     hashMap.put(AppConstant.name, appConstant.getName());
+                    FirebaseFirestore.getInstance().collection(AppConstant.realTime)
+                            .document(suggesstionModel.getUserId()).collection(AppConstant.noti)
+                            .document((System.currentTimeMillis() / 1000)+"").set(hashMap);
                     FirebaseDatabase.getInstance().getReference(AppConstant.users).child(suggesstionModel.getUserId()).child(AppConstant.realTime).child(AppConstant.noti).child((System.currentTimeMillis() / 1000) + "").setValue(hashMap);
                     holder.follow.setText("unfollow");
                     holder.follow.setTextColor(Color.parseColor("#333333"));

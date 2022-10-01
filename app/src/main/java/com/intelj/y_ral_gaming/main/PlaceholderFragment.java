@@ -37,6 +37,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.firebase.database.FirebaseDatabase;
 import com.intelj.y_ral_gaming.AppController;
 import com.intelj.y_ral_gaming.R;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
@@ -105,6 +106,9 @@ public class PlaceholderFragment extends Fragment implements View.OnClickListene
 //            }
 //        }, null));
         user_name.setText(sharedPreferences.getString(AppConstant.name, "Player"));
+        user_name.setVisibility(sharedPreferences.getString(AppConstant.name, "").equals("") ? View.VISIBLE : View.GONE);
+        binding.nameEdit.setVisibility(sharedPreferences.getString(AppConstant.name, "").equals("") ? View.VISIBLE : View.GONE);
+        binding.textname.setVisibility(sharedPreferences.getString(AppConstant.name, "").equals("") ? View.VISIBLE : View.GONE);
         EditText upi = binding.upi;
         upi.addTextChangedListener(new TextWatcher() {
 
@@ -152,9 +156,13 @@ public class PlaceholderFragment extends Fragment implements View.OnClickListene
         binding.btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if (wAmount.equals("")) {
                     Toast.makeText(getActivity(), "Please Select amount to withdraw", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                if (user_name.getText().toString().equals("")) {
+                    user_name.setError("Enter Your Name");
+                    user_name.requestFocus();
                     return;
                 }
                 if (Integer.parseInt(wAmount) <= AppController.getInstance().amount) {
@@ -167,6 +175,13 @@ public class PlaceholderFragment extends Fragment implements View.OnClickListene
                         SharedPreferences prefs = getActivity().getSharedPreferences(AppConstant.AppName, MODE_PRIVATE);
                         long currentTime = (System.currentTimeMillis() / 1000);
                         long lastRequest = prefs.getLong(AppConstant.payment, currentTime);//"No name defined" is the default value.
+                        if(sharedPreferences.getString(AppConstant.name, "").equals("")){
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString(AppConstant.name, user_name.getText().toString());
+                            editor.apply();
+                            FirebaseDatabase.getInstance().getReference(appConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.name).
+                                    setValue(user_name.getText().toString());
+                        }
                         if (currentTime >= lastRequest) {
                             requestMoney(upi.getText().toString());
                         } else {

@@ -150,8 +150,7 @@ public class MainActivity extends BaseActivity {
         getWindow().setEnterTransition(fade);
 
         getWindow().setExitTransition(fade);
-        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
-                new IntentFilter("custom-event-name"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("custom-event-name"));
         if (savedInstanceState == null) {
             invalidateOptionsMenu();
         }
@@ -163,8 +162,7 @@ public class MainActivity extends BaseActivity {
             public void onClick(View v) {
                 if (new AppConstant(MainActivity.this).checkLogin())
                     startActivity(new Intent(MainActivity.this, NotificationActivity.class));
-                else
-                    LoginSheet();
+                else LoginSheet();
             }
         });
         findViewById(R.id.fab).setOnClickListener(new View.OnClickListener() {
@@ -195,10 +193,8 @@ public class MainActivity extends BaseActivity {
         coins.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (new AppConstant(MainActivity.this).checkLogin())
-                    showCoins();
-                else
-                    LoginSheet();
+                if (new AppConstant(MainActivity.this).checkLogin()) showCoins();
+                else LoginSheet();
             }
         });
 
@@ -208,98 +204,95 @@ public class MainActivity extends BaseActivity {
         inflated = stub.inflate();
         setFirstView();
         oldId = bottomNavigation.getSelectedItemId();
-        BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
-                new BottomNavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-                        if (item.getItemId() == oldId)
-                            return true;
+                if (item.getItemId() == oldId) return true;
 
-                        oldId = item.getItemId();
-                        switch (item.getItemId()) {
-                            case R.id.game_slot:
-                                inflateView(R.layout.game_slot);
-                                setFirstView();
-                                return true;
+                oldId = item.getItemId();
+                switch (item.getItemId()) {
+                    case R.id.game_slot:
+                        inflateView(R.layout.game_slot);
+                        setFirstView();
+                        return true;
 
-                            case R.id.tournament:
-                                inflateView(R.layout.tournament);
-                                showTournament();
-                                return true;
-                            case R.id.challenge:
-                                inflateView(R.layout.challenge);
-                                showChallenge(inflated);
-                                return true;
-                            case R.id.chat:
-                                inflateView(R.layout.contacts);
-                                inflated.findViewById(R.id.fMessage).setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
+                    case R.id.tournament:
+                        inflateView(R.layout.tournament);
+                        showTournament();
+                        return true;
+                    case R.id.challenge:
+                        inflateView(R.layout.challenge);
+                        showChallenge(inflated);
+                        return true;
+                    case R.id.chat:
+                        inflateView(R.layout.contacts);
+                        inflated.findViewById(R.id.fMessage).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
 
-                                        startActivity(new Intent(MainActivity.this, new AppConstant(MainActivity.this).checkLogin() ? ChatList.class : SigninActivity.class));
-                                    }
-                                });
-                                ImageView newChat = inflated.findViewById(R.id.newChat);
-                                newChat.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        startActivity(new Intent(MainActivity.this, new AppConstant(MainActivity.this).checkLogin() ? ChatList.class : SigninActivity.class));
-                                    }
-                                });
+                                startActivity(new Intent(MainActivity.this, new AppConstant(MainActivity.this).checkLogin() ? ChatList.class : SigninActivity.class));
+                            }
+                        });
+                        ImageView newChat = inflated.findViewById(R.id.newChat);
+                        newChat.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                startActivity(new Intent(MainActivity.this, new AppConstant(MainActivity.this).checkLogin() ? ChatList.class : SigninActivity.class));
+                            }
+                        });
 
-                                SharedPreferences shd = getSharedPreferences(AppConstant.recent, MODE_PRIVATE);
-                                Set<String> set = shd.getStringSet(AppConstant.contact, null);
-                                ArrayList<ContactListModel> contactModel = new ArrayList<>();
-                                try {
-                                    if (set != null) {
-                                        for (String s : set) {
-                                            SharedPreferences userInfo = getSharedPreferences(s, Context.MODE_PRIVATE);
-                                            AppDataBase appDataBase = AppDataBase.getDBInstance(MainActivity.this, s + "_chats");
-                                            Log.e("messages", s);
-                                            contactModel.add(0, new ContactListModel(s, userInfo.getString(AppConstant.myPicUrl, ""), appConstant.getContactName(userInfo.getString(AppConstant.phoneNumber, "")), userInfo.getString(AppConstant.id, ""), appDataBase.chatDao().getlastMess().size() > 0 ? appDataBase.chatDao().getlastMess().get(0).messages : ""));
-                                        }
-                                        Collections.sort(contactModel, new Comparator<ContactListModel>() {
-                                            @Override
-                                            public int compare(final ContactListModel object1, final ContactListModel object2) {
-                                                Log.e("Collections", object1.getName() + " " + object2.getName());
-                                                return object1.getName().compareTo(object2.getName());
-                                            }
-                                        });
-                                        inflated.findViewById(R.id.lin).setVisibility(View.GONE);
-                                    }
-                                } catch (Exception e) {
-                                    SharedPreferences.Editor setEditor = shd.edit();
-                                    setEditor.putStringSet(AppConstant.contact, null);
-                                    setEditor.apply();
+                        SharedPreferences shd = getSharedPreferences(AppConstant.recent, MODE_PRIVATE);
+                        Set<String> set = shd.getStringSet(AppConstant.contact, null);
+                        ArrayList<ContactListModel> contactModel = new ArrayList<>();
+                        try {
+                            if (set != null) {
+                                for (String s : set) {
+                                    SharedPreferences userInfo = getSharedPreferences(s, Context.MODE_PRIVATE);
+                                    AppDataBase appDataBase = AppDataBase.getDBInstance(MainActivity.this, s + "_chats");
+                                    Log.e("messages", s);
+                                    contactModel.add(0, new ContactListModel(s, userInfo.getString(AppConstant.myPicUrl, ""), appConstant.getContactName(userInfo.getString(AppConstant.phoneNumber, "")), userInfo.getString(AppConstant.id, ""), appDataBase.chatDao().getlastMess().size() > 0 ? appDataBase.chatDao().getlastMess().get(0).messages : ""));
                                 }
-                                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(MainActivity.this);
-                                RecyclerView rv_contact = inflated.findViewById(R.id.rv_contact);
-                                rv_contact.setLayoutManager(mLayoutManager);
-                                ContactListAdapter contactListAdapter = new ContactListAdapter(MainActivity.this, contactModel);
-                                rv_contact.setAdapter(contactListAdapter);
-                                rv_contact.addOnItemTouchListener(new RecyclerTouchListener(MainActivity.this, rv_contact, new RecyclerTouchListener.ClickListener() {
+                                Collections.sort(contactModel, new Comparator<ContactListModel>() {
                                     @Override
-                                    public void onClick(View view, int position) {
-                                        if (!appConstant.checkLogin()) {
-                                            startActivity(new Intent(MainActivity.this, SigninActivity.class));
-                                            return;
-                                        }
-                                        Intent intent = new Intent(MainActivity.this, ChatActivity.class);
-                                        String transitionName = "fade";
-                                        View transitionView = view.findViewById(R.id.profile);
-                                        ViewCompat.setTransitionName(transitionView, transitionName);
-                                        ActivityOptionsCompat options = ActivityOptionsCompat.
-                                                makeSceneTransitionAnimation(MainActivity.this, transitionView, transitionName);
-                                        intent.putExtra(AppConstant.id, contactModel.get(position).getUserid());
-                                        startActivity(intent, options.toBundle());
+                                    public int compare(final ContactListModel object1, final ContactListModel object2) {
+                                        Log.e("Collections", object1.getName() + " " + object2.getName());
+                                        return object1.getName().compareTo(object2.getName());
                                     }
+                                });
+                                inflated.findViewById(R.id.lin).setVisibility(View.GONE);
+                            }
+                        } catch (Exception e) {
+                            SharedPreferences.Editor setEditor = shd.edit();
+                            setEditor.putStringSet(AppConstant.contact, null);
+                            setEditor.apply();
+                        }
+                        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(MainActivity.this);
+                        RecyclerView rv_contact = inflated.findViewById(R.id.rv_contact);
+                        rv_contact.setLayoutManager(mLayoutManager);
+                        ContactListAdapter contactListAdapter = new ContactListAdapter(MainActivity.this, contactModel);
+                        rv_contact.setAdapter(contactListAdapter);
+                        rv_contact.addOnItemTouchListener(new RecyclerTouchListener(MainActivity.this, rv_contact, new RecyclerTouchListener.ClickListener() {
+                            @Override
+                            public void onClick(View view, int position) {
+                                if (!appConstant.checkLogin()) {
+                                    startActivity(new Intent(MainActivity.this, SigninActivity.class));
+                                    return;
+                                }
+                                Intent intent = new Intent(MainActivity.this, ChatActivity.class);
+                                String transitionName = "fade";
+                                View transitionView = view.findViewById(R.id.profile);
+                                ViewCompat.setTransitionName(transitionView, transitionName);
+                                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this, transitionView, transitionName);
+                                intent.putExtra(AppConstant.id, contactModel.get(position).getUserid());
+                                startActivity(intent, options.toBundle());
+                            }
 
-                                    @Override
-                                    public void onLongClick(View view, int position) {
+                            @Override
+                            public void onLongClick(View view, int position) {
 
-                                    }
-                                }));
+                            }
+                        }));
 
 
 //                                shd = getSharedPreferences(AppConstant.id, MODE_PRIVATE);
@@ -362,11 +355,11 @@ public class MainActivity extends BaseActivity {
 //
 //                                    }
 //                                }));
-                                return true;
-                        }
-                        return false;
-                    }
-                };
+                        return true;
+                }
+                return false;
+            }
+        };
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
 
     }
@@ -386,41 +379,40 @@ public class MainActivity extends BaseActivity {
         AppController.getInstance().popularList.clear();
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = AppConstant.AppUrl + "popular.php";
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.e("onClicks3", response);
-                        shimmerFrameLayout.hideShimmer();
-                        shimmerFrameLayout.setVisibility(View.GONE);
-                        try {
-                            JSONObject json = new JSONObject(response);
-                            JSONArray ja_data = json.getJSONArray("info");
-                            for (int i = 0; i < ja_data.length(); i++) {
-                                JSONObject jObj = ja_data.getJSONObject(i);
-                                appConstant.saveUserInfo("", jObj.getString("userid"), AppConstant.AppUrl + "images/" + jObj.getString("userid") + ".png?u=" + AppConstant.imageExt(), jObj.getString("name"), "", null, jObj.getString("userid"));
-                                popularModels.add(new PopularModel(jObj.getString("url"), jObj.getString("name"), jObj.getString("amount"), jObj.getString("userid")));
-                            }
-                            Collections.sort(popularModels, new Comparator<PopularModel>() {
-                                @Override
-                                public int compare(PopularModel o1, PopularModel o2) {
-                                    return Integer.compare(Integer.parseInt(o2.getTotal_coins()), Integer.parseInt(o1.getTotal_coins()));
-                                }
-                            });
-                            for (PopularModel popularModel : popularModels) {
-                                AppController.getInstance().popularList.put(popularModel.getUser_id(), AppController.getInstance().popularList.size() + 1);
-                            }
-                            popularAdapter = new PopularAdapter(MainActivity.this, popularModels);
-                            GridLayoutManager mLayoutManager = new GridLayoutManager(MainActivity.this, 1, GridLayoutManager.HORIZONTAL, false);
-                            rv_popular.setLayoutManager(mLayoutManager);
-                            rv_popular.setAdapter(popularAdapter);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.e("onClicks3", response);
+                shimmerFrameLayout.hideShimmer();
+                shimmerFrameLayout.setVisibility(View.GONE);
+                try {
+                    JSONObject json = new JSONObject(response);
+                    JSONArray ja_data = json.getJSONArray("info");
+                    for (int i = 0; i < ja_data.length(); i++) {
+                        JSONObject jObj = ja_data.getJSONObject(i);
+                        appConstant.saveUserInfo("", jObj.getString("userid"), AppConstant.AppUrl + "images/" + jObj.getString("userid") + ".png?u=" + AppConstant.imageExt(), jObj.getString("name"), "", null, jObj.getString("userid"));
+                        popularModels.add(new PopularModel(jObj.getString("url"), jObj.getString("name"), jObj.getString("amount"), jObj.getString("userid")));
                     }
-                }, new Response.ErrorListener() {
+                    Collections.sort(popularModels, new Comparator<PopularModel>() {
+                        @Override
+                        public int compare(PopularModel o1, PopularModel o2) {
+                            return Integer.compare(Integer.parseInt(o2.getTotal_coins()), Integer.parseInt(o1.getTotal_coins()));
+                        }
+                    });
+                    for (PopularModel popularModel : popularModels) {
+                        AppController.getInstance().popularList.put(popularModel.getUser_id(), AppController.getInstance().popularList.size() + 1);
+                    }
+                    popularAdapter = new PopularAdapter(MainActivity.this, popularModels);
+                    GridLayoutManager mLayoutManager = new GridLayoutManager(MainActivity.this, 1, GridLayoutManager.HORIZONTAL, false);
+                    rv_popular.setLayoutManager(mLayoutManager);
+                    rv_popular.setAdapter(popularAdapter);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 //  progressDialog.cancel();
@@ -633,45 +625,100 @@ public class MainActivity extends BaseActivity {
                 ncount.setText(AppController.getInstance().notification.getChildrenCount() + "");
                 ncount.setVisibility(View.VISIBLE);
             }
+            if (sharedPreferences.getString(AppConstant.gameList, "").equals(""))
+                showGameSelection();
         }
-        showGameSelection();
     }
-    public void showGameSelection(){
-        SharedPreferences sharedPreferences = getSharedPreferences("",0);
-        Set<String> set = sharedPreferences.getStringSet("key", null);
-        SharedPreferences.Editor shared = sharedPreferences.edit();
+
+    String gameListStr = "";
+
+    public void showGameSelection() {
         ArrayList<String> gameList = new ArrayList<>();
         gameList.add("https://media.discordapp.net/attachments/1024724326957715567/1024724437498609664/54f31449f5f91cf0cc223cc635cd5952jpg_1655955051259_1655955067513.jpeg");
         gameList.add("https://media.discordapp.net/attachments/1024724326957715567/1024728236741099620/BGMI-Ban1659073440553.jpg");
         gameList.add("https://media.discordapp.net/attachments/1024724326957715567/1024729236805791744/Valorant_2022_E5A2_PlayVALORANT_ContentStackThumbnail_1200x625_MB01.png");
         gameList.add("https://media.discordapp.net/attachments/1024724326957715567/1024875824031219732/COD-LAUNCH-TOUT.jpg");
         View view = getLayoutInflater().inflate(R.layout.select_game, null);
+        if (gameListStr.contains("Free Fire,")) {
+            view.findViewById(R.id.rel1).setBackgroundResource(R.drawable.curved_red);
+            ((TextView) view.findViewById(R.id.text1)).setTextColor(Color.parseColor("#ffffff"));
+        } else if (gameListStr.contains("BGMI,")) {
+            view.findViewById(R.id.rel2).setBackgroundResource(R.drawable.curved_red);
+            ((TextView) view.findViewById(R.id.text3)).setTextColor(Color.parseColor("#ffffff"));
+        }
+        if (gameListStr.contains("Valorant,")) {
+            view.findViewById(R.id.rel3).setBackgroundResource(R.drawable.curved_red);
+            ((TextView) view.findViewById(R.id.text3)).setTextColor(Color.parseColor("#ffffff"));
+        }
+        if (gameListStr.contains("COD Mobile,")) {
+            view.findViewById(R.id.rel4).setBackgroundResource(R.drawable.curved_red);
+            ((TextView) view.findViewById(R.id.text4)).setTextColor(Color.parseColor("#ffffff"));
+        }
         view.findViewById(R.id.rel1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                view.findViewById(R.id.rel1).setBackgroundResource(R.drawable.curved_red);
-                ((TextView)view.findViewById(R.id.text1)).setTextColor(Color.parseColor("#ffffff"));
+                Log.e("gameListStr", gameListStr);
+                if (gameListStr.contains("Free Fire,")) {
+                    gameListStr = gameListStr.replace("Free Fire,", "");
+                    view.findViewById(R.id.rel1).setBackgroundResource(R.drawable.border_white_curved);
+                    ((TextView) view.findViewById(R.id.text1)).setTextColor(Color.parseColor("#000000"));
+                } else {
+                    gameListStr = gameListStr + "Free Fire,";
+                    view.findViewById(R.id.rel1).setBackgroundResource(R.drawable.curved_red);
+                    ((TextView) view.findViewById(R.id.text1)).setTextColor(Color.parseColor("#ffffff"));
+                }
             }
         });
-       view.findViewById(R.id.rel2).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.rel2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                view.findViewById(R.id.rel2).setBackgroundResource(R.drawable.curved_red);
-                ((TextView)view.findViewById(R.id.text2)).setTextColor(Color.parseColor("#ffffff"));
+                if (gameListStr.contains("BGMI,")) {
+                    gameListStr = gameListStr.replace("BGMI,", "");
+                    view.findViewById(R.id.rel2).setBackgroundResource(R.drawable.border_white_curved);
+                    ((TextView) view.findViewById(R.id.text2)).setTextColor(Color.parseColor("#000000"));
+                } else {
+                    gameListStr = gameListStr + "BGMI,";
+                    view.findViewById(R.id.rel2).setBackgroundResource(R.drawable.curved_red);
+                    ((TextView) view.findViewById(R.id.text2)).setTextColor(Color.parseColor("#ffffff"));
+                }
             }
         });
-       view.findViewById(R.id.rel3).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.rel3).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                view.findViewById(R.id.rel3).setBackgroundResource(R.drawable.curved_red);
-                ((TextView)view.findViewById(R.id.text3)).setTextColor(Color.parseColor("#ffffff"));
+                if (gameListStr.contains("Valorant,")) {
+                    gameListStr = gameListStr.replace("Valorant,", "");
+                    view.findViewById(R.id.rel3).setBackgroundResource(R.drawable.border_white_curved);
+                    ((TextView) view.findViewById(R.id.text3)).setTextColor(Color.parseColor("#000000"));
+                } else {
+                    gameListStr = gameListStr + "Valorant,";
+                    view.findViewById(R.id.rel3).setBackgroundResource(R.drawable.curved_red);
+                    ((TextView) view.findViewById(R.id.text3)).setTextColor(Color.parseColor("#ffffff"));
+                }
             }
         });
         view.findViewById(R.id.rel4).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                view.findViewById(R.id.rel4).setBackgroundResource(R.drawable.curved_red);
-                ((TextView) view.findViewById(R.id.text4)).setTextColor(Color.parseColor("#ffffff"));
+                if (gameListStr.contains("COD Mobile,")) {
+                    gameListStr = gameListStr.replace("COD Mobile,", "");
+                    view.findViewById(R.id.rel4).setBackgroundResource(R.drawable.border_white_curved);
+                    ((TextView) view.findViewById(R.id.text4)).setTextColor(Color.parseColor("#000000"));
+                } else {
+                    gameListStr = gameListStr + "COD Mobile,";
+                    view.findViewById(R.id.rel4).setBackgroundResource(R.drawable.curved_red);
+                    ((TextView) view.findViewById(R.id.text4)).setTextColor(Color.parseColor("#ffffff"));
+                }
+            }
+        });
+        view.findViewById(R.id.done).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (gameListStr.equals("")) {
+                    Toast.makeText(MainActivity.this, "Please select atleast one Games", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                saveGameList();
             }
         });
         final BottomSheetDialog dialogBottom = new RoundedBottomSheetDialog(MainActivity.this);
@@ -683,13 +730,53 @@ public class MainActivity extends BaseActivity {
         dialogBottom.show();
     }
 
+    private void saveGameList() {
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = AppConstant.AppUrl + "save_game.php";
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.e("tokenResponse", response);
+                try {
+
+                } catch (Exception e) {
+                    Log.e("error Rec", e.getMessage());
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+/*                shimmer_container.hideShimmer();
+                shimmer_container.setVisibility(View.GONE);*/
+                error.printStackTrace();
+                FirebaseCrashlytics.getInstance().recordException(error);
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                HashMap<String, String> hashMap = new HashMap<>();
+                hashMap.put("game", gameListStr);
+                hashMap.put("userid", new AppConstant(MainActivity.this).getId());
+                return new HashMap<>();
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Content-Type", "application/x-www-form-urlencoded");
+                return params;
+            }
+        };
+        queue.add(stringRequest);
+    }
+
     private void wayToProfile() {
         Intent intent = new Intent(MainActivity.this, ProFileActivity.class);
-        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                MainActivity.this, imgProfile, ViewCompat.getTransitionName(imgProfile));
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this, imgProfile, ViewCompat.getTransitionName(imgProfile));
         intent.putExtra("userid", appConstant.getId());
         startActivity(intent, options.toBundle());
     }
+
     private void showTournament() {
         List<TournamentModel> tournamentModelList = new ArrayList<>();
         TextView title = inflated.findViewById(R.id.title);
@@ -699,41 +786,28 @@ public class MainActivity extends BaseActivity {
         shimmerFrameLayout.startShimmer();
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = AppConstant.AppUrl + "get_tournament.php";
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.e("tokenResponse", response);
-                        shimmerFrameLayout.hideShimmer();
-                        shimmerFrameLayout.setVisibility(View.GONE);
-                        try {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.e("tokenResponse", response);
+                shimmerFrameLayout.hideShimmer();
+                shimmerFrameLayout.setVisibility(View.GONE);
+                try {
 
-                            JSONArray array = new JSONArray(response);
+                    JSONArray array = new JSONArray(response);
 
-                            for (int i = 0; i < array.length(); i++) {
-                                JSONObject obj = array.getJSONObject(i);
-                                Log.e("team_count", obj.getInt("team_count") + "");
-                                tournamentModelList.add(
-                                        new TournamentModel(obj.getString("name"),
-                                                obj.getString("game_name"),
-                                                obj.getString("image_url"),
-                                                obj.getString("date"),
-                                                obj.getString("status"),
-                                                obj.getString("discord_url"),
-                                                obj.getString("prize_pool"),
-                                                obj.getString("info"),
-                                                obj.getString("id"),
-                                                obj.getInt("max"),
-                                                obj.getInt("team_count")
-                                        ));
-                            }
-                            TournamentAdapter pAdapter = new TournamentAdapter(MainActivity.this, tournamentModelList, true);
-                            recyclerView.setAdapter(pAdapter);
-                        } catch (Exception e) {
-                            Log.e("error Rec", e.getMessage());
-                        }
+                    for (int i = 0; i < array.length(); i++) {
+                        JSONObject obj = array.getJSONObject(i);
+                        Log.e("team_count", obj.getInt("team_count") + "");
+                        tournamentModelList.add(new TournamentModel(obj.getString("name"), obj.getString("game_name"), obj.getString("image_url"), obj.getString("date"), obj.getString("status"), obj.getString("discord_url"), obj.getString("prize_pool"), obj.getString("info"), obj.getString("id"), obj.getInt("max"), obj.getInt("team_count")));
                     }
-                }, new Response.ErrorListener() {
+                    TournamentAdapter pAdapter = new TournamentAdapter(MainActivity.this, tournamentModelList, true);
+                    recyclerView.setAdapter(pAdapter);
+                } catch (Exception e) {
+                    Log.e("error Rec", e.getMessage());
+                }
+            }
+        }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
 /*                shimmer_container.hideShimmer();
@@ -765,8 +839,7 @@ public class MainActivity extends BaseActivity {
                 String transitionName = "fade";
                 View transitionView = view.findViewById(R.id.images);
                 ViewCompat.setTransitionName(transitionView, transitionName);
-                ActivityOptionsCompat options = ActivityOptionsCompat.
-                        makeSceneTransitionAnimation(MainActivity.this, transitionView, transitionName);
+                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this, transitionView, transitionName);
                 //intent.putExtra("userid", moviesList.get(position).getUser_id());
                 AppController.getInstance().tournamentModel = tournamentModelList.get(position);
                 startActivity(intent, options.toBundle());
@@ -788,20 +861,16 @@ public class MainActivity extends BaseActivity {
 
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case 100:
-                if (dialog != null)
-                    dialog.cancel();
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                if (dialog != null) dialog.cancel();
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
                     startActivity(new Intent(MainActivity.this, SigninActivity.class));
                 break;
             case 1:
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                     Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     startActivityForResult(i, PROFILE_IMAGE);
@@ -818,12 +887,10 @@ public class MainActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == PROFILE_IMAGE && resultCode == RESULT_OK
-                && null != data) {
+        if (requestCode == PROFILE_IMAGE && resultCode == RESULT_OK && null != data) {
             Uri selectedImg = data.getData();
             String[] filePathColumn = {MediaStore.Images.Media.DATA};
-            Cursor cursor = getContentResolver().query(selectedImg,
-                    filePathColumn, null, null, null);
+            Cursor cursor = getContentResolver().query(selectedImg, filePathColumn, null, null, null);
 
             if (cursor == null || cursor.getCount() < 1) {
                 return; // no cursor or no record. DO YOUR ERROR HANDLING
@@ -855,8 +922,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private Bitmap getBitmapFromUri(Uri uri) throws IOException {
-        ParcelFileDescriptor parcelFileDescriptor =
-                getContentResolver().openFileDescriptor(uri, "r");
+        ParcelFileDescriptor parcelFileDescriptor = getContentResolver().openFileDescriptor(uri, "r");
         FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
         Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
         parcelFileDescriptor.close();
@@ -885,8 +951,7 @@ public class MainActivity extends BaseActivity {
 
         gameViewpager.setAdapter(adapter);
         Intent intent = new Intent("custom-event-name");
-        if (titleList.size() > 1)
-            intent.putExtra(AppConstant.title, titleList.get(0));
+        if (titleList.size() > 1) intent.putExtra(AppConstant.title, titleList.get(0));
         LocalBroadcastManager.getInstance(MainActivity.this).sendBroadcast(intent);
 
         gameViewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -908,8 +973,7 @@ public class MainActivity extends BaseActivity {
         if (sharedPreferences.getString(AppConstant.name, "").equals("")) {
             if (appConstant.checkLogin())
                 startActivity(new Intent(MainActivity.this, EditProfile.class));
-            else
-                LoginSheet();
+            else LoginSheet();
         } else {
             startActivity(new Intent(MainActivity.this, ReferralActivity.class));
         }
@@ -1012,7 +1076,7 @@ public class MainActivity extends BaseActivity {
                     Log.e("onReceive: ", AppConstant.getRank(AppController.getInstance().rank));
                 }
                 if (appConstant.checkLogin() && !sharedPreferences.getString(AppConstant.name, "").equals("")) {
-                    ((TextView) findViewById(R.id.complete)).setText(" Refer a Friend & earn "+AppController.getInstance().referral+" rs per invite");
+                    ((TextView) findViewById(R.id.complete)).setText(" Refer a Friend & earn " + AppController.getInstance().referral + " rs per invite");
                     Drawable img = getResources().getDrawable(R.drawable.refer_friend);
                     Drawable img1 = getResources().getDrawable(R.drawable.arrow_right);
                     ((TextView) findViewById(R.id.complete)).setCompoundDrawablesWithIntrinsicBounds(img, null, img1, null);
@@ -1132,9 +1196,7 @@ public class MainActivity extends BaseActivity {
     public static String withSuffix(long count) {
         if (count < 1000) return "" + count;
         int exp = (int) (Math.log(count) / Math.log(1000));
-        return String.format("%.1f %c",
-                count / Math.pow(1000, exp),
-                "kMGTPE".charAt(exp - 1));
+        return String.format("%.1f %c", count / Math.pow(1000, exp), "kMGTPE".charAt(exp - 1));
     }
 
     @Override
@@ -1162,11 +1224,8 @@ public class MainActivity extends BaseActivity {
         btn_ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (ContextCompat.checkSelfPermission(MainActivity.this,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE) && dialog == null) {
+                if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) && dialog == null) {
                         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
 
                         alertDialogBuilder.setTitle("Permission needed");
@@ -1176,8 +1235,7 @@ public class MainActivity extends BaseActivity {
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 Intent intent = new Intent();
                                 intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                                Uri uri = Uri.fromParts("package", MainActivity.this.getPackageName(),
-                                        null);
+                                Uri uri = Uri.fromParts("package", MainActivity.this.getPackageName(), null);
                                 intent.setData(uri);
                                 MainActivity.this.startActivity(intent);
                             }
@@ -1192,12 +1250,9 @@ public class MainActivity extends BaseActivity {
                         dialog.show();
                     } else {
                         // No explanation needed; request the permission
-                        ActivityCompat.requestPermissions(MainActivity.this,
-                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                                100);
+                        ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 100);
                     }
-                } else
-                    startActivity(new Intent(MainActivity.this, SigninActivity.class));
+                } else startActivity(new Intent(MainActivity.this, SigninActivity.class));
             }
         });
 

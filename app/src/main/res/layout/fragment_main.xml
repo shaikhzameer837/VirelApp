@@ -181,7 +181,7 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
     </soup.neumorphism.NeumorphCardView>
-    <TextView
+    <TextView android:id="@+id/textname"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
@@ -192,6 +192,7 @@
         style="@style/Widget.Neumorph.Button"
         android:layout_width="match_parent"
         android:layout_height="65dp"
+        android:id="@+id/nameEdit"
         app:neumorph_shapeType="pressed"
         app:neumorph_strokeColor="@color/darkgrey"
         app:neumorph_strokeWidth="1dp">
@@ -202,9 +203,8 @@
             android:layout_height="match_parent"
             android:background="#00000000"
             android:digits="abcdefghijklmnopqrstuvwxyz_.1234567890"
-            android:enabled="false"
             android:paddingRight="10dp"
-            android:hint=" user name"
+            android:hint=" Your Full Name"
             android:drawablePadding="5dip"
             android:drawableLeft="@drawable/card_account_details_outline"
             android:paddingLeft="15dp"
