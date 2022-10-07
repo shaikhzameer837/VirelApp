@@ -347,7 +347,7 @@ public class SigninActivity extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-
+                        Log.e( "onResponse: ", response);
                         try {
                             JSONObject obj = new JSONObject(response);
                             if (obj.getBoolean("success")) {
@@ -355,9 +355,11 @@ public class SigninActivity extends AppCompatActivity {
                                 String userName = obj.getString("userName");
                                 String name = obj.getString("name");
                                 String uniqueId = obj.getString("id");
+                                String games = obj.getString("games");
                                 boolean isNew = obj.getBoolean("isNew");
                                 SharedPreferences sharedPreferences = getSharedPreferences(uniqueId, 0);
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putString(AppConstant.gameList, games);
                                 editor.putString(AppConstant.name, name);
                                 editor.apply();
                                 HashMap<String, Object> login = new HashMap<>();

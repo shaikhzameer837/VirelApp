@@ -149,6 +149,9 @@ public class AppController extends Application implements Application.ActivityLi
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if(!documentSnapshot.exists()){
+                    return;
+                }
                 Map<String, Object> ds = (Map<String, Object>) documentSnapshot.get(AppConstant.noti);
                 for (Object x: ds.values()) {
                     for (Object value: ((Map<String, Object>)x).values()){

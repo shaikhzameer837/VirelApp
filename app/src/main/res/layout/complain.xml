@@ -10,7 +10,7 @@
         android:layout_gravity="center_horizontal"
         android:gravity="center_horizontal"
         android:padding="14dp"
-        android:text="Register for a game"
+        android:text="Register a complain"
         android:textColor="@color/white"
         android:textSize="17sp"
         android:textStyle="bold" />
@@ -18,9 +18,9 @@
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/pBar3"
         android:layout_width="wrap_content"
-        android:layout_height="140dp"
+        android:layout_height="200dp"
         app:lottie_autoPlay="true"
-        app:lottie_fileName="register.json"
+        app:lottie_fileName="suggest.json"
         app:lottie_loop="true" />
 
     <LinearLayout
@@ -32,7 +32,7 @@
         <soup.neumorphism.NeumorphCardView
             style="@style/Widget.Neumorph.Button"
             android:layout_width="match_parent"
-            android:layout_height="65dp"
+            android:layout_height="165dp"
             android:layout_marginTop="10dp"
             app:neumorph_shapeType="pressed"
             app:neumorph_strokeColor="@color/darkgrey"
@@ -55,9 +55,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@null"
-                    android:hint=" Enter your Ingame Name"
-                    android:maxLength="20"
-                    android:singleLine="true"
+                    android:hint=" Enter your Complain in Details"
+                    android:maxLength="150"
                     android:textColorHint="@color/textcolor"
                     android:textSize="14sp" />
             </LinearLayout>
@@ -70,69 +69,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="7dp"
-            android:text="* ONLY SOLO ENTRY ALLOWED\n*
-SQUAD, DUO OR TRIO ENTRY NOT ALLOWED\n*
-ONCE YOU ENTERED YOUR IN GAME NAME YOU CANNOT CHANGE IT\n*
-PC PLAYER NOT ALLOWED\n*
-DON'T ABUSE ON LIVE CHAT AND CUSTOM CHAT\n*
-NOTE: Y-RAL CAN GIVE YOU BAN WITHOUT ANY REASON\n
-*YOU HAVE TO FOLLOW ALL THE RULES DISPLAYED ON Y-RAL YOUTUBE LIVE\n\n*
-BY CLICKING NEXT YOU AGREE THE ABOVE TERMS AND CONDTION"
+            android:text="We will try our best to solve your problem within 24hrs"
             android:textSize="12sp" />
 
-        <RelativeLayout
-            android:id="@+id/rel_increment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:orientation="horizontal"
-            android:visibility="gone">
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/decrease"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toLeftOf="@+id/integer_number"
-                android:background="#ffffff"
-                android:backgroundTint="@color/colorPrimary"
-                android:gravity="right|center"
-                android:text="-"
-                android:textColor="#000000"
-                android:textSize="24sp" />
-
-            <TextView
-                android:id="@+id/integer_number"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:text="1"
-                android:textColor="#000000"
-                android:textSize="24sp"
-                android:textStyle="bold" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/increase"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/integer_number"
-                android:background="#ffffff"
-                android:backgroundTint="@color/colorPrimary"
-                android:gravity="left|center"
-                android:onClick="increaseInteger"
-                android:text="+"
-                android:textColor="#000000"
-                android:textSize="24sp" />
-        </RelativeLayout>
-
-        <TextView
-            android:id="@+id/infos"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="10dp"
-            android:textStyle="bold" />
 
         <soup.neumorphism.NeumorphCardView
             android:id="@+id/btn_next"
@@ -155,7 +94,7 @@ BY CLICKING NEXT YOU AGREE THE ABOVE TERMS AND CONDTION"
                 android:gravity="center"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
-                android:text=" Join Free Giveaway "
+                android:text=" Post Complain "
                 android:textColor="@color/white"
                 android:textStyle="bold" />
         </soup.neumorphism.NeumorphCardView>

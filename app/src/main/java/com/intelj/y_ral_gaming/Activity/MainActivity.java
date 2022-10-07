@@ -1,8 +1,7 @@
 package com.intelj.y_ral_gaming.Activity;
 
-import static androidx.fragment.app.DialogFragment.STYLE_NORMAL;
-
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -60,13 +59,11 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialog;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
-import com.intelj.y_ral_gaming.Adapter.MemberListAdapter;
 import com.intelj.y_ral_gaming.Adapter.PopularAdapter;
 import com.intelj.y_ral_gaming.AppController;
 import com.intelj.y_ral_gaming.BaseActivity;
@@ -76,6 +73,7 @@ import com.intelj.y_ral_gaming.Fragment.BottomSheetDilogFragment;
 import com.intelj.y_ral_gaming.Fragment.OneFragment;
 import com.intelj.y_ral_gaming.PopularModel;
 import com.intelj.y_ral_gaming.R;
+import com.intelj.y_ral_gaming.RoundedBottomSheetDialog;
 import com.intelj.y_ral_gaming.SigninActivity;
 import com.intelj.y_ral_gaming.TournamentAdapter;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
@@ -83,7 +81,6 @@ import com.intelj.y_ral_gaming.Utils.RecyclerTouchListener;
 import com.intelj.y_ral_gaming.db.AppDataBase;
 import com.intelj.y_ral_gaming.main.PaymentWithdraw;
 import com.intelj.y_ral_gaming.model.TournamentModel;
-import com.intelj.y_ral_gaming.model.UserListModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -95,7 +92,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -121,9 +117,6 @@ public class MainActivity extends BaseActivity {
     PopularAdapter popularAdapter;
     private ShimmerFrameLayout shimmerFrameLayout;
     SharedPreferences sharedPreferences;
-    ArrayList<UserListModel> teamModel;
-    MemberListAdapter userAdapter;
-    RecyclerView recyclerviewTeam;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -631,8 +624,9 @@ public class MainActivity extends BaseActivity {
     }
 
     String gameListStr = "";
-
+    BottomSheetDialog gameSheet;
     public void showGameSelection() {
+        gameListStr = sharedPreferences.getString(AppConstant.gameList, "");
         ArrayList<String> gameList = new ArrayList<>();
         gameList.add("https://media.discordapp.net/attachments/1024724326957715567/1024724437498609664/54f31449f5f91cf0cc223cc635cd5952jpg_1655955051259_1655955067513.jpeg");
         gameList.add("https://media.discordapp.net/attachments/1024724326957715567/1024728236741099620/BGMI-Ban1659073440553.jpg");
@@ -721,31 +715,41 @@ public class MainActivity extends BaseActivity {
                 saveGameList();
             }
         });
-        final BottomSheetDialog dialogBottom = new RoundedBottomSheetDialog(MainActivity.this);
+        gameSheet = new RoundedBottomSheetDialog(MainActivity.this);
         Glide.with(this).load(gameList.get(0)).placeholder(R.drawable.game_avatar).into((ImageView) view.findViewById(R.id.img1));
         Glide.with(this).load(gameList.get(1)).placeholder(R.drawable.game_avatar).into((ImageView) view.findViewById(R.id.img2));
         Glide.with(this).load(gameList.get(2)).placeholder(R.drawable.game_avatar).into((ImageView) view.findViewById(R.id.img3));
         Glide.with(this).load(gameList.get(3)).placeholder(R.drawable.game_avatar).into((ImageView) view.findViewById(R.id.img4));
-        dialogBottom.setContentView(view);
-        dialogBottom.show();
+        gameSheet.setContentView(view);
+        gameSheet.show();
     }
 
     private void saveGameList() {
+        ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Updating...");
+        progressDialog.show();
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = AppConstant.AppUrl + "save_game.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                progressDialog.cancel();
+                gameSheet.cancel();
                 Log.e("tokenResponse", response);
-                try {
-
-                } catch (Exception e) {
-                    Log.e("error Rec", e.getMessage());
+                if (response.equals("1")) {
+                    SharedPreferences.Editor shd = sharedPreferences.edit();
+                    shd.putString(AppConstant.gameList, gameListStr);
+                    shd.apply();
+                    Toast.makeText(MainActivity.this,"Games Updated",Toast.LENGTH_LONG).show();
+                }else{
+                    Toast.makeText(MainActivity.this,"Something Went Wrong",Toast.LENGTH_LONG).show();
                 }
+
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                progressDialog.cancel();
 /*                shimmer_container.hideShimmer();
                 shimmer_container.setVisibility(View.GONE);*/
                 error.printStackTrace();
@@ -756,8 +760,8 @@ public class MainActivity extends BaseActivity {
             protected Map<String, String> getParams() {
                 HashMap<String, String> hashMap = new HashMap<>();
                 hashMap.put("game", gameListStr);
-                hashMap.put("userid", new AppConstant(MainActivity.this).getId());
-                return new HashMap<>();
+                hashMap.put("userid", new AppConstant(MainActivity.this).getId() + "");
+                return hashMap;
             }
 
             @Override

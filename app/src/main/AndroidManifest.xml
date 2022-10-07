@@ -108,6 +108,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppThemes2" />
         <activity android:name="com.intelj.y_ral_gaming.Activity.CreateTeam" />
+        <activity android:name="com.intelj.y_ral_gaming.Activity.WhatsNew" />
 
         <service
             android:name=".FirebaseFCMServices"
