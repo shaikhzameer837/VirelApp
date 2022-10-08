@@ -355,10 +355,12 @@ public class SigninActivity extends AppCompatActivity {
                                 String userName = obj.getString("userName");
                                 String name = obj.getString("name");
                                 String uniqueId = obj.getString("id");
+                                String gameList = obj.getString("gameList");
                                 boolean isNew = obj.getBoolean("isNew");
                                 SharedPreferences sharedPreferences = getSharedPreferences(uniqueId, 0);
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
                                 editor.putString(AppConstant.name, name);
+                                editor.putString(AppConstant.gameList, gameList);
                                 editor.apply();
                                 HashMap<String, Object> login = new HashMap<>();
                                 HashMap<String, Object> realTime = new HashMap<>();

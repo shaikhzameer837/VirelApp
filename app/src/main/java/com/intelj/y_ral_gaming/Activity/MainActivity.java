@@ -121,10 +121,8 @@ public class MainActivity extends BaseActivity {
     PopularAdapter popularAdapter;
     private ShimmerFrameLayout shimmerFrameLayout;
     SharedPreferences sharedPreferences;
-    ArrayList<UserListModel> teamModel;
-    MemberListAdapter userAdapter;
-    RecyclerView recyclerviewTeam;
-
+    String gameListStr = "";
+    BottomSheetDialog dialogGameSheet;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -625,14 +623,14 @@ public class MainActivity extends BaseActivity {
                 ncount.setText(AppController.getInstance().notification.getChildrenCount() + "");
                 ncount.setVisibility(View.VISIBLE);
             }
-            if (sharedPreferences.getString(AppConstant.gameList, "").equals(""))
+            //if (sharedPreferences.getString(AppConstant.gameList, "").equals(""))
                 showGameSelection();
         }
     }
 
-    String gameListStr = "";
 
     public void showGameSelection() {
+        gameListStr = sharedPreferences.getString(AppConstant.gameList, "");
         ArrayList<String> gameList = new ArrayList<>();
         gameList.add("https://media.discordapp.net/attachments/1024724326957715567/1024724437498609664/54f31449f5f91cf0cc223cc635cd5952jpg_1655955051259_1655955067513.jpeg");
         gameList.add("https://media.discordapp.net/attachments/1024724326957715567/1024728236741099620/BGMI-Ban1659073440553.jpg");
@@ -721,13 +719,13 @@ public class MainActivity extends BaseActivity {
                 saveGameList();
             }
         });
-        final BottomSheetDialog dialogBottom = new RoundedBottomSheetDialog(MainActivity.this);
+        dialogGameSheet = new RoundedBottomSheetDialog(MainActivity.this);
         Glide.with(this).load(gameList.get(0)).placeholder(R.drawable.game_avatar).into((ImageView) view.findViewById(R.id.img1));
         Glide.with(this).load(gameList.get(1)).placeholder(R.drawable.game_avatar).into((ImageView) view.findViewById(R.id.img2));
         Glide.with(this).load(gameList.get(2)).placeholder(R.drawable.game_avatar).into((ImageView) view.findViewById(R.id.img3));
         Glide.with(this).load(gameList.get(3)).placeholder(R.drawable.game_avatar).into((ImageView) view.findViewById(R.id.img4));
-        dialogBottom.setContentView(view);
-        dialogBottom.show();
+        dialogGameSheet.setContentView(view);
+        dialogGameSheet.show();
     }
 
     private void saveGameList() {
@@ -736,9 +734,13 @@ public class MainActivity extends BaseActivity {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                dialogGameSheet.cancel();
                 Log.e("tokenResponse", response);
                 try {
-
+                    SharedPreferences sharedPreferences = getSharedPreferences(new AppConstant(MainActivity.this).getId(), 0);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString(AppConstant.gameList, gameListStr);
+                    editor.apply();
                 } catch (Exception e) {
                     Log.e("error Rec", e.getMessage());
                 }
@@ -757,7 +759,7 @@ public class MainActivity extends BaseActivity {
                 HashMap<String, String> hashMap = new HashMap<>();
                 hashMap.put("game", gameListStr);
                 hashMap.put("userid", new AppConstant(MainActivity.this).getId());
-                return new HashMap<>();
+                return hashMap;
             }
 
             @Override
