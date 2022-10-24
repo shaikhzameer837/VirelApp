@@ -21,4 +21,6 @@ public interface VideoListDao {
     @Query("Select count(*) From videolist where videoId = :videoId limit 1")
     List<Integer> getLastVideo(String videoId);
 
+    @Query("SELECT * FROM videolist WHERE videoId = :videoId")
+    int isDataExist(String videoId);
 }

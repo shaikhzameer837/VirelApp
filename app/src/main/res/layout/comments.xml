@@ -3,37 +3,96 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:elevation="2dp"
-    android:orientation="vertical"
-    app:behavior_hideable="true"
-    app:behavior_peekHeight="500dp"
-    app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        android:padding="14dp"
+        android:text="Comments"
+        android:textColor="@color/white"
+        android:textSize="17sp"
+        android:textStyle="bold" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/pBar3"
+        android:layout_width="wrap_content"
+        android:layout_height="140dp"
+        app:lottie_autoPlay="true"
+        app:lottie_fileName="comments.json"
+        app:lottie_loop="true" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="400dp"
+        android:background="@drawable/bottom_sheet_curved_white"
+        android:orientation="vertical"
+        android:padding="13dp">
 
-        <EditText
-            android:id="@+id/comments"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
             android:layout_weight="1"
-            android:textSize="12sp"
-            android:hint="Enter your comments" />
+            android:background="@color/white" />
 
-        <ImageView
-            android:id="@+id/send"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:src="@drawable/send" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <soup.neumorphism.NeumorphCardView
+                style="@style/Widget.Neumorph.Button"
+                android:layout_width="0dp"
+                android:layout_height="65dp"
+                android:layout_weight="1"
+                app:neumorph_shapeType="pressed"
+                app:neumorph_strokeColor="@color/darkgrey"
+                app:neumorph_strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/fileSelect"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:padding="10dp"
+                        android:rotation="-90"
+                        android:src="@drawable/attach" />
+
+                    <EditText
+                        android:id="@+id/comments"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:hint=" Enter your Message"
+                        android:textColorHint="@color/textcolor"
+                        android:textSize="14sp" />
+                </LinearLayout>
+            </soup.neumorphism.NeumorphCardView>
+
+            <soup.neumorphism.NeumorphCardView
+                style="@style/Widget.Neumorph.Button"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                app:neumorph_shapeType="flat"
+                app:neumorph_strokeColor="@color/darkgrey"
+                app:neumorph_strokeWidth="1dp">
+
+                <ImageView
+                    android:id="@+id/send"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:padding="10dp"
+                    android:src="@drawable/send" />
+            </soup.neumorphism.NeumorphCardView>
+        </LinearLayout>
     </LinearLayout>
-
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:background="@color/colorPrimary"
-        android:elevation="4dp" />
 </LinearLayout>

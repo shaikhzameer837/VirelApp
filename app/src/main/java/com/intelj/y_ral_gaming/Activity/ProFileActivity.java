@@ -1,15 +1,21 @@
 package com.intelj.y_ral_gaming.Activity;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Html;
 import android.transition.Fade;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,11 +41,10 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialog;
 import com.facebook.shimmer.ShimmerFrameLayout;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -54,6 +59,7 @@ import com.intelj.y_ral_gaming.ChatActivity;
 import com.intelj.y_ral_gaming.FollowActivity;
 import com.intelj.y_ral_gaming.Fragment.PostFragment;
 import com.intelj.y_ral_gaming.R;
+import com.intelj.y_ral_gaming.RoundedBottomSheetDialog;
 import com.intelj.y_ral_gaming.SigninActivity;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 import com.intelj.y_ral_gaming.Utils.RecyclerTouchListener;
@@ -83,7 +89,7 @@ public class ProFileActivity extends AppCompatActivity {
     TextView rank, rank_button;
     ProgressBar progress;
     String teamIdList = "";
-
+    private ProgressDialog progressDialog;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -135,7 +141,7 @@ public class ProFileActivity extends AppCompatActivity {
             findViewById(R.id.rel_button).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startActivity(new Intent(ProFileActivity.this, EditProfile.class));
+                    editProfile();
                 }
             });
             if (userid.equals(appConstant.getId())) {
@@ -306,7 +312,120 @@ public class ProFileActivity extends AppCompatActivity {
         getProfileInfo();
         //  prepareytModelData();
     }
+    public void editProfile() {
+        ImageView imgProfile;
+        int PROFILE_IMAGE = 11;
+        String picturePath = null;
+        Bitmap selectedImage;
+        TextInputEditText playerName, TI_userName, bio;
+        String userName = "";
+        DatabaseReference mDatabase;
+        AutoCompleteTextView tv_title;
+        LinearLayout gameList;
+        SharedPreferences prefs;
+        TextView avail;
+        SharedPreferences sharedPreferences = getSharedPreferences(appConstant.getId(), 0);
+        prefs = getSharedPreferences(AppConstant.AppName, MODE_PRIVATE);
+        View view = getLayoutInflater().inflate(R.layout.edit_profile, null);
+        final BottomSheetDialog dialogBottom = new RoundedBottomSheetDialog(ProFileActivity.this);
+        imgProfile = view.findViewById(R.id.imgs);
+        avail = view.findViewById(R.id.avail);
+        playerName = view.findViewById(R.id.name);
+        TI_userName = view.findViewById(R.id.userName);
+        bio = view.findViewById(R.id.bio);
+        gameList = view.findViewById(R.id.gameList);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>
+                (this, android.R.layout.simple_list_item_1, AppConstant.player_title);
+        tv_title = view.findViewById(R.id.autoCompleteTextView1);
+        tv_title.setThreshold(0);
+        tv_title.setKeyListener(null);
+        tv_title.setAdapter(adapter);
+        dialogBottom.setContentView(view);
+        dialogBottom.show();
+        tv_title.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                final int DRAWABLE_RIGHT = 2;
+                tv_title.showDropDown();
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    if (event.getRawX() >= (tv_title.getRight() - tv_title.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                        tv_title.setText("");
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+        view.findViewById(R.id.done).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (playerName.getText().toString().trim().equals("")) {
+                    playerName.requestFocus();
+                    playerName.setError("Player name cannot be empty");
+                    return;
+                }
+                if (userName.equals("")) {
+                    Toast.makeText(ProFileActivity.this, "Please check user name first", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                boolean isSlected = false;
+                for (int i = 0; i < gameList.getChildCount(); i++) {
+                    TextView textView = (TextView) gameList.getChildAt(i);
+                    if (textView.getTag().toString().equals("1")) {
+                        isSlected = true;
+                    }
+                }
+                if (!isSlected) {
+                    Toast.makeText(ProFileActivity.this, "Please select the game you play", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                if (picturePath == null)
+                    updateName();
+                else
+                    uploadProfile();
+            }
+        });
+    }
+    private void updateName() {
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Updating...");
+        progressDialog.show();
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = AppConstant.AppUrl + "profile_update.php";
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.e("response", response);
+                        progressDialog.cancel();
+                        saveToProfile();
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                progressDialog.cancel();
+                Toast.makeText(ProFileActivity.this, "Something went wrong try again later ", Toast.LENGTH_SHORT).show();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("user_id", appConstant.getId());
+                params.put("name", playerName.getText().toString() + "");
+                params.put("userName", TI_userName.getText().toString().toLowerCase() + "");
+                return params;
+            }
 
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Content-Type", "application/x-www-form-urlencoded");
+                return params;
+            }
+        };
+
+        queue.add(stringRequest);
+    }
     @Override
     protected void onResume() {
         super.onResume();

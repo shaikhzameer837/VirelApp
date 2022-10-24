@@ -46,16 +46,8 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textview.MaterialTextView;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FieldValue;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.intelj.y_ral_gaming.AppController;
 import com.intelj.y_ral_gaming.R;
@@ -82,6 +74,7 @@ public class EditProfile extends AppCompatActivity {
     LinearLayout gameList;
     SharedPreferences prefs;
     TextView avail;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         appConstant = new AppConstant(this);
@@ -128,8 +121,7 @@ public class EditProfile extends AppCompatActivity {
                     return;
                 }
                 if (userName.equals("")) {
-                    TI_userName.requestFocus();
-                    TI_userName.setError("Click to check username availability", null);
+                    Toast.makeText(EditProfile.this, "Please check user name first", Toast.LENGTH_LONG).show();
                     return;
                 }
                 boolean isSlected = false;
@@ -157,9 +149,10 @@ public class EditProfile extends AppCompatActivity {
                     userName = TI_userName.getText().toString();
                     TI_userName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.card_account_details_outline, 0, R.drawable.ic_check, 0);
                     TI_userName.setError(null);
+                    avail.setVisibility(View.GONE);
                     return;
                 }
-                avail.setError("Click to check username availability", null);
+                avail.setVisibility(View.VISIBLE);
                 userName = "";
                 TI_userName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.card_account_details_outline, 0, R.drawable.info, 0);
             }
@@ -182,7 +175,7 @@ public class EditProfile extends AppCompatActivity {
         avail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                checkUserName();
             }
         });
         TI_userName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.card_account_details_outline, 0, R.drawable.ic_check, 0);
@@ -256,36 +249,47 @@ public class EditProfile extends AppCompatActivity {
     }
 
     private void checkUserName() {
-        DatabaseReference mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
-        Query query = mFirebaseDatabaseReference.child("users").orderByChild(AppConstant.userName).equalTo(TI_userName.getText().toString());
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.getValue() != null) {
-                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                        Log.e("number//---", postSnapshot.getKey());
-                        if (postSnapshot.getKey().equals(appConstant.getId())) {
-                            Toast.makeText(EditProfile.this, "User name available ", Toast.LENGTH_SHORT).show();
-                            TI_userName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.card_account_details_outline, 0, R.drawable.ic_check, 0);
-                            TI_userName.setError(null);
-                        } else {
-                            Toast.makeText(EditProfile.this, "User name unavailable ", Toast.LENGTH_SHORT).show();
-                            TI_userName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.card_account_details_outline, 0, R.drawable.close, 0);
-                        }
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("checking username...");
+        progressDialog.show();
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = AppConstant.AppUrl + "username.php";
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String responseValue) {
+                        TI_userName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.card_account_details_outline,
+                                0,
+                                responseValue.equalsIgnoreCase("true") ? R.drawable.ic_check : R.drawable.close,
+                                0);
+                        Toast.makeText(EditProfile.this, responseValue.equalsIgnoreCase("true") ? "User name available " : "User name not available ", Toast.LENGTH_SHORT).show();
+                        TI_userName.setError(null);
+                        userName = responseValue.equalsIgnoreCase("true") ? TI_userName.getText().toString() : "";
+                        progressDialog.cancel();
                     }
-                } else {
-                    userName = TI_userName.getText().toString();
-                    Toast.makeText(EditProfile.this, "User name available ", Toast.LENGTH_SHORT).show();
-                    TI_userName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.card_account_details_outline, 0, R.drawable.ic_check, 0);
-                    TI_userName.setError(null);
-                }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                progressDialog.cancel();
+                Toast.makeText(EditProfile.this, "Something went wrong try again later ", Toast.LENGTH_SHORT).show();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("userName", TI_userName.getText().toString().toLowerCase());
+                return params;
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Content-Type", "application/x-www-form-urlencoded");
+                return params;
             }
-        });
+        };
+
+        queue.add(stringRequest);
     }
 
     private void updateName() {
@@ -409,7 +413,7 @@ public class EditProfile extends AppCompatActivity {
         editor.putString(AppConstant.userName, TI_userName.getText().toString());
         editor.putString(AppConstant.bio, bio.getText().toString());
         editor.putString(AppConstant.title, tv_title.getText().toString());
-            picturePath = null;
+        picturePath = null;
         editor.apply();
         mDatabase.child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.bio).
                 setValue(bio.getText().toString());
@@ -419,22 +423,6 @@ public class EditProfile extends AppCompatActivity {
                 setValue(playerName.getText().toString());
         mDatabase.child(AppController.getInstance().userId).child(AppConstant.userName).
                 setValue(TI_userName.getText().toString());
-//        HashMap<String,Object> basicDetail = new HashMap<>();
-//        HashMap<String,Object> data = new HashMap<>();
-//        data.put(AppConstant.name,playerName.getText().toString());
-//        data.put(AppConstant.bio,bio.getText().toString());
-//        data.put(AppConstant.userName,TI_userName.getText().toString());
-//        data.put(AppConstant.title,tv_title.getText().toString());
-//        basicDetail.put("basicDetails",data);
-//        FirebaseFirestore.getInstance().collection("users").document(appConstant.getId()).set(basicDetail, SetOptions.merge());
-//        HashMap<String,Object> profileDetail = new HashMap<>();
-//        HashMap<String,Object> profileData = new HashMap<>();
-//        profileData.put(AppConstant.followerCount, FieldValue.increment(1));
-//        profileData.put(AppConstant.followingCount,FieldValue.increment(1));
-//        profileDetail.put("profileDetail",profileData);
-//        DocumentReference users = FirebaseFirestore.getInstance().collection("users").document(appConstant.getId());
-//        users.set(basicDetail, SetOptions.merge());
-//        users.set(profileDetail, SetOptions.merge());
         for (int i = 0; i < gameList.getChildCount(); i++) {
             TextView textView = (TextView) gameList.getChildAt(i);
             SharedPreferences.Editor editors = getSharedPreferences(AppConstant.AppName, MODE_PRIVATE).edit();

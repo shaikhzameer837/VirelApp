@@ -56,6 +56,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.intelj.y_ral_gaming.Activity.MainActivity;
+import com.intelj.y_ral_gaming.Activity.NoInternet;
 import com.intelj.y_ral_gaming.Activity.NotificationActivity;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 import com.intelj.y_ral_gaming.Utils.Utils;
@@ -94,6 +95,7 @@ public class AppController extends Application implements Application.ActivityLi
     public HashMap<String, Integer> popularList = new HashMap<>();
     public AppDataBase videoDataBase;
     private FirebaseAnalytics mFirebaseAnalytics;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -102,6 +104,21 @@ public class AppController extends Application implements Application.ActivityLi
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         getReadyForCheckin();
         getVideo();
+        DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
+        connectedRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                boolean connected = snapshot.getValue(Boolean.class);
+                if (!connected) {
+               //     startActivity(new Intent(AppController.this, NoInternet.class));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.w(TAG, "Listener was cancelled");
+            }
+        });
     }
 
     private HttpProxyCacheServer proxy;
@@ -149,12 +166,12 @@ public class AppController extends Application implements Application.ActivityLi
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                if(!documentSnapshot.exists()){
+                if (!documentSnapshot.exists()) {
                     return;
                 }
                 Map<String, Object> ds = (Map<String, Object>) documentSnapshot.get(AppConstant.noti);
-                for (Object x: ds.values()) {
-                    for (Object value: ((Map<String, Object>)x).values()){
+                for (Object x : ds.values()) {
+                    for (Object value : ((Map<String, Object>) x).values()) {
                         System.out.println("values");
                         System.out.println(value);
                     }
@@ -353,8 +370,8 @@ public class AppController extends Application implements Application.ActivityLi
                                 for (int x = 0; x < jsonArr.length(); x++) {
                                     JSONObject jsonObj = (JSONObject) jsonArr.get(x);
                                     Log.e("onResponse: ", jsonObj.getString("uid"));
-                                   if (videoDataBase.videosDao().getLastVideo(jsonObj.getString("uid")).size() == 0)
-                                       videoDataBase.videosDao().insertVideo(new VideoList(jsonObj.getString("uid"), jsonObj.getString("owner"), jsonObj.getString("time")));
+                                    if (videoDataBase.videosDao().isDataExist(jsonObj.getString("uid")) == 0)
+                                        videoDataBase.videosDao().insertVideo(new VideoList(jsonObj.getString("uid"), jsonObj.getString("owner"), jsonObj.getString("time")));
                                 }
                             }
                         } catch (Exception e) {
