@@ -1,13 +1,9 @@
 package com.intelj.y_ral_gaming.Activity;
 
-import static android.content.ContentValues.TAG;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,9 +16,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.android.volley.AuthFailureError;
@@ -32,43 +28,33 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialog;
-import com.google.android.exoplayer2.ExoPlaybackException;
-import com.google.android.exoplayer2.ExoPlayer;
+import com.intelj.y_ral_gaming.RoundedBottomSheetDialog;
 import com.google.android.exoplayer2.ExoPlayerFactory;
-import com.google.android.exoplayer2.PlaybackParameters;
+import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.Timeline;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.extractor.ExtractorsFactory;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
-import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
-import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.firestore.Source;
 import com.intelj.y_ral_gaming.Adapter.CommentsAdapter;
-import com.intelj.y_ral_gaming.AppController;
-import com.intelj.y_ral_gaming.BuildConfig;
 import com.intelj.y_ral_gaming.Comments;
 import com.intelj.y_ral_gaming.R;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
@@ -80,10 +66,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class ViralWeb extends AppCompatActivity {
@@ -95,6 +78,7 @@ public class ViralWeb extends AppCompatActivity {
     ArrayList<SimpleExoPlayer> exoplayerList = new ArrayList<>();
     ViewsSliderAdapter mAdapter;
     public ArrayList<VideoList> shortsUrlList = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,6 +88,17 @@ public class ViralWeb extends AppCompatActivity {
         setContentView(R.layout.viral_web);
         appConstant = new AppConstant(this);
         viewPager2 = findViewById(R.id.view_pager);
+        SwipeRefreshLayout pullToRefresh = findViewById(R.id.pullToRefresh);
+        pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                shortsUrlList.clear();
+                exoplayerList.clear();
+                SimpleExoPlayerList.clear();
+                pullToRefresh.setRefreshing(false);
+                getVideoFromDataBase(); // your code
+            }
+        });
         getVideoFromDataBase();
     }
 
@@ -112,6 +107,7 @@ public class ViralWeb extends AppCompatActivity {
         shortsUrlList.addAll(videoDataBase.videosDao().getAllVideo());
         init();
     }
+
     private void init() {
         mAdapter = new ViewsSliderAdapter();
         viewPager2.setAdapter(mAdapter);
@@ -185,6 +181,7 @@ public class ViralWeb extends AppCompatActivity {
 
         queue.add(stringRequest);
     }
+
     private void postComment(String s, String gameId) {
         RequestQueue queue = Volley.newRequestQueue(ViralWeb.this);
         String url = AppConstant.AppUrl + "post_comment.php";
@@ -196,18 +193,13 @@ public class ViralWeb extends AppCompatActivity {
                         try {
                             JSONObject json = new JSONObject(response);
                             if (json.getBoolean("success")) {
-                                Comments comments = new Comments(json.getString("id"), s, appConstant.getId(), appConstant.getName());
-                                commentsArrayList.add(0, comments);
-                                Map<String, Object> city = new HashMap<>();
                                 Map<String, Object> details = new HashMap<>();
                                 details.put("comment", FieldValue.increment(1));
-                                city.put(gameId, details);
                                 FirebaseFirestore.getInstance().collection(AppConstant.yralWeb)
-                                        .document("video").set(city, SetOptions.merge());
+                                        .document(gameId).set(details, SetOptions.merge());
                             } else {
                                 Toast.makeText(ViralWeb.this, "Something Went wrong", Toast.LENGTH_LONG).show();
                             }
-                            commentsAdapter.notifyDataSetChanged();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -239,11 +231,23 @@ public class ViralWeb extends AppCompatActivity {
 
         queue.add(stringRequest);
     }
+
     private RecyclerView recyclerView;
     EditText comments;
 
     public void wayToHome(View view) {
-        startActivity(new Intent(ViralWeb.this,MainActivity.class));
+        if (exoPlayer != null) {
+            exoPlayer.setPlayWhenReady(false);
+            exoPlayer.stop();
+            exoPlayer.seekTo(0);
+        }
+        startActivity(new Intent(ViralWeb.this, MainActivity.class));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
     }
 
     public class ViewsSliderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -279,57 +283,37 @@ public class ViralWeb extends AppCompatActivity {
                 // buttonViewHolder.idExoPlayerVIew.setPlayer(exoPlayer);
 
                 SharedPreferences sharedPreferences = getSharedPreferences(AppConstant.AppName, 0);
-                FirebaseDatabase.getInstance().getReference().child(AppConstant.users)
-                        .child(shortsUrlList.get(position).owner)
-                        .child(AppConstant.pinfo)
-                        .child(AppConstant.name).addListenerForSingleValueEvent(new ValueEventListener() {
+                ;
+                FirebaseFirestore.getInstance()
+                        .collection("yral_web")
+                        .document(shortsUrlList.get(position).getVideoId())
+                        .get(Source.SERVER)
+                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                             @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                buttonViewHolder.userName.setText(snapshot.getValue() + "");
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-
-                            }
-                        });
-                FirebaseFirestore db = FirebaseFirestore.getInstance();
-                db.collection("yral_web")
-                        .document("video").collection(shortsUrlList.get(position).videoId)
-                        .get()
-                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    for (QueryDocumentSnapshot document : task.getResult()) {
-                                        Log.d(TAG,document.getId() + " => " + document.getData());
-                                        buttonViewHolder.likes.setTag(document.getData().get("likes"));
-                                        buttonViewHolder.likes.setText(document.getData().get("likes").toString());
-                                        buttonViewHolder.comment.setText(document.getData().get("comment").toString());
-                                        buttonViewHolder.caption.setText(document.getData().get("caption").toString());
-                                    }
-                                } else {
-                                    Log.d(TAG, "Error getting documents: ", task.getException());
-                                }
+                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                Long likes = (Long) documentSnapshot.get("likes");
+                                Log.e("likes", likes + "");
+                                buttonViewHolder.likes.setText(likes == null ? "0" : likes + "");
+                                buttonViewHolder.likes.setTag(likes == null ? 0 : likes);
                             }
                         });
 
-                 if (sharedPreferences.getString(shortsUrlList.get(position).videoId, null) == null) {
+                if (sharedPreferences.getString(shortsUrlList.get(position).getVideoId(), null) == null) {
                     FirebaseDatabase.getInstance().getReference().child(AppConstant.yralWeb).child(shortsUrlList.get(position).videoId).child(AppConstant.likes).child(appConstant.getId())
                             .addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            if (snapshot.exists())
-                                buttonViewHolder.likes.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.cards_heart, 0, 0);
-                            else
-                                buttonViewHolder.likes.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.cards_heart_outline, 0, 0);
-                        }
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if (snapshot.exists())
+                                        buttonViewHolder.likes.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.cards_heart, 0, 0);
+                                    else
+                                        buttonViewHolder.likes.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.cards_heart_outline, 0, 0);
+                                }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
 
-                        }
-                    });
+                                }
+                            });
                 } else {
                     buttonViewHolder.likes.setCompoundDrawablesWithIntrinsicBounds(0, sharedPreferences.getString(shortsUrlList.get(position).videoId, null).equals("0") ? R.drawable.cards_heart : R.drawable.cards_heart_outline, 0, 0);
                 }
@@ -344,7 +328,7 @@ public class ViralWeb extends AppCompatActivity {
                     public void onClick(View v) {
                         View view = getLayoutInflater().inflate(R.layout.comments, null);
                         BottomSheetDialog dialog = new RoundedBottomSheetDialog(ViralWeb.this);
-                        comments = view.findViewById(R.id.comments);
+                       comments = view.findViewById(R.id.comments);
                         recyclerView = view.findViewById(R.id.rv);
                         commentsAdapter = new CommentsAdapter(ViralWeb.this, commentsArrayList);
                         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -354,7 +338,11 @@ public class ViralWeb extends AppCompatActivity {
                         view.findViewById(R.id.send).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                postComment(comments.getText().toString(),shortsUrlList.get(position).videoId);
+                                postComment(comments.getText().toString(), shortsUrlList.get(position).videoId);
+                                comments.setText(null);
+                                Comments comment = new Comments(System.currentTimeMillis()+"", comments.getText().toString(), appConstant.getId(), appConstant.getName());
+                                commentsArrayList.add(0, comment);
+                                commentsAdapter.notifyDataSetChanged();
                             }
                         });
 
@@ -367,7 +355,6 @@ public class ViralWeb extends AppCompatActivity {
                     public void onClick(View v) {
                         onPause();
                         Long likes = (Long) v.getTag();
-                        Map<String, Object> city = new HashMap<>();
                         Map<String, Object> details = new HashMap<>();
                         SharedPreferences sharedPreferences = getSharedPreferences(AppConstant.AppName, 0);
                         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -376,18 +363,17 @@ public class ViralWeb extends AppCompatActivity {
                             FirebaseDatabase.getInstance().getReference().child(AppConstant.yralWeb).child(shortsUrlList.get(position).videoId).child(AppConstant.likes).child(appConstant.getId()).setValue(System.currentTimeMillis() / 1000);
                             editor.putString(shortsUrlList.get(position).videoId, "0").apply();
                             details.put("likes", FieldValue.increment(1));
-                            city.put(shortsUrlList.get(position).videoId, details);
                             FirebaseFirestore.getInstance().collection(AppConstant.yralWeb)
-                                    .document("video").set(city, SetOptions.merge());
+                                    .document(shortsUrlList.get(position).videoId).set(details, SetOptions.merge());
                             likes = likes + 1;
                         } else {
                             buttonViewHolder.likes.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.cards_heart_outline, 0, 0);
                             editor.putString(shortsUrlList.get(position).videoId, "1").apply();
                             FirebaseDatabase.getInstance().getReference().child(AppConstant.yralWeb).child(shortsUrlList.get(position).videoId).child(AppConstant.likes).child(appConstant.getId()).removeValue();
                             details.put("likes", FieldValue.increment(-1));
-                            city.put(shortsUrlList.get(position).videoId, details);
                             FirebaseFirestore.getInstance().collection(AppConstant.yralWeb)
-                                    .document("video").set(city, SetOptions.merge());
+                                    .document(shortsUrlList.get(position).videoId)
+                                    .set(details, SetOptions.merge());
                             likes = likes - 1;
                         }
                         buttonViewHolder.likes.setTag(likes);

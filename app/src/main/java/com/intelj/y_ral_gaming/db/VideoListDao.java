@@ -18,9 +18,9 @@ public interface VideoListDao {
     @Delete
     void delete(VideoList videoList);
 
-    @Query("Select * From videolist where videoId = (:videoId)")
-    int checkIfVideoExist(String videoId);
+    @Query("Select count(*) From videolist where videoId = :videoId limit 1")
+    List<Integer> getLastVideo(String videoId);
 
-    @Query("Select MAX(videoId) FROM videolist limit 1")
-    List<String> getLastVideo();
+    @Query("SELECT * FROM videolist WHERE videoId = :videoId")
+    int isDataExist(String videoId);
 }

@@ -21,14 +21,13 @@
 
     <TextView
         android:id="@+id/type"
-        android:layout_width="70dp"
+        android:layout_width="80dp"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="-80dp"
+        android:layout_marginLeft="-90dp"
         android:layout_toRightOf="@+id/imgs"
         android:background="#80000000"
-        android:drawableLeft="@drawable/account"
-        android:gravity="center_vertical"
+        android:gravity="center"
         android:text="Solo"
         android:textColor="@color/colorPrimary"
         android:textSize="11dp"
@@ -50,25 +49,26 @@
         android:id="@+id/entry"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="5dp"
         android:layout_toRightOf="@id/title"
         android:drawableLeft="@drawable/star"
         android:gravity="center_vertical"
         android:text=" [Free Entry]"
         android:textColor="@color/black"
         android:textSize="11sp" />
-    <!--    <TextView-->
-    <!--        android:id="@+id/pp"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginLeft="10dp"-->
-    <!--        android:layout_toRightOf="@id/entry"-->
-    <!--        android:drawableLeft="@drawable/star"-->
-    <!--        android:gravity="center_vertical"-->
-    <!--        android:text=" PP [Top 10]"-->
-    <!--        android:textColor="@color/black"-->
-    <!--        android:textSize="11sp" />-->
 
+    <TextView
+        android:id="@+id/pp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@+id/entry"
+        android:gravity="center_vertical"
+        android:text="......"
+        android:backgroundTint="@color/black"
+        android:drawableLeft="@drawable/account"
+        android:textColor="@color/black"
+        android:textSize="11sp" />
 
     <TextView
         android:id="@+id/prizepool"

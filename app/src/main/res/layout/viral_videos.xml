@@ -34,6 +34,7 @@
             android:drawableTop="@drawable/cards_heart_outline"
             android:gravity="center"
             android:text="Likes"
+            android:tag="0"
             android:textColor="@color/colorPrimary"
             android:textSize="10sp" />
 

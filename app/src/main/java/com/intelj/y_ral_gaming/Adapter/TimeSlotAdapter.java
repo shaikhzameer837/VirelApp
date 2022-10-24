@@ -36,13 +36,13 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
-import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.intelj.y_ral_gaming.Activity.GameInfo;
 import com.intelj.y_ral_gaming.AppController;
 import com.intelj.y_ral_gaming.Fragment.OneFragment;
 import com.intelj.y_ral_gaming.GameItem;
 import com.intelj.y_ral_gaming.R;
+import com.intelj.y_ral_gaming.RoundedBottomSheetDialog;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 
 import org.json.JSONObject;
@@ -64,7 +64,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
     SharedPreferences sharedPreferences;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView title, info, type, count, prizepool;
+        public TextView title, info, type, count, prizepool,pp;
         ImageView imgs;
 
         public MyViewHolder(View view) {
@@ -72,6 +72,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
             title = view.findViewById(R.id.title);
             count = view.findViewById(R.id.count);
             prizepool = view.findViewById(R.id.prizepool);
+            pp = view.findViewById(R.id.pp);
             imgs = view.findViewById(R.id.imgs);
             info = view.findViewById(R.id.info);
             type = view.findViewById(R.id.type);
@@ -100,6 +101,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
     public void onBindViewHolder(MyViewHolder holder, int position) {
         holder.title.setText(gameItem.get(position).getTime());
         holder.prizepool.setText("Per Kill \u20B9" + gameItem.get(position).getPerKill());
+        holder.type.setText("Pp \u20B9"+(Integer.parseInt(gameItem.get(position).getPerKill()) * gameItem.get(position).getMax()));
         Glide.with(mContext).load(gameItem.get(position).getYt_url().equals("") ? R.drawable.placeholder : "https://i.ytimg.com/vi/" + gameItem.get(position).getYt_url() + "/hqdefault_live.jpg").placeholder(R.mipmap.app_logo).into(holder.imgs);
         holder.imgs.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,13 +129,13 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
         });
         switch (Integer.parseInt(gameItem.get(position).getType())) {
             case 1:
-                holder.type.setText(" [Solo]");
+                holder.pp.setText(" [Solo]");
                 break;
             case 2:
-                holder.type.setText(" [Duo]");
+                holder.pp.setText(" [Duo]");
                 break;
             case 4:
-                holder.type.setText(" [Squad]");
+                holder.pp.setText(" [Squad]");
                 break;
         }
         holder.count.setText(gameItem.get(position).getCount() + "/" + gameItem.get(position).getMax());
@@ -171,20 +173,20 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
         TextView infos = bottomSheetDialog.findViewById(R.id.infos);
         NeumorphCardView btn_next = bottomSheetDialog.findViewById(R.id.btn_next);
         LinearLayout lin = bottomSheetDialog.findViewById(R.id.lin);
-        EditText gamename = bottomSheetDialog.findViewById(R.id.ingameName);
+        EditText gameName = bottomSheetDialog.findViewById(R.id.ingameName);
         SharedPreferences prefs = mContext.getSharedPreferences(AppConstant.AppName, 0);
-        gamename.setHint("Enter your " + title + " player 1 in game name");
-        gamename.setText(prefs.getString("GameName", ""));
+        gameName.setHint("Enter your " + title + " player 1 in game name");
+        gameName.setText(prefs.getString("GameName", ""));
         setViews(infos, position, textView);
         btn_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (gamename.getText().toString().trim().equals("")) {
-                    gamename.requestFocus();
-                    gamename.setError("This cannot be empty");
+                if (gameName.getText().toString().trim().equals("")) {
+                    gameName.requestFocus();
+                    gameName.setError("This cannot be empty");
                     return;
                 }
-                 registerForMatch(position, gamename.getText().toString());
+                 registerForMatch(position, gameName.getText().toString());
 
             }
         });

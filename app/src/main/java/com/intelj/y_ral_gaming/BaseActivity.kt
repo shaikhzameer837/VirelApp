@@ -1,23 +1,31 @@
 package com.intelj.y_ral_gaming
 
+import android.app.ProgressDialog
 import android.content.Intent
-import android.graphics.BitmapFactory
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import android.webkit.WebView
+import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialog
-import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.intelj.y_ral_gaming.Activity.MainActivity
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.android.volley.AuthFailureError
+import com.android.volley.Response
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
+import com.intelj.y_ral_gaming.Activity.ComplainActivity
+import com.intelj.y_ral_gaming.Utils.AppConstant
 import com.yalantis.contextmenu.lib.ContextMenuDialogFragment
 import com.yalantis.contextmenu.lib.MenuObject
 import com.yalantis.contextmenu.lib.MenuParams
+import org.json.JSONObject
+import soup.neumorphism.NeumorphCardView
 
 open class BaseActivity : AppCompatActivity() {
-
     private lateinit var contextMenuDialogFragment: ContextMenuDialogFragment
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initMenuFragment()
@@ -35,7 +43,7 @@ open class BaseActivity : AppCompatActivity() {
 
     private fun initMenuFragment() {
         val menuParams = MenuParams(
-            actionBarSize = 80,
+            actionBarSize = 120,
             menuObjects = getMenuObjects(),
             isClosableOutside = false
         )
@@ -44,8 +52,12 @@ open class BaseActivity : AppCompatActivity() {
             menuItemClickListener = { view, position ->
                 if (position == 1) {
                     showSupport()
+                } else if (position == 3) {
+                    val intent = Intent(activity, ComplainActivity::class.java)
+                    startActivity(intent)
+
                 } else {
-                    Toast.makeText(applicationContext,"Comming Soon",Toast.LENGTH_LONG).show()
+                    Toast.makeText(applicationContext,"Coming Soon",Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -60,7 +72,7 @@ open class BaseActivity : AppCompatActivity() {
         val like = MenuObject("Announcement").apply {
             setResourceValue(R.drawable.bullhorn_outline)
         }
-         val suggestion = MenuObject("Suggestion").apply {
+         val suggestion = MenuObject("Complain").apply {
             setResourceValue(R.drawable.suggestion)
         }
         add(close)
@@ -75,6 +87,47 @@ open class BaseActivity : AppCompatActivity() {
             contextMenuDialogFragment.show(supportFragmentManager, ContextMenuDialogFragment.TAG)
         }
     }
+
+//    fun openComplain() {
+//        val bottomSheetDialog = RoundedBottomSheetDialog(this)
+//        bottomSheetDialog.setContentView(R.layout.complain)
+//        val webv = bottomSheetDialog.findViewById<WebView>(R.id.webview)
+//        webv!!.getSettings().setJavaScriptEnabled(true);
+//        webv!!.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+//        webv!!.loadUrl("https://docs.google.com/forms/d/e/1FAIpQLSf7qnAqm6j4MlSIaJNS1rLAxoKqkPGMC1gCcGdvrDCmI4ngKw/viewform?usp=pp_url&entry.478025111=7738454952&entry.1078543009=" + AppConstant(this).id);
+//        bottomSheetDialog.show()
+//    }
+
+//    private fun postComplain() {
+//        val progressDialog = ProgressDialog(this)
+//        progressDialog.setTitle("loading...")
+//        progressDialog.show()
+//        val queue = Volley.newRequestQueue(this)
+//        val url = AppConstant.AppUrl + "complain.php"
+//        val stringRequest: StringRequest = object : StringRequest(
+//            Method.POST, url,
+//            Response.Listener { response ->
+//                Log.e("onClick3", response!!)
+//                Toast.makeText(applicationContext,"Complain Raised",Toast.LENGTH_LONG).show()
+//                progressDialog.cancel()
+//
+//            },
+//            Response.ErrorListener { progressDialog.cancel() }) {
+//            override fun getParams(): Map<String, String>? {
+//                val params: MutableMap<String, String> = HashMap()
+//                params["userId"] = "Redeem Money"
+//                return params
+//            }
+//
+//            @Throws(AuthFailureError::class)
+//            override fun getHeaders(): Map<String, String> {
+//                val params: MutableMap<String, String> = HashMap()
+//                params["Content-Type"] = "application/x-www-form-urlencoded"
+//                return params
+//            }
+//        }
+//        queue.add(stringRequest)
+//    }
 
     fun showSupport() {
         val bottomSheetDialog = RoundedBottomSheetDialog(this)

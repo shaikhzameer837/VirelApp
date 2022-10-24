@@ -2,148 +2,62 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    android:background="@drawable/grad"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="210dp"
-        android:background="@drawable/grad">
-
-        <RelativeLayout
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:gravity="center">
-
-            <ImageView
-                android:id="@+id/back"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:rotation="-180"
-                android:src="@drawable/arrow"
-                app:tint="@color/white" />
-
-            <TextView
-                android:id="@+id/title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:gravity="center_horizontal"
-                android:text="Edit PRofile"
-                android:textColor="@color/white"
-                android:textStyle="bold" />
-
-
-        </RelativeLayout>
-
-
-        <ImageView
-            android:id="@+id/imgs"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_below="@+id/toolbar"
-            android:layout_centerInParent="true"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/game_avatar" />
-
-
-    </RelativeLayout>
-
-    <androidx.cardview.widget.CardView
+    <TextView
+        android:id="@+id/title"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="-50dp"
-        android:layout_marginRight="10dp"
-        android:layout_weight="2"
-        android:elevation="2dp"
-        app:cardElevation="2dp">
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:gravity="center_horizontal"
+        android:text="Edit PRofile"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/white"
+        android:textStyle="bold" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="4dp">
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/pBar3"
+        android:layout_width="wrap_content"
+        android:layout_height="200dp"
+        app:lottie_autoPlay="true"
+        app:lottie_fileName="profile.json"
+        app:lottie_loop="true" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bottom_sheet_curved_white"
+        android:orientation="vertical">
+
+        <ScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="@color/black"
-                android:orientation="horizontal"
-                android:padding="10dp">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="5dp"
-                    android:layout_weight="1"
-                    android:text="Profile Info"
-                    android:textColor="@color/white"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="wrap_content"
-                android:layout_height="80dp"
-                android:layout_marginLeft="-2dp"
-                android:background="@drawable/shape" />
-
-            <ScrollView
-                android:id="@+id/scrollView"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="-40dp">
-
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
-                    <TextView
-                        android:id="@+id/titler"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:text="Gaming Title"
-                        android:textColor="@color/black"
-                        android:textStyle="bold" />s
-
-                    <soup.neumorphism.NeumorphCardView
-                        style="@style/Widget.Neumorph.Button"
-                        android:layout_width="match_parent"
-                        android:layout_height="65dp"
-                        app:neumorph_shapeType="pressed"
-                        app:neumorph_strokeColor="@color/darkgrey"
-                        app:neumorph_strokeWidth="1dp">
-
-                        <com.intelj.y_ral_gaming.Utils.TextInputAutoCompleteTextView
-                            android:id="@+id/autoCompleteTextView1"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dp"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginRight="10dp"
-                            android:background="#00000000"
-                            android:drawableLeft="@drawable/shield_star_outline"
-                            android:drawableRight="@drawable/close"
-                            android:drawablePadding="5dip"
-                            android:hint=" Gaming Title"
-                            android:paddingLeft="10dp"
-                            android:text=""
-                            android:textColor="@color/black"
-                            android:textSize="13sp" />
-                    </soup.neumorphism.NeumorphCardView>
+                    <ImageView
+                        android:id="@+id/imgs"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/game_avatar" />
 
                     <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
                         android:orientation="vertical">
 
                         <soup.neumorphism.NeumorphCardView
@@ -154,173 +68,200 @@
                             app:neumorph_strokeColor="@color/darkgrey"
                             app:neumorph_strokeWidth="1dp">
 
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/name"
+                            <com.intelj.y_ral_gaming.Utils.TextInputAutoCompleteTextView
+                                android:id="@+id/autoCompleteTextView1"
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:background="#00000000"
-                                android:drawableLeft="@drawable/account"
-                                android:drawableTint="@color/black"
-                                android:enabled="false"
-                                android:hint=" Name"
-                                android:drawablePadding="5dip"
-                                android:paddingLeft="15dp"
-                                android:singleLine="true"
-                                android:textColor="@color/black"
-                                android:textSize="14sp" />
-                        </soup.neumorphism.NeumorphCardView>
-
-                        <soup.neumorphism.NeumorphCardView
-                            style="@style/Widget.Neumorph.Button"
-                            android:layout_width="match_parent"
-                            android:layout_height="65dp"
-                            app:neumorph_shapeType="pressed"
-                            app:neumorph_strokeColor="@color/darkgrey"
-                            app:neumorph_strokeWidth="1dp">
-
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/userName"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:background="#00000000"
-                                android:digits="abcdefghijklmnopqrstuvwxyz_.1234567890"
-                                android:enabled="false"
-                                android:paddingRight="10dp"
-                                android:hint=" user name"
-                                android:drawablePadding="5dip"
-                                android:drawableLeft="@drawable/card_account_details_outline"
-                                android:paddingLeft="15dp"
-                                android:inputType="text|textEmailAddress"
-                                android:singleLine="true"
-                                android:textColor="@color/black"
-                                android:textSize="14sp" />
-                        </soup.neumorphism.NeumorphCardView>
-
-                        <TextView android:id="@+id/avail"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="right"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginTop="5dp"
-                            android:layout_marginRight="5dp"
-                            android:background="@drawable/curved_red"
-                            android:onClick="checkAvail"
-                            android:paddingLeft="5dp"
-                            android:paddingTop="3dp"
-                            android:paddingRight="5dp"
-                            android:paddingBottom="3dp"
-                            android:text="check username Availability"
-                            android:textColor="@color/white" />
-
-                        <soup.neumorphism.NeumorphCardView
-                            style="@style/Widget.Neumorph.Button"
-                            android:layout_width="match_parent"
-                            android:layout_height="65dp"
-                            app:neumorph_shapeType="pressed"
-                            app:neumorph_strokeColor="@color/darkgrey"
-                            app:neumorph_strokeWidth="1dp">
-
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/bio"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:background="#00000000"
-                                android:paddingLeft="15dp"
-                                android:drawablePadding="5dip"
-                                android:drawableTint="@color/black"
-                                android:drawableLeft="@drawable/account_edit_outline"
-                                android:hint=" Bio (About Me)"
-                                android:textColor="@color/black"
-                                android:textSize="14sp" />
-                        </soup.neumorphism.NeumorphCardView>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="15dp"
-                            android:layout_marginTop="15dp"
-                            android:text="Games You play"
-                            android:textColor="@color/black"
-                            android:textStyle="bold" />
-
-                        <HorizontalScrollView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-
-                            <LinearLayout
-                                android:id="@+id/gameList"
-                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="10dp"
+                                android:layout_marginLeft="5dp"
                                 android:layout_marginTop="10dp"
                                 android:layout_marginRight="10dp"
-                                android:orientation="horizontal">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_margin="4dp"
-                                    android:background="@drawable/curved_drawable"
-                                    android:onClick="subscribe"
-                                    android:padding="10dp"
-                                    android:tag="0"
-                                    android:text="FreeFire" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_margin="4dp"
-                                    android:background="@drawable/curved_drawable"
-                                    android:onClick="subscribe"
-                                    android:padding="10dp"
-                                    android:tag="0"
-                                    android:text="BGMI" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_margin="4dp"
-                                    android:background="@drawable/curved_drawable"
-                                    android:onClick="subscribe"
-                                    android:padding="10dp"
-                                    android:tag="0"
-                                    android:text="Valorant" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_margin="4dp"
-                                    android:background="@drawable/curved_drawable"
-                                    android:onClick="subscribe"
-                                    android:padding="10dp"
-                                    android:tag="0"
-                                    android:text="Other Games" />
-                            </LinearLayout>
-                        </HorizontalScrollView>
+                                android:background="#00000000"
+                                android:drawableLeft="@drawable/shield_star_outline"
+                                android:drawableRight="@drawable/close"
+                                android:drawablePadding="5dip"
+                                android:hint=" Gaming Title"
+                                android:paddingLeft="10dp"
+                                android:text=""
+                                android:textColor="@color/black"
+                                android:textSize="13sp" />
+                        </soup.neumorphism.NeumorphCardView>
                     </LinearLayout>
-
-
                 </LinearLayout>
-            </ScrollView>
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
 
-    <TextView
-        android:id="@+id/done"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="-30dp"
-        android:layout_marginBottom="-40dp"
-        android:background="@drawable/button_round"
-        android:drawableLeft="@drawable/account"
-        android:drawableRight="@drawable/arrow_white"
-        android:elevation="2dp"
-        android:gravity="center"
-        android:padding="12dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:text="  Update Profile "
-        android:textColor="@color/white"
-        android:textStyle="bold" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <soup.neumorphism.NeumorphCardView
+                        style="@style/Widget.Neumorph.Button"
+                        android:layout_width="match_parent"
+                        android:layout_height="65dp"
+                        app:neumorph_shapeType="pressed"
+                        app:neumorph_strokeColor="@color/darkgrey"
+                        app:neumorph_strokeWidth="1dp">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/name"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="#00000000"
+                            android:drawableLeft="@drawable/account"
+                            android:drawablePadding="5dip"
+                            android:drawableTint="@color/black"
+                            android:enabled="false"
+                            android:hint=" Name"
+                            android:paddingLeft="15dp"
+                            android:singleLine="true"
+                            android:textColor="@color/black"
+                            android:textSize="14sp" />
+                    </soup.neumorphism.NeumorphCardView>
+
+                    <soup.neumorphism.NeumorphCardView
+                        style="@style/Widget.Neumorph.Button"
+                        android:layout_width="match_parent"
+                        android:layout_height="65dp"
+                        app:neumorph_shapeType="pressed"
+                        app:neumorph_strokeColor="@color/darkgrey"
+                        app:neumorph_strokeWidth="1dp">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/userName"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="#00000000"
+                            android:digits="abcdefghijklmnopqrstuvwxyz_.1234567890"
+                            android:drawableLeft="@drawable/card_account_details_outline"
+                            android:drawablePadding="5dip"
+                            android:enabled="false"
+                            android:hint=" user name"
+                            android:inputType="text"
+                            android:paddingLeft="15dp"
+                            android:paddingRight="10dp"
+                            android:singleLine="true"
+                            android:textColor="@color/black"
+                            android:textSize="14sp" />
+                    </soup.neumorphism.NeumorphCardView>
+
+                    <TextView
+                        android:id="@+id/avail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginRight="5dp"
+                        android:background="@drawable/curved_red"
+                        android:onClick="checkAvail"
+                        android:padding="5dp"
+                        android:text="check username"
+                        android:textColor="@color/white" />
+
+                    <soup.neumorphism.NeumorphCardView
+                        style="@style/Widget.Neumorph.Button"
+                        android:layout_width="match_parent"
+                        android:layout_height="65dp"
+                        app:neumorph_shapeType="pressed"
+                        app:neumorph_strokeColor="@color/darkgrey"
+                        app:neumorph_strokeWidth="1dp">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/bio"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="#00000000"
+                            android:drawableLeft="@drawable/account_edit_outline"
+                            android:drawablePadding="5dip"
+                            android:drawableTint="@color/black"
+                            android:hint=" Bio (About Me)"
+                            android:paddingLeft="15dp"
+                            android:textColor="@color/black"
+                            android:textSize="14sp" />
+                    </soup.neumorphism.NeumorphCardView>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginTop="15dp"
+                        android:text="Games You play"
+                        android:textColor="@color/black"
+                        android:textStyle="bold" />
+
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <LinearLayout
+                            android:id="@+id/gameList"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginRight="10dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="4dp"
+                                android:background="@drawable/curved_drawable"
+                                android:onClick="subscribe"
+                                android:padding="10dp"
+                                android:tag="0"
+                                android:text="FreeFire" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="4dp"
+                                android:background="@drawable/curved_drawable"
+                                android:onClick="subscribe"
+                                android:padding="10dp"
+                                android:tag="0"
+                                android:text="BGMI" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="4dp"
+                                android:background="@drawable/curved_drawable"
+                                android:onClick="subscribe"
+                                android:padding="10dp"
+                                android:tag="0"
+                                android:text="Valorant" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="4dp"
+                                android:background="@drawable/curved_drawable"
+                                android:onClick="subscribe"
+                                android:padding="10dp"
+                                android:tag="0"
+                                android:text="Other Games" />
+                        </LinearLayout>
+                    </HorizontalScrollView>
+                </LinearLayout>
+
+
+            </LinearLayout>
+        </ScrollView>
+
+        <TextView
+            android:id="@+id/done"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/button_round"
+            android:drawableLeft="@drawable/account"
+            android:drawableRight="@drawable/arrow_white"
+            android:elevation="2dp"
+            android:gravity="center"
+            android:padding="12dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:text="  Update Profile "
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+    </LinearLayout>
 </LinearLayout>

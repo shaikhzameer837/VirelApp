@@ -41,7 +41,6 @@ public class AppConstant {
             yralWeb = "yral_web",
             likes = "likes",
             id = "id",
-            extra = "extra",
             amount = "amount",
             payment = "payment",
             title = "title",

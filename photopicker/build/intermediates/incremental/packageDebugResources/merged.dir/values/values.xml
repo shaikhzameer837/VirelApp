@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr format="reference|color" name="pickerBackgroundColor"/>
+    <attr format="reference" name="pickerCameraIcon"/>
+    <attr format="reference|color" name="pickerControlColor"/>
+    <attr format="reference|dimension" name="pickerCornerRadius"/>
+    <attr format="reference|color" name="pickerDividerColor"/>
+    <attr format="reference" name="pickerGalleryIcon"/>
+    <attr format="reference|color" name="pickerPrimaryColor"/>
+    <attr format="reference|color" name="pickerSecondaryColor"/>
+    <color name="background_dark">#151816</color>
+    <color name="background_light">@color/white</color>
+    <color name="black">#000</color>
+    <color name="controls_dark">#85C4DD</color>
+    <color name="controls_light">#5F9BB2</color>
+    <color name="divider_dark">#1FFF</color>
+    <color name="divider_light">#1000</color>
+    <color name="text_primary_dark">#9A9A9A</color>
+    <color name="text_primary_light">#8A8A8A</color>
+    <color name="text_secondary_dark">#E1E1E1</color>
+    <color name="text_secondary_light">@color/black</color>
+    <color name="transparent">#0000</color>
+    <color name="white">#FFF</color>
+    <dimen name="background_corner_radius">24dp</dimen>
+    <dimen name="margin_2dp">2dp</dimen>
+    <dimen name="textSizeLarge">21sp</dimen>
+    <dimen name="textSizeMedium">16sp</dimen>
+    <dimen name="textSizeSmall">14sp</dimen>
+    <plurals name="picker_max_selection_reached">
+        <item quantity="one">You can pick only %d image</item>
+        <item quantity="other">You can pick only %d images</item>
+    </plurals>
+    <plurals name="picker_selected_count">
+        <item quantity="one">%d photo selected</item>
+        <item quantity="other">%d photos selected</item>
+    </plurals>
+    <string name="picker_allow">Allow</string>
+    <string name="picker_app_name">Picker</string>
+    <string name="picker_camera">Camera</string>
+    <string name="picker_empty_media">Your media library is empty</string>
+    <string name="picker_gallery">Gallery</string>
+    <string name="picker_media_permissions_hint">Grant media permission for easier\ngallery access</string>
+    <string name="picker_no_camera">No camera app is installed</string>
+    <string name="picker_select">Select</string>
+    <string name="picker_select_photo">Select photo</string>
+    <style name="ChiliPhotoPicker.Dark" parent="Theme.MaterialComponents.NoActionBar.Bridge">
+        <item name="pickerBackgroundColor">@color/background_dark</item>
+        <item name="pickerPrimaryColor">@color/text_primary_dark</item>
+        <item name="pickerSecondaryColor">@color/text_secondary_dark</item>
+        <item name="pickerControlColor">@color/controls_dark</item>
+        <item name="pickerCornerRadius">@dimen/background_corner_radius</item>
+        <item name="pickerCameraIcon">@drawable/ic_picker_camera</item>
+        <item name="pickerGalleryIcon">@drawable/ic_picker_gallery</item>
+        <item name="pickerDividerColor">@color/divider_dark</item>
+    </style>
+    <style name="ChiliPhotoPicker.Light" parent="Theme.MaterialComponents.NoActionBar.Bridge">
+        <item name="pickerBackgroundColor">@color/background_light</item>
+        <item name="pickerPrimaryColor">@color/text_primary_light</item>
+        <item name="pickerSecondaryColor">@color/text_secondary_light</item>
+        <item name="pickerControlColor">@color/controls_light</item>
+        <item name="pickerCornerRadius">@dimen/background_corner_radius</item>
+        <item name="pickerCameraIcon">@drawable/ic_picker_camera</item>
+        <item name="pickerGalleryIcon">@drawable/ic_picker_gallery</item>
+        <item name="pickerDividerColor">@color/divider_light</item>
+    </style>
+    <style name="TextAppearance.PhotoPicker.Button" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textColor">?pickerControlColor</item>
+        <item name="android:includeFontPadding">true</item>
+        <item name="android:textSize">@dimen/textSizeMedium</item>
+    </style>
+</resources>

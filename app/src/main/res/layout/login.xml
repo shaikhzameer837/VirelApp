@@ -61,7 +61,7 @@
                 android:id="@+id/referral"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="Enter Referal ID"
+                android:hint="Referral id (Optional)"
                 android:background="@null"
                 android:inputType="textCapWords"
                 android:drawableLeft="@drawable/refer_friend"

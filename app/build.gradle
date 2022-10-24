@@ -5,11 +5,11 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdk 32
+    compileSdk 33
     defaultConfig {
         applicationId "com.intelj.y_ral_gaming"
         minSdk 21
-        targetSdk 32
+        targetSdk 33
         versionCode 14
         versionName "2.2"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
@@ -48,18 +48,20 @@ repositories {
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation 'androidx.appcompat:appcompat:1.5.1'
-    implementation 'androidx.navigation:navigation-fragment:2.5.2'
-    implementation 'androidx.navigation:navigation-ui:2.5.2'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.5.2'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.5.2'
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
-    implementation 'com.google.firebase:firebase-messaging:23.0.8'
-    implementation 'com.google.firebase:firebase-database:20.0.6'
+    implementation 'com.google.firebase:firebase-messaging:23.1.0'
+    implementation 'com.google.firebase:firebase-database:20.1.0'
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.android.volley:volley:1.2.1'
-    implementation 'com.google.firebase:firebase-auth:21.0.8'
+    implementation 'com.google.firebase:firebase-auth:21.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'com.google.firebase:firebase-firestore:24.3.0'
-    implementation 'com.google.android.gms:play-services-ads-lite:21.2.0'
+    implementation 'com.google.firebase:firebase-firestore:24.4.0'
+    implementation 'com.google.android.gms:play-services-ads-lite:21.3.0'
+    implementation 'com.google.firebase:firebase-analytics:21.2.0'
+    implementation 'com.github.andyxialm:ColorDialog:1.0.0'
     testImplementation 'junit:junit:4.13.2'
     implementation 'com.github.Deishelon:RoundedBottomSheet:1.0.1'
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
@@ -72,13 +74,12 @@ dependencies {
     implementation 'com.danikula:videocache:2.7.1'
     implementation 'com.github.Yalantis:Context-Menu.Android:1.1.4'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.13.0'
-    implementation 'com.google.firebase:firebase-storage:20.0.2'
+    implementation 'com.google.firebase:firebase-storage:20.1.0'
     implementation 'androidx.browser:browser:1.4.0'
-    implementation 'com.github.andyxialm:ColorDialog:1.0.0'
     implementation 'com.google.android.play:core:1.10.3'
-    implementation "com.google.android.material:material:1.6.1"
+    implementation "com.google.android.material:material:1.7.0"
     implementation 'net.alhazmy13.MediaPicker:libary:2.4.4'
-    implementation 'com.google.firebase:firebase-crashlytics:18.2.13'
+    implementation 'com.google.firebase:firebase-crashlytics:18.3.1'
     implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
     implementation "com.airbnb.android:lottie:3.4.0"
     implementation 'com.github.joielechong:countrycodepicker:2.4.2'
@@ -112,6 +113,7 @@ dependencies {
     //for generating default ui of exoplayer
     implementation 'com.google.android.exoplayer:exoplayer-ui:r2.4.0'
     implementation "com.github.ChiliLabs:ChiliPhotoPicker:0.3.1"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.72+"
     //  implementation 'com.google.android.gms:play-services-ads:20.5.0'
 //    implementation 'com.google.android.exoplayer:exoplayer-core:2.10.5'
 //    implementation 'com.google.android.exoplayer:exoplayer-dash:2.16.1'

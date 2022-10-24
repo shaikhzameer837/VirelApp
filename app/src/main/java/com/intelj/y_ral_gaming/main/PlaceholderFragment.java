@@ -228,6 +228,7 @@ public class PlaceholderFragment extends Fragment implements View.OnClickListene
 
     public void WidthDrawAmount(View view) {
         TextView selected = ((TextView) view);
+        Log.e("selected.getTag",selected.getTag()+"");
         if (Integer.parseInt(selected.getTag() + "") < AppController.getInstance().amount) {
             selected.setBackgroundResource(R.drawable.outline);
             selected.setTextColor(Color.parseColor("#ffffff"));

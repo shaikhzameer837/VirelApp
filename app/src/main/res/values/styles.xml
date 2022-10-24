@@ -68,7 +68,7 @@
 
     <style name="AppModalStyle"
         parent="Widget.Design.BottomSheet.Modal">
-        <item name="android:background">@drawable/red_round_corner</item>
+        <item name="android:background">@drawable/bottom_sheet_curve</item>
     </style>
     styles.xml
 
