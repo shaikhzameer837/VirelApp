@@ -11,13 +11,21 @@
         android:layout_centerInParent="true"
         android:scaleType="centerCrop" />
 
+    <ImageView
+        android:id="@+id/img1"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_above="@+id/footext"/>
+
     <TextView
+        android:id="@+id/footext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="20dp"
-        android:text="Welcome to Yral Gaming"
+        android:gravity="center_horizontal"
+        android:text="The house of Gamer"
         android:textColor="@color/appColor"
         android:textStyle="bold" />
 

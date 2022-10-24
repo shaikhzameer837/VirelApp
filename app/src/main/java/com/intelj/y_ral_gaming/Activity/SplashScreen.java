@@ -18,16 +18,19 @@ import com.intelj.y_ral_gaming.R;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 
 public class SplashScreen extends AppCompatActivity {
-    ImageView img;
+    ImageView img,img1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splashscreen);
         img = findViewById(R.id.img);
+        img1 = findViewById(R.id.img1);
         Glide.with(this).load(R.drawable.intro)
                 .circleCrop()
                 .placeholder(R.mipmap.app_logo).into(img);
+        Glide.with(this).load(R.drawable.banner)
+                .into(img1);
         Log.e("useriD", new AppConstant(this).getId());
 //        new Splashy(this).setLogo(R.mipmap.app_logo)
 //                .setAnimation(Splashy.Animation.GLOW_LOGO_TITLE,2000)

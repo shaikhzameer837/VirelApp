@@ -141,7 +141,8 @@ public class ProFileActivity extends AppCompatActivity {
             findViewById(R.id.rel_button).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    editProfile();
+                   // editProfile();
+                    startActivity(new Intent(ProFileActivity.this,EditProfile.class));
                 }
             });
             if (userid.equals(appConstant.getId())) {
@@ -386,45 +387,49 @@ public class ProFileActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void uploadProfile() {
+    }
+
     private void updateName() {
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Updating...");
-        progressDialog.show();
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String url = AppConstant.AppUrl + "profile_update.php";
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.e("response", response);
-                        progressDialog.cancel();
-                        saveToProfile();
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                progressDialog.cancel();
-                Toast.makeText(ProFileActivity.this, "Something went wrong try again later ", Toast.LENGTH_SHORT).show();
-            }
-        }) {
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put("user_id", appConstant.getId());
-                params.put("name", playerName.getText().toString() + "");
-                params.put("userName", TI_userName.getText().toString().toLowerCase() + "");
-                return params;
-            }
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-                params.put("Content-Type", "application/x-www-form-urlencoded");
-                return params;
-            }
-        };
-
-        queue.add(stringRequest);
+//        progressDialog = new ProgressDialog(this);
+//        progressDialog.setTitle("Updating...");
+//        progressDialog.show();
+//        RequestQueue queue = Volley.newRequestQueue(this);
+//        String url = AppConstant.AppUrl + "profile_update.php";
+//        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+//                new Response.Listener<String>() {
+//                    @Override
+//                    public void onResponse(String response) {
+//                        Log.e("response", response);
+//                        progressDialog.cancel();
+//                        saveToProfile();
+//                    }
+//                }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                progressDialog.cancel();
+//                Toast.makeText(ProFileActivity.this, "Something went wrong try again later ", Toast.LENGTH_SHORT).show();
+//            }
+//        }) {
+//            @Override
+//            protected Map<String, String> getParams() {
+//                Map<String, String> params = new HashMap<>();
+//                params.put("user_id", appConstant.getId());
+//                params.put("name", playerName.getText().toString() + "");
+//                params.put("userName", TI_userName.getText().toString().toLowerCase() + "");
+//                return params;
+//            }
+//
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                Map<String, String> params = new HashMap<>();
+//                params.put("Content-Type", "application/x-www-form-urlencoded");
+//                return params;
+//            }
+//        };
+//
+//        queue.add(stringRequest);
     }
     @Override
     protected void onResume() {

@@ -187,7 +187,7 @@ public class EditProfile extends AppCompatActivity {
                         1);
             }
         });
-        Glide.with(this).load(sharedPreferences.getString(AppConstant.myPicUrl, ""))
+        Glide.with(this).load(AppConstant.AppUrl + "images/" + appConstant.getId() + ".png?u=" +AppConstant.imageExt())
                 .apply(new RequestOptions().circleCrop())
                 .placeholder(R.drawable.game_avatar).into(imgProfile);
         for (int i = 0; i < gameList.getChildCount(); i++) {
