@@ -24,6 +24,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.intelj.y_ral_gaming.Adapter.EventTeamAdapter;
 import com.intelj.y_ral_gaming.AppController;
@@ -46,7 +47,7 @@ public class TeamFragment extends Fragment {
     TextView team_count;
     EventTeamAdapter eventTeamAdapter;
     List<EventTeamModel> eventTeamList = new ArrayList<>();
-
+    ShimmerFrameLayout shimmer_layout;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,7 +60,10 @@ public class TeamFragment extends Fragment {
         rootView = inflater.inflate(R.layout.team_list, container, false);
         rv_teamlist = rootView.findViewById(R.id.rv_teamlist);
         team_count = rootView.findViewById(R.id.team_count);
+        shimmer_layout = rootView.findViewById(R.id.shimmer_layout);
         loadTeam();
+        rootView.findViewById(R.id.pBar3).setVisibility(View.GONE);
+        rootView.findViewById(R.id.lin).setBackground(null);
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver,
                 new IntentFilter("register_event"));
         return rootView;
@@ -79,12 +83,13 @@ public class TeamFragment extends Fragment {
     private void loadTeam() {
         RequestQueue queue = Volley.newRequestQueue(getActivity());
         String url = AppConstant.AppUrl + "tournament_team.php";
+        Log.e("logcat_response", AppController.getInstance().tournamentModel.getId());
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         boolean joined_event = false;
-                        Log.e("lcat_response", response);
+                        Log.e("logcat_response", response);
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             Iterator<String> keys = jsonObject.keys();
@@ -96,7 +101,10 @@ public class TeamFragment extends Fragment {
                                     if (((JSONObject) teamJson.get("teams")).has(new AppConstant(getActivity()).getId())) {
                                         joined_event = true;
                                     }
-                                    eventTeamList.add(new EventTeamModel(AppConstant.AppUrl + "images/" + key + ".png?u=" + AppConstant.imageExt(), teamName, teamJson.getString("teams"), key));
+                                    eventTeamList.add(new EventTeamModel(AppConstant.AppUrl + "images/" + key + ".png?u=" + AppConstant.imageExt()
+                                            ,teamName
+                                            ,teamJson.getString("teams")
+                                            ,key));
                                 }
                             }
                         } catch (Exception e) {
@@ -108,6 +116,7 @@ public class TeamFragment extends Fragment {
                         intent.putExtra("message", joined_event);
                         intent.putExtra("count", eventTeamList.size());
                         LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+                        shimmer_layout.setVisibility(View.GONE);
                         eventTeamAdapter = new EventTeamAdapter(getActivity(), eventTeamList);
                         GridLayoutManager mLayoutManager = new GridLayoutManager(getActivity(), 3);
                         rv_teamlist.setLayoutManager(mLayoutManager);

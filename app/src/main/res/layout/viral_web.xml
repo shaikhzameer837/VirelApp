@@ -1,42 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/black">
+
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/pullToRefresh"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/view_pager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal"
+                android:paddingTop="50dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:onClick="loadVideo"
+                    android:tag="-1"
+                    android:text="Mix"
+                    android:textColor="@color/white" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:onClick="loadVideo"
+                    android:tag="0"
+                    android:text="BGMI"
+                    android:textColor="@color/white" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:onClick="loadVideo"
+                    android:text="Free Fire"
+                    android:tag="1"
+                    android:textColor="@color/white" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="loadVideo"
+                    android:text="Valorant"
+                    android:tag="2"
+                    android:textColor="@color/white" />
+            </LinearLayout>
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/view_pager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical" />
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
             android:layout_marginRight="20dp"
             android:layout_marginBottom="20dp"
-            android:layout_alignParentBottom="true"
             android:orientation="vertical">
+
             <Button
                 android:layout_width="wrap_content"
-                android:text=" Home "
-                android:padding="10dp"
-                android:drawableTint="@color/white"
-                android:drawableLeft="@drawable/home"
-                android:onClick="wayToHome"
-                android:drawableRight="@drawable/arrow_white"
-                android:textColor="@color/white"
+                android:layout_height="wrap_content"
                 android:background="@drawable/button_round"
-                android:layout_height="wrap_content"/>
+                android:drawableLeft="@drawable/home"
+                android:drawableRight="@drawable/arrow_white"
+                android:drawableTint="@color/white"
+                android:onClick="wayToHome"
+                android:padding="10dp"
+                android:text=" Home "
+                android:textColor="@color/white" />
         </LinearLayout>
     </RelativeLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
