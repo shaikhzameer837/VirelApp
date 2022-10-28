@@ -1,5 +1,5 @@
 package com.intelj.y_ral_gaming.Activity;
-import android.Manifest;
+
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,7 +18,6 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityOptionsCompat;
@@ -30,7 +30,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.intelj.y_ral_gaming.ChatActivity;
 import com.intelj.y_ral_gaming.ContactListModel;
@@ -48,9 +47,9 @@ import java.util.Set;
 
 public class ChatList extends AppCompatActivity {
     ArrayList<ContactListModel> contactModel;
-    HashMap<String, String> contactArrayList = new HashMap<>();
-    SharedPreferences shd;
+    HashMap<String, String> contactHashList = new HashMap<>();
     HashSet<String> originalContact = new HashSet<>();
+    SharedPreferences shd;
     RecyclerView rv_contact;
     private static final int REQUEST = 112;
     ContactListAdapter contactListAdapter;
@@ -65,21 +64,6 @@ public class ChatList extends AppCompatActivity {
         rv_contact = findViewById(R.id.rv_contact);
         progress = findViewById(R.id.progress);
         appConstant = new AppConstant(this);
-        findViewById(R.id.refresh).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (Build.VERSION.SDK_INT >= 23) {
-                    String[] PERMISSIONS = {android.Manifest.permission.READ_CONTACTS};
-                    if (!hasPermissions(ChatList.this, PERMISSIONS)) {
-                        ActivityCompat.requestPermissions(ChatList.this, PERMISSIONS, REQUEST);
-                    } else {
-                        new readContactTask().execute();
-                    }
-                } else {
-                    new readContactTask().execute();
-                }
-            }
-        });
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(ChatList.this);
         rv_contact.setLayoutManager(mLayoutManager);
         contactModel = new ArrayList<>();
@@ -88,18 +72,39 @@ public class ChatList extends AppCompatActivity {
         rv_contact.addOnItemTouchListener(new RecyclerTouchListener(ChatList.this, rv_contact, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
+                if (!contactModel.get(position).getUserid().equals("")) {
+                    sendIntent(contactModel.get(position).getUserid(),view);
+                    return;
+                }
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users");
+                ref.orderByChild("phoneNumber").equalTo(contactModel.get(position).getPhoneNumber().trim()).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshots) {
+                        if (dataSnapshots.getChildrenCount() == 0) {
+                            startActivity(new Intent(ChatList.this, ReferralActivity.class));
+                            return;
+                        }
+                        for (DataSnapshot childSnapshot : dataSnapshots.getChildren()) {
+                            String clubkey = childSnapshot.getKey();
+                            Log.e("clubkey", clubkey);
+                            appConstant.saveUserInfo(contactModel.get(position).getPhoneNumber(), clubkey, "", null, "", childSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue() != null ? childSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue().toString() : null, childSnapshot.child(AppConstant.userName).getValue() != null ? childSnapshot.child(AppConstant.userName).getValue().toString() : System.currentTimeMillis() + "");
+                            contactModel.get(position).setUserid(clubkey);
+                            sendIntent(contactModel.get(position).getUserid(),view);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError error) {
+                        // Failed, how to handle?
+
+                    }
+
+                });
                 if (!appConstant.checkLogin()) {
                     startActivity(new Intent(ChatList.this, SigninActivity.class));
                     return;
                 }
-                Intent intent = new Intent(ChatList.this, ChatActivity.class);
-                String transitionName = "fade";
-                View transitionView = view.findViewById(R.id.profile);
-                ViewCompat.setTransitionName(transitionView, transitionName);
-                ActivityOptionsCompat options = ActivityOptionsCompat.
-                        makeSceneTransitionAnimation(ChatList.this, transitionView, transitionName);
-                intent.putExtra(AppConstant.id, contactModel.get(position).getUserid());
-                startActivity(intent, options.toBundle());
+
             }
 
             @Override
@@ -107,14 +112,29 @@ public class ChatList extends AppCompatActivity {
 
             }
         }));
-        String[] PERMISSIONS = {android.Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS};
-        if (!hasPermissions(ChatList.this, PERMISSIONS)) {
-            ActivityCompat.requestPermissions(ChatList.this, PERMISSIONS, REQUEST);
+        if (Build.VERSION.SDK_INT >= 23) {
+            String[] PERMISSIONS = {android.Manifest.permission.READ_CONTACTS};
+            if (!hasPermissions(ChatList.this, PERMISSIONS)) {
+                ActivityCompat.requestPermissions(ChatList.this, PERMISSIONS, REQUEST);
+            } else {
+                loadChats();
+            }
         } else {
             loadChats();
         }
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
                 new IntentFilter("refresh"));
+    }
+
+    private void sendIntent(String userid,View view) {
+        Intent intent = new Intent(ChatList.this, ChatActivity.class);
+        String transitionName = "fade";
+        View transitionView = view.findViewById(R.id.profile);
+        ViewCompat.setTransitionName(transitionView, transitionName);
+        ActivityOptionsCompat options = ActivityOptionsCompat.
+                makeSceneTransitionAnimation(ChatList.this, transitionView, transitionName);
+        intent.putExtra(AppConstant.id, userid);
+        startActivity(intent, options.toBundle());
     }
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
@@ -138,7 +158,11 @@ public class ChatList extends AppCompatActivity {
             if (set != null) {
                 for (String s : set) {
                     SharedPreferences userInfo = getSharedPreferences(s, Context.MODE_PRIVATE);
-                    contactModel.add(new ContactListModel(s,userInfo.getString(AppConstant.myPicUrl, ""), appConstant.getContactName(userInfo.getString(AppConstant.phoneNumber, "")), userInfo.getString(AppConstant.id, ""), userInfo.getString(AppConstant.bio, "")));
+                    contactModel.add(new ContactListModel(s,
+                            AppConstant.AppUrl + "images/" + userInfo.getString(AppConstant.id, "") + ".png?u=" + AppConstant.imageExt(),
+                            getContactName(s),
+                            userInfo.getString(AppConstant.id, ""),
+                            userInfo.getString(AppConstant.bio, "")));
                 }
                 Collections.sort(contactModel, new Comparator<ContactListModel>() {
                     @Override
@@ -147,13 +171,30 @@ public class ChatList extends AppCompatActivity {
                         return object1.getName().compareTo(object2.getName());
                     }
                 });
-
                 contactListAdapter.notifyDataSetChanged();
             } else
                 new readContactTask().execute();
         } catch (Exception e) {
             new readContactTask().execute();
         }
+    }
+
+    public String getContactName(final String phoneNumber) {
+        Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
+
+        String[] projection = new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME};
+
+        String contactName = "";
+        Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
+
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                contactName = cursor.getString(0);
+            }
+            cursor.close();
+        }
+
+        return contactName;
     }
 
     private static boolean hasPermissions(Context context, String... permissions) {
@@ -185,48 +226,48 @@ public class ChatList extends AppCompatActivity {
 
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-
+            progress.setVisibility(View.GONE);
+            loadChats();
         }
     }
 
-    int returnPhone = 0;
-
-    public void serverContact(String number, String original) {
-        Log.e("userNum", number);
-        DatabaseReference mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
-        Query query = mFirebaseDatabaseReference.child("users").orderByChild("phoneNumber").equalTo(number);
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                returnPhone++;
-                if (dataSnapshot != null) {
-                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                        Log.e("number//", original);
-                        Log.e("number//---", postSnapshot.getKey());
-                        originalContact.add(postSnapshot.getKey());
-                        appConstant.saveUserInfo(original, postSnapshot.getKey(), postSnapshot.child(AppConstant.token).exists() ? postSnapshot.child(AppConstant.token).getValue(String.class) : "", null, "", postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue() != null ? postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue().toString() : null, postSnapshot.child(AppConstant.userName).getValue() != null ? postSnapshot.child(AppConstant.userName).getValue().toString() : System.currentTimeMillis() + "");
-                    }
-                }
-                Log.e("originalContact", contactArrayList.size() + " " + returnPhone);
-                if (contactArrayList.size() == returnPhone) {
-                    SharedPreferences.Editor setEditor = shd.edit();
-                    setEditor.putStringSet(AppConstant.contact, originalContact);
-                    setEditor.apply();
-                    Intent intent = new Intent("refresh");
-                    LocalBroadcastManager.getInstance(ChatList.this).sendBroadcast(intent);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
+//    public void serverContact(String number, String original) {
+//        Log.e("userNum", number);
+//        DatabaseReference mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+//        Query query = mFirebaseDatabaseReference.child("users").orderByChild("phoneNumber").equalTo(number);
+//        query.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                returnPhone++;
+//                if (dataSnapshot != null) {
+//                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+//                        Log.e("number//", original);
+//                        Log.e("number//---", postSnapshot.getKey());
+//                        originalContact.add(postSnapshot.getKey());
+//                        appConstant.saveUserInfo(original, postSnapshot.getKey(), postSnapshot.child(AppConstant.token).exists() ? postSnapshot.child(AppConstant.token).getValue(String.class) : "", null, "", postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue() != null ? postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue().toString() : null, postSnapshot.child(AppConstant.userName).getValue() != null ? postSnapshot.child(AppConstant.userName).getValue().toString() : System.currentTimeMillis() + "");
+//                    }
+//                }
+//                Log.e("originalContact", contactArrayList.size() + " " + returnPhone);
+//                if (contactArrayList.size() == returnPhone) {
+//                    SharedPreferences.Editor setEditor = shd.edit();
+//                    setEditor.putStringSet(AppConstant.contact, originalContact);
+//                    setEditor.apply();
+//                    Intent intent = new Intent("refresh");
+//                    LocalBroadcastManager.getInstance(ChatList.this).sendBroadcast(intent);
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
 
 
     public void readContacts() {
-        contactArrayList.clear();
+        contactHashList.clear();
+        originalContact.clear();
         ContentResolver cr = getContentResolver();
         Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
                 null, null, null, null);
@@ -254,8 +295,9 @@ public class ChatList extends AppCompatActivity {
                             if (!phoneNo.startsWith("+"))
                                 phoneNo = appConstant.getCountryCode() + phoneNo;
                             Log.e("Phone_Number: ", phoneNo);
-                            if (!phoneNo.equals(appConstant.getCountryCode() + appConstant.getPhoneNumber()) || !contactArrayList.containsKey(original)) {
-                                contactArrayList.put(phoneNo, original);
+                            if (!phoneNo.equals(appConstant.getCountryCode() + appConstant.getPhoneNumber()) || !contactHashList.containsKey(original)) {
+                                contactHashList.put(phoneNo, original);
+                                originalContact.add(original);
                                 Log.e("Phone_Number_add: ", phoneNo);
                             }
                         }
@@ -267,11 +309,9 @@ public class ChatList extends AppCompatActivity {
         if (cur != null) {
             cur.close();
         }
-        returnPhone = 0;
-        originalContact.clear();
-        for (String phoneNo : contactArrayList.keySet()) {
-            serverContact(phoneNo, contactArrayList.get(phoneNo));
-        }
+        SharedPreferences.Editor setEditor = shd.edit();
+        setEditor.putStringSet(AppConstant.contact, originalContact);
+        setEditor.apply();
     }
 
     @Override

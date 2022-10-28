@@ -16,12 +16,14 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.text.Html;
 import android.transition.Fade;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -48,8 +50,10 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -64,6 +68,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.intelj.y_ral_gaming.Adapter.MyListAdapter;
 import com.intelj.y_ral_gaming.Adapter.PopularAdapter;
 import com.intelj.y_ral_gaming.AppController;
 import com.intelj.y_ral_gaming.BaseActivity;
@@ -80,6 +85,7 @@ import com.intelj.y_ral_gaming.Utils.AppConstant;
 import com.intelj.y_ral_gaming.Utils.RecyclerTouchListener;
 import com.intelj.y_ral_gaming.db.AppDataBase;
 import com.intelj.y_ral_gaming.main.PaymentWithdraw;
+import com.intelj.y_ral_gaming.model.MyListData;
 import com.intelj.y_ral_gaming.model.TournamentModel;
 
 import org.json.JSONArray;
@@ -224,7 +230,7 @@ public class MainActivity extends BaseActivity {
                             @Override
                             public void onClick(View v) {
 
-                                startActivity(new Intent(MainActivity.this, new AppConstant(MainActivity.this).checkLogin() ? ChatList.class : SigninActivity.class));
+                                startActivity(new Intent(MainActivity.this, appConstant.checkLogin() ? ChatList.class : SigninActivity.class));
                             }
                         });
                         ImageView newChat = inflated.findViewById(R.id.newChat);
@@ -367,7 +373,135 @@ public class MainActivity extends BaseActivity {
         dialogBottom.setContentView(view);
         dialogBottom.show();
     }
+    HashMap<String, String> jsonAnimationList = new HashMap<>();
+    TextView refer, referral;
+    RecyclerView invite_recyclerView;
+    ArrayList<MyListData> myListData = new ArrayList<>();
+    public void showInvite() {
+        View view = getLayoutInflater().inflate(R.layout.referral_activity, null);
+        final BottomSheetDialog dialogBottom = new RoundedBottomSheetDialog(MainActivity.this);
+        dialogBottom.setContentView(view);
+        dialogBottom.show();
+        invite_recyclerView = view.findViewById(R.id.recyclerView);
+        ViewPager viewPager = view.findViewById(R.id.viewpager);
+        jsonAnimationList.put("referral.json", "Refer a friend");
+        jsonAnimationList.put("login.json", "Register & play Game");
+        jsonAnimationList.put("cash.json", "You earn 10rs after game played");
+        refer = findViewById(R.id.refer);
+        referral = findViewById(R.id.referal);
+        refer.setText(" YRAL" + new AppConstant(this).getId());
+        referral.setText(" My Referral id [YRAL" + new AppConstant(this).getId() +"]  ");
+        viewPager.setAdapter(new CustomPagerAdapter(MainActivity.this));
+        getReferalList();
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                viewPager.setCurrentItem(viewPager.getCurrentItem() == (jsonAnimationList.size() - 1) ? 0 : viewPager.getCurrentItem() + 1);
+                handler.postDelayed(this, 2000); //now is every 2 minutes
+            }
+        }, 2000);
+    }
+    private void getReferalList() {
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = AppConstant.AppUrl + "get_referral_list.php";
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.e("responses", response);
+                        findViewById(R.id.progress).setVisibility(View.GONE);
+                        if(response.equals("[]")){
+                            findViewById(R.id.anim).setVisibility(View.VISIBLE);
+                            findViewById(R.id.recyclerView).setVisibility(View.GONE);
+                            return;
+                        }
+                        try {
+                            JSONArray json = new JSONArray(response);
+                            TextView totalAmount = findViewById(R.id.totalAmount);
+                            int totalSuccessInvite = 0;
+                            for (int i = 0; i < json.length(); i++) {
+                                JSONObject jsonObject = (JSONObject) json.get(i);
+                                if(!jsonObject.getString("playing_status").equals("0"))
+                                    totalSuccessInvite = totalSuccessInvite + Integer.parseInt(jsonObject.getString("playing_status"));
+                                myListData.add(new MyListData(jsonObject.getString("name"), jsonObject.getString("userId"), jsonObject.getString("playing_status")));
+                                Log.e("responses", jsonObject.getString("name"));
+                            }
+                            totalAmount.setText("+" + totalSuccessInvite);
+                            MyListAdapter adapter = new MyListAdapter(myListData);
+                            invite_recyclerView.setHasFixedSize(true);
+                            invite_recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+                            invite_recyclerView.setAdapter(adapter);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                findViewById(R.id.progress).setVisibility(View.GONE);
+                Toast.makeText(MainActivity.this, "Something went wrong try again later ", Toast.LENGTH_SHORT).show();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("referral_id", "YRAL" + appConstant.getId());
+                return params;
+            }
 
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Content-Type", "application/x-www-form-urlencoded");
+                return params;
+            }
+        };
+
+        queue.add(stringRequest);
+    }
+
+    public class CustomPagerAdapter extends PagerAdapter {
+
+        private Context mContext;
+
+        public CustomPagerAdapter(Context context) {
+            mContext = context;
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup collection, int position) {
+            LayoutInflater inflater = LayoutInflater.from(mContext);
+            ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.image_view, collection, false);
+            TextView textView  = layout.findViewById(R.id.title);
+            LottieAnimationView lottieAnimationView = layout.findViewById(R.id.animationView);
+            String firstKey = jsonAnimationList.keySet().toArray()[position].toString();
+            lottieAnimationView.setAnimation(firstKey);
+            textView.setText(jsonAnimationList.get(firstKey));
+            collection.addView(layout);
+            return layout;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup collection, int position, Object view) {
+            collection.removeView((View) view);
+        }
+
+        @Override
+        public int getCount() {
+            return jsonAnimationList.size();
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object object) {
+            return view == object;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return "";
+        }
+
+    }
     private void getPopularFace() {
         AppController.getInstance().popularList.clear();
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -979,7 +1113,8 @@ public class MainActivity extends BaseActivity {
                 startActivity(new Intent(MainActivity.this, EditProfile.class));
             else LoginSheet();
         } else {
-            startActivity(new Intent(MainActivity.this, ReferralActivity.class));
+            showInvite();
+ //           startActivity(new Intent(MainActivity.this, ReferralActivity.class));
         }
     }
 
