@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -27,6 +28,8 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
     private List<String> checkBoxList = new ArrayList<>();
     Context mContext;
     boolean isCheckBoxVisible = false;
+    boolean isButtonVisible = false;
+    ArrayList<String> teamMember = new ArrayList<>();
     public int setChecBox(int position) {
         if (position != -1 && !checkBoxList.contains(contactModel.get(position).getUserid())) {
             checkBoxList.add(contactModel.get(position).getUserid());
@@ -40,6 +43,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         TextView name, lastMess,nCount;
+        Button addButton;
         ImageView iv_profile;
         NeumorphCardView arrow;
         CheckBox checkbox;
@@ -47,6 +51,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         public MyViewHolder(View view) {
             super(view);
             name = view.findViewById(R.id.name);
+            addButton = view.findViewById(R.id.addButton);
             lastMess = view.findViewById(R.id.lastMess);
             iv_profile = view.findViewById(R.id.profile);
             arrow = view.findViewById(R.id.arrow);
@@ -72,6 +77,11 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         isCheckBoxVisible = true;
         notifyDataSetChanged();
     }
+  public void checkButtonVisible(){
+        isButtonVisible = true;
+      isCheckBoxVisible = false;
+      notifyDataSetChanged();
+    }
     public List<String> getSelectedList(){
 
         return checkBoxList;
@@ -93,8 +103,35 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
                 notifyDataSetChanged();
             }
         });
+        Log.e("isCheckBoxVisible",isCheckBoxVisible+"");
         holder.checkbox.setVisibility(isCheckBoxVisible ? View.VISIBLE : View.GONE);
-        holder.arrow.setVisibility(isCheckBoxVisible ? View.GONE : View.VISIBLE);
+        holder.addButton.setVisibility(isButtonVisible ? View.VISIBLE : View.GONE);
+        holder.addButton.setText(teamMember.contains(contactModel.get(position).getBio()) ? "Remove" : "Add");
+        holder.addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                teamMember.add(contactModel.get(position).getBio());
+                notifyDataSetChanged();
+            }
+        });
+//        holder.arrow.setVisibility(isCheckBoxVisible ? View.GONE : View.VISIBLE);
+//        holder.arrow.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if(checkBoxList.contains(contactModel.get(position).getUserid())){
+//                    checkBoxList.remove(contactModel.get(position).getUserid());
+//                }else{
+//                    checkBoxList.add(contactModel.get(position).getUserid());
+//                }
+//                notifyDataSetChanged();
+//            }
+//        });
+        holder.addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
         Glide.with(mContext).load(AppConstant.AppUrl + "images/" + contactModel.get(position).getUserid() + ".png?u=" + AppConstant.imageExt()).placeholder(R.drawable.game_avatar).apply(new RequestOptions().circleCrop()).into(holder.iv_profile);
     }
 

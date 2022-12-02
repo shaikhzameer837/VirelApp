@@ -26,10 +26,30 @@ public class VideoList {
     @ColumnInfo(name = "times")
     public String times;
 
-    public VideoList(String videoId, String owner, String times) {
+    @ColumnInfo(name = "game")
+    public String game;
+
+    public VideoList(String videoId, String owner, String times, String game) {
         this.videoId = videoId;
         this.owner = owner;
         this.times = times;
+        this.game = game;
+    }
+
+    public long getCreated_at() {
+        return created_at;
+    }
+
+    public void setCreated_at(long created_at) {
+        this.created_at = created_at;
+    }
+
+    public String getGame() {
+        return game;
+    }
+
+    public void setGame(String game) {
+        this.game = game;
     }
 
     public int getId() {

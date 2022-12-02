@@ -39,10 +39,10 @@ public class WhatsNew extends AppCompatActivity {
         binding = WhatsNewBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         contentList.add("referral.json");
-        contentList.add(R.drawable.viral_web);
+        contentList.add("content.json");
         contentList.add("suggest.json");
-        jsonFiles.add("Introducing Viral Web \n Watch Short Gaming Videos online");
         jsonFiles.add("Refer A Friend and Earn Money");
+        jsonFiles.add("Introducing Viral Web \n Watch Short Gaming Videos online");
         jsonFiles.add("Have complain or suggestion Write to us");
         binding.viewpager.setAdapter(new CustomPagerAdapter(WhatsNew.this));
         setProgress();

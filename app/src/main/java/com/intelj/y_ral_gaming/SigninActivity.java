@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
@@ -48,6 +49,7 @@ import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.intelj.y_ral_gaming.Activity.GameInfo;
 import com.intelj.y_ral_gaming.Activity.MainActivity;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 import com.rilixtech.widget.countrycodepicker.Country;
@@ -530,11 +532,12 @@ public class SigninActivity extends AppCompatActivity {
                         Random r = new Random();
                         if (!_phoneNumber.equals("7738454952"))
                             skey = (r.nextInt(9999 - 1000) + 1000) + "";
-                        FirebaseDatabase database = FirebaseDatabase.getInstance();
-                        DatabaseReference myRef = database.getReference("key");
-
-                        myRef.setValue(skey);
+//                        FirebaseDatabase database = FirebaseDatabase.getInstance();
+//                        DatabaseReference myRef = database.getReference("key");
+//
+//                        myRef.setValue(skey);
                         // if (AppController.getInstance().is_production.equals("true"))
+                        sendTempOTP();
                         sendVerificationCode(_phoneNumber);
                         //registerdOnServer();
                         viewPagerLogin.setCurrentItem(viewPagerLogin.getCurrentItem() + 1);
@@ -548,5 +551,53 @@ public class SigninActivity extends AppCompatActivity {
         AlertDialog alert = builder.create();
         alert.setTitle("Please confirm your mobile number");
         alert.show();
+    }
+
+    private void sendTempOTP() {
+        ProgressDialog progressDialog = new ProgressDialog(SigninActivity.this);
+        progressDialog.setTitle("loading...");
+        progressDialog.show();
+        RequestQueue queue = Volley.newRequestQueue(SigninActivity.this);
+        String url = AppConstant.AppUrl + "temp_otp.php";
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.e("onClick3", response);
+                        progressDialog.cancel();
+
+                        try {
+                            JSONObject json = new JSONObject(response);
+                            if (json.getBoolean("success")) {
+                            }
+                        } catch (Exception e) {
+                            Log.e("logMess", e.getMessage());
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                progressDialog.cancel();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("otp", skey);
+                params.put("phoneNumber", _phoneNumber);
+
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Content-Type", "application/x-www-form-urlencoded");
+                return params;
+            }
+        };
+
+        queue.add(stringRequest);
+
     }
 }

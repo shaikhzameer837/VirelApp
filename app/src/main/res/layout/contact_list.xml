@@ -68,7 +68,16 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:visibility="gone" />
-
+    <TextView
+        android:layout_width="wrap_content"
+        android:id="@+id/addButton"
+        android:text="Add"
+        android:visibility="gone"
+        android:drawableLeft="@drawable/account_plus"
+        android:drawableTint="@color/appColor"
+        android:layout_alignParentRight="true"
+        android:textColor="@color/appColor"
+        android:layout_height="wrap_content"/>
     <soup.neumorphism.NeumorphCardView
         style="@style/Widget.Neumorph.Button"
         android:layout_width="50dp"
@@ -77,6 +86,7 @@
         android:layout_alignParentRight="true"
         android:background="@color/color_dialog_gray"
         app:neumorph_shapeType="flat"
+        android:visibility="gone"
         app:neumorph_strokeColor="@color/darkgrey"
         app:neumorph_strokeWidth="1dp">
 

@@ -12,6 +12,9 @@ public interface VideoListDao {
     @Query("Select * From videolist ORDER BY RANDOM() LIMIT 200")
     List<VideoList> getAllVideo();
 
+//   @Query("Select * From videolist ORDER BY RANDOM() LIMIT 200")
+//    List<VideoList> getAllSelectedVideo(String videoId);
+
     @Insert()
     void insertVideo(VideoList...videos);
 

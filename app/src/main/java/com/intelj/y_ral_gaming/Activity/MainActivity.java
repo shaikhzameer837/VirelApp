@@ -16,12 +16,14 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.text.Html;
 import android.transition.Fade;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -48,8 +50,10 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -64,11 +68,10 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.intelj.y_ral_gaming.Adapter.MyListAdapter;
 import com.intelj.y_ral_gaming.Adapter.PopularAdapter;
 import com.intelj.y_ral_gaming.AppController;
 import com.intelj.y_ral_gaming.BaseActivity;
-import com.intelj.y_ral_gaming.ChatActivity;
-import com.intelj.y_ral_gaming.ContactListModel;
 import com.intelj.y_ral_gaming.Fragment.BottomSheetDilogFragment;
 import com.intelj.y_ral_gaming.Fragment.OneFragment;
 import com.intelj.y_ral_gaming.PopularModel;
@@ -78,8 +81,8 @@ import com.intelj.y_ral_gaming.SigninActivity;
 import com.intelj.y_ral_gaming.TournamentAdapter;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 import com.intelj.y_ral_gaming.Utils.RecyclerTouchListener;
-import com.intelj.y_ral_gaming.db.AppDataBase;
 import com.intelj.y_ral_gaming.main.PaymentWithdraw;
+import com.intelj.y_ral_gaming.model.MyListData;
 import com.intelj.y_ral_gaming.model.TournamentModel;
 
 import org.json.JSONArray;
@@ -132,6 +135,7 @@ public class MainActivity extends BaseActivity {
                 showRankChat();
             }
         });
+        Log.e("onCreateId: ", new AppConstant(this).getPhoneNumber());
         sharedPreferences = getSharedPreferences(appConstant.getId(), 0);
         Fade fade = new Fade();
         View decor = getWindow().getDecorView();
@@ -186,8 +190,10 @@ public class MainActivity extends BaseActivity {
         coins.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (new AppConstant(MainActivity.this).checkLogin()) showCoins();
-                else LoginSheet();
+                if (new AppConstant(MainActivity.this).checkLogin())
+                    showCoins();
+                else
+                    LoginSheet();
             }
         });
 
@@ -220,134 +226,74 @@ public class MainActivity extends BaseActivity {
                         return true;
                     case R.id.chat:
                         inflateView(R.layout.contacts);
-                        inflated.findViewById(R.id.fMessage).setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-
-                                startActivity(new Intent(MainActivity.this, new AppConstant(MainActivity.this).checkLogin() ? ChatList.class : SigninActivity.class));
-                            }
-                        });
-                        ImageView newChat = inflated.findViewById(R.id.newChat);
-                        newChat.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                startActivity(new Intent(MainActivity.this, new AppConstant(MainActivity.this).checkLogin() ? ChatList.class : SigninActivity.class));
-                            }
-                        });
-
-                        SharedPreferences shd = getSharedPreferences(AppConstant.recent, MODE_PRIVATE);
-                        Set<String> set = shd.getStringSet(AppConstant.contact, null);
-                        ArrayList<ContactListModel> contactModel = new ArrayList<>();
-                        try {
-                            if (set != null) {
-                                for (String s : set) {
-                                    SharedPreferences userInfo = getSharedPreferences(s, Context.MODE_PRIVATE);
-                                    AppDataBase appDataBase = AppDataBase.getDBInstance(MainActivity.this, s + "_chats");
-                                    Log.e("messages", s);
-                                    contactModel.add(0, new ContactListModel(s, userInfo.getString(AppConstant.myPicUrl, ""), appConstant.getContactName(userInfo.getString(AppConstant.phoneNumber, "")), userInfo.getString(AppConstant.id, ""), appDataBase.chatDao().getlastMess().size() > 0 ? appDataBase.chatDao().getlastMess().get(0).messages : ""));
-                                }
-                                Collections.sort(contactModel, new Comparator<ContactListModel>() {
-                                    @Override
-                                    public int compare(final ContactListModel object1, final ContactListModel object2) {
-                                        Log.e("Collections", object1.getName() + " " + object2.getName());
-                                        return object1.getName().compareTo(object2.getName());
-                                    }
-                                });
-                                inflated.findViewById(R.id.lin).setVisibility(View.GONE);
-                            }
-                        } catch (Exception e) {
-                            SharedPreferences.Editor setEditor = shd.edit();
-                            setEditor.putStringSet(AppConstant.contact, null);
-                            setEditor.apply();
-                        }
-                        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(MainActivity.this);
-                        RecyclerView rv_contact = inflated.findViewById(R.id.rv_contact);
-                        rv_contact.setLayoutManager(mLayoutManager);
-                        ContactListAdapter contactListAdapter = new ContactListAdapter(MainActivity.this, contactModel);
-                        rv_contact.setAdapter(contactListAdapter);
-                        rv_contact.addOnItemTouchListener(new RecyclerTouchListener(MainActivity.this, rv_contact, new RecyclerTouchListener.ClickListener() {
-                            @Override
-                            public void onClick(View view, int position) {
-                                if (!appConstant.checkLogin()) {
-                                    startActivity(new Intent(MainActivity.this, SigninActivity.class));
-                                    return;
-                                }
-                                Intent intent = new Intent(MainActivity.this, ChatActivity.class);
-                                String transitionName = "fade";
-                                View transitionView = view.findViewById(R.id.profile);
-                                ViewCompat.setTransitionName(transitionView, transitionName);
-                                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this, transitionView, transitionName);
-                                intent.putExtra(AppConstant.id, contactModel.get(position).getUserid());
-                                startActivity(intent, options.toBundle());
-                            }
-
-                            @Override
-                            public void onLongClick(View view, int position) {
-
-                            }
-                        }));
-
-
-//                                shd = getSharedPreferences(AppConstant.id, MODE_PRIVATE);
-//                                rv_contact = inflated.findViewById(R.id.rv_contact);
-//                                inflated.findViewById(R.id.refresh).setOnClickListener(new View.OnClickListener() {
+//                        inflated.findViewById(R.id.fMessage).setOnClickListener(new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View v) {
+//
+//                                startActivity(new Intent(MainActivity.this, appConstant.checkLogin() ? ChatList.class : SigninActivity.class));
+//                            }
+//                        });
+//                        ImageView newChat = inflated.findViewById(R.id.newChat);
+//                        newChat.setOnClickListener(new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View v) {
+//                                startActivity(new Intent(MainActivity.this, new AppConstant(MainActivity.this).checkLogin() ? ChatList.class : SigninActivity.class));
+//                            }
+//                        });
+//
+//                        SharedPreferences shd = getSharedPreferences(AppConstant.recent, MODE_PRIVATE);
+//                        Set<String> set = shd.getStringSet(AppConstant.contact, null);
+//                        ArrayList<ContactListModel> contactModel = new ArrayList<>();
+//                        try {
+//                            if (set != null) {
+//                                for (String s : set) {
+//                                    SharedPreferences userInfo = getSharedPreferences(s, Context.MODE_PRIVATE);
+//                                    AppDataBase appDataBase = AppDataBase.getDBInstance(MainActivity.this, s + "_chats");
+//                                    Log.e("messages", s);
+//                                    contactModel.add(0, new ContactListModel(s, userInfo.getString(AppConstant.myPicUrl, ""), appConstant.getContactName(userInfo.getString(AppConstant.phoneNumber, "")), userInfo.getString(AppConstant.id, ""), appDataBase.chatDao().getlastMess().size() > 0 ? appDataBase.chatDao().getlastMess().get(0).messages : ""));
+//                                }
+//                                Collections.sort(contactModel, new Comparator<ContactListModel>() {
 //                                    @Override
-//                                    public void onClick(View v) {
-//                                        if (Build.VERSION.SDK_INT >= 23) {
-//                                            String[] PERMISSIONS = {android.Manifest.permission.READ_CONTACTS};
-//                                            if (!hasPermissions(MainActivity.this, PERMISSIONS)) {
-//                                                ActivityCompat.requestPermissions(MainActivity.this, PERMISSIONS, REQUEST);
-//                                            } else {
-//                                                new readContactTask().execute();
-//                                            }
-//                                        } else {
-//                                            new readContactTask().execute();
-//                                        }
+//                                    public int compare(final ContactListModel object1, final ContactListModel object2) {
+//                                        Log.e("Collections", object1.getName() + " " + object2.getName());
+//                                        return object1.getName().compareTo(object2.getName());
 //                                    }
 //                                });
-//                                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(MainActivity.this);
-//                                rv_contact.setLayoutManager(mLayoutManager);
-//                                contactModel = new ArrayList<>();
-//                                Set<String> set = shd.getStringSet(AppConstant.contact, null);
-//                                if (set != null) {
-//                                    for (String s : set) {
-//                                        SharedPreferences userInfo = getSharedPreferences(s, Context.MODE_PRIVATE);
-//                                        contactModel.add(new ContactListModel(userInfo.getString(AppConstant.myPicUrl, ""), appConstant.getContactName(userInfo.getString(AppConstant.phoneNumber, "")), userInfo.getString(AppConstant.id, ""), userInfo.getString(AppConstant.bio, "")));
-//                                    }
-//                                    inflated.findViewById(R.id.la_contact).setVisibility(View.GONE);
-//                                } else {
-//                                    if (Build.VERSION.SDK_INT >= 23) {
-//                                        String[] PERMISSIONS = {android.Manifest.permission.READ_CONTACTS};
-//                                        if (!hasPermissions(MainActivity.this, PERMISSIONS)) {
-//                                            ActivityCompat.requestPermissions(MainActivity.this, PERMISSIONS, REQUEST);
-//                                        } else {
-//                                            new readContactTask().execute();
-//                                        }
-//                                    } else {
-//                                        new readContactTask().execute();
-//                                    }
+//                                inflated.findViewById(R.id.lin).setVisibility(View.GONE);
+//                            }
+//                        } catch (Exception e) {
+//                            SharedPreferences.Editor setEditor = shd.edit();
+//                            setEditor.putStringSet(AppConstant.contact, null);
+//                            setEditor.apply();
+//                        }
+//                        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(MainActivity.this);
+//                        RecyclerView rv_contact = inflated.findViewById(R.id.rv_contact);
+//                        rv_contact.setLayoutManager(mLayoutManager);
+//                        ContactListAdapter contactListAdapter = new ContactListAdapter(MainActivity.this, contactModel);
+//                        rv_contact.setAdapter(contactListAdapter);
+//                        rv_contact.addOnItemTouchListener(new RecyclerTouchListener(MainActivity.this, rv_contact, new RecyclerTouchListener.ClickListener() {
+//                            @Override
+//                            public void onClick(View view, int position) {
+//                                if (!appConstant.checkLogin()) {
+//                                    startActivity(new Intent(MainActivity.this, SigninActivity.class));
+//                                    return;
 //                                }
-//                                contactListAdapter = new ContactListAdapter(MainActivity.this, contactModel);
-//                                rv_contact.setAdapter(contactListAdapter);
-//                                rv_contact.addOnItemTouchListener(new RecyclerTouchListener(MainActivity.this, recyclerviewTeam, new RecyclerTouchListener.ClickListener() {
-//                                    @Override
-//                                    public void onClick(View view, int position) {
-//                                        Intent intent = new Intent(MainActivity.this, ProFileActivity.class);
-//                                        String transitionName = "fade";
-//                                        View transitionView = view.findViewById(R.id.profile);
-//                                        ViewCompat.setTransitionName(transitionView, transitionName);
+//                                Intent intent = new Intent(MainActivity.this, ChatActivity.class);
+//                                String transitionName = "fade";
+//                                View transitionView = view.findViewById(R.id.profile);
+//                                ViewCompat.setTransitionName(transitionView, transitionName);
+//                                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this, transitionView, transitionName);
+//                                intent.putExtra(AppConstant.id, contactModel.get(position).getUserid());
+//                                startActivity(intent, options.toBundle());
+//                            }
 //
-//                                        ActivityOptionsCompat options = ActivityOptionsCompat.
-//                                                makeSceneTransitionAnimation(MainActivity.this, transitionView, transitionName);
-//                                        intent.putExtra("userid", contactModel.get(position).getUserid());
-//                                        startActivity(intent, options.toBundle());
-//                                    }
+//                            @Override
+//                            public void onLongClick(View view, int position) {
 //
-//                                    @Override
-//                                    public void onLongClick(View view, int position) {
-//
-//                                    }
-//                                }));
+//                            }
+//                        }));
+
+
                         return true;
                 }
                 return false;
@@ -367,7 +313,135 @@ public class MainActivity extends BaseActivity {
         dialogBottom.setContentView(view);
         dialogBottom.show();
     }
+    HashMap<String, String> jsonAnimationList = new HashMap<>();
+    TextView refer, referral;
+    RecyclerView invite_recyclerView;
+    ArrayList<MyListData> myListData = new ArrayList<>();
+    public void showInvite() {
+        View view = getLayoutInflater().inflate(R.layout.referral_activity, null);
+        final BottomSheetDialog dialogBottom = new RoundedBottomSheetDialog(MainActivity.this);
+        dialogBottom.setContentView(view);
+        dialogBottom.show();
+        invite_recyclerView = view.findViewById(R.id.recyclerView);
+        ViewPager viewPager = view.findViewById(R.id.viewpager);
+        jsonAnimationList.put("referral.json", "Refer a friend");
+        jsonAnimationList.put("login.json", "Register & play Game");
+        jsonAnimationList.put("cash.json", "You earn 10rs after game played");
+        refer = view.findViewById(R.id.refer);
+        referral =  view.findViewById(R.id.referal);
+        refer.setText(" YRAL" + new AppConstant(this).getId());
+        referral.setText(" My Referral id [YRAL" + new AppConstant(this).getId() +"]  ");
+        viewPager.setAdapter(new CustomPagerAdapter(MainActivity.this));
+        getReferalList();
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                viewPager.setCurrentItem(viewPager.getCurrentItem() == (jsonAnimationList.size() - 1) ? 0 : viewPager.getCurrentItem() + 1);
+                handler.postDelayed(this, 2000); //now is every 2 minutes
+            }
+        }, 2000);
+    }
+    private void getReferalList() {
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = AppConstant.AppUrl + "get_referral_list.php";
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.e("responses", response);
+                        findViewById(R.id.progress).setVisibility(View.GONE);
+                        if(response.equals("[]")){
+                            findViewById(R.id.anim).setVisibility(View.VISIBLE);
+                            findViewById(R.id.recyclerView).setVisibility(View.GONE);
+                            return;
+                        }
+                        try {
+                            JSONArray json = new JSONArray(response);
+                            TextView totalAmount = findViewById(R.id.totalAmount);
+                            int totalSuccessInvite = 0;
+                            for (int i = 0; i < json.length(); i++) {
+                                JSONObject jsonObject = (JSONObject) json.get(i);
+                                if(!jsonObject.getString("playing_status").equals("0"))
+                                    totalSuccessInvite = totalSuccessInvite + Integer.parseInt(jsonObject.getString("playing_status"));
+                                myListData.add(new MyListData(jsonObject.getString("name"), jsonObject.getString("userId"), jsonObject.getString("playing_status")));
+                                Log.e("responses", jsonObject.getString("name"));
+                            }
+                            totalAmount.setText("+" + totalSuccessInvite);
+                            MyListAdapter adapter = new MyListAdapter(myListData);
+                            invite_recyclerView.setHasFixedSize(true);
+                            invite_recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+                            invite_recyclerView.setAdapter(adapter);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                findViewById(R.id.progress).setVisibility(View.GONE);
+                Toast.makeText(MainActivity.this, "Something went wrong try again later ", Toast.LENGTH_SHORT).show();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("referral_id", "YRAL" + appConstant.getId());
+                return params;
+            }
 
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Content-Type", "application/x-www-form-urlencoded");
+                return params;
+            }
+        };
+
+        queue.add(stringRequest);
+    }
+
+    public class CustomPagerAdapter extends PagerAdapter {
+
+        private Context mContext;
+
+        public CustomPagerAdapter(Context context) {
+            mContext = context;
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup collection, int position) {
+            LayoutInflater inflater = LayoutInflater.from(mContext);
+            ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.image_view, collection, false);
+            TextView textView  = layout.findViewById(R.id.title);
+            LottieAnimationView lottieAnimationView = layout.findViewById(R.id.animationView);
+            String firstKey = jsonAnimationList.keySet().toArray()[position].toString();
+            lottieAnimationView.setAnimation(firstKey);
+            textView.setText(jsonAnimationList.get(firstKey));
+            collection.addView(layout);
+            return layout;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup collection, int position, Object view) {
+            collection.removeView((View) view);
+        }
+
+        @Override
+        public int getCount() {
+            return jsonAnimationList.size();
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object object) {
+            return view == object;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return "";
+        }
+
+    }
     private void getPopularFace() {
         AppController.getInstance().popularList.clear();
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -384,7 +458,7 @@ public class MainActivity extends BaseActivity {
                     for (int i = 0; i < ja_data.length(); i++) {
                         JSONObject jObj = ja_data.getJSONObject(i);
                         appConstant.saveUserInfo("", jObj.getString("userid"), AppConstant.AppUrl + "images/" + jObj.getString("userid") + ".png?u=" + AppConstant.imageExt(), jObj.getString("name"), "", null, jObj.getString("userid"));
-                        popularModels.add(new PopularModel(jObj.getString("url"), jObj.getString("name"), jObj.getString("amount"), jObj.getString("userid")));
+                        popularModels.add(new PopularModel(jObj.getString("name"), jObj.getString("amount"), jObj.getString("userid")));
                     }
                     Collections.sort(popularModels, new Comparator<PopularModel>() {
                         @Override
@@ -599,7 +673,7 @@ public class MainActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         if (appConstant.checkLogin() && imgProfile != null) {
-            Glide.with(MainActivity.this).load(AppConstant.AppUrl + "images/" + appConstant.getId() + ".png?u=" + AppConstant.imageExt()).placeholder(R.drawable.game_avatar).apply(new RequestOptions().circleCrop()).into(imgProfile);
+            Glide.with(MainActivity.this).load(AppConstant.AppUrl + "images/" + appConstant.getId() + ".png?u=" + sharedPreferences.getString(AppConstant.profile, "Player")).placeholder(R.drawable.game_avatar).apply(new RequestOptions().circleCrop()).into(imgProfile);
             playerName = findViewById(R.id.playerName);
             playerName.setText(sharedPreferences.getString(AppConstant.name, "Player"));
             imgProfile.setOnClickListener(new View.OnClickListener() {
@@ -620,6 +694,9 @@ public class MainActivity extends BaseActivity {
             }
             if (sharedPreferences.getString(AppConstant.gameList, "").equals(""))
                 showGameSelection();
+        }
+        if (!appConstant.checkLogin()){
+            ((TextView) findViewById(R.id.complete)).setText(" Register now and get 10Rs Instantly ");
         }
     }
 
@@ -979,6 +1056,7 @@ public class MainActivity extends BaseActivity {
                 startActivity(new Intent(MainActivity.this, EditProfile.class));
             else LoginSheet();
         } else {
+          //  showInvite();
             startActivity(new Intent(MainActivity.this, ReferralActivity.class));
         }
     }

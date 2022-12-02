@@ -1,6 +1,5 @@
 package com.intelj.y_ral_gaming.Activity;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
@@ -18,11 +17,7 @@ import android.provider.ContactsContract;
 import android.text.InputFilter;
 import android.transition.Fade;
 import android.util.Log;
-import android.view.ContextThemeWrapper;
 import android.view.View;
-import android.view.ViewStub;
-import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -31,14 +26,12 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.app.ActivityCompat;
-import androidx.core.app.ActivityOptionsCompat;
-import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
@@ -51,40 +44,32 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
-import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialog;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
+import com.intelj.y_ral_gaming.Adapter.TeamDisplayList;
 import com.intelj.y_ral_gaming.AppController;
-import com.intelj.y_ral_gaming.ChatActivity;
 import com.intelj.y_ral_gaming.ContactListModel;
-import com.intelj.y_ral_gaming.Fragment.OneFragment;
 import com.intelj.y_ral_gaming.Fragment.PrizePoolFragment;
 import com.intelj.y_ral_gaming.Fragment.RuleFragment;
 import com.intelj.y_ral_gaming.Fragment.TeamFragment;
 import com.intelj.y_ral_gaming.R;
+import com.intelj.y_ral_gaming.RoundedBottomSheetDialog;
 import com.intelj.y_ral_gaming.SigninActivity;
-import com.intelj.y_ral_gaming.TournamentAdapter;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 import com.intelj.y_ral_gaming.Utils.RecyclerTouchListener;
-import com.intelj.y_ral_gaming.model.TournamentModel;
+import com.intelj.y_ral_gaming.model.MyListData;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -94,7 +79,6 @@ public class EventInfo extends AppCompatActivity {
     ViewPager viewPager;
     TextView tv_title, tv_date;
     TextView join;
-    EditText teamName;
     ArrayList<EditText> editTextList = new ArrayList<>();
     ArrayList<TextInputLayout> textInputLayouts = new ArrayList<>();
     AppConstant appConstant;
@@ -129,6 +113,8 @@ public class EventInfo extends AppCompatActivity {
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
                 new IntentFilter("joined_event"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(msMessageReceiver,
+                new IntentFilter("team-event-name"));
         join = findViewById(R.id.join);
         MyEventAdapter adapter = new MyEventAdapter(this, getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(adapter);
@@ -152,42 +138,112 @@ public class EventInfo extends AppCompatActivity {
 
         Glide.with(this).load(AppController.getInstance().tournamentModel.getImage_url()).placeholder(R.drawable.placeholder).into(iv_cover_pic);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        showTeamList();
     }
-
-    RecyclerView rv_contact;
     SharedPreferences shd;
     LinearLayout lin;
+//    private void addTeamList(){
+//        View view = getLayoutInflater().inflate(R.layout.add_team_info, null);
+//        final BottomSheetDialog dialogBottom = new RoundedBottomSheetDialog(EventInfo.this);
+//        view.findViewById(R.id.createTeam).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                startActivity(new Intent(EventInfo.this,CreateTeam.class));
+//            }
+//        });
+//        dialogBottom.setContentView(view);
+//        dialogBottom.show();
+//    }
+    private BroadcastReceiver msMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Get extra data included in the Intent
+            String teamName = intent.getStringExtra("name");
+            String teamId = intent.getStringExtra("id");
+            String teamMember = intent.getStringExtra("teamMember");
+            myListData.add(0,new MyListData(teamName,teamId, teamMember.split(",").length +" Member"));
+            teamAdapter.notifyDataSetChanged();
 
-    private void addTeamList() {
-        editTextList.clear();
-        contactModel = new ArrayList<>();
-        BottomSheetDialog bottomSheetDialog = new RoundedBottomSheetDialog(EventInfo.this);
-        bottomSheetDialog.setContentView(R.layout.add_team_info);
-        lin = bottomSheetDialog.findViewById(R.id.lin);
-        bottomSheetDialog.findViewById(R.id.refresh).setOnClickListener(new View.OnClickListener() {
+            Log.d("receiver", "Got message: " + teamName);
+        }
+    };
+    ArrayList<MyListData> myListData = new ArrayList<>();
+    TeamDisplayList teamAdapter;
+    public void showTeamList() {
+        myListData.clear();
+        //  startActivity(new Intent(ProFileActivity.this,CreateTeam.class));
+        View inflated = getLayoutInflater().inflate(R.layout.team_list, null);
+        final BottomSheetDialog dialogBottom = new RoundedBottomSheetDialog(EventInfo.this);
+        RecyclerView teamRecyclerView = inflated.findViewById(R.id.rv_teamlist);
+        inflated.findViewById(R.id.createTeam).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                new readContactTask().execute();
+            public void onClick(View view) {
+                startActivity(new Intent(EventInfo.this,CreateTeam.class));
             }
         });
-        teamName = bottomSheetDialog.findViewById(R.id.teamName);
-        shd = getSharedPreferences(AppConstant.id, MODE_PRIVATE);
-        rv_contact = bottomSheetDialog.findViewById(R.id.rv_contact);
-        appConstant = new AppConstant(this);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(EventInfo.this);
-        rv_contact.setLayoutManager(mLayoutManager);
-        contactModel = new ArrayList<>();
-        contactListAdapter = new ContactListAdapter(EventInfo.this, contactModel);
-        rv_contact.setAdapter(contactListAdapter);
-        contactListAdapter.checkVisible();
-        rv_contact.addOnItemTouchListener(new RecyclerTouchListener(EventInfo.this, rv_contact, new RecyclerTouchListener.ClickListener() {
+        ShimmerFrameLayout shimmerFrameLayout = inflated.findViewById(R.id.shimmer_layout);
+        shimmerFrameLayout.startShimmer();
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = AppConstant.AppUrl + "get_team_list.php";
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.e("responseT", response);
+                        shimmerFrameLayout.hideShimmer();
+                        shimmerFrameLayout.setVisibility(View.GONE);
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            if (jsonObject.getBoolean("success")) {
+                                JSONArray jsonArray = new JSONArray(jsonObject.getString("teamList"));
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    JSONObject jsonObject2 = (JSONObject) jsonArray.get(i);
+                                    myListData.add(new MyListData(jsonObject2.getString("teamName"), jsonObject2.getString("teamId"), jsonObject2.getString("teamMember")));
+                                }
+                                teamAdapter = new TeamDisplayList(myListData);
+                                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+                                teamRecyclerView.setLayoutManager(mLayoutManager);
+                                teamRecyclerView.setItemAnimator(new DefaultItemAnimator());
+                                teamRecyclerView.setAdapter(teamAdapter);
+                            } else {
+                                Toast.makeText(EventInfo.this, "No Team Found", Toast.LENGTH_LONG).show();
+                            }
+
+                        } catch (Exception e) {
+                            Log.e("error Rec", e.getMessage());
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                shimmerFrameLayout.hideShimmer();
+                shimmerFrameLayout.setVisibility(View.GONE);
+                error.printStackTrace();
+                FirebaseCrashlytics.getInstance().recordException(error);
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("teamIdList", AppController.getInstance().teamList);
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Content-Type", "application/x-www-form-urlencoded");
+                return params;
+            }
+        };
+
+        queue.add(stringRequest);
+
+
+        teamRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), teamRecyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
-                int slectedContact = contactListAdapter.setChecBox(editTextList.size() == 6 ? -1 : position);
-                if (slectedContact != -1) {
-                    addEditText(contactModel.get(position).getName(), contactModel.get(position).getUserid());
-                } else
-                    Toast.makeText(EventInfo.this, "Max 6 players can register", Toast.LENGTH_LONG).show();
+                addTeamLists(position);
             }
 
             @Override
@@ -195,16 +251,28 @@ public class EventInfo extends AppCompatActivity {
 
             }
         }));
-        bottomSheetDialog.findViewById(R.id.submit).setOnClickListener(new View.OnClickListener() {
+        dialogBottom.setContentView(inflated);
+        dialogBottom.show();
+    }
+
+    private void addTeamLists(int position) {
+        editTextList.clear();
+        View view = getLayoutInflater().inflate(R.layout.add_team_info, null);
+        contactModel = new ArrayList<>();
+        final BottomSheetDialog dialogBottom = new RoundedBottomSheetDialog(EventInfo.this);
+        lin = view.findViewById(R.id.lin);
+        shd = getSharedPreferences(AppConstant.id, MODE_PRIVATE);
+        appConstant = new AppConstant(this);
+        String[] userPlayer =  (new AppConstant(this).getId() + "," +myListData.get(position).getPlaying_status().replace(new AppConstant(this).getId() + ",","")).split(",");
+        for (int x = 0 ; x < userPlayer.length; x++) {
+            addEditText(userPlayer[x]);
+        }
+        view.findViewById(R.id.submit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (teamName.getText().toString().trim().equals("")) {
-                    teamName.setError("Enter your team name");
-                    teamName.requestFocus();
-                    return;
-                }
-                if (editTextList.size() < 4) {
-                    Toast.makeText(EventInfo.this, "Minimum 4 players are required", Toast.LENGTH_LONG).show();
+
+                if (editTextList.size() < 1) {
+                    Toast.makeText(EventInfo.this, "Minimum 1 players are required", Toast.LENGTH_LONG).show();
                     return;
                 }
                 for (int x = 0; x < editTextList.size(); x++) {
@@ -214,23 +282,51 @@ public class EventInfo extends AppCompatActivity {
                         return;
                     }
                 }
-                joinEvent();
-                bottomSheetDialog.cancel();
+                joinEvent(position);
+                dialogBottom.cancel();
             }
         });
-        addEditText("", new AppConstant(EventInfo.this).getId());
-        bottomSheetDialog.show();
+        dialogBottom.setContentView(view);
+        dialogBottom.show();
+
+
+
+//        View view = getLayoutInflater().inflate(R.layout.add_team_info, null);
+//        contactModel = new ArrayList<>();
+//        BottomSheetDialog bottomSheetDialog = new RoundedBottomSheetDialog(EventInfo.this);
+//        bottomSheetDialog.show();
+//        lin = view.findViewById(R.id.lin);
+//        shd = getSharedPreferences(AppConstant.id, MODE_PRIVATE);
+//        appConstant = new AppConstant(this);
+//
+//        view.findViewById(R.id.submit).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (teamName.getText().toString().trim().equals("")) {
+//                    teamName.setError("Enter your team name");
+//                    teamName.requestFocus();
+//                    return;
+//                }
+//                if (editTextList.size() < 4) {
+//                    Toast.makeText(EventInfo.this, "Minimum 4 players are required", Toast.LENGTH_LONG).show();
+//                    return;
+//                }
+//                for (int x = 0; x < editTextList.size(); x++) {
+//                    if (editTextList.get(x).getText().toString().trim().equals("")) {
+//                        editTextList.get(x).setError("Player Name cannot be empty");
+//                        editTextList.get(x).requestFocus();
+//                        return;
+//                    }
+//                }
+//                joinEvent();
+//                bottomSheetDialog.cancel();
+//            }
+//        });
+//        addEditText("", new AppConstant(EventInfo.this).getId());
 
     }
 
-    public void addEditText(String userName, String userId) {
-        for (int i = 0; i < editTextList.size(); i++) {
-            if (editTextList.get(i).getTag().equals(userId)) {
-                lin.removeView(textInputLayouts.get(i));
-                editTextList.remove(editTextList.get(i));
-                return;
-            }
-        }
+    public void addEditText(String userId) {
         EditText editText = new EditText(EventInfo.this);
         editText.setTextSize(12);
         editText.setSingleLine(true);
@@ -247,12 +343,11 @@ public class EventInfo extends AppCompatActivity {
                 LinearLayout.LayoutParams.WRAP_CONTENT);
         textInputLayout.setLayoutParams(textInputLayoutParams);
         textInputLayout.addView(editText, editTextParams);
-        textInputLayout.setHint(editTextList.size() == 0 ? "Enter your ingame name" : "Enter " + userName + "'s ingame name");
+        textInputLayout.setHint(userId.equals(new AppConstant(this).getId()) ? "Enter your in-game name (IGL)" : "Enter player " + editTextList.size() + "'s in-game name");
         editTextList.add(editText);
         lin.addView(textInputLayout);
         textInputLayouts.add(textInputLayout);
     }
-
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -277,17 +372,7 @@ public class EventInfo extends AppCompatActivity {
                             return;
                         }
                         if (AppController.getInstance().tournamentModel.getMax() != teamCount) {
-                            addTeamList();
-                            if (Build.VERSION.SDK_INT >= 23) {
-                                String[] PERMISSIONS = {android.Manifest.permission.READ_CONTACTS};
-                                if (!hasPermissions(EventInfo.this, PERMISSIONS)) {
-                                    ActivityCompat.requestPermissions(EventInfo.this, PERMISSIONS, REQUEST);
-                                } else {
-                                    new readContactTask().execute();
-                                }
-                            } else {
-                                new readContactTask().execute();
-                            }
+                            showTeamList();
                         }
                     }
                 });
@@ -312,81 +397,58 @@ public class EventInfo extends AppCompatActivity {
                 }
         }
     }
-    ArrayList<ContactListModel> contactModel;
+    ArrayList<ContactListModel> contactModel = new ArrayList<>();
     HashMap<String, String> contactArrayList = new HashMap<>();
-    HashSet<String> originalContact = new HashSet<>();
     ContactListAdapter contactListAdapter;
-    int returnPhone = 0;
-
     class readContactTask extends AsyncTask<Void, Integer, String> {
         String TAG = getClass().getSimpleName();
         ProgressDialog pd = new ProgressDialog(EventInfo.this);
-
         protected void onPreExecute() {
             super.onPreExecute();
             contactModel.clear();
-            pd.setMessage("loading");
             pd.show();
             Log.d(TAG + " PreExceute", "On pre Exceute......");
         }
 
         protected String doInBackground(Void... arg0) {
-            Set<String> set = shd.getStringSet(AppConstant.contact, null);
-            if (set == null) {
-                readContacts();
-                returnPhone = 0;
-                originalContact.clear();
-                Log.e("contactArrayList", contactArrayList.size() + "");
-                for (String phoneNo : contactArrayList.keySet()) {
-                    serverContact(phoneNo, contactArrayList.get(phoneNo));
-                }
-            }
-            set = shd.getStringSet(AppConstant.contact, null);
-            for (String s : set) {
-                SharedPreferences userInfo = getSharedPreferences(s, Context.MODE_PRIVATE);
-                contactModel.add(new ContactListModel(s,userInfo.getString(AppConstant.myPicUrl, ""), appConstant.getContactName(userInfo.getString(AppConstant.phoneNumber, "")), userInfo.getString(AppConstant.id, ""), userInfo.getString(AppConstant.bio, "")));
-            }
-            Log.e("contactArrayList", "taskComplete");
+            readContacts();
+
             return "You are at PostExecute";
         }
 
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             pd.cancel();
-            contactListAdapter.notifyDataSetChanged();
+            loadChats();
+        }
+    }
+    private void loadChats() {
+        Set<String> set = shd.getStringSet(AppConstant.contact, null);
+        try {
+            if (set != null) {
+                for (String s : set) {
+                    SharedPreferences userInfo = getSharedPreferences(s, Context.MODE_PRIVATE);
+                    contactModel.add(new ContactListModel(s,
+                            AppConstant.AppUrl + "images/" + userInfo.getString(AppConstant.id, "") + ".png?u=" + AppConstant.imageExt(),
+                            appConstant.getContactName(s),
+                            userInfo.getString(AppConstant.id, ""),
+                            userInfo.getString(AppConstant.bio, "")));
+                }
+                Collections.sort(contactModel, new Comparator<ContactListModel>() {
+                    @Override
+                    public int compare(final ContactListModel object1, final ContactListModel object2) {
+                        Log.e("Collections", object1.getName() + " " + object2.getName());
+                        return object1.getName().compareTo(object2.getName());
+                    }
+                });
+                contactListAdapter.notifyDataSetChanged();
+            } else
+                new readContactTask().execute();
+        } catch (Exception e) {
+            new readContactTask().execute();
         }
     }
 
-    public void serverContact(String number, String original) {
-        Log.e("userNum", number);
-        DatabaseReference mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
-        Query query = mFirebaseDatabaseReference.child("users").orderByChild("phoneNumber").equalTo(number);
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                returnPhone++;
-                if (dataSnapshot != null) {
-                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                        Log.e("contactArrayList//", original);
-                        Log.e("contactArrayList//---", postSnapshot.getKey());
-                        originalContact.add(postSnapshot.getKey());
-                        appConstant.saveUserInfo(original, postSnapshot.getKey(), AppConstant.AppUrl + "images/" + postSnapshot.getKey() + ".png?u=" + AppConstant.imageExt(), null, "", postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue() != null ? postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue().toString() : null, postSnapshot.child(AppConstant.userName).getValue() != null ? postSnapshot.child(AppConstant.userName).getValue().toString() : System.currentTimeMillis() + "");
-                        contactModel.add(new ContactListModel(original,AppConstant.AppUrl + "images/" + postSnapshot.getKey() + ".png?u=" + AppConstant.imageExt(), appConstant.getContactName(postSnapshot.child(AppConstant.phoneNumber).getValue(String.class)), postSnapshot.getKey(), postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue() != null ? postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue().toString() : ""));
-                    }
-                }
-                if (contactArrayList.size() == returnPhone) {
-                    SharedPreferences.Editor setEditor = shd.edit();
-                    setEditor.putStringSet(AppConstant.contact, originalContact);
-                    setEditor.apply();
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
 
     private static boolean hasPermissions(Context context, String... permissions) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
@@ -447,8 +509,7 @@ public class EventInfo extends AppCompatActivity {
         join.setTextColor(color);
     }
 
-    private void joinEvent() {
-        String key = "@" + (System.currentTimeMillis() / 1000);
+    private void joinEvent(int position) {
         JSONObject jsonRootObject = new JSONObject();
         JSONObject jsonRootObject2 = new JSONObject();
         JSONObject jsonRootObject3 = new JSONObject();
@@ -459,8 +520,8 @@ public class EventInfo extends AppCompatActivity {
                 jsonRootObject3.put(editTextList.get(x).getTag().toString(), jsonRootObject4);
             }
             jsonRootObject2.put("teams", jsonRootObject3);
-            jsonRootObject2.put("teamName", teamName.getText().toString());
-            jsonRootObject.put(key, jsonRootObject2);
+            jsonRootObject2.put("teamName", myListData.get(position).getName());
+            jsonRootObject.put(myListData.get(position).getUserId(), jsonRootObject2);
             Log.e("jsonRootObject", jsonRootObject.toString());
         } catch (Exception e) {
             e.printStackTrace();
@@ -471,12 +532,12 @@ public class EventInfo extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.e("lcat_response", response);
+                        Log.e("lcat_response",  url + "\n" +response);
                         if (response.equals("success")) {
                             if (viewPager.getCurrentItem() != 3) {
                                 Intent intent = new Intent("register_event");
-                                intent.putExtra("key", key);
-                                intent.putExtra("teamName", teamName.getText().toString());
+                                intent.putExtra("key", myListData.get(position).getUserId());
+                                intent.putExtra("teamName", myListData.get(position).getName());
                                 intent.putExtra("teams", jsonRootObject3.toString());
                                 LocalBroadcastManager.getInstance(EventInfo.this).sendBroadcast(intent);
                             }

@@ -28,7 +28,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.intelj.y_ral_gaming.Adapter.MyListAdapter;
-import com.intelj.y_ral_gaming.AppController;
 import com.intelj.y_ral_gaming.R;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 import com.intelj.y_ral_gaming.model.MyListData;
@@ -42,29 +41,29 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ReferralActivity extends AppCompatActivity {
-    HashMap<String, String> contentList = new HashMap<>();
-    TextView refer,referal;
-    RecyclerView recyclerView;
+    HashMap<String, String> jsonAnimationList = new HashMap<>();
+    TextView refer, referral;
+    RecyclerView invite_recyclerView;
     ArrayList<MyListData> myListData = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.referral_activity);
-        recyclerView = findViewById(R.id.recyclerView);
+        invite_recyclerView = findViewById(R.id.recyclerView);
         ViewPager viewPager = findViewById(R.id.viewpager);
-        contentList.put("referral.json", "Refer a friend");
-        contentList.put("login.json", "Register & play Game");
-        contentList.put("cash.json", "You earn 10rs after game played");
+        jsonAnimationList.put("referral.json", "Refer a friend");
+        jsonAnimationList.put("login.json", "Register & play Game");
+        jsonAnimationList.put("cash.json", "You earn 10rs after game played");
         refer = findViewById(R.id.refer);
-        referal = findViewById(R.id.referal);
+        referral = findViewById(R.id.referal);
         refer.setText(" YRAL" + new AppConstant(this).getId());
-        referal.setText(" My Referral id [YRAL" + new AppConstant(this).getId() +"]  ");
+        referral.setText(" My Referral id [YRAL" + new AppConstant(this).getId() +"]  ");
         viewPager.setAdapter(new CustomPagerAdapter(ReferralActivity.this));
         getReferalList();
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
-                viewPager.setCurrentItem(viewPager.getCurrentItem() == (contentList.size() - 1) ? 0 : viewPager.getCurrentItem() + 1);
+                viewPager.setCurrentItem(viewPager.getCurrentItem() == (jsonAnimationList.size() - 1) ? 0 : viewPager.getCurrentItem() + 1);
                 handler.postDelayed(this, 2000); //now is every 2 minutes
             }
         }, 2000);
@@ -113,9 +112,9 @@ public class ReferralActivity extends AppCompatActivity {
                             }
                             totalAmount.setText("+" + totalSuccessInvite);
                             MyListAdapter adapter = new MyListAdapter(myListData);
-                            recyclerView.setHasFixedSize(true);
-                            recyclerView.setLayoutManager(new LinearLayoutManager(ReferralActivity.this));
-                            recyclerView.setAdapter(adapter);
+                            invite_recyclerView.setHasFixedSize(true);
+                            invite_recyclerView.setLayoutManager(new LinearLayoutManager(ReferralActivity.this));
+                            invite_recyclerView.setAdapter(adapter);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -159,9 +158,9 @@ public class ReferralActivity extends AppCompatActivity {
             ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.image_view, collection, false);
             TextView textView  = layout.findViewById(R.id.title);
             LottieAnimationView lottieAnimationView = layout.findViewById(R.id.animationView);
-            String firstKey = contentList.keySet().toArray()[position].toString();
+            String firstKey = jsonAnimationList.keySet().toArray()[position].toString();
             lottieAnimationView.setAnimation(firstKey);
-            textView.setText(contentList.get(firstKey));
+            textView.setText(jsonAnimationList.get(firstKey));
             collection.addView(layout);
             return layout;
         }
@@ -173,7 +172,7 @@ public class ReferralActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return contentList.size();
+            return jsonAnimationList.size();
         }
 
         @Override

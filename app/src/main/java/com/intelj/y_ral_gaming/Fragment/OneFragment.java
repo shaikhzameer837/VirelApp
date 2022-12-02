@@ -143,6 +143,7 @@ public class OneFragment extends Fragment {
                                 AppController.getInstance().amount = Integer.parseInt(json.getString("amount"));
                                 AppController.getInstance().rank = Integer.parseInt(json.getString("rank"));
                                 AppController.getInstance().referral = json.getString("referral");
+                                AppController.getInstance().teamList = json.getString("teamList");
                                 Log.e("onReceive: R ", json.getString("rank"));
                                 JSONArray ja_data = json.getJSONArray("match_info");
                                 GameItem.clear();
