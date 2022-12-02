@@ -34,6 +34,7 @@
         <com.facebook.shimmer.ShimmerFrameLayout
             android:id="@+id/shimmer_layout"
             android:layout_width="match_parent"
+            android:visibility="gone"
             android:layout_height="wrap_content"
             android:layout_marginTop="-30dp"
             app:shimmer_duration="1000">
@@ -48,9 +49,6 @@
                 <include layout="@layout/note_list_row" />
 
                 <include layout="@layout/note_list_row" />
-
-                <include layout="@layout/note_list_row" />
-
             </LinearLayout>
 
         </com.facebook.shimmer.ShimmerFrameLayout>
@@ -58,8 +56,23 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_teamlist"
             android:layout_width="match_parent"
-            android:layout_height="400dp"
+            android:layout_height="300dp"
             android:layout_marginRight="10dp"
             android:scrollbars="vertical" />
+        <TextView
+            android:id="@+id/createTeam"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/button_round"
+            android:drawableLeft="@drawable/group"
+            android:drawableTint="@color/white"
+            android:drawableRight="@drawable/arrow_white"
+            android:gravity="center"
+            android:padding="10dp"
+            android:onClick="createTeam"
+            android:text=" Create new team "
+            android:textColor="@color/white"
+            android:textStyle="bold" />
     </LinearLayout>
 </LinearLayout>

@@ -100,8 +100,8 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         holder.title.setText(gameItem.get(position).getTime());
-        holder.prizepool.setText("Per Kill \u20B9" + gameItem.get(position).getPerKill());
-        holder.type.setText("Pp \u20B9"+(Integer.parseInt(gameItem.get(position).getPerKill()) * gameItem.get(position).getMax()));
+        holder.prizepool.setText("Win \u20B9" + gameItem.get(position).getPerKill() + " Per kill");
+        holder.type.setText("Pp \uD83D\uDCB0 \u20B9"+(Integer.parseInt(gameItem.get(position).getPerKill()) * gameItem.get(position).getMax()));
         Glide.with(mContext).load(gameItem.get(position).getYt_url().equals("") ? R.drawable.placeholder : "https://i.ytimg.com/vi/" + gameItem.get(position).getYt_url() + "/hqdefault_live.jpg").placeholder(R.mipmap.app_logo).into(holder.imgs);
         holder.imgs.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -139,7 +139,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
                 break;
         }
         holder.count.setText(gameItem.get(position).getCount() + "/" + gameItem.get(position).getMax());
-        holder.info.setText(gameItem.get(position).getIsexist().equals("0") ? "Join now  " : "Aready Joined  ");
+        holder.info.setText(gameItem.get(position).getIsexist().equals("0") ? " Join now \uD83D\uDC49" : " Already Joined \uD83E\uDD1E");
         holder.info.setTextColor(gameItem.get(position).getIsexist().equals("0") ? Color.parseColor("#7e241c") : Color.parseColor("#097969"));
         holder.info.setTag(position);
         holder.info.setOnClickListener(new View.OnClickListener() {

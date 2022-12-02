@@ -1,8 +1,10 @@
 package com.intelj.y_ral_gaming.Activity;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -27,6 +29,7 @@ import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -130,6 +133,8 @@ public class ProFileActivity extends AppCompatActivity {
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         final MyAdapter adapter = new MyAdapter(this, getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(adapter);
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
+                new IntentFilter("team-event-name"));
         if (userid.equals(appConstant.getId())) {
             int id = getResources().getIdentifier(AppConstant.getRank(AppController.getInstance().rank), "drawable", getPackageName());
             rank.setCompoundDrawablesWithIntrinsicBounds(0, id, 0, 0);
@@ -311,131 +316,25 @@ public class ProFileActivity extends AppCompatActivity {
             }
         });
         getProfileInfo();
-        //  prepareytModelData();
     }
-    public void editProfile() {
-        ImageView imgProfile;
-        int PROFILE_IMAGE = 11;
-        String picturePath = null;
-        Bitmap selectedImage;
-        TextInputEditText playerName, TI_userName, bio;
-        String userName = "";
-        DatabaseReference mDatabase;
-        AutoCompleteTextView tv_title;
-        LinearLayout gameList;
-        SharedPreferences prefs;
-        TextView avail;
-        SharedPreferences sharedPreferences = getSharedPreferences(appConstant.getId(), 0);
-        prefs = getSharedPreferences(AppConstant.AppName, MODE_PRIVATE);
-        View view = getLayoutInflater().inflate(R.layout.edit_profile, null);
-        final BottomSheetDialog dialogBottom = new RoundedBottomSheetDialog(ProFileActivity.this);
-        imgProfile = view.findViewById(R.id.imgs);
-        avail = view.findViewById(R.id.avail);
-        playerName = view.findViewById(R.id.name);
-        TI_userName = view.findViewById(R.id.userName);
-        bio = view.findViewById(R.id.bio);
-        gameList = view.findViewById(R.id.gameList);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>
-                (this, android.R.layout.simple_list_item_1, AppConstant.player_title);
-        tv_title = view.findViewById(R.id.autoCompleteTextView1);
-        tv_title.setThreshold(0);
-        tv_title.setKeyListener(null);
-        tv_title.setAdapter(adapter);
-        dialogBottom.setContentView(view);
-        dialogBottom.show();
-        tv_title.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                final int DRAWABLE_RIGHT = 2;
-                tv_title.showDropDown();
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if (event.getRawX() >= (tv_title.getRight() - tv_title.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
-                        tv_title.setText("");
-                        return true;
-                    }
-                }
-                return false;
-            }
-        });
-        view.findViewById(R.id.done).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (playerName.getText().toString().trim().equals("")) {
-                    playerName.requestFocus();
-                    playerName.setError("Player name cannot be empty");
-                    return;
-                }
-                if (userName.equals("")) {
-                    Toast.makeText(ProFileActivity.this, "Please check user name first", Toast.LENGTH_LONG).show();
-                    return;
-                }
-                boolean isSlected = false;
-                for (int i = 0; i < gameList.getChildCount(); i++) {
-                    TextView textView = (TextView) gameList.getChildAt(i);
-                    if (textView.getTag().toString().equals("1")) {
-                        isSlected = true;
-                    }
-                }
-                if (!isSlected) {
-                    Toast.makeText(ProFileActivity.this, "Please select the game you play", Toast.LENGTH_LONG).show();
-                    return;
-                }
-                if (picturePath == null)
-                    updateName();
-                else
-                    uploadProfile();
-            }
-        });
-    }
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Get extra data included in the Intent
+            String teamName = intent.getStringExtra("name");
+            String teamId = intent.getStringExtra("id");
+            String teamMember = intent.getStringExtra("teamMember");
+            myListData.add(0,new MyListData(teamName,teamId, teamMember.split(",").length +" Member"));
+            teamAdapter.notifyDataSetChanged();
 
-    private void uploadProfile() {
-    }
-
-    private void updateName() {
-//        progressDialog = new ProgressDialog(this);
-//        progressDialog.setTitle("Updating...");
-//        progressDialog.show();
-//        RequestQueue queue = Volley.newRequestQueue(this);
-//        String url = AppConstant.AppUrl + "profile_update.php";
-//        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-//                new Response.Listener<String>() {
-//                    @Override
-//                    public void onResponse(String response) {
-//                        Log.e("response", response);
-//                        progressDialog.cancel();
-//                        saveToProfile();
-//                    }
-//                }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                progressDialog.cancel();
-//                Toast.makeText(ProFileActivity.this, "Something went wrong try again later ", Toast.LENGTH_SHORT).show();
-//            }
-//        }) {
-//            @Override
-//            protected Map<String, String> getParams() {
-//                Map<String, String> params = new HashMap<>();
-//                params.put("user_id", appConstant.getId());
-//                params.put("name", playerName.getText().toString() + "");
-//                params.put("userName", TI_userName.getText().toString().toLowerCase() + "");
-//                return params;
-//            }
-//
-//            @Override
-//            public Map<String, String> getHeaders() throws AuthFailureError {
-//                Map<String, String> params = new HashMap<>();
-//                params.put("Content-Type", "application/x-www-form-urlencoded");
-//                return params;
-//            }
-//        };
-//
-//        queue.add(stringRequest);
-    }
+            Log.d("receiver", "Got message: " + teamName);
+        }
+    };
     @Override
     protected void onResume() {
         super.onResume();
         sharedPreferences = getSharedPreferences(userid, 0);
-        Glide.with(ProFileActivity.this).load(AppConstant.AppUrl + "images/" + userid + ".png?u=" + AppConstant.imageExt()).apply(new RequestOptions().circleCrop()).placeholder(R.drawable.game_avatar).into(imgProfile);
+        Glide.with(ProFileActivity.this).load(AppConstant.AppUrl + "images/" + userid + ".png?u=" + sharedPreferences.getString(AppConstant.profile, "").equals("")).apply(new RequestOptions().circleCrop()).placeholder(R.drawable.game_avatar).into(imgProfile);
         if (userid.equals(appConstant.getId()))
             name.setText(sharedPreferences.getString(AppConstant.name, ""));
         else
@@ -485,12 +384,20 @@ public class ProFileActivity extends AppCompatActivity {
 
         queue.add(stringRequest);
     }
-
+    ArrayList<MyListData> myListData = new ArrayList<>();
+    TeamDisplayList teamAdapter;
     public void showTeamList() {
+        myListData.clear();
         //  startActivity(new Intent(ProFileActivity.this,CreateTeam.class));
         View inflated = getLayoutInflater().inflate(R.layout.team_list, null);
         final BottomSheetDialog dialogBottom = new RoundedBottomSheetDialog(ProFileActivity.this);
-        RecyclerView recyclerView = inflated.findViewById(R.id.rv_teamlist);
+        RecyclerView teamRecyclerView = inflated.findViewById(R.id.rv_teamlist);
+        inflated.findViewById(R.id.createTeam).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(ProFileActivity.this,CreateTeam.class));
+            }
+        });
         ShimmerFrameLayout shimmerFrameLayout = inflated.findViewById(R.id.shimmer_layout);
         shimmerFrameLayout.startShimmer();
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -503,7 +410,6 @@ public class ProFileActivity extends AppCompatActivity {
                         shimmerFrameLayout.hideShimmer();
                         shimmerFrameLayout.setVisibility(View.GONE);
                         try {
-                            ArrayList<MyListData> myListData = new ArrayList<>();
                             JSONObject jsonObject = new JSONObject(response);
                             if (jsonObject.getBoolean("success")) {
                                 JSONArray jsonArray = new JSONArray(jsonObject.getString("teamList"));
@@ -511,11 +417,11 @@ public class ProFileActivity extends AppCompatActivity {
                                     JSONObject jsonObject2 = (JSONObject) jsonArray.get(i);
                                     myListData.add(new MyListData(jsonObject2.getString("teamName"), jsonObject2.getString("teamId"), jsonObject2.getString("teamMember").split(",").length +" Member"));
                                 }
-                                TeamDisplayList adapter = new TeamDisplayList(myListData);
+                                 teamAdapter = new TeamDisplayList(myListData);
                                 RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-                                recyclerView.setLayoutManager(mLayoutManager);
-                                recyclerView.setItemAnimator(new DefaultItemAnimator());
-                                recyclerView.setAdapter(adapter);
+                                teamRecyclerView.setLayoutManager(mLayoutManager);
+                                teamRecyclerView.setItemAnimator(new DefaultItemAnimator());
+                                teamRecyclerView.setAdapter(teamAdapter);
                             } else {
                                 Toast.makeText(ProFileActivity.this, "No Team Found", Toast.LENGTH_LONG).show();
                             }
@@ -552,7 +458,7 @@ public class ProFileActivity extends AppCompatActivity {
         queue.add(stringRequest);
 
 
-        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new RecyclerTouchListener.ClickListener() {
+        teamRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), teamRecyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
 

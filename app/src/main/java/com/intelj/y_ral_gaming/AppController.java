@@ -89,6 +89,7 @@ public class AppController extends Application implements Application.ActivityLi
     public int amount = 0;
     public int rank = 0;
     public String referral = "0";
+    public String teamList = "";
     public List<GameItem> movieList = new ArrayList<>();
     public TournamentModel tournamentModel;
     AppDataBase appDataBase;
@@ -101,21 +102,21 @@ public class AppController extends Application implements Application.ActivityLi
         FirebaseDatabase.getInstance().setPersistenceEnabled(false);
         getReadyForCheckin();
         getVideo();
-        DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
-        connectedRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                boolean connected = snapshot.getValue(Boolean.class);
-                if (!connected) {
-               //     startActivity(new Intent(AppController.this, NoInternet.class));
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.w(TAG, "Listener was cancelled");
-            }
-        });
+//        DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
+//        connectedRef.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                boolean connected = snapshot.getValue(Boolean.class);
+//                if (!connected) {
+//               //     startActivity(new Intent(AppController.this, NoInternet.class));
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//                Log.w(TAG, "Listener was cancelled");
+//            }
+//        });
     }
 
     private HttpProxyCacheServer proxy;
@@ -141,8 +142,8 @@ public class AppController extends Application implements Application.ActivityLi
     }
 
     public void getUserInfo() {
-        mDatabase = FirebaseDatabase.getInstance().getReference(AppConstant.users)
-                .child(userId).child(AppConstant.realTime);
+//        mDatabase = FirebaseDatabase.getInstance().getReference(AppConstant.users)
+//                .child(userId).child(AppConstant.realTime);
 //        FirebaseMessaging.getInstance().getToken()
 //                .addOnCompleteListener(new OnCompleteListener<String>() {
 //                    @Override

@@ -11,26 +11,33 @@
     android:focusable="true"
     android:orientation="vertical"
     android:padding="3dp">
-
+    <androidx.cardview.widget.CardView
+        android:layout_width="80dp"
+        android:id="@+id/card"
+        android:layout_marginRight="5dp"
+        android:layout_height="55dp"
+        app:cardElevation="0dp"
+        app:cardCornerRadius="7dp">
     <ImageView
         android:id="@+id/imgs"
+        android:clipToOutline="true"
         android:layout_width="80dp"
         android:layout_height="55dp"
         android:layout_marginRight="10dp"
         android:scaleType="centerCrop" />
-
+    </androidx.cardview.widget.CardView>
     <TextView
         android:id="@+id/type"
         android:layout_width="80dp"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="-90dp"
-        android:layout_toRightOf="@+id/imgs"
+        android:layout_toRightOf="@+id/card"
         android:background="#80000000"
         android:gravity="center"
         android:text="Solo"
         android:textColor="@color/colorPrimary"
-        android:textSize="11dp"
+        android:textSize="14sp"
         android:textStyle="bold" />
 
     <TextView
@@ -76,7 +83,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/title"
         android:layout_marginTop="2dp"
-        android:layout_toRightOf="@+id/imgs"
+        android:layout_toRightOf="@+id/card"
         android:text="../.."
         android:textColor="@color/darkgreen"
         android:textSize="11sp" />
@@ -88,7 +95,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/prizepool"
         android:layout_marginTop="2dp"
-        android:layout_toRightOf="@+id/imgs"
+        android:layout_toRightOf="@+id/card"
         android:gravity="bottom"
         android:text="../.."
         android:textColor="@color/appColor"
@@ -101,7 +108,6 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_gravity="center"
-        android:drawableRight="@drawable/arrow_right_black"
         android:gravity="center"
         android:text=" Join Now "
         android:textColor="@color/appColor"

@@ -413,6 +413,7 @@ public class EditProfile extends AppCompatActivity {
         editor.putString(AppConstant.userName, TI_userName.getText().toString());
         editor.putString(AppConstant.bio, bio.getText().toString());
         editor.putString(AppConstant.title, tv_title.getText().toString());
+        editor.putString(AppConstant.profile, (System.currentTimeMillis()/1000)+"");
         picturePath = null;
         editor.apply();
         mDatabase.child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.bio).
