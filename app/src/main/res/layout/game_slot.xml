@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/red_round_corner"
+    android:background="@drawable/background_with_shadow"
     android:elevation="8dp"
     android:orientation="vertical"
     android:layout_marginBottom="10dp"
@@ -11,31 +11,24 @@
     app:behavior_hideable="false"
     app:layout_behavior="@string/bottom_sheet_behavior">
 
-
-        <TextView
-            android:id="@+id/ign"
-            android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:text="Daily Free Giveaway matches"
-            android:enabled="false"
-            android:gravity="center_horizontal"
-            android:imeOptions="actionDone"
-            android:lines="1"
-            android:paddingTop="15dp"
-            android:singleLine="true"
-            android:textColor="@color/colorPrimary"
-            android:textColorHint="@color/grey_black"
-            android:textSize="12sp"
-            android:textStyle="bold" />
-
-    <LinearLayout
+    <LinearLayout android:id="@+id/lin"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="-40dp"
-        android:layout_marginBottom="-15dp"
-        android:background="@drawable/background_with_shadow"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
-
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/pBar3"
+            android:layout_width="wrap_content"
+            android:layout_height="200dp"
+            android:layout_gravity="center_horizontal"
+            app:lottie_autoPlay="true"
+            app:lottie_fileName="hold.json"
+            app:lottie_loop="true" />
+        <TextView android:text="We Are setting up matches for you"
+            android:layout_width="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabs"
         android:layout_width="match_parent"
@@ -49,12 +42,11 @@
         app:tabIndicatorColor="@color/black"
         app:tabMode="scrollable" />
 
-    <androidx.viewpager.widget.ViewPager
+    <com.intelj.y_ral_gaming.Utils.NonSwipeableViewPager
         android:id="@+id/gameViewpager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:layout_marginBottom="30dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-       </LinearLayout>
 </LinearLayout>

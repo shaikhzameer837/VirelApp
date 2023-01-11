@@ -57,6 +57,7 @@
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
+                        android:elevation="2dp"
                         android:layout_marginLeft="-10dp"
                         android:scaleType="centerCrop"
                         android:src="@drawable/ic_picker_camera" />
@@ -126,6 +127,7 @@
                         style="@style/Widget.Neumorph.Button"
                         android:layout_width="match_parent"
                         android:layout_height="65dp"
+                        android:onClick="openUserName"
                         app:neumorph_shapeType="pressed"
                         app:neumorph_strokeColor="@color/darkgrey"
                         app:neumorph_strokeWidth="1dp">

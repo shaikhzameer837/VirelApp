@@ -10,7 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -78,7 +80,7 @@ public class ViralWeb extends AppCompatActivity {
     ArrayList<SimpleExoPlayer> exoplayerList = new ArrayList<>();
     ViewsSliderAdapter mAdapter;
     public ArrayList<VideoList> shortsUrlList = new ArrayList<>();
-
+    AppDataBase videoDataBase;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,6 +88,7 @@ public class ViralWeb extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.viral_web);
+        videoDataBase = AppDataBase.getDBInstance(this, AppConstant.AppName);
         appConstant = new AppConstant(this);
         viewPager2 = findViewById(R.id.view_pager);
         SwipeRefreshLayout pullToRefresh = findViewById(R.id.pullToRefresh);
@@ -101,9 +104,25 @@ public class ViralWeb extends AppCompatActivity {
         });
         getVideoFromDataBase();
     }
-
+    public void loadVideo(View v){
+        Button btn = (Button)v;
+        shortsUrlList.clear();
+        shortsUrlList.addAll(btn.getTag().toString().equals("0") ? videoDataBase.videosDao().getAllVideo() : videoDataBase.videosDao().getAllSelectedVideo(btn.getTag()+""));
+        mAdapter.notifyDataSetChanged();
+        setLinear(btn);
+    }
+    public void setLinear(Button view){
+        LinearLayout linearLayout = findViewById(R.id.linz);
+        for (int i = 0; i < linearLayout.getChildCount(); i++) {
+            Button btn = (Button) linearLayout.getChildAt(i);
+            if(btn.getTag() == view.getTag()){
+                btn.setBackgroundResource(R.drawable.edittext_bottom_line);
+            }else{
+                btn.setBackgroundResource(0);
+            }
+        }
+    }
     private void getVideoFromDataBase() {
-        AppDataBase videoDataBase = AppDataBase.getDBInstance(this, AppConstant.AppName);
         shortsUrlList.addAll(videoDataBase.videosDao().getAllVideo());
         init();
     }

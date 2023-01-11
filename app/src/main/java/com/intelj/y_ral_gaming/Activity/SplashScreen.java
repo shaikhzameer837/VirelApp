@@ -28,7 +28,7 @@ public class SplashScreen extends AppCompatActivity {
         img1 = findViewById(R.id.img1);
         Glide.with(this).load(R.drawable.intro)
                 .circleCrop()
-                .placeholder(R.mipmap.app_logo).into(img);
+                .placeholder(R.mipmap.ic_launcher).into(img);
         Glide.with(this).load(R.drawable.banner)
                 .into(img1);
         Log.e("useriD", new AppConstant(this).getId());
@@ -54,7 +54,7 @@ public class SplashScreen extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                String versionCode = BuildConfig.VERSION_CODE + "";
+                String versionCode = BuildConfig.VERSION_CODE + "a";
                 Intent intent = new Intent(SplashScreen.this,
                         AppController.getInstance().videoDataBase.videosDao().getAllVideo().size() == 0 ? MainActivity.class
                                 : ViralWeb.class);

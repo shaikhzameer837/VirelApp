@@ -1,17 +1,20 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:padding="10dp"
     android:layout_height="match_parent">
-<TextView
-    android:layout_width="match_parent"
-    android:text="DO NOT USE UNAUTHORIZED PROGRAMS OR HARDWARE DEVICES. ...\n
-DO NOT MODIFY THE GAME CLIENT, SERVERS OR GAME DATA. ...\n
-DO NOT EXPLOIT VULNERABILITIES IN THE GAME (BUGS AND GLITCHES) ...\n
-DO NOT USE INAPPROPRIATE NICKNAMES. ...\n
-DO NOT USE INAPPROPRIATE LANGUAGE.\n PENALTY CRITERIA FOR MISCONDUCT\n
-DO NOT PLAY THE GAME ABNORMALLY \nDO NOT DISTURB BUSINESS OPERATIONS
-\nDO NOT TEAM UP (BY FORMING TEAMS OUTSIDE WHAT IS ALLOWED BY THE SELECTED GAME MODE)
-\nDO NOT USE INAPPROPRIATE LANGUAGE\nDO NOT USE INAPPROPRIATE NICKNAMES"
-    android:layout_height="match_parent"/>
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/pBar3"
+        android:layout_width="wrap_content"
+        android:layout_height="200dp"
+        android:layout_gravity="center_horizontal"
+        app:lottie_autoPlay="true"
+        app:lottie_fileName="loading.json"
+        app:lottie_loop="true" />
+
+    <WebView
+        android:id="@+id/webview"
+        android:layout_width="fill_parent"
+        android:background="#000000"
+        android:layout_height="fill_parent" />
 </LinearLayout>

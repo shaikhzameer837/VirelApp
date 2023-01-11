@@ -97,6 +97,7 @@ public class PaymentStatus extends Fragment {
                         Log.e("tokenResponse", response);
                         binding.shimmerLayout.hideShimmer();
                         binding.shimmerLayout.setVisibility(View.GONE);
+                        tournamentModelList.clear();
                         try {
                             JSONArray array = new JSONArray(response);
                             if (array.length() == 0) {
@@ -113,7 +114,7 @@ public class PaymentStatus extends Fragment {
                                                 obj.getString("date"),
                                                 obj.getString("status"),
                                                 obj.getString("comment"),
-                                                "", "", "",
+                                                "", false, "",
                                                 0, 0));
                             }
                             TournamentAdapter pAdapter = new TournamentAdapter(getActivity(), tournamentModelList, false);

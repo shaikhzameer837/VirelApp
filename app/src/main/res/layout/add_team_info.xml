@@ -31,7 +31,7 @@
         android:padding="10dp">
         <LinearLayout android:id="@+id/lin"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="250dp"
             android:orientation="vertical"
             android:layout_marginTop="10dp"
             android:scrollbars="vertical">

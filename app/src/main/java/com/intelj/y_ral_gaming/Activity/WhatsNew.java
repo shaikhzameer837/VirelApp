@@ -2,6 +2,8 @@ package com.intelj.y_ral_gaming.Activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
@@ -11,13 +13,19 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.PagerAdapter;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
 import com.intelj.y_ral_gaming.AppController;
 import com.intelj.y_ral_gaming.BuildConfig;
 import com.intelj.y_ral_gaming.R;
@@ -28,29 +36,29 @@ import java.util.ArrayList;
 
 public class WhatsNew extends AppCompatActivity {
     WhatsNewBinding binding;
-    ArrayList<Object> contentList = new ArrayList<>();
+    ArrayList<Integer> contentList = new ArrayList<>();
     ArrayList<String> jsonFiles = new ArrayList<>();
     String versionCode = BuildConfig.VERSION_CODE + "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        new AppConstant(this).setDataFromShared(versionCode, "1");
+        new AppConstant(this).setDataFromShared(versionCode + "a", "1");
         binding = WhatsNewBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        contentList.add("referral.json");
-        contentList.add("content.json");
-        contentList.add("suggest.json");
+        contentList.add(R.drawable.poster_a);
+        contentList.add(R.drawable.poster_b);
+        contentList.add(R.drawable.poster_c);
         jsonFiles.add("Refer A Friend and Earn Money");
         jsonFiles.add("Introducing Viral Web \n Watch Short Gaming Videos online");
         jsonFiles.add("Have complain or suggestion Write to us");
         binding.viewpager.setAdapter(new CustomPagerAdapter(WhatsNew.this));
+        binding.viewpager.setOffscreenPageLimit(3);
         setProgress();
     }
 
     int x = 0;
     ProgressBar progressBar;
-
     public void setProgress() {
         progressBar = (ProgressBar) binding.lin.getChildAt(x);
         new CountDownTimer(6000, 500) {
@@ -103,23 +111,29 @@ public class WhatsNew extends AppCompatActivity {
 
         @Override
         public Object instantiateItem(ViewGroup collection, int position) {
-            // ModelObject modelObject = ModelObject.values()[position];
             LayoutInflater inflater = LayoutInflater.from(mContext);
             ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.whats_new_image, collection, false);
-            TextView textView = layout.findViewById(R.id.titles);
-            textView.setText(jsonFiles.get(position));
-            LottieAnimationView lottieAnimationView = layout.findViewById(R.id.animationView);
+//            TextView textView = layout.findViewById(R.id.titles);
+//            textView.setText(jsonFiles.get(position));
             ImageView imgs = layout.findViewById(R.id.imgs);
-            if(contentList.get(position) instanceof String) {
-                String firstKey = (String) contentList.get(position);
-                lottieAnimationView.setAnimation(firstKey);
-                lottieAnimationView.setVisibility(View.VISIBLE);
-                imgs.setVisibility(View.GONE);
-            }else{
-                imgs.setVisibility(View.VISIBLE);
-                lottieAnimationView.setVisibility(View.GONE);
-                Glide.with(mContext).load((int) contentList.get(position)).apply(new RequestOptions().circleCrop()).placeholder(R.drawable.game_avatar).into(imgs);
-            }
+            imgs.setVisibility(View.VISIBLE);
+           // Glide.with(mContext).load(contentList.get(position)).into(imgs);
+            Glide.with(mContext)
+                    .asBitmap().load(contentList.get(position))
+                    .listener(new RequestListener<Bitmap>() {
+                                  @Override
+                                  public boolean onLoadFailed(@Nullable GlideException e, Object o, Target<Bitmap> target, boolean b) {
+                                      Log.e("glideerror",e.getMessage()) ;
+                                      return false;
+                                  }
+
+                                  @Override
+                                  public boolean onResourceReady(Bitmap bitmap, Object o, Target<Bitmap> target, DataSource dataSource, boolean b) {
+                                      imgs.setBackground( new BitmapDrawable(getResources(), bitmap));
+                                      return false;
+                                  }
+                              }
+                    ).submit();
             collection.addView(layout);
             return layout;
         }

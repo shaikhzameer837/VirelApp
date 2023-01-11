@@ -72,8 +72,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="15dp"
+                android:visibility="gone"
                 android:drawableTop="@drawable/group"
                 android:text="team"
+                android:textSize="10sp" />
+            <TextView
+                android:id="@+id/search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="15dp"
+                android:drawableTop="@drawable/search"
+                android:text="Search"
                 android:textSize="10sp" />
            <TextView
                 android:id="@+id/notification"
@@ -138,28 +147,13 @@
                 android:text=" Complete Your Profile"
                 android:textColor="@color/white"
                 tools:ignore="TouchTargetSizeCheck" />
-            <soup.neumorphism.NeumorphCardView
-                style="@style/Widget.Neumorph.Button"
-                android:layout_width="match_parent"
-                android:layout_height="65dp"
-                app:neumorph_strokeWidth="1dp"
-                app:neumorph_strokeColor="@color/darkgrey"
-                app:neumorph_shapeType="pressed">
-            <EditText
-                android:id="@+id/search"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:drawableLeft="@drawable/magnify"
-                android:hint="Search Friends"
-                android:padding="10dp"
-                android:background="@null"
-                android:textColorHint="@color/textcolor"
-                android:textSize="11sp" />
-            </soup.neumorphism.NeumorphCardView>
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_horizontal"
+                android:layout_marginTop="5dp"
                 android:text="Top Popular of week"
                 android:textColor="@color/black"
                 android:textStyle="bold" />

@@ -49,7 +49,7 @@ open class BaseActivity : AppCompatActivity() {
         )
 
         contextMenuDialogFragment = ContextMenuDialogFragment.newInstance(menuParams).apply {
-            menuItemClickListener = { view, position ->
+            menuItemClickListener = { _, position ->
                 if (position == 1) {
                     showSupport()
                 } else if (position == 3) {
