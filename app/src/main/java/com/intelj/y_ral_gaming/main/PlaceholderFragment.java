@@ -210,7 +210,7 @@ public class PlaceholderFragment extends Fragment implements View.OnClickListene
         binding.addMoney.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new AppConstant(getActivity()).addMoney(getActivity());
+              //  new AppConstant(getActivity()).addMoney(getActivity());
             }
         });
 

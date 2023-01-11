@@ -1,5 +1,6 @@
 package com.intelj.y_ral_gaming.Activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
@@ -36,6 +37,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.intelj.y_ral_gaming.Adapter.CreateTeamAdapter;
+import com.intelj.y_ral_gaming.AppController;
 import com.intelj.y_ral_gaming.ContactListModel;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 import com.intelj.y_ral_gaming.databinding.CreateTeamBinding;
@@ -64,8 +66,8 @@ public class CreateTeam extends AppCompatActivity {
     HashMap<String, String> contactHashList = new HashMap<>();
     HashSet<String> originalContact = new HashSet<>();
     private static final int REQUEST = 112;
-    String loyalFriends;
-    String isContact = "";
+    String loyalFriends="";
+    private ArrayList<String> contactStrList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -120,7 +122,54 @@ public class CreateTeam extends AppCompatActivity {
         });
 
     }
+    private void fetchContacts() {
+        long time = System.currentTimeMillis();
+        Log.e("timeRec Start",time+"");
+        contactStrList = new ArrayList<>();
+        // Query the contacts database to get a list of contacts
+        Cursor cursor = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                null, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
 
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                String name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                String phoneNumber = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                phoneNumber = phoneNumber.replaceAll("\\s", "");
+
+                if (!contactStrList.contains(phoneNumber)) {
+                    contactStrList.add(phoneNumber);
+                   // contactList.add(new Contact(name, phoneNumber));
+
+                    SharedPreferences userInfo = getSharedPreferences(phoneNumber, Context.MODE_PRIVATE);
+                    contactModel.add(new ContactListModel(phoneNumber.replace(appConstant.getCountryCode(), ""),
+                            AppConstant.AppUrl + "images/" + userInfo.getString(AppConstant.id, "") + ".png?u=" + AppConstant.imageExt(),
+                            getContactName(phoneNumber),
+                            userInfo.getString(AppConstant.id, ""),
+                            phoneNumber));
+
+                }
+            }
+            cursor.close();
+        }
+        if(loyalFriends.contains(",")) {
+            String loyalFriendList[] = loyalFriends.split(",");
+            for (String s : loyalFriendList) {
+                SharedPreferences userInfo = getSharedPreferences(s, Context.MODE_PRIVATE);
+                Log.e("loadChats: ", userInfo.getString(AppConstant.id, ""));
+                contactModel.add(0, new ContactListModel(s.replace(appConstant.getCountryCode(), ""),
+                        AppConstant.AppUrl + "images/" + userInfo.getString(AppConstant.id, "") + ".png?u=" + AppConstant.imageExt(),
+                        getContactName(s),
+                        userInfo.getString(AppConstant.id, ""),
+                        s));
+            }
+            contactModel2.addAll(contactModel);
+            createTeamAdapter.notifyDataSetChanged();
+        }
+        Log.e("timeRec End",System.currentTimeMillis() +"");
+        Log.e("timeRec End",((time - System.currentTimeMillis()) / 1000) +" sec ");
+        // Notify the adapter that the data has changed
+        createTeamAdapter.notifyDataSetChanged();
+    }
     public void createTeam(View view) {
         if (binding.teamName.getText().toString().trim().equals("")) {
             binding.teamName.setError("Team name cannot be empty");
@@ -156,9 +205,10 @@ public class CreateTeam extends AppCompatActivity {
                                 Toast.makeText(CreateTeam.this, "Team Created", Toast.LENGTH_LONG).show();
                                 Intent intent = new Intent("team-event-name");
                                 // You can also include some extra data.
+                                AppController.getInstance().teamList = AppController.getInstance().teamList + "," + jsonObject.getString("id");
                                 intent.putExtra("id", jsonObject.getString("id"));
                                 intent.putExtra("name", binding.teamName.getText().toString());
-                                intent.putExtra("teamMember", joined);
+                                intent.putExtra("teamMember", joined + "," + new AppConstant(CreateTeam.this).getId()+",");
                                 LocalBroadcastManager.getInstance(CreateTeam.this).sendBroadcast(intent);
                                 finish();
                             } else
@@ -203,45 +253,6 @@ public class CreateTeam extends AppCompatActivity {
         queue.add(stringRequest);
     }
 
-    private void loadChats() {
-
-        Set<String> set = shd.getStringSet(AppConstant.contact, null);
-        try {
-            if (set != null) {
-                for (String s : set) {
-                    SharedPreferences userInfo = getSharedPreferences(s, Context.MODE_PRIVATE);
-                    contactModel.add(new ContactListModel(s.replace(appConstant.getCountryCode(), ""),
-                            AppConstant.AppUrl + "images/" + userInfo.getString(AppConstant.id, "") + ".png?u=" + AppConstant.imageExt(),
-                            getContactName(s),
-                            userInfo.getString(AppConstant.id, ""),
-                            s));
-                }
-                Collections.sort(contactModel, new Comparator<ContactListModel>() {
-                    @Override
-                    public int compare(final ContactListModel object1, final ContactListModel object2) {
-                        Log.e("Collections", object1.getName() + " " + object2.getName());
-                        return object1.getName().compareTo(object2.getName());
-                    }
-                });
-                String loyalFriendList[] = loyalFriends.split(",");
-                for (String s : loyalFriendList) {
-                    SharedPreferences userInfo = getSharedPreferences(s, Context.MODE_PRIVATE);
-                    Log.e( "loadChats: ", userInfo.getString(AppConstant.id, ""));
-                    contactModel.add(0,new ContactListModel(s.replace(appConstant.getCountryCode(), ""),
-                            AppConstant.AppUrl + "images/" + userInfo.getString(AppConstant.id, "") + ".png?u=" + AppConstant.imageExt(),
-                            getContactName(s),
-                            userInfo.getString(AppConstant.id, ""),
-                            s));
-                }
-                contactModel2.addAll(contactModel);
-                createTeamAdapter.notifyDataSetChanged();
-            } else
-                new readContactTask().execute();
-        } catch (Exception e) {
-            new readContactTask().execute();
-        }
-    }
-
     public String getContactName(final String phoneNumber) {
         Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
 
@@ -282,51 +293,15 @@ public class CreateTeam extends AppCompatActivity {
         }
 
         protected String doInBackground(Void... arg0) {
-            readContacts();
-
             return "You are at PostExecute";
         }
 
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             binding.progress.setVisibility(View.GONE);
-            loadChats();
+            fetchContacts();
         }
     }
-
-//    public void serverContact(String number, String original) {
-//        Log.e("userNum", number);
-//        DatabaseReference mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
-//        Query query = mFirebaseDatabaseReference.child("users").orderByChild("phoneNumber").equalTo(number);
-//        query.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                returnPhone++;
-//                if (dataSnapshot != null) {
-//                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-//                        Log.e("number//", original);
-//                        Log.e("number//---", postSnapshot.getKey());
-//                        originalContact.add(postSnapshot.getKey());
-//                        appConstant.saveUserInfo(original, postSnapshot.getKey(), postSnapshot.child(AppConstant.token).exists() ? postSnapshot.child(AppConstant.token).getValue(String.class) : "", null, "", postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue() != null ? postSnapshot.child(AppConstant.pinfo).child(AppConstant.bio).getValue().toString() : null, postSnapshot.child(AppConstant.userName).getValue() != null ? postSnapshot.child(AppConstant.userName).getValue().toString() : System.currentTimeMillis() + "");
-//                    }
-//                }
-//                Log.e("originalContact", contactArrayList.size() + " " + returnPhone);
-//                if (contactArrayList.size() == returnPhone) {
-//                    SharedPreferences.Editor setEditor = shd.edit();
-//                    setEditor.putStringSet(AppConstant.contact, originalContact);
-//                    setEditor.apply();
-//                    Intent intent = new Intent("refresh");
-//                    LocalBroadcastManager.getInstance(ChatList.this).sendBroadcast(intent);
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
-//    }
-
 
     public void readContacts() {
         contactHashList.clear();

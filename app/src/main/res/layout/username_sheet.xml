@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <soup.neumorphism.NeumorphCardView
+        style="@style/Widget.Neumorph.Button"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:onClick="openUserName"
+        app:neumorph_shapeType="pressed"
+        app:neumorph_strokeColor="@color/darkgrey"
+        app:neumorph_strokeWidth="1dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/userName"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#00000000"
+            android:digits="abcdefghijklmnopqrstuvwxyz_.1234567890"
+            android:drawableLeft="@drawable/card_account_details_outline"
+            android:drawablePadding="5dip"
+            android:enabled="false"
+            android:hint=" user name"
+            android:inputType="text"
+            android:paddingLeft="15dp"
+            android:paddingRight="10dp"
+            android:singleLine="true"
+            android:textColor="@color/black"
+            android:textSize="14sp" />
+    </soup.neumorphism.NeumorphCardView>
+
+</LinearLayout>

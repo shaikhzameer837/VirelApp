@@ -8,7 +8,7 @@
         android:layout_width="50dp"
         android:id="@+id/imgs"
         android:scaleType="centerCrop"
-        android:src="@mipmap/app_logo"
+        android:src="@mipmap/ic_launcher"
         android:layout_height="50dp"/>
 
     <RelativeLayout

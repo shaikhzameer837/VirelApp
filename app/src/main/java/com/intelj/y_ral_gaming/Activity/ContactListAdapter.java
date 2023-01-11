@@ -42,12 +42,10 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView name, lastMess,nCount;
-        Button addButton;
+        TextView name, lastMess,nCount,addButton;
         ImageView iv_profile;
         NeumorphCardView arrow;
         CheckBox checkbox;
-
         public MyViewHolder(View view) {
             super(view);
             name = view.findViewById(R.id.name);

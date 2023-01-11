@@ -4,6 +4,7 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Update;
 
 import java.util.List;
 
@@ -12,8 +13,8 @@ public interface VideoListDao {
     @Query("Select * From videolist ORDER BY RANDOM() LIMIT 200")
     List<VideoList> getAllVideo();
 
-//   @Query("Select * From videolist ORDER BY RANDOM() LIMIT 200")
-//    List<VideoList> getAllSelectedVideo(String videoId);
+   @Query("Select * From videolist Where videoId = :videoId limit 200")
+    List<VideoList> getAllSelectedVideo(String videoId);
 
     @Insert()
     void insertVideo(VideoList...videos);
@@ -26,4 +27,7 @@ public interface VideoListDao {
 
     @Query("SELECT * FROM videolist WHERE videoId = :videoId")
     int isDataExist(String videoId);
+
+    @Query("UPDATE videolist SET game = :game WHERE videoId = :videoId")
+    int updateGame(String videoId, String game);
 }

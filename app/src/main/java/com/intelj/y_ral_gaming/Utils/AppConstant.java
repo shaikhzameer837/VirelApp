@@ -20,7 +20,6 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.intelj.y_ral_gaming.AppController;
-import com.intelj.y_ral_gaming.PaymentActivity;
 
 import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
@@ -208,9 +207,7 @@ public class AppConstant {
 //                            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://y-ral-gaming.com/paytm/paytm-main/pgRedirect.php?amount="+amountText.getText().toString()+"&&user_id="+user_id));
 //                            mContext.startActivity(browserIntent);
 
-                            Intent intent = new Intent(mContext, PaymentActivity.class);
-                            intent.putExtra("amount", amountText.getText().toString());
-                            mContext.startActivity(intent);
+
                         }
                     }
                 }).

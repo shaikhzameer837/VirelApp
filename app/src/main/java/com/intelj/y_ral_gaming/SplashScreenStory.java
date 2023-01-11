@@ -2,25 +2,18 @@ package com.intelj.y_ral_gaming;
 
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
-import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,7 +27,7 @@ public class SplashScreenStory extends AppCompatActivity implements StoriesProgr
     TextView desc;
     private TextView priceMoney;
     private int counter = 0;
-    List<String> posterImage = new ArrayList<>();
+    List<Integer> posterImage = new ArrayList<>();
     ArrayList<String> imageText = new ArrayList<>();
     long pressTime = 0L;
     long limit = 500L;
@@ -99,10 +92,11 @@ public class SplashScreenStory extends AppCompatActivity implements StoriesProgr
         image = findViewById(R.id.image);
         desc = findViewById(R.id.desc);
       //  if (posterImage.size() == 0) {
-            final String[] resources = new String[]{
-                    "https://cdnb.artstation.com/p/assets/images/images/025/525/671/large/as-editor-pubg-poster.jpg?1586085669",
-                    "https://cdn-products.eneba.com/resized-products/dEdZeooTmlzeNGBKPTKCbL7Ob_wvjzO4sNYvr1f-xYU_350x200_1x-0.jpg",
-                    "https://m.media-amazon.com/images/M/MV5BNmNhM2NjMTgtNmIyZC00ZmVjLTk4YWItZmZjNGY2NThiNDhkXkEyXkFqcGdeQXVyODU4MDU1NjU@._V1_.jpg"};
+            final Integer[] resources = new Integer[]{
+                    R.drawable.background01,
+                    R.drawable.background02,
+                    R.drawable.background03
+            };
             posterImage = Arrays.asList(resources);
        // }
 

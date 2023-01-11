@@ -79,7 +79,7 @@ public class PayMentAdapter extends RecyclerView.Adapter<PayMentAdapter.MyViewHo
         }
         Glide.with(mContext)
                 .load(paymentHistoryModel.get(position).getImg_url())
-                .placeholder(R.mipmap.app_logo)
+                .placeholder(R.mipmap.ic_launcher)
                 .into(holder.imgs);
         holder.imgs.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,7 +88,7 @@ public class PayMentAdapter extends RecyclerView.Adapter<PayMentAdapter.MyViewHo
                 // image.setImageResource(R.drawable.YOUR_IMAGE_ID);
                 Glide.with(mContext)
                         .load(paymentHistoryModel.get(position).getImg_url())
-                        .placeholder(R.mipmap.app_logo)
+                        .placeholder(R.mipmap.ic_launcher)
                         .into(image);
                 AlertDialog.Builder builder =
                         new AlertDialog.Builder(mContext).

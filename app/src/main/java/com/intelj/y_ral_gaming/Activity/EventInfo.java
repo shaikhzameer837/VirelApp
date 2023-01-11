@@ -18,6 +18,8 @@ import android.text.InputFilter;
 import android.transition.Fade;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -27,6 +29,8 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -44,23 +48,26 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.google.gson.Gson;
 import com.intelj.y_ral_gaming.Adapter.TeamDisplayList;
 import com.intelj.y_ral_gaming.AppController;
 import com.intelj.y_ral_gaming.ContactListModel;
-import com.intelj.y_ral_gaming.Fragment.PrizePoolFragment;
+import com.intelj.y_ral_gaming.Event;
 import com.intelj.y_ral_gaming.Fragment.RuleFragment;
-import com.intelj.y_ral_gaming.Fragment.TeamFragment;
 import com.intelj.y_ral_gaming.R;
 import com.intelj.y_ral_gaming.RoundedBottomSheetDialog;
 import com.intelj.y_ral_gaming.SigninActivity;
+import com.intelj.y_ral_gaming.TournamentAdapter;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 import com.intelj.y_ral_gaming.Utils.RecyclerTouchListener;
 import com.intelj.y_ral_gaming.model.MyListData;
+import com.intelj.y_ral_gaming.model.TournamentModel;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -69,7 +76,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -84,12 +92,22 @@ public class EventInfo extends AppCompatActivity {
     AppConstant appConstant;
     int teamCount = 0;
     private static final int REQUEST = 112;
+    ImageView img;
+    boolean isRegistered = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.event_info);
+
         iv_cover_pic = findViewById(R.id.cover_pic);
+        img = findViewById(R.id.img);
+        Glide.with(this).load("https://media.discordapp.net/attachments/1024724326957715567/1057137645110698004/bgmi.png?width=564&height=663")
+                .apply(new RequestOptions().circleCrop())
+                .placeholder(R.drawable.placeholder).into(img);
         appConstant = new AppConstant(this);
         Fade fade = new Fade();
 //        appConstant = new AppConstant(this);
@@ -104,20 +122,18 @@ public class EventInfo extends AppCompatActivity {
         viewPager = findViewById(R.id.viewPager);
         tv_title = findViewById(R.id.title);
         tv_date = findViewById(R.id.date);
-        tv_title.setText(AppController.getInstance().tournamentModel.getGame_name());
-        tv_date.setText(AppController.getInstance().tournamentModel.getDate());
-        tabLayout.addTab(tabLayout.newTab().setText("Rules"));
-        tabLayout.addTab(tabLayout.newTab().setText("Team"));
-        tabLayout.addTab(tabLayout.newTab().setText("Prize Pool"));
-        tabLayout.addTab(tabLayout.newTab().setText("Info"));
+        tv_title.setText(getIntent().getStringExtra("teamName"));
+        tv_date.setText(getIntent().getStringExtra("gameName"));
+        isRegistered = getIntent().getStringExtra("isRegistered").equals("1");
+
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
                 new IntentFilter("joined_event"));
         LocalBroadcastManager.getInstance(this).registerReceiver(msMessageReceiver,
                 new IntentFilter("team-event-name"));
         join = findViewById(R.id.join);
-        MyEventAdapter adapter = new MyEventAdapter(this, getSupportFragmentManager(), tabLayout.getTabCount());
-        viewPager.setAdapter(adapter);
+        viewPager.setOffscreenPageLimit(0);
+
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
 
             @Override
@@ -135,25 +151,32 @@ public class EventInfo extends AppCompatActivity {
 
             }
         });
-
-        Glide.with(this).load(AppController.getInstance().tournamentModel.getImage_url()).placeholder(R.drawable.placeholder).into(iv_cover_pic);
+        Glide.with(this).load(getIntent().getStringExtra("eId")).placeholder(R.drawable.placeholder).into(iv_cover_pic);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        showTeamList();
+        if (!appConstant.checkLogin()) {
+            setButton(" Login ", R.drawable.curved_white, Color.RED);
+        } else if (getIntent().getStringExtra("status").equals("0"))
+            setButton(" Closed ", R.drawable.curved_white, Color.BLACK);
+        else
+            setButton(!isRegistered ? " Join " : " Already joined ", !isRegistered ? R.drawable.curved_red : R.drawable.curved_white, !isRegistered ? Color.WHITE : Color.RED);
+        join.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!appConstant.checkLogin()) {
+                    startActivity(new Intent(EventInfo.this, SigninActivity.class));
+                    return;
+                }
+                if (join.getText().toString().trim().equals("Join") && !getIntent().getStringExtra("status").equals("0")) {
+                    showTeamList();
+                }
+            }
+        });
+        getEventDetails();
     }
+
     SharedPreferences shd;
     LinearLayout lin;
-//    private void addTeamList(){
-//        View view = getLayoutInflater().inflate(R.layout.add_team_info, null);
-//        final BottomSheetDialog dialogBottom = new RoundedBottomSheetDialog(EventInfo.this);
-//        view.findViewById(R.id.createTeam).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                startActivity(new Intent(EventInfo.this,CreateTeam.class));
-//            }
-//        });
-//        dialogBottom.setContentView(view);
-//        dialogBottom.show();
-//    }
+    BottomSheetDialog bottomCreateTeam;
     private BroadcastReceiver msMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -161,7 +184,7 @@ public class EventInfo extends AppCompatActivity {
             String teamName = intent.getStringExtra("name");
             String teamId = intent.getStringExtra("id");
             String teamMember = intent.getStringExtra("teamMember");
-            myListData.add(0,new MyListData(teamName,teamId, teamMember.split(",").length +" Member"));
+            myListData.add(0, new MyListData(teamName, teamId, teamMember.split(",").length + " Member"));
             teamAdapter.notifyDataSetChanged();
 
             Log.d("receiver", "Got message: " + teamName);
@@ -169,16 +192,17 @@ public class EventInfo extends AppCompatActivity {
     };
     ArrayList<MyListData> myListData = new ArrayList<>();
     TeamDisplayList teamAdapter;
+
     public void showTeamList() {
         myListData.clear();
         //  startActivity(new Intent(ProFileActivity.this,CreateTeam.class));
         View inflated = getLayoutInflater().inflate(R.layout.team_list, null);
-        final BottomSheetDialog dialogBottom = new RoundedBottomSheetDialog(EventInfo.this);
+        bottomCreateTeam = new RoundedBottomSheetDialog(EventInfo.this);
         RecyclerView teamRecyclerView = inflated.findViewById(R.id.rv_teamlist);
         inflated.findViewById(R.id.createTeam).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(EventInfo.this,CreateTeam.class));
+                startActivity(new Intent(EventInfo.this, CreateTeam.class));
             }
         });
         ShimmerFrameLayout shimmerFrameLayout = inflated.findViewById(R.id.shimmer_layout);
@@ -251,8 +275,58 @@ public class EventInfo extends AppCompatActivity {
 
             }
         }));
-        dialogBottom.setContentView(inflated);
-        dialogBottom.show();
+        bottomCreateTeam.setContentView(inflated);
+        bottomCreateTeam.show();
+    }
+
+    private void getEventDetails() {
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = AppConstant.AppUrl + "events/get_events_tab.php?u=" + new AppConstant(this).getId()+"&&id="+ getIntent().getStringExtra("eId");
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.e("tokenResponse", response);
+                try {
+                    JSONObject json = new JSONObject(response);
+                    JSONObject tab = json.getJSONObject("tab");
+                    Iterator<String> keys = tab.keys();
+                    AppController.getInstance().tab.clear();
+                    while(keys.hasNext()) {
+                        String key = keys.next();
+                        String value = tab.getString(key);
+                        System.out.println(key + ": " + value);
+                        AppController.getInstance().tab.put(key,value);
+                        tabLayout.addTab(tabLayout.newTab().setText(key));
+                    }
+                    MyEventAdapter adapter = new MyEventAdapter(EventInfo.this, getSupportFragmentManager(), tabLayout.getTabCount());
+                    viewPager.setAdapter(adapter);
+
+                } catch (Exception e) {
+                    Log.e("error Rec", e.getMessage());
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+/*                shimmer_container.hideShimmer();
+                shimmer_container.setVisibility(View.GONE);*/
+                error.printStackTrace();
+                FirebaseCrashlytics.getInstance().recordException(error);
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                return new HashMap<>();
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Content-Type", "application/x-www-form-urlencoded");
+                return params;
+            }
+        };
+        queue.add(stringRequest);
     }
 
     private void addTeamLists(int position) {
@@ -263,8 +337,8 @@ public class EventInfo extends AppCompatActivity {
         lin = view.findViewById(R.id.lin);
         shd = getSharedPreferences(AppConstant.id, MODE_PRIVATE);
         appConstant = new AppConstant(this);
-        String[] userPlayer =  (new AppConstant(this).getId() + "," +myListData.get(position).getPlaying_status().replace(new AppConstant(this).getId() + ",","")).split(",");
-        for (int x = 0 ; x < userPlayer.length; x++) {
+        String[] userPlayer = (new AppConstant(this).getId() + "," + myListData.get(position).getPlaying_status().replace(new AppConstant(this).getId() + ",", "")).split(",");
+        for (int x = 0; x < userPlayer.length; x++) {
             addEditText(userPlayer[x]);
         }
         view.findViewById(R.id.submit).setOnClickListener(new View.OnClickListener() {
@@ -283,47 +357,12 @@ public class EventInfo extends AppCompatActivity {
                     }
                 }
                 joinEvent(position);
+                bottomCreateTeam.cancel();
                 dialogBottom.cancel();
             }
         });
         dialogBottom.setContentView(view);
         dialogBottom.show();
-
-
-
-//        View view = getLayoutInflater().inflate(R.layout.add_team_info, null);
-//        contactModel = new ArrayList<>();
-//        BottomSheetDialog bottomSheetDialog = new RoundedBottomSheetDialog(EventInfo.this);
-//        bottomSheetDialog.show();
-//        lin = view.findViewById(R.id.lin);
-//        shd = getSharedPreferences(AppConstant.id, MODE_PRIVATE);
-//        appConstant = new AppConstant(this);
-//
-//        view.findViewById(R.id.submit).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (teamName.getText().toString().trim().equals("")) {
-//                    teamName.setError("Enter your team name");
-//                    teamName.requestFocus();
-//                    return;
-//                }
-//                if (editTextList.size() < 4) {
-//                    Toast.makeText(EventInfo.this, "Minimum 4 players are required", Toast.LENGTH_LONG).show();
-//                    return;
-//                }
-//                for (int x = 0; x < editTextList.size(); x++) {
-//                    if (editTextList.get(x).getText().toString().trim().equals("")) {
-//                        editTextList.get(x).setError("Player Name cannot be empty");
-//                        editTextList.get(x).requestFocus();
-//                        return;
-//                    }
-//                }
-//                joinEvent();
-//                bottomSheetDialog.cancel();
-//            }
-//        });
-//        addEditText("", new AppConstant(EventInfo.this).getId());
-
     }
 
     public void addEditText(String userId) {
@@ -348,6 +387,7 @@ public class EventInfo extends AppCompatActivity {
         lin.addView(textInputLayout);
         textInputLayouts.add(textInputLayout);
     }
+
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -358,7 +398,7 @@ public class EventInfo extends AppCompatActivity {
             } else {
                 result = intent.getBooleanExtra("message", false);
                 teamCount = intent.getIntExtra("count", 0);
-                if (AppController.getInstance().tournamentModel.getMax() == teamCount && !result)
+                if (getIntent().getIntExtra("max", 0) == teamCount && !result)
                     setButton(" Closed ", R.drawable.curved_white, Color.BLACK);
                 else
                     setButton(!result ? " Join " : " Already joined ", !result ? R.drawable.curved_red : R.drawable.curved_white, !result ? Color.WHITE : Color.RED);
@@ -371,7 +411,7 @@ public class EventInfo extends AppCompatActivity {
                             startActivity(new Intent(EventInfo.this, SigninActivity.class));
                             return;
                         }
-                        if (AppController.getInstance().tournamentModel.getMax() != teamCount) {
+                        if (getIntent().getIntExtra("max", 0) != teamCount) {
                             showTeamList();
                         }
                     }
@@ -397,12 +437,15 @@ public class EventInfo extends AppCompatActivity {
                 }
         }
     }
+
     ArrayList<ContactListModel> contactModel = new ArrayList<>();
     HashMap<String, String> contactArrayList = new HashMap<>();
     ContactListAdapter contactListAdapter;
+
     class readContactTask extends AsyncTask<Void, Integer, String> {
         String TAG = getClass().getSimpleName();
         ProgressDialog pd = new ProgressDialog(EventInfo.this);
+
         protected void onPreExecute() {
             super.onPreExecute();
             contactModel.clear();
@@ -422,6 +465,7 @@ public class EventInfo extends AppCompatActivity {
             loadChats();
         }
     }
+
     private void loadChats() {
         Set<String> set = shd.getStringSet(AppConstant.contact, null);
         try {
@@ -520,8 +564,10 @@ public class EventInfo extends AppCompatActivity {
                 jsonRootObject3.put(editTextList.get(x).getTag().toString(), jsonRootObject4);
             }
             jsonRootObject2.put("teams", jsonRootObject3);
-            jsonRootObject2.put("teamName", myListData.get(position).getName());
+            jsonRootObject2.put("name", myListData.get(position).getName());
+            jsonRootObject2.put("teamId", myListData.get(position).getUserId());
             jsonRootObject.put(myListData.get(position).getUserId(), jsonRootObject2);
+            Log.e("jsonRootObject", jsonRootObject.toString());
             Log.e("jsonRootObject", jsonRootObject.toString());
         } catch (Exception e) {
             e.printStackTrace();
@@ -532,15 +578,15 @@ public class EventInfo extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.e("lcat_response",  url + "\n" +response);
+                        Log.e("lcat_response", url + "\n" + response);
                         if (response.equals("success")) {
-                            if (viewPager.getCurrentItem() != 3) {
-                                Intent intent = new Intent("register_event");
-                                intent.putExtra("key", myListData.get(position).getUserId());
-                                intent.putExtra("teamName", myListData.get(position).getName());
-                                intent.putExtra("teams", jsonRootObject3.toString());
-                                LocalBroadcastManager.getInstance(EventInfo.this).sendBroadcast(intent);
-                            }
+                            SharedPreferences sharedPreferences = getSharedPreferences(AppConstant.AppName, MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
+                            myEdit.putBoolean(AppConstant.pinfo + getIntent().getStringExtra("eId"), true);
+                            myEdit.apply();
+                            Intent intent = new Intent("refreshWeb");
+                            LocalBroadcastManager.getInstance(EventInfo.this).sendBroadcast(intent);
+                            isRegistered = true;
                             setButton("Already joined", R.drawable.curved_white, Color.RED);
                             Toast.makeText(EventInfo.this, "Registration done successfully", Toast.LENGTH_LONG).show();
                         } else
@@ -559,7 +605,7 @@ public class EventInfo extends AppCompatActivity {
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
                 params.put("userJson", jsonRootObject.toString());
-                params.put("tid", AppController.getInstance().tournamentModel.getId());
+                params.put("tid", getIntent().getStringExtra("eId"));
                 return params;
             }
 
@@ -588,16 +634,9 @@ public class EventInfo extends AppCompatActivity {
         // this is for fragment tabs
         @Override
         public Fragment getItem(int position) {
-            switch (position) {
-                case 0:
-                    return new RuleFragment();
-                case 2:
-                    return new PrizePoolFragment(AppController.getInstance().tournamentModel.getPrize_pool());
-                case 3:
-                    return new PrizePoolFragment(AppController.getInstance().tournamentModel.getInfo());
-                default:
-                    return new TeamFragment();
-            }
+            String url = AppController.getInstance().tab.get(tabLayout.getTabAt(position).getText().toString());
+            Log.e("getItemUrl: ", url);
+            return new RuleFragment(url);
         }
 
         // this counts total number of tabs

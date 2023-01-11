@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -16,7 +15,6 @@ import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -25,8 +23,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.intelj.y_ral_gaming.Adapter.TimeSlotAdapter;
 import com.intelj.y_ral_gaming.AppController;
@@ -144,7 +140,7 @@ public class OneFragment extends Fragment {
                                 AppController.getInstance().rank = Integer.parseInt(json.getString("rank"));
                                 AppController.getInstance().referral = json.getString("referral");
                                 AppController.getInstance().teamList = json.getString("teamList");
-                                Log.e("onReceive: R ", json.getString("rank"));
+                                Log.e("onReceive: R ", AppController.getInstance().teamList);
                                 JSONArray ja_data = json.getJSONArray("match_info");
                                 GameItem.clear();
                                 for (int i = 0; i < ja_data.length(); i++) {

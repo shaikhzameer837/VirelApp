@@ -12,10 +12,10 @@
 <!--        android:title="My Team" />-->
 
     <item
-        android:id="@+id/tournament"
-        android:icon="@drawable/trophy_outline"
+        android:id="@+id/store"
+        android:icon="@drawable/store"
         app:showAsAction="always|withText"
-        android:title="Events " />
+        android:title="Store" />
     <item
         android:id="@+id/abc"
         app:showAsAction="always|withText"

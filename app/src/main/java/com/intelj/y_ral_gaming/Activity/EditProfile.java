@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -18,8 +19,10 @@ import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
@@ -29,8 +32,10 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
@@ -44,6 +49,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.database.DatabaseReference;
@@ -124,6 +130,10 @@ public class EditProfile extends AppCompatActivity {
                     Toast.makeText(EditProfile.this, "Please check user name first", Toast.LENGTH_LONG).show();
                     return;
                 }
+                if(!userName.matches("[a-zA-Z0-9]*")){
+                    Toast.makeText(EditProfile.this, "only text and numbers are allowed in name", Toast.LENGTH_LONG).show();
+                    return;
+                }
                 boolean isSlected = false;
                 for (int i = 0; i < gameList.getChildCount(); i++) {
                     TextView textView = (TextView) gameList.getChildAt(i);
@@ -182,9 +192,27 @@ public class EditProfile extends AppCompatActivity {
         imgProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ActivityCompat.requestPermissions(EditProfile.this,
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                        1);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    if (ContextCompat.checkSelfPermission(EditProfile.this, Manifest.permission.ACCESS_MEDIA_LOCATION)
+                            != PackageManager.PERMISSION_GRANTED) {
+                        requestPermissions(new String[]{Manifest.permission.ACCESS_MEDIA_LOCATION},
+                                1);
+                    } else {
+                        Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        startActivityForResult(i, PROFILE_IMAGE);
+                    }
+                }else {
+                    if (ContextCompat.checkSelfPermission(EditProfile.this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                            != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(EditProfile.this,
+                                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                                1);
+                    }else{
+                        Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        startActivityForResult(i, PROFILE_IMAGE);
+                    }
+                }
+
             }
         });
         Glide.with(this).load(AppConstant.AppUrl + "images/" + appConstant.getId() + ".png?u=" +AppConstant.imageExt())
@@ -192,8 +220,6 @@ public class EditProfile extends AppCompatActivity {
                 .placeholder(R.drawable.game_avatar).into(imgProfile);
         for (int i = 0; i < gameList.getChildCount(); i++) {
             MaterialTextView textView = (MaterialTextView) gameList.getChildAt(i);
-//            Glide.with(this).load(imgList[i])
-//                    .placeholder(R.drawable.game_avatar).into(imageView);
             if (prefs.getString(textView.getText().toString(), "0").equals("0")) {
                 textView.setBackgroundResource(R.drawable.curved_drawable);
                 textView.setTextColor(Color.parseColor("#333333"));
@@ -304,6 +330,7 @@ public class EditProfile extends AppCompatActivity {
                     public void onResponse(String response) {
                         Log.e("response", response);
                         progressDialog.cancel();
+
                         saveToProfile();
                     }
                 }, new Response.ErrorListener() {
@@ -364,13 +391,6 @@ public class EditProfile extends AppCompatActivity {
                         Log.e("GotError", "" + error.getMessage());
                     }
                 }) {
-
-            //            @Override
-//            protected Map<String, String> getParams() throws AuthFailureError {
-//                Map<String, String> params = new HashMap<>();
-//                params.put("tags", tags);
-//                return params;
-//            }
             @Override
             protected Map<String, DataPart> getByteData() {
                 Map<String, DataPart> params = new HashMap<>();
@@ -379,7 +399,6 @@ public class EditProfile extends AppCompatActivity {
                 return params;
             }
         };
-        //adding the request to volley
         Volley.newRequestQueue(this).add(volleyMultipartRequest);
     }
 
@@ -448,7 +467,7 @@ public class EditProfile extends AppCompatActivity {
             case 1:
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
+ //                   CropImage.activity().start(EditProfile.this);
                     Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     startActivityForResult(i, PROFILE_IMAGE);
                 } else {
@@ -471,38 +490,71 @@ public class EditProfile extends AppCompatActivity {
             Cursor cursor = getContentResolver().query(selectedImg,
                     filePathColumn, null, null, null);
 
-            if (cursor == null || cursor.getCount() < 1) {
-                return; // no cursor or no record. DO YOUR ERROR HANDLING
+                if (cursor == null || cursor.getCount() < 1) {
+                    return; // no cursor or no record. DO YOUR ERROR HANDLING
+                }
+
+                cursor.moveToFirst();
+                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+
+                if (columnIndex < 0) // no column index
+                    return; // DO YOUR ERROR HANDLING
+
+                picturePath = cursor.getString(columnIndex);
+                cursor.close();
+                try {
+                    selectedImage = getBitmapFromUri(data.getData());
+                    Glide.with(this).load(picturePath).apply(new RequestOptions().circleCrop()).into(imgProfile);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-
-            cursor.moveToFirst();
-            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-
-            if (columnIndex < 0) // no column index
-                return; // DO YOUR ERROR HANDLING
-
-            picturePath = cursor.getString(columnIndex);
-            cursor.close();
-            try {
-                selectedImage = getBitmapFromUri(data.getData());
-                Glide.with(this).load(picturePath).apply(new RequestOptions().circleCrop()).into(imgProfile);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     private Bitmap getBitmapFromUri(Uri uri) throws IOException {
         ParcelFileDescriptor parcelFileDescriptor =
                 getContentResolver().openFileDescriptor(uri, "r");
         FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-        Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
+        Bitmap image = resize(BitmapFactory.decodeFileDescriptor(fileDescriptor),120,120);
         parcelFileDescriptor.close();
         return image;
     }
+    private static Bitmap resize(Bitmap image, int maxWidth, int maxHeight) {
+        if (maxHeight > 0 && maxWidth > 0) {
+            int width = image.getWidth();
+            int height = image.getHeight();
+            float ratioBitmap = (float) width / (float) height;
+            float ratioMax = (float) maxWidth / (float) maxHeight;
 
+            int finalWidth = maxWidth;
+            int finalHeight = maxHeight;
+            if (ratioMax > ratioBitmap) {
+                finalWidth = (int) ((float)maxHeight * ratioBitmap);
+            } else {
+                finalHeight = (int) ((float)maxWidth / ratioBitmap);
+            }
+            image = Bitmap.createScaledBitmap(image, finalWidth, finalHeight, true);
+            return image;
+        } else {
+            return image;
+        }
+    }
     public void checkAvail(View view) {
         if (!TI_userName.getText().toString().trim().equals(""))
             checkUserName();
+    }
+
+    public void openUserName(View view) {
+        UsernameSheet bottomSheet = new UsernameSheet();
+        bottomSheet.show(getSupportFragmentManager(), "bottomSheet");
+    }
+    public class UsernameSheet extends BottomSheetDialogFragment {
+
+        @Nullable
+        @Override
+        public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+            View view = inflater.inflate(R.layout.username_sheet, container, false);
+            return view;
+        }
     }
 }

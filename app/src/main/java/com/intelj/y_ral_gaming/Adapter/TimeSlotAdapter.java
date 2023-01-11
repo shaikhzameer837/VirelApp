@@ -102,7 +102,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
         holder.title.setText(gameItem.get(position).getTime());
         holder.prizepool.setText("Win \u20B9" + gameItem.get(position).getPerKill() + " Per kill");
         holder.type.setText("Pp \uD83D\uDCB0 \u20B9"+(Integer.parseInt(gameItem.get(position).getPerKill()) * gameItem.get(position).getMax()));
-        Glide.with(mContext).load(gameItem.get(position).getYt_url().equals("") ? R.drawable.placeholder : "https://i.ytimg.com/vi/" + gameItem.get(position).getYt_url() + "/hqdefault_live.jpg").placeholder(R.mipmap.app_logo).into(holder.imgs);
+        Glide.with(mContext).load(gameItem.get(position).getYt_url().equals("") ? R.drawable.placeholder : "https://i.ytimg.com/vi/" + gameItem.get(position).getYt_url() + "/hqdefault_live.jpg").placeholder(R.mipmap.ic_launcher).into(holder.imgs);
         holder.imgs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -220,12 +220,6 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
                 setViews(infos, position, textView);
             }
         });
-//        bottomSheetDialog.findViewById(R.id.add_money).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                new AppConstant(mContext).addMoney(mContext);
-//            }
-//        });
         bottomSheetDialog.show();
     }
 

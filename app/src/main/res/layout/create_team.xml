@@ -42,6 +42,7 @@
                     android:drawableLeft="@drawable/team"
                     android:drawablePadding="15dip"
                     android:drawableTint="@color/black"
+                    android:maxEms="100"
                     android:hint=" Enter your team name"
                     android:paddingLeft="15dp"
                     android:maxLength="100"

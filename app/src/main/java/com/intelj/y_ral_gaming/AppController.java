@@ -16,6 +16,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
@@ -78,7 +79,6 @@ public class AppController extends Application implements Application.ActivityLi
     public static AppController instance;
     public String userId = "";
     AppConstant appConstant;
-    DatabaseReference mDatabase;
     public DataSnapshot notification;
     public DataSnapshot follow;
     public ProgressDialog progressDialog = null;
@@ -91,13 +91,55 @@ public class AppController extends Application implements Application.ActivityLi
     public String referral = "0";
     public String teamList = "";
     public List<GameItem> movieList = new ArrayList<>();
-    public TournamentModel tournamentModel;
-    AppDataBase appDataBase;
+    public Map<String, String> tab = new HashMap<>();
+    public List<TournamentModel> tournamentModel;
     public HashMap<String, Integer> popularList = new HashMap<>();
     public AppDataBase videoDataBase;
     @Override
     public void onCreate() {
         super.onCreate();
+        registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
+
+            @Override
+            public void onActivityCreated(Activity activity,
+                                          Bundle savedInstanceState) {
+
+                // new activity created; force its orientation to portrait
+                activity.setRequestedOrientation(
+                        ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+            }
+
+            @Override
+            public void onActivityStarted(@NonNull Activity activity) {
+
+            }
+
+            @Override
+            public void onActivityResumed(@NonNull Activity activity) {
+
+            }
+
+            @Override
+            public void onActivityPaused(@NonNull Activity activity) {
+
+            }
+
+            @Override
+            public void onActivityStopped(@NonNull Activity activity) {
+
+            }
+
+            @Override
+            public void onActivitySaveInstanceState(@NonNull Activity activity, @NonNull Bundle bundle) {
+
+            }
+
+            @Override
+            public void onActivityDestroyed(@NonNull Activity activity) {
+
+            }
+        });
         instance = this;
         FirebaseDatabase.getInstance().setPersistenceEnabled(false);
         getReadyForCheckin();
@@ -370,6 +412,8 @@ public class AppController extends Application implements Application.ActivityLi
                                     Log.e("onResponse: ", jsonObj.getString("uid"));
                                     if (videoDataBase.videosDao().isDataExist(jsonObj.getString("uid")) == 0)
                                         videoDataBase.videosDao().insertVideo(new VideoList(jsonObj.getString("uid"), jsonObj.getString("owner"), jsonObj.getString("time"), jsonObj.getString("game")));
+                                    else
+                                        videoDataBase.videosDao().updateGame(jsonObj.getString("uid"),jsonObj.getString("game"));
                                 }
                             }
                         } catch (Exception e) {

@@ -55,7 +55,8 @@ public class ChatList extends AppCompatActivity {
     ContactListAdapter contactListAdapter;
     AppConstant appConstant;
     ProgressBar progress;
-
+    private ArrayList<String> contactStrList;
+    String loyalFriends="";
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +68,8 @@ public class ChatList extends AppCompatActivity {
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(ChatList.this);
         rv_contact.setLayoutManager(mLayoutManager);
         contactModel = new ArrayList<>();
+        SharedPreferences sharedAppName = getSharedPreferences(AppConstant.AppName, 0);
+        loyalFriends = sharedAppName.getString(AppConstant.contact, "");
         contactListAdapter = new ContactListAdapter(ChatList.this, contactModel);
         rv_contact.setAdapter(contactListAdapter);
         rv_contact.addOnItemTouchListener(new RecyclerTouchListener(ChatList.this, rv_contact, new RecyclerTouchListener.ClickListener() {
@@ -117,10 +120,10 @@ public class ChatList extends AppCompatActivity {
             if (!hasPermissions(ChatList.this, PERMISSIONS)) {
                 ActivityCompat.requestPermissions(ChatList.this, PERMISSIONS, REQUEST);
             } else {
-                loadChats();
+                fetchContacts();
             }
         } else {
-            loadChats();
+            fetchContacts();
         }
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
                 new IntentFilter("refresh"));
@@ -141,7 +144,7 @@ public class ChatList extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             progress.setVisibility(View.GONE);
-            loadChats();
+            fetchContacts();
         }
     };
 
@@ -152,32 +155,7 @@ public class ChatList extends AppCompatActivity {
         super.onDestroy();
     }
 
-    private void loadChats() {
-        Set<String> set = shd.getStringSet(AppConstant.contact, null);
-        try {
-            if (set != null) {
-                for (String s : set) {
-                    SharedPreferences userInfo = getSharedPreferences(s, Context.MODE_PRIVATE);
-                    contactModel.add(new ContactListModel(s,
-                            AppConstant.AppUrl + "images/" + userInfo.getString(AppConstant.id, "") + ".png?u=" + AppConstant.imageExt(),
-                            getContactName(s),
-                            userInfo.getString(AppConstant.id, ""),
-                            userInfo.getString(AppConstant.bio, "")));
-                }
-                Collections.sort(contactModel, new Comparator<ContactListModel>() {
-                    @Override
-                    public int compare(final ContactListModel object1, final ContactListModel object2) {
-                        Log.e("Collections", object1.getName() + " " + object2.getName());
-                        return object1.getName().compareTo(object2.getName());
-                    }
-                });
-                contactListAdapter.notifyDataSetChanged();
-            } else
-                new readContactTask().execute();
-        } catch (Exception e) {
-            new readContactTask().execute();
-        }
-    }
+
 
     public String getContactName(final String phoneNumber) {
         Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
@@ -219,7 +197,6 @@ public class ChatList extends AppCompatActivity {
         }
 
         protected String doInBackground(Void... arg0) {
-            readContacts();
 
             return "You are at PostExecute";
         }
@@ -227,10 +204,57 @@ public class ChatList extends AppCompatActivity {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             progress.setVisibility(View.GONE);
-            loadChats();
+            fetchContacts();
         }
     }
+    private void fetchContacts() {
+        long time = System.currentTimeMillis();
+        Log.e("timeRec Start",time+"");
+        contactStrList = new ArrayList<>();
+        // Query the contacts database to get a list of contacts
+        Cursor cursor = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                null, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
 
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                String name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                String phoneNumber = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                phoneNumber = phoneNumber.replaceAll("\\s", "");
+
+                if (!contactStrList.contains(phoneNumber)) {
+                    contactStrList.add(phoneNumber);
+                    // contactList.add(new Contact(name, phoneNumber));
+
+                    SharedPreferences userInfo = getSharedPreferences(phoneNumber, Context.MODE_PRIVATE);
+                    contactModel.add(new ContactListModel(phoneNumber.replace(appConstant.getCountryCode(), ""),
+                            AppConstant.AppUrl + "images/" + userInfo.getString(AppConstant.id, "") + ".png?u=" + AppConstant.imageExt(),
+                            getContactName(phoneNumber),
+                            userInfo.getString(AppConstant.id, ""),
+                            phoneNumber));
+
+                }
+            }
+            cursor.close();
+        }
+        if(loyalFriends.contains(",")) {
+            String loyalFriendList[] = loyalFriends.split(",");
+            for (String s : loyalFriendList) {
+                SharedPreferences userInfo = getSharedPreferences(s, Context.MODE_PRIVATE);
+                Log.e("loadChats: ", userInfo.getString(AppConstant.id, ""));
+                contactModel.add(0, new ContactListModel(s.replace(appConstant.getCountryCode(), ""),
+                        AppConstant.AppUrl + "images/" + userInfo.getString(AppConstant.id, "") + ".png?u=" + AppConstant.imageExt(),
+                        getContactName(s),
+                        userInfo.getString(AppConstant.id, ""),
+                        s));
+            }
+            //contactModel2.addAll(contactModel);
+            contactListAdapter.notifyDataSetChanged();
+        }
+        Log.e("timeRec End",System.currentTimeMillis() +"");
+        Log.e("timeRec End",((time - System.currentTimeMillis()) / 1000) +" sec ");
+        // Notify the adapter that the data has changed
+        contactListAdapter.notifyDataSetChanged();
+    }
 //    public void serverContact(String number, String original) {
 //        Log.e("userNum", number);
 //        DatabaseReference mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
@@ -265,54 +289,54 @@ public class ChatList extends AppCompatActivity {
 //    }
 
 
-    public void readContacts() {
-        contactHashList.clear();
-        originalContact.clear();
-        ContentResolver cr = getContentResolver();
-        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
-                null, null, null, null);
-        if ((cur != null ? cur.getCount() : 0) > 0) {
-            while (cur != null && cur.moveToNext()) {
-                String id = cur.getString(
-                        cur.getColumnIndex(ContactsContract.Contacts._ID));
-                String name = cur.getString(cur.getColumnIndex(
-                        ContactsContract.Contacts.DISPLAY_NAME));
-
-                if (cur.getInt(cur.getColumnIndex(
-                        ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0) {
-                    Cursor pCur = cr.query(
-                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                            null,
-                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
-                            new String[]{id}, null);
-                    while (pCur.moveToNext()) {
-                        String phoneNo = pCur.getString(pCur.getColumnIndex(
-                                ContactsContract.CommonDataKinds.Phone.NUMBER)).replace(" ", "");
-                        if (phoneNo.length() > 8) {
-                            String original = phoneNo;
-                            if (phoneNo.startsWith("0"))
-                                phoneNo = phoneNo.substring(1);
-                            if (!phoneNo.startsWith("+"))
-                                phoneNo = appConstant.getCountryCode() + phoneNo;
-                            Log.e("Phone_Number: ", phoneNo);
-                            if (!phoneNo.equals(appConstant.getCountryCode() + appConstant.getPhoneNumber()) || !contactHashList.containsKey(original)) {
-                                contactHashList.put(phoneNo, original);
-                                originalContact.add(original);
-                                Log.e("Phone_Number_add: ", phoneNo);
-                            }
-                        }
-                    }
-                    pCur.close();
-                }
-            }
-        }
-        if (cur != null) {
-            cur.close();
-        }
-        SharedPreferences.Editor setEditor = shd.edit();
-        setEditor.putStringSet(AppConstant.contact, originalContact);
-        setEditor.apply();
-    }
+//    public void readContacts() {
+//        contactHashList.clear();
+//        originalContact.clear();
+//        ContentResolver cr = getContentResolver();
+//        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
+//                null, null, null, null);
+//        if ((cur != null ? cur.getCount() : 0) > 0) {
+//            while (cur != null && cur.moveToNext()) {
+//                String id = cur.getString(
+//                        cur.getColumnIndex(ContactsContract.Contacts._ID));
+//                String name = cur.getString(cur.getColumnIndex(
+//                        ContactsContract.Contacts.DISPLAY_NAME));
+//
+//                if (cur.getInt(cur.getColumnIndex(
+//                        ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0) {
+//                    Cursor pCur = cr.query(
+//                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+//                            null,
+//                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
+//                            new String[]{id}, null);
+//                    while (pCur.moveToNext()) {
+//                        String phoneNo = pCur.getString(pCur.getColumnIndex(
+//                                ContactsContract.CommonDataKinds.Phone.NUMBER)).replace(" ", "");
+//                        if (phoneNo.length() > 8) {
+//                            String original = phoneNo;
+//                            if (phoneNo.startsWith("0"))
+//                                phoneNo = phoneNo.substring(1);
+//                            if (!phoneNo.startsWith("+"))
+//                                phoneNo = appConstant.getCountryCode() + phoneNo;
+//                            Log.e("Phone_Number: ", phoneNo);
+//                            if (!phoneNo.equals(appConstant.getCountryCode() + appConstant.getPhoneNumber()) || !contactHashList.containsKey(original)) {
+//                                contactHashList.put(phoneNo, original);
+//                                originalContact.add(original);
+//                                Log.e("Phone_Number_add: ", phoneNo);
+//                            }
+//                        }
+//                    }
+//                    pCur.close();
+//                }
+//            }
+//        }
+//        if (cur != null) {
+//            cur.close();
+//        }
+//        SharedPreferences.Editor setEditor = shd.edit();
+//        setEditor.putStringSet(AppConstant.contact, originalContact);
+//        setEditor.apply();
+//    }
 
     @Override
     protected void onResume() {
@@ -327,7 +351,7 @@ public class ChatList extends AppCompatActivity {
         switch (requestCode) {
             case REQUEST:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    loadChats();
+                    fetchContacts();
                 } else {
                     Toast.makeText(this, "The app was not allowed to read your contact", Toast.LENGTH_LONG).show();
                 }

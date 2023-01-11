@@ -35,13 +35,18 @@
             android:textColorHint="@color/grey_black"
             android:textSize="12sp"
             android:textStyle="bold" />
-        <ImageView android:id="@+id/newChat"
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/newChat"
             android:layout_width="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="25dp"
-            android:visibility="gone"
-            android:src="@drawable/forum_plus_outline"
-            android:layout_height="wrap_content"/>
+            android:layout_height="45dp"
+            android:layout_gravity="center_horizontal"
+            android:backgroundTint="@color/appColor"
+            android:drawableRight="@drawable/forum_plus_outline"
+            android:text="new chat"
+            android:textColor="@color/colorPrimary"
+            android:textSize="12sp"
+            app:cornerRadius="10dp" />
     </LinearLayout>
 
     <LinearLayout
@@ -66,7 +71,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
                 app:lottie_autoPlay="true"
-                app:lottie_fileName="soon.json"
+                app:lottie_fileName="chat.json"
                 app:lottie_loop="true" />
 
             <com.google.android.material.button.MaterialButton
@@ -75,7 +80,6 @@
                 android:layout_height="45dp"
                 android:layout_gravity="center_horizontal"
                 android:backgroundTint="@color/appColor"
-                android:visibility="gone"
                 android:drawableLeft="@drawable/forum_plus_outline"
                 android:drawableRight="@drawable/arrow_right"
                 android:text="Start Your first Message"
