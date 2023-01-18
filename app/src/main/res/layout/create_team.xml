@@ -5,109 +5,112 @@
     android:layout_height="match_parent"
     android:background="@drawable/grad"
     android:orientation="vertical">
+
     <TextView
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:gravity="center_horizontal"
-        android:text="Create Your team"
-        android:textColor="@color/white"
         android:padding="10dp"
-        android:layout_height="wrap_content"/>
+        android:text="Create Your team"
+        android:textColor="@color/white" />
 
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/login"
-            android:layout_width="wrap_content"
-            android:layout_height="200dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="50dp"
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/login"
+        android:layout_width="wrap_content"
+        android:layout_height="200dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="50dp"
+        app:lottie_autoPlay="true"
+        app:lottie_fileName="team_work.json"
+        app:lottie_loop="true" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/bottom_sheet_curved_white"
+        android:orientation="vertical"
+        android:padding="4dp">
+
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/teamName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            app:lottie_autoPlay="true"
-            app:lottie_fileName="team_work.json"
-            app:lottie_loop="true" />
-        <LinearLayout
+            android:background="#00000000"
+            android:drawableLeft="@drawable/team"
+            android:drawablePadding="15dip"
+            android:drawableTint="@color/black"
+            android:hint=" Enter your team name"
+            android:maxEms="100"
+            android:maxLength="100"
+            android:paddingLeft="15dp"
+            android:textColor="@color/black"
+            android:textSize="14sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="#ddd" />
+
+
+        <ProgressBar
+            android:id="@+id/progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginTop="10dp"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:background="@drawable/bottom_sheet_curved_white"
-            android:padding="4dp">
+            android:scrollbars="vertical">
 
+        </androidx.recyclerview.widget.RecyclerView>
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/teamName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#00000000"
-                    android:layout_marginTop="10dp"
-                    android:drawableLeft="@drawable/team"
-                    android:drawablePadding="15dip"
-                    android:drawableTint="@color/black"
-                    android:maxEms="100"
-                    android:hint=" Enter your team name"
-                    android:paddingLeft="15dp"
-                    android:maxLength="100"
-                    android:textColor="@color/black"
-                    android:textSize="14sp" />
-            <View
-                android:layout_width="match_parent"
-                android:background="#ddd"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:layout_height="2dp"/>
-           <soup.neumorphism.NeumorphCardView
-                style="@style/Widget.Neumorph.Button"
-                android:layout_width="match_parent"
-                android:layout_height="65dp"
-                app:neumorph_shapeType="pressed"
-                app:neumorph_strokeColor="@color/darkgrey"
-                app:neumorph_strokeWidth="1dp">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/searchName"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="#00000000"
-                    android:drawableLeft="@drawable/account_search_outline"
-                    android:drawablePadding="15dip"
-                    android:drawableTint="@color/black"
-                    android:hint=" Search friend from contact list"
-                    android:paddingLeft="15dp"
-                    android:maxLength="100"
-                    android:textColor="@color/black"
-                    android:textSize="14sp" />
-            </soup.neumorphism.NeumorphCardView>
-
-
-            <ProgressBar
-                android:id="@+id/progress"
-                android:visibility="gone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:layout_marginTop="10dp"
-                android:scrollbars="vertical">
-
-            </androidx.recyclerview.widget.RecyclerView>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
             <Button
-                android:id="@+id/createTeam"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:drawableTint="@color/black"
+                android:background="@color/white"
+                android:drawableLeft="@drawable/account"
+                android:gravity="center"
+                android:onClick="pickNumber"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:text="Add Friends"
+                android:textColor="@color/black"
+                android:textStyle="bold" />
+            <Button
+                android:id="@+id/createTeam"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/button_round"
                 android:drawableLeft="@drawable/account"
                 android:drawableRight="@drawable/arrow_white"
                 android:gravity="center"
-                android:background="@drawable/button_round"
+                android:onClick="createTeam"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
-                android:onClick="createTeam"
                 android:text="  Create Team "
                 android:textColor="@color/white"
                 android:textStyle="bold" />
         </LinearLayout>
+    </LinearLayout>
 </LinearLayout>

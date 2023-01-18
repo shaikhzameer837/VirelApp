@@ -2,6 +2,7 @@ package com.intelj.y_ral_gaming.Activity;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -25,6 +26,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -49,6 +52,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textview.MaterialTextView;
@@ -57,6 +61,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.intelj.y_ral_gaming.AppController;
 import com.intelj.y_ral_gaming.R;
+import com.intelj.y_ral_gaming.RoundedBottomSheetDialog;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 import com.intelj.y_ral_gaming.VolleyMultipartRequest;
 
@@ -73,24 +78,24 @@ public class EditProfile extends AppCompatActivity {
     Bitmap selectedImage;
     AppConstant appConstant;
     ProgressDialog progressDialog;
-    TextInputEditText playerName, TI_userName, bio;
+    TextInputEditText playerName, bio;
     String userName = "";
     DatabaseReference mDatabase;
     AutoCompleteTextView tv_title;
     LinearLayout gameList;
     SharedPreferences prefs;
-    TextView avail;
+    TextView  TI_userName;
+    EditText ed_userName;
+    BottomSheetDialog dialogBottom;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         appConstant = new AppConstant(this);
         setContentView(R.layout.edit_profile);
         imgProfile = findViewById(R.id.imgs);
-        avail = findViewById(R.id.avail);
         playerName = findViewById(R.id.name);
         TI_userName = findViewById(R.id.userName);
         bio = findViewById(R.id.bio);
-        TI_userName.setEnabled(true);
         playerName.setEnabled(true);
         gameList = findViewById(R.id.gameList);
         findViewById(R.id.done).setVisibility(View.VISIBLE);
@@ -130,7 +135,7 @@ public class EditProfile extends AppCompatActivity {
                     Toast.makeText(EditProfile.this, "Please check user name first", Toast.LENGTH_LONG).show();
                     return;
                 }
-                if(!userName.matches("[a-zA-Z0-9]*")){
+                if (!userName.matches("[a-zA-Z0-9]*")) {
                     Toast.makeText(EditProfile.this, "only text and numbers are allowed in name", Toast.LENGTH_LONG).show();
                     return;
                 }
@@ -151,30 +156,46 @@ public class EditProfile extends AppCompatActivity {
                     uploadProfile();
             }
         });
-        TI_userName.addTextChangedListener(new TextWatcher() {
-
+        TI_userName.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void afterTextChanged(Editable s) {
-                if (TI_userName.getText().toString().equals(sharedPreferences.getString(AppConstant.userName, ""))) {
-                    userName = TI_userName.getText().toString();
-                    TI_userName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.card_account_details_outline, 0, R.drawable.ic_check, 0);
-                    TI_userName.setError(null);
-                    avail.setVisibility(View.GONE);
-                    return;
-                }
-                avail.setVisibility(View.VISIBLE);
-                userName = "";
-                TI_userName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.card_account_details_outline, 0, R.drawable.info, 0);
-            }
+            public void onClick(View view) {
+                View views = getLayoutInflater().inflate(R.layout.username_sheet, null);
+                dialogBottom = new RoundedBottomSheetDialog(EditProfile.this);
+                ed_userName = views.findViewById(R.id.userName);
+                TextView done = views.findViewById(R.id.done);
+                done.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (!ed_userName.getText().toString().trim().equals(""))
+                            checkUserName();
+                    }
+                });
+                ed_userName.setText(userName);
+                ed_userName.addTextChangedListener(new TextWatcher() {
 
-            @Override
-            public void beforeTextChanged(CharSequence s, int start,
-                                          int count, int after) {
-            }
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        if (ed_userName.getText().toString().equals(sharedPreferences.getString(AppConstant.userName, ""))) {
+                            userName = ed_userName.getText().toString();
+                            ed_userName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.card_account_details_outline, 0, R.drawable.ic_check, 0);
+                            ed_userName.setError(null);
+                            return;
+                        }
+                        ed_userName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.card_account_details_outline, 0, R.drawable.info, 0);
+                    }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start,
-                                      int before, int count) {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start,
+                                                  int count, int after) {
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start,
+                                              int before, int count) {
+                    }
+                });
+                dialogBottom.setContentView(views);
+                dialogBottom.show();
             }
         });
         playerName.setText(sharedPreferences.getString(AppConstant.name, "Player"));
@@ -182,12 +203,6 @@ public class EditProfile extends AppCompatActivity {
         tv_title.setText(sharedPreferences.getString(AppConstant.title, ""));
         userName = sharedPreferences.getString(AppConstant.userName, "");
         TI_userName.setText(userName);
-        avail.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                checkUserName();
-            }
-        });
         TI_userName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.card_account_details_outline, 0, R.drawable.ic_check, 0);
         imgProfile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -201,13 +216,13 @@ public class EditProfile extends AppCompatActivity {
                         Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                         startActivityForResult(i, PROFILE_IMAGE);
                     }
-                }else {
+                } else {
                     if (ContextCompat.checkSelfPermission(EditProfile.this, Manifest.permission.READ_EXTERNAL_STORAGE)
                             != PackageManager.PERMISSION_GRANTED) {
                         ActivityCompat.requestPermissions(EditProfile.this,
                                 new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                                 1);
-                    }else{
+                    } else {
                         Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                         startActivityForResult(i, PROFILE_IMAGE);
                     }
@@ -215,7 +230,7 @@ public class EditProfile extends AppCompatActivity {
 
             }
         });
-        Glide.with(this).load(AppConstant.AppUrl + "images/" + appConstant.getId() + ".png?u=" +AppConstant.imageExt())
+        Glide.with(this).load(AppConstant.AppUrl + "images/" + appConstant.getId() + ".png?u=" + AppConstant.imageExt())
                 .apply(new RequestOptions().circleCrop())
                 .placeholder(R.drawable.game_avatar).into(imgProfile);
         for (int i = 0; i < gameList.getChildCount(); i++) {
@@ -284,13 +299,16 @@ public class EditProfile extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String responseValue) {
-                        TI_userName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.card_account_details_outline,
+                        ed_userName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.card_account_details_outline,
                                 0,
                                 responseValue.equalsIgnoreCase("true") ? R.drawable.ic_check : R.drawable.close,
                                 0);
                         Toast.makeText(EditProfile.this, responseValue.equalsIgnoreCase("true") ? "User name available " : "User name not available ", Toast.LENGTH_SHORT).show();
-                        TI_userName.setError(null);
-                        userName = responseValue.equalsIgnoreCase("true") ? TI_userName.getText().toString() : "";
+                        userName = responseValue.equalsIgnoreCase("true") ? ed_userName.getText().toString() : "";
+                        if (responseValue.equalsIgnoreCase("true")) {
+                            TI_userName.setText(userName);
+                            dialogBottom.dismiss();
+                        }
                         progressDialog.cancel();
                     }
                 }, new Response.ErrorListener() {
@@ -303,7 +321,7 @@ public class EditProfile extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put("userName", TI_userName.getText().toString().toLowerCase());
+                params.put("userName", ed_userName.getText().toString().toLowerCase());
                 return params;
             }
 
@@ -432,7 +450,7 @@ public class EditProfile extends AppCompatActivity {
         editor.putString(AppConstant.userName, TI_userName.getText().toString());
         editor.putString(AppConstant.bio, bio.getText().toString());
         editor.putString(AppConstant.title, tv_title.getText().toString());
-        editor.putString(AppConstant.profile, (System.currentTimeMillis()/1000)+"");
+        editor.putString(AppConstant.profile, (System.currentTimeMillis() / 1000) + "");
         picturePath = null;
         editor.apply();
         mDatabase.child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.bio).
@@ -467,7 +485,7 @@ public class EditProfile extends AppCompatActivity {
             case 1:
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
- //                   CropImage.activity().start(EditProfile.this);
+                    //                   CropImage.activity().start(EditProfile.this);
                     Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     startActivityForResult(i, PROFILE_IMAGE);
                 } else {
@@ -490,35 +508,36 @@ public class EditProfile extends AppCompatActivity {
             Cursor cursor = getContentResolver().query(selectedImg,
                     filePathColumn, null, null, null);
 
-                if (cursor == null || cursor.getCount() < 1) {
-                    return; // no cursor or no record. DO YOUR ERROR HANDLING
-                }
-
-                cursor.moveToFirst();
-                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-
-                if (columnIndex < 0) // no column index
-                    return; // DO YOUR ERROR HANDLING
-
-                picturePath = cursor.getString(columnIndex);
-                cursor.close();
-                try {
-                    selectedImage = getBitmapFromUri(data.getData());
-                    Glide.with(this).load(picturePath).apply(new RequestOptions().circleCrop()).into(imgProfile);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            if (cursor == null || cursor.getCount() < 1) {
+                return; // no cursor or no record. DO YOUR ERROR HANDLING
             }
+
+            cursor.moveToFirst();
+            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+
+            if (columnIndex < 0) // no column index
+                return; // DO YOUR ERROR HANDLING
+
+            picturePath = cursor.getString(columnIndex);
+            cursor.close();
+            try {
+                selectedImage = getBitmapFromUri(data.getData());
+                Glide.with(this).load(picturePath).apply(new RequestOptions().circleCrop()).into(imgProfile);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private Bitmap getBitmapFromUri(Uri uri) throws IOException {
         ParcelFileDescriptor parcelFileDescriptor =
                 getContentResolver().openFileDescriptor(uri, "r");
         FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-        Bitmap image = resize(BitmapFactory.decodeFileDescriptor(fileDescriptor),120,120);
+        Bitmap image = resize(BitmapFactory.decodeFileDescriptor(fileDescriptor), 120, 120);
         parcelFileDescriptor.close();
         return image;
     }
+
     private static Bitmap resize(Bitmap image, int maxWidth, int maxHeight) {
         if (maxHeight > 0 && maxWidth > 0) {
             int width = image.getWidth();
@@ -529,9 +548,9 @@ public class EditProfile extends AppCompatActivity {
             int finalWidth = maxWidth;
             int finalHeight = maxHeight;
             if (ratioMax > ratioBitmap) {
-                finalWidth = (int) ((float)maxHeight * ratioBitmap);
+                finalWidth = (int) ((float) maxHeight * ratioBitmap);
             } else {
-                finalHeight = (int) ((float)maxWidth / ratioBitmap);
+                finalHeight = (int) ((float) maxWidth / ratioBitmap);
             }
             image = Bitmap.createScaledBitmap(image, finalWidth, finalHeight, true);
             return image;
@@ -539,22 +558,6 @@ public class EditProfile extends AppCompatActivity {
             return image;
         }
     }
-    public void checkAvail(View view) {
-        if (!TI_userName.getText().toString().trim().equals(""))
-            checkUserName();
-    }
 
-    public void openUserName(View view) {
-        UsernameSheet bottomSheet = new UsernameSheet();
-        bottomSheet.show(getSupportFragmentManager(), "bottomSheet");
-    }
-    public class UsernameSheet extends BottomSheetDialogFragment {
 
-        @Nullable
-        @Override
-        public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-            View view = inflater.inflate(R.layout.username_sheet, container, false);
-            return view;
-        }
-    }
 }

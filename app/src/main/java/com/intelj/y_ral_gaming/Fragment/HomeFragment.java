@@ -54,6 +54,7 @@ public class HomeFragment extends Fragment {
     AppConstant appConstant;
     String gameId = "";
     String webUrl = "";
+
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -115,6 +116,7 @@ public class HomeFragment extends Fragment {
     View rootView;
     WebView browser;
     BottomSheetDialog bottomSheetDialog;
+
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
@@ -122,6 +124,7 @@ public class HomeFragment extends Fragment {
             getFragmentManager().beginTransaction().detach(this).attach(this).commit();
         }
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -133,15 +136,24 @@ public class HomeFragment extends Fragment {
         Log.e("appConstant", webUrl + "?n=" + title + "&&d=" + date + "&u=" + appConstant.getId());
         browser.getSettings().setLoadsImagesAutomatically(true);
         browser.getSettings().setJavaScriptEnabled(true);
-        browser.setVerticalScrollBarEnabled(true);
-        browser.setHorizontalScrollBarEnabled(true);
-        browser.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
+//        browser.setScrollbarFadingEnabled(true);
+//        browser.setVerticalScrollBarEnabled(true);
+//        browser.setHorizontalScrollBarEnabled(true);
+//        browser.getSettings().setSupportZoom(true);
+//        browser.getSettings().setBuiltInZoomControls(true);
+//        browser.getSettings().setDisplayZoomControls(false);
+//        browser.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
+//        browser.getSettings().setLoadWithOverviewMode(true);
+//        browser.getSettings().setUseWideViewPort(true);
         browser.setWebViewClient(new MyBrowser());
+        browser.setInitialScale(0);
+        browser.setVerticalScrollBarEnabled(false);
+        browser.setHorizontalScrollBarEnabled(false);
+        browser.setScrollbarFadingEnabled(false);
         browser.setWebChromeClient(new WebChromeClient() {
-            public void onProgressChanged(WebView view, int progress)
-            {
+            public void onProgressChanged(WebView view, int progress) {
                 rootView.findViewById(R.id.pBar3).setVisibility(View.VISIBLE);
-                if(progress == 100)
+                if (progress == 100)
                     rootView.findViewById(R.id.pBar3).setVisibility(View.GONE);
             }
         });

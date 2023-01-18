@@ -90,9 +90,7 @@ public class AppController extends Application implements Application.ActivityLi
     public int rank = 0;
     public String referral = "0";
     public String teamList = "";
-    public List<GameItem> movieList = new ArrayList<>();
     public Map<String, String> tab = new HashMap<>();
-    public List<TournamentModel> tournamentModel;
     public HashMap<String, Integer> popularList = new HashMap<>();
     public AppDataBase videoDataBase;
     @Override

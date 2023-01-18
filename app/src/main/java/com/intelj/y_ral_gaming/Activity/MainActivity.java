@@ -1,6 +1,7 @@
 package com.intelj.y_ral_gaming.Activity;
 
 import android.Manifest;
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -15,6 +16,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ParcelFileDescriptor;
@@ -120,7 +122,7 @@ public class MainActivity extends BaseActivity {
     BottomNavigationView bottomNavigation;
     private TabLayout tabLayout;
     TextView coins;
-    private RecyclerView recyclerView, rv_popular;
+    private RecyclerView rv_popular;
     View inflated;
     int RESULT_LOAD_IMAGE = 9;
     int PROFILE_IMAGE = 11;
@@ -217,7 +219,6 @@ public class MainActivity extends BaseActivity {
         final ViewStub stub = findViewById(R.id.layout_stub);
         stub.setLayoutResource(R.layout.game_slot);
         inflated = stub.inflate();
-        setFirstView();
         oldId = bottomNavigation.getSelectedItemId();
         bottomNavigation.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
@@ -263,7 +264,9 @@ public class MainActivity extends BaseActivity {
 
         getUserInfo();
     }
+
     String key;
+
     private void getUserInfo() {
         Log.e("AppConstant.AppUrl4", "start");
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -285,12 +288,12 @@ public class MainActivity extends BaseActivity {
                                 JSONObject tab = json.getJSONObject("tab");
                                 Iterator<String> keys = tab.keys();
                                 titleList.clear();
-                                while(keys.hasNext()) {
+                                while (keys.hasNext()) {
                                     String key = keys.next();
                                     String value = tab.getString(key);
                                     titleList.add(key);
-                                    Log.e("valueHolder",value);
-                                    gamingAdapter.addFragment(new HomeFragment(key,value),key);
+                                    Log.e("valueHolder", value);
+                                    gamingAdapter.addFragment(new HomeFragment(key, value), key);
                                 }
                                 inflated.findViewById(R.id.lin).setVisibility(View.GONE);
                                 gameViewpager.setAdapter(gamingAdapter);
@@ -310,9 +313,6 @@ public class MainActivity extends BaseActivity {
                                 }
                                 if (appConstant.checkLogin() && !sharedPreferences.getString(AppConstant.name, "").equals("")) {
                                     ((TextView) findViewById(R.id.complete)).setText(" Refer a Friend & earn " + AppController.getInstance().referral + " rs per invite");
-                                    Drawable img = getResources().getDrawable(R.drawable.refer_friend);
-                                    Drawable img1 = getResources().getDrawable(R.drawable.arrow_right);
-                                    ((TextView) findViewById(R.id.complete)).setCompoundDrawablesWithIntrinsicBounds(img, null, img1, null);
                                 }
 
                             } else {
@@ -362,7 +362,7 @@ public class MainActivity extends BaseActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e("AppConstant.AppUrl1",error.getMessage());
+                Log.e("AppConstant.AppUrl1", error.getMessage());
             }
         }) {
             @Override
@@ -388,8 +388,9 @@ public class MainActivity extends BaseActivity {
     private void showChallenge(View inflated) {
 
     }
+
     private void showWebView() {
-        WebView webView =  inflated.findViewById(R.id.webview);
+        WebView webView = inflated.findViewById(R.id.webview);
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
         inflated.findViewById(R.id.pBar3).setVisibility(View.GONE);
@@ -402,25 +403,27 @@ public class MainActivity extends BaseActivity {
             }
         });
         webView.setWebChromeClient(new WebChromeClient() {
-            public void onProgressChanged(WebView view, int progress)
-            {
+            public void onProgressChanged(WebView view, int progress) {
                 inflated.findViewById(R.id.pBar3).setVisibility(View.VISIBLE);
-                if(progress == 100)
+                if (progress == 100)
                     inflated.findViewById(R.id.pBar3).setVisibility(View.GONE);
             }
         });
         webView.loadUrl("http://y-ral-gaming.com/admin/api/match/coming_soon.php");
     }
+
     public void showRankChat() {
         View view = getLayoutInflater().inflate(R.layout.rank_row, null);
         final BottomSheetDialog dialogBottom = new RoundedBottomSheetDialog(MainActivity.this);
         dialogBottom.setContentView(view);
         dialogBottom.show();
     }
+
     HashMap<String, String> jsonAnimationList = new HashMap<>();
     TextView refer, referral;
     RecyclerView invite_recyclerView;
     ArrayList<MyListData> myListData = new ArrayList<>();
+
     public void showInvite() {
         View view = getLayoutInflater().inflate(R.layout.referral_activity, null);
         final BottomSheetDialog dialogBottom = new RoundedBottomSheetDialog(MainActivity.this);
@@ -432,9 +435,9 @@ public class MainActivity extends BaseActivity {
         jsonAnimationList.put("login.json", "Register & play Game");
         jsonAnimationList.put("cash.json", "You earn 10rs after game played");
         refer = view.findViewById(R.id.refer);
-        referral =  view.findViewById(R.id.referal);
+        referral = view.findViewById(R.id.referal);
         refer.setText(" YRAL" + new AppConstant(this).getId());
-        referral.setText(" My Referral id [YRAL" + new AppConstant(this).getId() +"]  ");
+        referral.setText(" My Referral id [YRAL" + new AppConstant(this).getId() + "]  ");
         viewPager.setAdapter(new CustomPagerAdapter(MainActivity.this));
         getReferalList();
         final Handler handler = new Handler();
@@ -445,6 +448,7 @@ public class MainActivity extends BaseActivity {
             }
         }, 2000);
     }
+
     private void getReferalList() {
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = AppConstant.AppUrl + "get_referral_list.php";
@@ -454,7 +458,7 @@ public class MainActivity extends BaseActivity {
                     public void onResponse(String response) {
                         Log.e("responses", response);
                         findViewById(R.id.progress).setVisibility(View.GONE);
-                        if(response.equals("[]")){
+                        if (response.equals("[]")) {
                             findViewById(R.id.anim).setVisibility(View.VISIBLE);
                             findViewById(R.id.recyclerView).setVisibility(View.GONE);
                             return;
@@ -465,7 +469,7 @@ public class MainActivity extends BaseActivity {
                             int totalSuccessInvite = 0;
                             for (int i = 0; i < json.length(); i++) {
                                 JSONObject jsonObject = (JSONObject) json.get(i);
-                                if(!jsonObject.getString("playing_status").equals("0"))
+                                if (!jsonObject.getString("playing_status").equals("0"))
                                     totalSuccessInvite = totalSuccessInvite + Integer.parseInt(jsonObject.getString("playing_status"));
                                 myListData.add(new MyListData(jsonObject.getString("name"), jsonObject.getString("userId"), jsonObject.getString("playing_status")));
                                 Log.e("responses", jsonObject.getString("name"));
@@ -516,7 +520,7 @@ public class MainActivity extends BaseActivity {
         public Object instantiateItem(ViewGroup collection, int position) {
             LayoutInflater inflater = LayoutInflater.from(mContext);
             ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.image_view, collection, false);
-            TextView textView  = layout.findViewById(R.id.title);
+            TextView textView = layout.findViewById(R.id.title);
             LottieAnimationView lottieAnimationView = layout.findViewById(R.id.animationView);
             String firstKey = jsonAnimationList.keySet().toArray()[position].toString();
             lottieAnimationView.setAnimation(firstKey);
@@ -546,6 +550,7 @@ public class MainActivity extends BaseActivity {
         }
 
     }
+
     private void getPopularFace() {
         AppController.getInstance().popularList.clear();
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -610,7 +615,9 @@ public class MainActivity extends BaseActivity {
         startActivity(new Intent(MainActivity.this, PaymentWithdraw.class));
 
     }
+
     TeamDisplayList teamAdapter;
+
     public void showTeamList() {
         myListData.clear();
         //  startActivity(new Intent(ProFileActivity.this,CreateTeam.class));
@@ -620,7 +627,7 @@ public class MainActivity extends BaseActivity {
         inflated.findViewById(R.id.createTeam).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this,CreateTeam.class));
+                startActivity(new Intent(MainActivity.this, CreateTeam.class));
             }
         });
         ShimmerFrameLayout shimmerFrameLayout = inflated.findViewById(R.id.shimmer_layout);
@@ -640,7 +647,7 @@ public class MainActivity extends BaseActivity {
                                 JSONArray jsonArray = new JSONArray(jsonObject.getString("teamList"));
                                 for (int i = 0; i < jsonArray.length(); i++) {
                                     JSONObject jsonObject2 = (JSONObject) jsonArray.get(i);
-                                    myListData.add(new MyListData(jsonObject2.getString("teamName"), jsonObject2.getString("teamId"), jsonObject2.getString("teamMember").split(",").length +" Member"));
+                                    myListData.add(new MyListData(jsonObject2.getString("teamName"), jsonObject2.getString("teamId"), jsonObject2.getString("teamMember").split(",").length + " Member"));
                                 }
                                 teamAdapter = new TeamDisplayList(myListData);
                                 RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -667,7 +674,7 @@ public class MainActivity extends BaseActivity {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                Log.e("teamIdList",AppController.getInstance().teamList);
+                Log.e("teamIdList", AppController.getInstance().teamList);
                 params.put("teamIdList", AppController.getInstance().teamList);
                 return params;
             }
@@ -698,13 +705,16 @@ public class MainActivity extends BaseActivity {
         dialogBottom.setContentView(inflated);
         dialogBottom.show();
     }
+
     @Override
     protected void onResume() {
         super.onResume();
+        setFirstView();
+        Log.e("setFirstView","yes");
         if (appConstant.checkLogin() && imgProfile != null) {
             Glide.with(MainActivity.this).load(AppConstant.AppUrl + "images/" + appConstant.getId() + ".png?u=" + sharedPreferences.getString(AppConstant.profile, "Player")).placeholder(R.drawable.game_avatar).apply(new RequestOptions().circleCrop()).into(imgProfile);
             playerName = findViewById(R.id.playerName);
-            playerName.setText(sharedPreferences.getString(AppConstant.name, "Player"));
+            playerName.setText(sharedPreferences.getString(AppConstant.userName, "Player"));
             imgProfile.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -724,13 +734,14 @@ public class MainActivity extends BaseActivity {
             if (sharedPreferences.getString(AppConstant.gameList, "").equals(""))
                 showGameSelection();
         }
-        if (!appConstant.checkLogin()){
+        if (!appConstant.checkLogin()) {
             ((TextView) findViewById(R.id.complete)).setText(" Register now and get 10Rs Instantly ");
         }
     }
 
     String gameListStr = "";
     BottomSheetDialog gameSheet;
+
     public void showGameSelection() {
         gameListStr = sharedPreferences.getString(AppConstant.gameList, "");
         ArrayList<String> gameList = new ArrayList<>();
@@ -846,9 +857,9 @@ public class MainActivity extends BaseActivity {
                     SharedPreferences.Editor shd = sharedPreferences.edit();
                     shd.putString(AppConstant.gameList, gameListStr);
                     shd.apply();
-                    Toast.makeText(MainActivity.this,"Games Updated",Toast.LENGTH_LONG).show();
-                }else{
-                    Toast.makeText(MainActivity.this,"Something Went Wrong",Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, "Games Updated", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(MainActivity.this, "Something Went Wrong", Toast.LENGTH_LONG).show();
                 }
 
             }
@@ -903,6 +914,13 @@ public class MainActivity extends BaseActivity {
                 if (dialog != null) dialog.cancel();
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
                     startActivity(new Intent(MainActivity.this, SigninActivity.class));
+                break;
+            case 5:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                } else {
+                    Toast.makeText(MainActivity.this, "Permission denied to display notitification", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case 1:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -963,16 +981,17 @@ public class MainActivity extends BaseActivity {
         parcelFileDescriptor.close();
         return image;
     }
+
     ViewPagerAdapter gamingAdapter;
     ArrayList<String> titleList = new ArrayList<>();
+
     public void setFirstView() {
-        Log.e("setFirstView","setFirstView");
         gameViewpager = inflated.findViewById(R.id.gameViewpager);
         tabLayout = inflated.findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(gameViewpager);
         if (gamingAdapter == null) {
             gamingAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-        }else{
+        } else {
             inflated.findViewById(R.id.lin).setVisibility(View.GONE);
             gameViewpager.setAdapter(gamingAdapter);
         }
@@ -980,14 +999,7 @@ public class MainActivity extends BaseActivity {
         Intent intent = new Intent("custom-event-name");
         if (titleList.size() > 1) intent.putExtra(AppConstant.title, titleList.get(0));
         LocalBroadcastManager.getInstance(MainActivity.this).sendBroadcast(intent);
-        gameViewpager.setOnTouchListener(new View.OnTouchListener()
-        {
-            @Override
-            public boolean onTouch(View v, MotionEvent event)
-            {
-                return true;
-            }
-        });
+
         gameViewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             public void onPageScrollStateChanged(int state) {
             }
@@ -1009,7 +1021,7 @@ public class MainActivity extends BaseActivity {
                 startActivity(new Intent(MainActivity.this, EditProfile.class));
             else LoginSheet();
         } else {
-          //  showInvite();
+            //  showInvite();
             startActivity(new Intent(MainActivity.this, ReferralActivity.class));
         }
     }
@@ -1212,8 +1224,10 @@ public class MainActivity extends BaseActivity {
         startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(startMain);
     }
-
-
+    public void openTeam(View v){
+        Intent intent = new Intent(MainActivity.this,CreateTeam.class);
+        startActivity(intent);
+    }
     @Override
     public void onDestroy() {
         // Unregister since the activity is about to be closed.

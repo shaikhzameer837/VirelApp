@@ -8,7 +8,6 @@ import android.os.Bundle;
 
 import com.intelj.y_ral_gaming.Adapter.AnnouncementListAdapter;
 import com.intelj.y_ral_gaming.R;
-import com.intelj.y_ral_gaming.db.Chat;
 import com.intelj.y_ral_gaming.model.AnnouncementModel;
 
 import java.util.ArrayList;
@@ -21,7 +20,7 @@ public class AnnouncementActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_announcement);
+        setContentView(R.layout.team_member);
 
         recyclerView = findViewById(R.id.recyclerView);
         announcementModelArrayList = new ArrayList<>();

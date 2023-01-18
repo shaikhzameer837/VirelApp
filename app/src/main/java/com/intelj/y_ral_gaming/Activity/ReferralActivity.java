@@ -73,7 +73,7 @@ public class ReferralActivity extends AppCompatActivity {
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
         sendIntent.putExtra(Intent.EXTRA_TEXT,
-                "Hey check out Y-ral Gaming app play BGMI , Free Fire game with Free entry and earn per kill and use 'YRAL" + new AppConstant(this).getId() + "' as a Referral code : https://play.google.com/store/apps/details?id=com.intelj.y_ral_gaming");
+                "Hey check out VirelApp app play BGMI , Free Fire game with Free entry and earn per kill and use 'YRAL" + new AppConstant(this).getId() + "' as a Referral code : https://play.google.com/store/apps/details?id=com.intelj.y_ral_gaming");
         sendIntent.setType("text/plain");
         startActivity(sendIntent);
     }

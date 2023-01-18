@@ -42,7 +42,7 @@
         app:tabIndicatorColor="@color/black"
         app:tabMode="scrollable" />
 
-    <com.intelj.y_ral_gaming.Utils.NonSwipeableViewPager
+    <androidx.viewpager.widget.ViewPager
         android:id="@+id/gameViewpager"
         android:layout_width="match_parent"
         android:layout_height="0dp"

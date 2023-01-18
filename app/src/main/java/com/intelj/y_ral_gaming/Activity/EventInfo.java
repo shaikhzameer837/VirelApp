@@ -29,8 +29,6 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.app.ActivityOptionsCompat;
-import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -54,30 +52,28 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
-import com.google.gson.Gson;
 import com.intelj.y_ral_gaming.Adapter.TeamDisplayList;
 import com.intelj.y_ral_gaming.AppController;
 import com.intelj.y_ral_gaming.ContactListModel;
-import com.intelj.y_ral_gaming.Event;
 import com.intelj.y_ral_gaming.Fragment.RuleFragment;
 import com.intelj.y_ral_gaming.R;
 import com.intelj.y_ral_gaming.RoundedBottomSheetDialog;
 import com.intelj.y_ral_gaming.SigninActivity;
-import com.intelj.y_ral_gaming.TournamentAdapter;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 import com.intelj.y_ral_gaming.Utils.RecyclerTouchListener;
 import com.intelj.y_ral_gaming.model.MyListData;
-import com.intelj.y_ral_gaming.model.TournamentModel;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -129,8 +125,7 @@ public class EventInfo extends AppCompatActivity {
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
                 new IntentFilter("joined_event"));
-        LocalBroadcastManager.getInstance(this).registerReceiver(msMessageReceiver,
-                new IntentFilter("team-event-name"));
+
         join = findViewById(R.id.join);
         viewPager.setOffscreenPageLimit(0);
 
@@ -177,24 +172,11 @@ public class EventInfo extends AppCompatActivity {
     SharedPreferences shd;
     LinearLayout lin;
     BottomSheetDialog bottomCreateTeam;
-    private BroadcastReceiver msMessageReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            // Get extra data included in the Intent
-            String teamName = intent.getStringExtra("name");
-            String teamId = intent.getStringExtra("id");
-            String teamMember = intent.getStringExtra("teamMember");
-            myListData.add(0, new MyListData(teamName, teamId, teamMember.split(",").length + " Member"));
-            teamAdapter.notifyDataSetChanged();
 
-            Log.d("receiver", "Got message: " + teamName);
-        }
-    };
     ArrayList<MyListData> myListData = new ArrayList<>();
     TeamDisplayList teamAdapter;
 
     public void showTeamList() {
-        myListData.clear();
         //  startActivity(new Intent(ProFileActivity.this,CreateTeam.class));
         View inflated = getLayoutInflater().inflate(R.layout.team_list, null);
         bottomCreateTeam = new RoundedBottomSheetDialog(EventInfo.this);
@@ -205,64 +187,13 @@ public class EventInfo extends AppCompatActivity {
                 startActivity(new Intent(EventInfo.this, CreateTeam.class));
             }
         });
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        teamRecyclerView.setLayoutManager(mLayoutManager);
+        teamRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        teamAdapter = new TeamDisplayList(myListData);
+        teamRecyclerView.setAdapter(teamAdapter);
         ShimmerFrameLayout shimmerFrameLayout = inflated.findViewById(R.id.shimmer_layout);
         shimmerFrameLayout.startShimmer();
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String url = AppConstant.AppUrl + "get_team_list.php";
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.e("responseT", response);
-                        shimmerFrameLayout.hideShimmer();
-                        shimmerFrameLayout.setVisibility(View.GONE);
-                        try {
-                            JSONObject jsonObject = new JSONObject(response);
-                            if (jsonObject.getBoolean("success")) {
-                                JSONArray jsonArray = new JSONArray(jsonObject.getString("teamList"));
-                                for (int i = 0; i < jsonArray.length(); i++) {
-                                    JSONObject jsonObject2 = (JSONObject) jsonArray.get(i);
-                                    myListData.add(new MyListData(jsonObject2.getString("teamName"), jsonObject2.getString("teamId"), jsonObject2.getString("teamMember")));
-                                }
-                                teamAdapter = new TeamDisplayList(myListData);
-                                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-                                teamRecyclerView.setLayoutManager(mLayoutManager);
-                                teamRecyclerView.setItemAnimator(new DefaultItemAnimator());
-                                teamRecyclerView.setAdapter(teamAdapter);
-                            } else {
-                                Toast.makeText(EventInfo.this, "No Team Found", Toast.LENGTH_LONG).show();
-                            }
-
-                        } catch (Exception e) {
-                            Log.e("error Rec", e.getMessage());
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                shimmerFrameLayout.hideShimmer();
-                shimmerFrameLayout.setVisibility(View.GONE);
-                error.printStackTrace();
-                FirebaseCrashlytics.getInstance().recordException(error);
-            }
-        }) {
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put("teamIdList", AppController.getInstance().teamList);
-                return params;
-            }
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-                params.put("Content-Type", "application/x-www-form-urlencoded");
-                return params;
-            }
-        };
-
-        queue.add(stringRequest);
-
 
         teamRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), teamRecyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
@@ -337,9 +268,12 @@ public class EventInfo extends AppCompatActivity {
         lin = view.findViewById(R.id.lin);
         shd = getSharedPreferences(AppConstant.id, MODE_PRIVATE);
         appConstant = new AppConstant(this);
-        String[] userPlayer = (new AppConstant(this).getId() + "," + myListData.get(position).getPlaying_status().replace(new AppConstant(this).getId() + ",", "")).split(",");
-        for (int x = 0; x < userPlayer.length; x++) {
-            addEditText(userPlayer[x]);
+        String[] userPlayer = myListData.get(position).getPlaying_status().split(",");
+        ArrayList<String> arrayList = new ArrayList<>(Arrays.asList(userPlayer));
+        arrayList.remove(new AppConstant(this).getId());
+        addEditText(new AppConstant(this).getId());
+        for (int x = 0; x < arrayList.size(); x++) {
+            addEditText(arrayList.get(x));
         }
         view.findViewById(R.id.submit).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -386,6 +320,64 @@ public class EventInfo extends AppCompatActivity {
         editTextList.add(editText);
         lin.addView(textInputLayout);
         textInputLayouts.add(textInputLayout);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = AppConstant.AppUrl + "get_team_list.php";
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.e("responseT", response);
+
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            if (jsonObject.getBoolean("success")) {
+                                myListData.clear();
+                                JSONArray jsonArray = new JSONArray(jsonObject.getString("teamList"));
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    JSONObject jsonObject2 = (JSONObject) jsonArray.get(i);
+                                    myListData.add(new MyListData(jsonObject2.getString("teamName"), jsonObject2.getString("teamId"), jsonObject2.getString("teamMember")));
+                                }
+                                if (teamAdapter != null){
+                                    teamAdapter.notifyDataSetChanged();
+                                }
+                            } else {
+                                Toast.makeText(EventInfo.this, "No Team Found", Toast.LENGTH_LONG).show();
+                            }
+
+                        } catch (Exception e) {
+                            Log.e("error Rec", e.getMessage());
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+                error.printStackTrace();
+                FirebaseCrashlytics.getInstance().recordException(error);
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                Log.e("teamIdList",AppController.getInstance().teamList);
+                params.put("teamIdList", AppController.getInstance().teamList);
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Content-Type", "application/x-www-form-urlencoded");
+                return params;
+            }
+        };
+
+        queue.add(stringRequest);
     }
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
@@ -563,6 +555,9 @@ public class EventInfo extends AppCompatActivity {
                 jsonRootObject4.put("ingName", editTextList.get(x).getText().toString());
                 jsonRootObject3.put(editTextList.get(x).getTag().toString(), jsonRootObject4);
             }
+            byte[] data = android.util.Base64.encode(myListData.get(position).getName().getBytes(), android.util.Base64.DEFAULT);
+            String text = new String(data, StandardCharsets.UTF_8);
+            System.out.println("Encoded String: " + text);
             jsonRootObject2.put("teams", jsonRootObject3);
             jsonRootObject2.put("name", myListData.get(position).getName());
             jsonRootObject2.put("teamId", myListData.get(position).getUserId());

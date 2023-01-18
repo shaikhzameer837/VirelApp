@@ -46,7 +46,7 @@
         android:background="#80000000"
         android:gravity="center"
         android:padding="10dp"
-        android:text="Welcome to Y-ral Gaming"
+        android:text="Welcome to VirelApp"
         android:textColor="@color/colorPrimary" />
 
     <LinearLayout
