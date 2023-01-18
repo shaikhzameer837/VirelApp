@@ -30,7 +30,7 @@ public class AppConstant {
      private Context _context;
     private SharedPreferences sharedPreferences;
     private SharedPreferences myInfo;
-    public static String AppName = "Y-Ral Gaming",
+    public static String AppName = "VirelApp",
             login = "login",
             profile = "profile",
             gameList = "gameList",

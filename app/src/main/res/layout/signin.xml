@@ -38,7 +38,7 @@
             android:padding="10dp"
             android:elevation="2dp"
             android:background="#000000"
-            android:text="Welcome to Y-RAL gaming"
+            android:text="Welcome to VirelApp"
             android:textColor="@color/white"
             android:textSize="19sp" />
         <View

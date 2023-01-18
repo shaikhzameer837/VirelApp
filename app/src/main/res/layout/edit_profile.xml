@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:gravity="center_horizontal"
-        android:text="Edit PRofile"
+        android:text="Complete Your Profile &amp; get 5 coins instantly"
         android:layout_marginTop="10dp"
         android:textColor="@color/white"
         android:textStyle="bold" />
@@ -22,7 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="200dp"
         app:lottie_autoPlay="true"
-        app:lottie_fileName="profile.json"
+        app:lottie_fileName="money_gift.json"
         app:lottie_loop="true" />
 
     <LinearLayout
@@ -132,7 +132,7 @@
                         app:neumorph_strokeColor="@color/darkgrey"
                         app:neumorph_strokeWidth="1dp">
 
-                        <com.google.android.material.textfield.TextInputEditText
+                        <TextView
                             android:id="@+id/userName"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
@@ -140,7 +140,7 @@
                             android:digits="abcdefghijklmnopqrstuvwxyz_.1234567890"
                             android:drawableLeft="@drawable/card_account_details_outline"
                             android:drawablePadding="5dip"
-                            android:enabled="false"
+                            android:gravity="center_vertical"
                             android:hint=" user name"
                             android:inputType="text"
                             android:paddingLeft="15dp"
@@ -150,21 +150,6 @@
                             android:textSize="14sp" />
                     </soup.neumorphism.NeumorphCardView>
 
-                    <TextView
-                        android:id="@+id/avail"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="right"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginRight="5dp"
-                        android:background="@color/white"
-                        android:onClick="checkAvail"
-                        android:drawableTint="@color/appColor"
-                        android:drawableRight="@drawable/arrow"
-                        android:padding="5dp"
-                        android:text="check username Availability"
-                        android:textColor="@color/appColor" />
 
                     <soup.neumorphism.NeumorphCardView
                         style="@style/Widget.Neumorph.Button"

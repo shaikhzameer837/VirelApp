@@ -1,37 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/white"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:orientation="vertical">
 
-    <soup.neumorphism.NeumorphCardView
-        style="@style/Widget.Neumorph.Button"
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/pBar3"
+        android:layout_width="wrap_content"
+        android:layout_height="200dp"
+        app:lottie_autoPlay="true"
+        app:lottie_fileName="profile.json"
+        app:lottie_loop="true" />
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="65dp"
-        android:onClick="openUserName"
-        app:neumorph_shapeType="pressed"
-        app:neumorph_strokeColor="@color/darkgrey"
-        app:neumorph_strokeWidth="1dp">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/userName"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#00000000"
-            android:digits="abcdefghijklmnopqrstuvwxyz_.1234567890"
-            android:drawableLeft="@drawable/card_account_details_outline"
-            android:drawablePadding="5dip"
-            android:enabled="false"
-            android:hint=" user name"
-            android:inputType="text"
-            android:paddingLeft="15dp"
+        android:layout_height="match_parent"
+        android:paddingBottom="15dp"
+        android:paddingTop="10dp"
+        android:background="@drawable/bottom_sheet_curved_white"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/done"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:background="@drawable/button_round"
+            android:drawableLeft="@drawable/account"
+            android:drawableRight="@drawable/arrow_white"
+            android:elevation="2dp"
+            android:gravity="center"
+            android:padding="12dp"
+            android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:singleLine="true"
-            android:textColor="@color/black"
-            android:textSize="14sp" />
-    </soup.neumorphism.NeumorphCardView>
+            android:text="  Update Username "
+            android:textColor="@color/white"
+            android:textStyle="bold" />
 
+
+        <soup.neumorphism.NeumorphCardView
+            style="@style/Widget.Neumorph.Button"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            app:neumorph_shapeType="pressed"
+            app:neumorph_strokeColor="@color/darkgrey"
+            app:neumorph_strokeWidth="1dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/userName"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#00000000"
+                android:digits="abcdefghijklmnopqrstuvwxyz_.1234567890"
+                android:drawableLeft="@drawable/card_account_details_outline"
+                android:drawablePadding="5dip"
+                android:hint=" user name"
+                android:inputType="text"
+                android:paddingLeft="15dp"
+                android:paddingRight="10dp"
+                android:singleLine="true"
+                android:textColor="@color/black"
+                android:textSize="14sp" />
+        </soup.neumorphism.NeumorphCardView>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:padding="10dp"
+            android:text="Unlock the mystery of your digital identity in the mind-bending adventure game, Username."
+            android:textColor="@color/black" />
+    </LinearLayout>
 </LinearLayout>

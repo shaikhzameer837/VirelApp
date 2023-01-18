@@ -26,30 +26,34 @@
                 android:contentDescription="image_desc"
                 android:src="@drawable/game_avatar"
                 android:transitionName="fade" />
+
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
-            <TextView
-                android:id="@+id/playerName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
                 android:layout_weight="1"
-                android:text="Y Ral Gaming"
-                android:textColor="@color/black"
-                android:textStyle="bold" />
-            <TextView
-                android:id="@+id/kill"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:textSize="11sp"
-                android:layout_gravity="center_vertical"
-                android:drawableRight="@drawable/drop_down"
-                android:text="Y Ral Gaming"/>
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/playerName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
+                    android:text="Y Ral Gaming"
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/kill"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="10dp"
+                    android:drawableRight="@drawable/drop_down"
+                    android:text="Y Ral Gaming"
+                    android:textSize="11sp" />
             </LinearLayout>
+
             <TextView
                 android:id="@+id/ncount"
                 android:layout_width="wrap_content"
@@ -72,10 +76,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="15dp"
-                android:visibility="gone"
                 android:drawableTop="@drawable/group"
                 android:text="team"
-                android:textSize="10sp" />
+                android:textSize="10sp"
+                android:visibility="gone" />
+
             <TextView
                 android:id="@+id/search"
                 android:layout_width="wrap_content"
@@ -84,7 +89,8 @@
                 android:drawableTop="@drawable/search"
                 android:text="Search"
                 android:textSize="10sp" />
-           <TextView
+
+            <TextView
                 android:id="@+id/notification"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -104,13 +110,14 @@
                 android:gravity="center"
                 android:text="1"
                 android:textSize="11sp" />
-           <TextView
+
+            <TextView
                 android:id="@+id/help"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
                 android:drawableTop="@drawable/rotate"
                 android:text="More"
-                android:layout_marginRight="10dp"
                 android:textSize="11sp" />
         </LinearLayout>
 
@@ -127,33 +134,43 @@
             android:orientation="vertical"
             android:paddingBottom="5dp">
 
-            <TextView
-                android:id="@+id/complete"
+            <LinearLayout
+                android:background="@color/appColor"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/appColor"
-                android:drawableLeft="@drawable/account_edit_outline"
-                android:drawableRight="@drawable/arrow_right"
-                android:ellipsize="marquee"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:freezesText="true"
-                android:gravity="center_vertical"
-                android:marqueeRepeatLimit="marquee_forever"
-                android:onClick="editProfile"
-                android:padding="10dp"
-                android:scrollHorizontally="true"
-                android:singleLine="true"
-                android:text=" Complete Your Profile"
-                android:textColor="@color/white"
-                tools:ignore="TouchTargetSizeCheck" />
+                android:orientation="horizontal">
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/anim"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    app:lottie_autoPlay="true"
+                    app:lottie_fileName="money_gift.json"
+                    app:lottie_loop="true" />
+                <TextView
+                    android:id="@+id/complete"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="marquee"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:freezesText="true"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical"
+                    android:onClick="editProfile"
+                    android:scrollHorizontally="true"
+                    android:singleLine="true"
+                    android:text=" Complete Your Profile"
+                    android:textColor="@color/white"
+                    tools:ignore="TouchTargetSizeCheck" />
+            </LinearLayout>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal"
                 android:layout_marginTop="5dp"
+                android:gravity="center_horizontal"
                 android:text="Top Popular of week"
                 android:textColor="@color/black"
                 android:textStyle="bold" />
@@ -164,6 +181,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:shimmer_duration="1000">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -227,10 +245,10 @@
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
         android:backgroundTint="@color/appColor"
-        android:tint="@color/white"
-        app:tint="@color/white"
         android:elevation="3dp"
-        app:backgroundTint="@color/appColor"
         android:src="@drawable/folder_play_outline"
-        app:layout_anchor="@id/bottomAppBar" />
+        android:tint="@color/white"
+        app:backgroundTint="@color/appColor"
+        app:layout_anchor="@id/bottomAppBar"
+        app:tint="@color/white" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
