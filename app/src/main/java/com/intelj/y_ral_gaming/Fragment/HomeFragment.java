@@ -87,6 +87,8 @@ public class HomeFragment extends Fragment {
                         intent.putExtra("isRegistered", urlSplit[7]);
                         intent.putExtra("max", urlSplit[8]);
                         intent.putExtra("status", urlSplit[9]);
+                        intent.putExtra("image_url", urlSplit[10]);
+                        intent.putExtra("pic", urlSplit[11]);
                         //String transitionName = "fade";
 //                        View transitionView = view.findViewById(R.id.images);
 //                        ViewCompat.setTransitionName(transitionView, transitionName);
@@ -136,15 +138,6 @@ public class HomeFragment extends Fragment {
         Log.e("appConstant", webUrl + "?n=" + title + "&&d=" + date + "&u=" + appConstant.getId());
         browser.getSettings().setLoadsImagesAutomatically(true);
         browser.getSettings().setJavaScriptEnabled(true);
-//        browser.setScrollbarFadingEnabled(true);
-//        browser.setVerticalScrollBarEnabled(true);
-//        browser.setHorizontalScrollBarEnabled(true);
-//        browser.getSettings().setSupportZoom(true);
-//        browser.getSettings().setBuiltInZoomControls(true);
-//        browser.getSettings().setDisplayZoomControls(false);
-//        browser.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
-//        browser.getSettings().setLoadWithOverviewMode(true);
-//        browser.getSettings().setUseWideViewPort(true);
         browser.setWebViewClient(new MyBrowser());
         browser.setInitialScale(0);
         browser.setVerticalScrollBarEnabled(false);

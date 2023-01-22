@@ -1,19 +1,12 @@
 package com.intelj.y_ral_gaming.Activity;
 
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Color;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.text.InputFilter;
 import android.transition.Fade;
 import android.util.Log;
@@ -28,7 +21,6 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -54,7 +46,6 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.intelj.y_ral_gaming.Adapter.TeamDisplayList;
 import com.intelj.y_ral_gaming.AppController;
-import com.intelj.y_ral_gaming.ContactListModel;
 import com.intelj.y_ral_gaming.Fragment.RuleFragment;
 import com.intelj.y_ral_gaming.R;
 import com.intelj.y_ral_gaming.RoundedBottomSheetDialog;
@@ -69,13 +60,11 @@ import org.json.JSONObject;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
+import java.util.Random;
+
 
 public class EventInfo extends AppCompatActivity {
     ImageView iv_cover_pic;
@@ -101,9 +90,6 @@ public class EventInfo extends AppCompatActivity {
 
         iv_cover_pic = findViewById(R.id.cover_pic);
         img = findViewById(R.id.img);
-        Glide.with(this).load("https://media.discordapp.net/attachments/1024724326957715567/1057137645110698004/bgmi.png?width=564&height=663")
-                .apply(new RequestOptions().circleCrop())
-                .placeholder(R.drawable.placeholder).into(img);
         appConstant = new AppConstant(this);
         Fade fade = new Fade();
 //        appConstant = new AppConstant(this);
@@ -118,10 +104,18 @@ public class EventInfo extends AppCompatActivity {
         viewPager = findViewById(R.id.viewPager);
         tv_title = findViewById(R.id.title);
         tv_date = findViewById(R.id.date);
-        tv_title.setText(getIntent().getStringExtra("teamName"));
-        tv_date.setText(getIntent().getStringExtra("gameName"));
+        // tv_title.setText(Uri.decode(getIntent().getStringExtra("name")));
+        tv_date.setText(getIntent().getStringExtra("gameName") + " / " + getIntent().getStringExtra("max"));
         isRegistered = getIntent().getStringExtra("isRegistered").equals("1");
-
+        byte[] data = android.util.Base64.decode(getIntent().getStringExtra("image_url"), android.util.Base64.DEFAULT);
+        String image_url = new String(data, StandardCharsets.UTF_8);
+        byte[] sdata = android.util.Base64.decode(getIntent().getStringExtra("pic"), android.util.Base64.DEFAULT);
+        String small_pic = new String(sdata, StandardCharsets.UTF_8);
+        Log.e("image_url: ", image_url);
+        Glide.with(this).load(image_url).placeholder(R.drawable.placeholder).into(iv_cover_pic);
+        Glide.with(EventInfo.this).load(small_pic)
+                .apply(new RequestOptions().circleCrop())
+                .placeholder(R.drawable.placeholder).into(img);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
                 new IntentFilter("joined_event"));
@@ -146,7 +140,6 @@ public class EventInfo extends AppCompatActivity {
 
             }
         });
-        Glide.with(this).load(getIntent().getStringExtra("eId")).placeholder(R.drawable.placeholder).into(iv_cover_pic);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         if (!appConstant.checkLogin()) {
             setButton(" Login ", R.drawable.curved_white, Color.RED);
@@ -212,7 +205,10 @@ public class EventInfo extends AppCompatActivity {
 
     private void getEventDetails() {
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = AppConstant.AppUrl + "events/get_events_tab.php?u=" + new AppConstant(this).getId()+"&&id="+ getIntent().getStringExtra("eId");
+        SharedPreferences sharedPreferences = getSharedPreferences(AppConstant.AppName, MODE_PRIVATE);
+        String teamID = sharedPreferences.getString(AppConstant.event + getIntent().getStringExtra("eId"), "");
+        String url = AppConstant.AppUrl + "events/get_events_tab.php?u=" + new AppConstant(this).getId() + "&&id=" + getIntent().getStringExtra("eId") + "&&t=" + teamID;
+        Log.e("teamID", url);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -222,11 +218,11 @@ public class EventInfo extends AppCompatActivity {
                     JSONObject tab = json.getJSONObject("tab");
                     Iterator<String> keys = tab.keys();
                     AppController.getInstance().tab.clear();
-                    while(keys.hasNext()) {
+                    while (keys.hasNext()) {
                         String key = keys.next();
                         String value = tab.getString(key);
                         System.out.println(key + ": " + value);
-                        AppController.getInstance().tab.put(key,value);
+                        AppController.getInstance().tab.put(key, value);
                         tabLayout.addTab(tabLayout.newTab().setText(key));
                     }
                     MyEventAdapter adapter = new MyEventAdapter(EventInfo.this, getSupportFragmentManager(), tabLayout.getTabCount());
@@ -263,7 +259,6 @@ public class EventInfo extends AppCompatActivity {
     private void addTeamLists(int position) {
         editTextList.clear();
         View view = getLayoutInflater().inflate(R.layout.add_team_info, null);
-        contactModel = new ArrayList<>();
         final BottomSheetDialog dialogBottom = new RoundedBottomSheetDialog(EventInfo.this);
         lin = view.findViewById(R.id.lin);
         shd = getSharedPreferences(AppConstant.id, MODE_PRIVATE);
@@ -342,7 +337,7 @@ public class EventInfo extends AppCompatActivity {
                                     JSONObject jsonObject2 = (JSONObject) jsonArray.get(i);
                                     myListData.add(new MyListData(jsonObject2.getString("teamName"), jsonObject2.getString("teamId"), jsonObject2.getString("teamMember")));
                                 }
-                                if (teamAdapter != null){
+                                if (teamAdapter != null) {
                                     teamAdapter.notifyDataSetChanged();
                                 }
                             } else {
@@ -364,7 +359,7 @@ public class EventInfo extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                Log.e("teamIdList",AppController.getInstance().teamList);
+                Log.e("teamIdList", AppController.getInstance().teamList);
                 params.put("teamIdList", AppController.getInstance().teamList);
                 return params;
             }
@@ -413,132 +408,6 @@ public class EventInfo extends AppCompatActivity {
         //TabLayout.Tab tab = tabLayout.getTabAt(1).setText("Teams (10)");
     };
 
-    @Override
-    public void onRequestPermissionsResult(
-            int requestCode,
-            String permissions[],
-            int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case REQUEST:
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    new readContactTask().execute();
-                } else {
-                    Toast.makeText(EventInfo.this, "Permission Denied!", Toast.LENGTH_SHORT).show();
-                }
-        }
-    }
-
-    ArrayList<ContactListModel> contactModel = new ArrayList<>();
-    HashMap<String, String> contactArrayList = new HashMap<>();
-    ContactListAdapter contactListAdapter;
-
-    class readContactTask extends AsyncTask<Void, Integer, String> {
-        String TAG = getClass().getSimpleName();
-        ProgressDialog pd = new ProgressDialog(EventInfo.this);
-
-        protected void onPreExecute() {
-            super.onPreExecute();
-            contactModel.clear();
-            pd.show();
-            Log.d(TAG + " PreExceute", "On pre Exceute......");
-        }
-
-        protected String doInBackground(Void... arg0) {
-            readContacts();
-
-            return "You are at PostExecute";
-        }
-
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            pd.cancel();
-            loadChats();
-        }
-    }
-
-    private void loadChats() {
-        Set<String> set = shd.getStringSet(AppConstant.contact, null);
-        try {
-            if (set != null) {
-                for (String s : set) {
-                    SharedPreferences userInfo = getSharedPreferences(s, Context.MODE_PRIVATE);
-                    contactModel.add(new ContactListModel(s,
-                            AppConstant.AppUrl + "images/" + userInfo.getString(AppConstant.id, "") + ".png?u=" + AppConstant.imageExt(),
-                            appConstant.getContactName(s),
-                            userInfo.getString(AppConstant.id, ""),
-                            userInfo.getString(AppConstant.bio, "")));
-                }
-                Collections.sort(contactModel, new Comparator<ContactListModel>() {
-                    @Override
-                    public int compare(final ContactListModel object1, final ContactListModel object2) {
-                        Log.e("Collections", object1.getName() + " " + object2.getName());
-                        return object1.getName().compareTo(object2.getName());
-                    }
-                });
-                contactListAdapter.notifyDataSetChanged();
-            } else
-                new readContactTask().execute();
-        } catch (Exception e) {
-            new readContactTask().execute();
-        }
-    }
-
-
-    private static boolean hasPermissions(Context context, String... permissions) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
-            for (String permission : permissions) {
-                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    public void readContacts() {
-        contactArrayList.clear();
-        ContentResolver cr = getContentResolver();
-        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
-                null, null, null, null);
-        if ((cur != null ? cur.getCount() : 0) > 0) {
-            while (cur != null && cur.moveToNext()) {
-                String id = cur.getString(
-                        cur.getColumnIndex(ContactsContract.Contacts._ID));
-                String name = cur.getString(cur.getColumnIndex(
-                        ContactsContract.Contacts.DISPLAY_NAME));
-
-                if (cur.getInt(cur.getColumnIndex(
-                        ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0) {
-                    Cursor pCur = cr.query(
-                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                            null,
-                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
-                            new String[]{id}, null);
-                    while (pCur.moveToNext()) {
-                        String phoneNo = pCur.getString(pCur.getColumnIndex(
-                                ContactsContract.CommonDataKinds.Phone.NUMBER)).replace(" ", "");
-                        if (phoneNo.length() > 8) {
-                            String original = phoneNo;
-                            if (phoneNo.startsWith("0"))
-                                phoneNo = phoneNo.substring(1);
-                            if (!phoneNo.startsWith("+"))
-                                phoneNo = appConstant.getCountryCode() + phoneNo;
-                            Log.i("Phone Number: ", appConstant.getCountryCode());
-                            contactArrayList.put(phoneNo, original);
-                        }
-
-                    }
-                    pCur.close();
-                }
-            }
-        }
-        if (cur != null) {
-            cur.close();
-        }
-    }
-
     private void setButton(String btnName, int drawables, int color) {
         join.setText(btnName);
         join.setBackgroundResource(drawables);
@@ -561,6 +430,10 @@ public class EventInfo extends AppCompatActivity {
             jsonRootObject2.put("teams", jsonRootObject3);
             jsonRootObject2.put("name", myListData.get(position).getName());
             jsonRootObject2.put("teamId", myListData.get(position).getUserId());
+            String[] array = {"A", "B", "C", "D"};
+            Random rand = new Random();
+            char randomLetter = (char) (rand.nextInt(26) + 'a');
+            jsonRootObject2.put("group", randomLetter);
             jsonRootObject.put(myListData.get(position).getUserId(), jsonRootObject2);
             Log.e("jsonRootObject", jsonRootObject.toString());
             Log.e("jsonRootObject", jsonRootObject.toString());
@@ -575,12 +448,12 @@ public class EventInfo extends AppCompatActivity {
                     public void onResponse(String response) {
                         Log.e("lcat_response", url + "\n" + response);
                         if (response.equals("success")) {
+                            tv_date.setText((Integer.parseInt(getIntent().getStringExtra("gameName")) + 1) + " / " + getIntent().getStringExtra("max"));
                             SharedPreferences sharedPreferences = getSharedPreferences(AppConstant.AppName, MODE_PRIVATE);
                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
-                            myEdit.putBoolean(AppConstant.pinfo + getIntent().getStringExtra("eId"), true);
+                            myEdit.putString(AppConstant.event + getIntent().getStringExtra("eId"), myListData.get(position).getUserId());
                             myEdit.apply();
-                            Intent intent = new Intent("refreshWeb");
-                            LocalBroadcastManager.getInstance(EventInfo.this).sendBroadcast(intent);
+                            getEventDetails();
                             isRegistered = true;
                             setButton("Already joined", R.drawable.curved_white, Color.RED);
                             Toast.makeText(EventInfo.this, "Registration done successfully", Toast.LENGTH_LONG).show();

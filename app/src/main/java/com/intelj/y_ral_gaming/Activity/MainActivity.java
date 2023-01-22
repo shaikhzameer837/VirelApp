@@ -390,26 +390,23 @@ public class MainActivity extends BaseActivity {
     }
 
     private void showWebView() {
-        WebView webView = inflated.findViewById(R.id.webview);
-        WebSettings webSettings = webView.getSettings();
-        webSettings.setJavaScriptEnabled(true);
-        inflated.findViewById(R.id.pBar3).setVisibility(View.GONE);
-        webView.setWebViewClient(new WebViewClient() {
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                // Load the webpage from the WebView instead of opening a browser
-                view.loadUrl(url);
-                return true;
-            }
-        });
-        webView.setWebChromeClient(new WebChromeClient() {
+        WebView browser  = inflated.findViewById(R.id.webview);
+        browser.loadUrl("http://y-ral-gaming.com/admin/api/reward/rewards.php");
+        browser.getSettings().setLoadsImagesAutomatically(true);
+        browser.getSettings().setJavaScriptEnabled(true);
+        browser.setWebViewClient(new MyBrowser());
+        browser.setInitialScale(0);
+        browser.setVerticalScrollBarEnabled(false);
+        browser.setHorizontalScrollBarEnabled(false);
+        browser.setScrollbarFadingEnabled(false);
+        browser.setWebChromeClient(new WebChromeClient() {
             public void onProgressChanged(WebView view, int progress) {
                 inflated.findViewById(R.id.pBar3).setVisibility(View.VISIBLE);
                 if (progress == 100)
                     inflated.findViewById(R.id.pBar3).setVisibility(View.GONE);
             }
         });
-        webView.loadUrl("http://y-ral-gaming.com/admin/api/match/coming_soon.php");
+       // browser.loadUrl("http://y-ral-gaming.com/admin/api/reward/rewards.php");
     }
 
     public void showRankChat() {
@@ -1110,107 +1107,6 @@ public class MainActivity extends BaseActivity {
 
         }
     };
-
-
-    //    private void setRoomVideo(final String roomPlan) {
-//        AppController.getInstance().uploadUrl = AppConstant.live_stream + "/" + AppController.getInstance().channelId + "/" + roomPlan + "/";
-//        mDatabase = FirebaseDatabase.getInstance().getReference(AppController.getInstance().uploadUrl + "room/");
-//        mDatabase.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(final DataSnapshot dataSnapshot) {
-//
-//                Log.e("dataSnapshotss", dataSnapshot.child(AppConstant.stopTime).exists() + "");
-//                if (dataSnapshot.exists()) {
-//                    if (dataSnapshot.child(AppConstant.stopTime).exists()) {
-////                        Intent intent = new Intent(MainActivity.this, HelloService.class);
-////                        intent.putExtra("stopTiming", dataSnapshot.child(AppConstant.stopTime).getValue() + "");
-////                        intent.setAction(HelloService.ACTION_STOP_FOREGROUND_SERVICE);
-////                        startService(intent);
-//                        try {
-//                            appConstant.saveSlot("XYZ");
-//                        } catch (Exception e) {
-//                            e.getLocalizedMessage();
-//                            FirebaseCrashlytics.getInstance().recordException(e);
-//                        }
-//                    } else {
-//                        appConstant.saveSlot(dataSnapshot.child(AppConstant.youtubeId).getValue() + "");
-//                        // if (db.getNotesCount(dataSnapshot.child(AppConstant.youtubeId).getValue() + "") == 0)
-//                        //createNote(roomPlan, dataSnapshot.child(AppConstant.youtubeId).getValue() + "");
-////                        Intent intent = new Intent(MainActivity.this, HelloService.class);
-////                        intent.putExtra("roomPlan", roomPlan);
-////                        intent.setAction(HelloService.ACTION_START_FOREGROUND_SERVICE);
-////                        startService(intent);
-//                        if (dataSnapshot.child(AppConstant.backgroundData).child(AppController.getInstance().userId).exists()) {
-//                            HashMap<String, Object> allBackground = new HashMap<>();
-////                            for (Note allNote : backgroundDB.getAllNotes()) {
-////                                if (allNote.getNote() != null)
-////                                    allBackground.put(System.currentTimeMillis() + "", allNote.getNote());
-////                                Log.e("backgroundDB", allNote.getTimestamp());
-////                            }
-//                            mDatabase.child("backgroundData").child(AppController.getInstance().userId).setValue(allBackground);
-//                        }
-//                    }
-////                    roomId.setText("Room Id:- " + dataSnapshot.child("roomId").getValue() + "");
-////                    roomPassword.setText("Password:- " + dataSnapshot.child("password").getValue() + "");
-////                    roomId.setVisibility(View.VISIBLE);
-////                    roomPassword.setVisibility(View.VISIBLE);
-////                    roomId.setOnTouchListener(new View.OnTouchListener() {
-////                        @Override
-////                        public boolean onTouch(View v, MotionEvent event) {
-////                            final int DRAWABLE_LEFT = 0;
-////                            if (event.getAction() == MotionEvent.ACTION_UP) {
-////                                Log.e("copyClip", roomId.getText().toString());
-////                                if (event.getRawX() >= (roomId.getLeft() - roomId.getCompoundDrawables()[DRAWABLE_LEFT].getBounds().width())) {
-////                                    setClipboard(roomId.getText().toString());
-////                                    return true;
-////                                }
-////                            }
-////                            return false;
-////                        }
-////                    });
-////                    roomPassword.setOnTouchListener(new View.OnTouchListener() {
-////                        @Override
-////                        public boolean onTouch(View v, MotionEvent event) {
-////                            final int DRAWABLE_LEFT = 0;
-////                            if (event.getAction() == MotionEvent.ACTION_UP) {
-////                                Log.e("copyClip", roomPassword.getText().toString());
-////                                if (event.getRawX() >= (roomId.getLeft() - roomId.getCompoundDrawables()[DRAWABLE_LEFT].getBounds().width())) {
-////                                    setClipboard(roomPassword.getText().toString());
-////                                    return true;
-////                                }
-////                            }
-////                            return false;
-////                        }
-////                    });
-//                    YouTubePlayerFragment youtubeFragment = (YouTubePlayerFragment)
-//                            getFragmentManager().findFragmentById(R.id.youtubeFragment);
-//                    youtubeFragment.initialize(AppConstant.youtubeApiKey,
-//                            new YouTubePlayer.OnInitializedListener() {
-//                                @Override
-//                                public void onInitializationSuccess(YouTubePlayer.Provider provider,
-//                                                                    YouTubePlayer youTubePlayer, boolean b) {
-//                                    // do any work here to cue video, play video, etc.
-//                                    if (!b) {
-//                                        youTubePlayer.loadVideo(dataSnapshot.child(AppConstant.youtubeId).getValue() + "");
-//                                    }
-//                                    // youTubePlayer.cueVideo(dataSnapshot.child(AppConstant.youtubeId).getValue() + "",1);
-//                                }
-//
-//                                @Override
-//                                public void onInitializationFailure(YouTubePlayer.Provider provider,
-//                    `                                                YouTubeInitializationResult youTubeInitializationResult) {
-//                                    Log.d("onInitianFailure: ", youTubeInitializationResult.toString());
-//                                }
-//                            });
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError error) {
-//
-//            }
-//        });
-//    }
     public static String withSuffix(long count) {
         if (count < 1000) return "" + count;
         int exp = (int) (Math.log(count) / Math.log(1000));
@@ -1224,10 +1120,7 @@ public class MainActivity extends BaseActivity {
         startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(startMain);
     }
-    public void openTeam(View v){
-        Intent intent = new Intent(MainActivity.this,CreateTeam.class);
-        startActivity(intent);
-    }
+
     @Override
     public void onDestroy() {
         // Unregister since the activity is about to be closed.

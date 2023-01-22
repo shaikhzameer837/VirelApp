@@ -3,29 +3,52 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:elevation="8dp"
     android:background="@drawable/background_with_shadow"
-    android:paddingTop="20dp"
-    android:paddingLeft="5dp"
-    android:paddingRight="5dp"
+    android:elevation="8dp"
     android:orientation="vertical"
+    android:paddingLeft="5dp"
+    android:paddingTop="20dp"
+    android:paddingRight="5dp"
     android:theme="@style/Theme.MaterialComponents.DayNight.DarkActionBar"
     app:behavior_hideable="false"
     app:layout_behavior="@string/bottom_sheet_behavior">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:background="@color/white"
+        android:layout_height="wrap_content">
 
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/pBar3"
-            android:layout_width="wrap_content"
-            android:layout_height="200dp"
-            android:layout_gravity="center_horizontal"
-            app:lottie_autoPlay="true"
-            app:lottie_fileName="loading.json"
-            app:lottie_loop="true" />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="45dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:background="@drawable/outline_black"
+            android:text="Rewards"
+            android:textColor="@color/black" />
 
-        <WebView
-            android:id="@+id/webview"
-            android:layout_width="fill_parent"
-            android:layout_marginBottom="10dp"
-            android:layout_height="fill_parent" />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="45dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:background="@color/white"
+            android:text="Store"
+            android:textColor="@color/black" />
+    </LinearLayout>
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/pBar3"
+        android:layout_width="wrap_content"
+        android:layout_height="200dp"
+        android:layout_gravity="center_horizontal"
+        app:lottie_autoPlay="true"
+        app:lottie_fileName="loading.json"
+        app:lottie_loop="true" />
+
+    <WebView
+        android:id="@+id/webview"
+        android:layout_width="fill_parent"
+        android:layout_height="500dp"
+        android:layout_marginBottom="10dp" />
 </LinearLayout>

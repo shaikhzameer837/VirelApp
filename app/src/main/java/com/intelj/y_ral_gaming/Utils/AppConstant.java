@@ -33,6 +33,7 @@ public class AppConstant {
     public static String AppName = "VirelApp",
             login = "login",
             profile = "profile",
+            event = "event",
             gameList = "gameList",
             phoneNumber = "phoneNumber",
             followerCount = "followerCount",
