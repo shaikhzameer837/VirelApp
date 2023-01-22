@@ -13,9 +13,9 @@
 
     <item
         android:id="@+id/store"
-        android:icon="@drawable/store"
+        android:icon="@drawable/gift"
         app:showAsAction="always|withText"
-        android:title="Store" />
+        android:title="Rewards" />
     <item
         android:id="@+id/abc"
         app:showAsAction="always|withText"
