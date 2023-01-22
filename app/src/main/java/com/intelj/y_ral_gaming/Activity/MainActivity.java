@@ -391,7 +391,9 @@ public class MainActivity extends BaseActivity {
 
     private void showWebView() {
         WebView browser  = inflated.findViewById(R.id.webview);
-        browser.loadUrl("http://y-ral-gaming.com/admin/api/reward/rewards.php");
+        browser.loadUrl("http://y-ral-gaming.com/admin/api/reward/rewards.php?u="+ new AppConstant(this).getId()
+                 );
+        Log.e("AppConstant",new AppConstant(this).getId());
         browser.getSettings().setLoadsImagesAutomatically(true);
         browser.getSettings().setJavaScriptEnabled(true);
         browser.setWebViewClient(new MyBrowser());

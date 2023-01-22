@@ -7,7 +7,7 @@
     android:elevation="8dp"
     android:orientation="vertical"
     android:paddingLeft="5dp"
-    android:paddingTop="20dp"
+    android:paddingTop="10dp"
     android:paddingRight="5dp"
     android:theme="@style/Theme.MaterialComponents.DayNight.DarkActionBar"
     app:behavior_hideable="false"
@@ -20,7 +20,7 @@
 
         <TextView
             android:layout_width="0dp"
-            android:layout_height="45dp"
+            android:layout_height="40dp"
             android:layout_weight="1"
             android:gravity="center"
             android:background="@drawable/outline_black"
@@ -29,7 +29,7 @@
 
         <TextView
             android:layout_width="0dp"
-            android:layout_height="45dp"
+            android:layout_height="40dp"
             android:layout_weight="1"
             android:gravity="center"
             android:background="@color/white"
