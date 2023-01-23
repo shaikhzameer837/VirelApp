@@ -7,7 +7,7 @@
     android:elevation="8dp"
     android:orientation="vertical"
     android:paddingLeft="5dp"
-    android:paddingTop="20dp"
+    android:paddingTop="10dp"
     android:paddingRight="5dp"
     android:theme="@style/Theme.MaterialComponents.DayNight.DarkActionBar"
     app:behavior_hideable="false"
@@ -16,22 +16,28 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:background="@color/white"
+        android:id="@+id/lin"
+        android:layout_marginLeft="7dp"
+        android:layout_marginRight="7dp"
+        android:visibility="gone"
         android:layout_height="wrap_content">
 
         <TextView
             android:layout_width="0dp"
-            android:layout_height="45dp"
+            android:layout_height="40dp"
             android:layout_weight="1"
             android:gravity="center"
+            android:id="@+id/rewards"
             android:background="@drawable/outline_black"
             android:text="Rewards"
             android:textColor="@color/black" />
 
         <TextView
             android:layout_width="0dp"
-            android:layout_height="45dp"
+            android:layout_height="40dp"
             android:layout_weight="1"
             android:gravity="center"
+            android:id="@+id/store"
             android:background="@color/white"
             android:text="Store"
             android:textColor="@color/black" />

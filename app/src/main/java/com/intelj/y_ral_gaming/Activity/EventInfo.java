@@ -76,7 +76,6 @@ public class EventInfo extends AppCompatActivity {
     ArrayList<TextInputLayout> textInputLayouts = new ArrayList<>();
     AppConstant appConstant;
     int teamCount = 0;
-    private static final int REQUEST = 112;
     ImageView img;
     boolean isRegistered = false;
 

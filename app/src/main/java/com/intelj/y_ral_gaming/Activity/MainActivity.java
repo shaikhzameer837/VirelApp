@@ -1,7 +1,6 @@
 package com.intelj.y_ral_gaming.Activity;
 
 import android.Manifest;
-import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -16,7 +15,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ParcelFileDescriptor;
@@ -28,13 +26,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.ViewStub;
 import android.webkit.WebChromeClient;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
@@ -75,28 +71,22 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
-import com.google.gson.Gson;
 import com.intelj.y_ral_gaming.Adapter.MyListAdapter;
 import com.intelj.y_ral_gaming.Adapter.PopularAdapter;
 import com.intelj.y_ral_gaming.Adapter.TeamDisplayList;
 import com.intelj.y_ral_gaming.AppController;
 import com.intelj.y_ral_gaming.BaseActivity;
 import com.intelj.y_ral_gaming.BuildConfig;
-import com.intelj.y_ral_gaming.Event;
 import com.intelj.y_ral_gaming.Fragment.BottomSheetDilogFragment;
 import com.intelj.y_ral_gaming.Fragment.HomeFragment;
-import com.intelj.y_ral_gaming.GameItem;
 import com.intelj.y_ral_gaming.PopularModel;
 import com.intelj.y_ral_gaming.R;
 import com.intelj.y_ral_gaming.RoundedBottomSheetDialog;
 import com.intelj.y_ral_gaming.SigninActivity;
-import com.intelj.y_ral_gaming.TournamentAdapter;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
-import com.intelj.y_ral_gaming.Utils.MyBrowser;
 import com.intelj.y_ral_gaming.Utils.RecyclerTouchListener;
 import com.intelj.y_ral_gaming.main.PaymentWithdraw;
 import com.intelj.y_ral_gaming.model.MyListData;
-import com.intelj.y_ral_gaming.model.TournamentModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -104,15 +94,12 @@ import org.json.JSONObject;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -234,15 +221,18 @@ public class MainActivity extends BaseActivity {
                         return true;
                     case R.id.store:
                         inflateView(R.layout.store);
-                        showWebView();
+                        showWebView("http://y-ral-gaming.com/admin/api/reward/rewards.php?u=" + new AppConstant(MainActivity.this).getId());
+                        inflated.findViewById(R.id.lin).setVisibility(View.VISIBLE);
                         return true;
                     case R.id.challenge:
                         inflateView(R.layout.store);
-                        showWebView();
+                        showWebView("http://y-ral-gaming.com/admin/api/match/coming_soon.php?u="+ new AppConstant(MainActivity.this).getId());
+                        inflated.findViewById(R.id.lin).setVisibility(View.GONE);
                         return true;
                     case R.id.chat:
                         inflateView(R.layout.store);
-                        showWebView();
+                        showWebView("http://y-ral-gaming.com/admin/api/reward/coming_soon.php?u="+ new AppConstant(MainActivity.this).getId());
+                        inflated.findViewById(R.id.lin).setVisibility(View.GONE);
                         //inflateView(R.layout.contacts);
 //                        inflated.findViewById(R.id.fMessage).setOnClickListener(new View.OnClickListener() {
 //                            @Override
@@ -389,9 +379,10 @@ public class MainActivity extends BaseActivity {
 
     }
 
-    private void showWebView() {
+    private void showWebView(String Url) {
         WebView browser  = inflated.findViewById(R.id.webview);
-        browser.loadUrl("http://y-ral-gaming.com/admin/api/reward/rewards.php");
+        browser.loadUrl(Url);
+        Log.e("AppConstant","http://y-ral-gaming.com/admin/api/reward/rewards.php?u="+ new AppConstant(this).getId());
         browser.getSettings().setLoadsImagesAutomatically(true);
         browser.getSettings().setJavaScriptEnabled(true);
         browser.setWebViewClient(new MyBrowser());
@@ -399,6 +390,18 @@ public class MainActivity extends BaseActivity {
         browser.setVerticalScrollBarEnabled(false);
         browser.setHorizontalScrollBarEnabled(false);
         browser.setScrollbarFadingEnabled(false);
+        inflated.findViewById(R.id.rewards).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showWebView(Url);
+            }
+        });
+        inflated.findViewById(R.id.store).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        showWebView("http://y-ral-gaming.com/admin/api/match/coming_soon.php");
+                    }
+                });
         browser.setWebChromeClient(new WebChromeClient() {
             public void onProgressChanged(WebView view, int progress) {
                 inflated.findViewById(R.id.pBar3).setVisibility(View.VISIBLE);
@@ -407,6 +410,33 @@ public class MainActivity extends BaseActivity {
             }
         });
        // browser.loadUrl("http://y-ral-gaming.com/admin/api/reward/rewards.php");
+    }
+    public class MyBrowser extends WebViewClient {
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            Log.d("shouldLoading: ",url);
+            if (url.startsWith("!http://redirect_to_app")) {
+                view.loadUrl(url);
+            } else {
+                if (appConstant.checkLogin()) {
+                    String[] urlSplit = url.split("/");
+                    if (urlSplit[3].equals("redeem")) {
+                        Intent intent = new Intent(MainActivity.this, PaymentWithdraw.class);
+                        intent.putExtra("coins",urlSplit[4]);
+                        intent.putExtra("reward_id",urlSplit[3]);
+                        startActivity(intent);
+                    }
+                }
+
+            }
+
+            return true;
+        }
+
+        @Override
+        public void onLoadResource(WebView view, String url) {
+
+        }
     }
 
     public void showRankChat() {
@@ -610,7 +640,6 @@ public class MainActivity extends BaseActivity {
 
     private void showCoins() {
         startActivity(new Intent(MainActivity.this, PaymentWithdraw.class));
-
     }
 
     TeamDisplayList teamAdapter;
@@ -706,6 +735,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        inflateView(R.layout.game_slot);
         setFirstView();
         Log.e("setFirstView","yes");
         if (appConstant.checkLogin() && imgProfile != null) {

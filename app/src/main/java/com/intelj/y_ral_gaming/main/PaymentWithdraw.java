@@ -16,25 +16,26 @@ import com.google.android.material.tabs.TabLayout;
 import com.intelj.y_ral_gaming.databinding.PaymentWithdrawBinding;
 
 public class PaymentWithdraw extends AppCompatActivity {
-
+    String coins = "";
+    String reward_id = "";
     private PaymentWithdrawBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         binding = PaymentWithdrawBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
         ViewPager viewPager = binding.viewPager;
         viewPager.setAdapter(sectionsPagerAdapter);
         TabLayout tabs = binding.tabs;
         tabs.setupWithViewPager(viewPager);
-
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
                 new IntentFilter("payment"));
-
+        if (getIntent() != null) {
+            coins = getIntent().getStringExtra("coins");
+            reward_id = getIntent().getStringExtra("reward_id");
+        }
     }
 
     // Our handler for received Intents. This will be called whenever an Intent
