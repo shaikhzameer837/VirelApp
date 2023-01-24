@@ -221,17 +221,29 @@ public class MainActivity extends BaseActivity {
                         return true;
                     case R.id.store:
                         inflateView(R.layout.store);
-                        showWebView("http://y-ral-gaming.com/admin/api/reward/rewards.php?u=" + new AppConstant(MainActivity.this).getId());
+                        try {
+                            showWebView(AppController.getInstance().homeUrl.get(0) + "?u=" + new AppConstant(MainActivity.this).getId());
+                        } catch (Exception e) {
+
+                        }
                         inflated.findViewById(R.id.lin).setVisibility(View.VISIBLE);
                         return true;
                     case R.id.challenge:
                         inflateView(R.layout.store);
-                        showWebView("http://y-ral-gaming.com/admin/api/match/coming_soon.php?u="+ new AppConstant(MainActivity.this).getId());
+                        try {
+                            showWebView(AppController.getInstance().homeUrl.get(2) + "?u=" + new AppConstant(MainActivity.this).getId());
+                        } catch (Exception e) {
+
+                        }
                         inflated.findViewById(R.id.lin).setVisibility(View.GONE);
                         return true;
                     case R.id.chat:
                         inflateView(R.layout.store);
-                        showWebView("http://y-ral-gaming.com/admin/api/reward/coming_soon.php?u="+ new AppConstant(MainActivity.this).getId());
+                        try {
+                            showWebView(AppController.getInstance().homeUrl.get(3) + "?u=" + new AppConstant(MainActivity.this).getId());
+                        } catch (Exception e) {
+
+                        }
                         inflated.findViewById(R.id.lin).setVisibility(View.GONE);
                         //inflateView(R.layout.contacts);
 //                        inflated.findViewById(R.id.fMessage).setOnClickListener(new View.OnClickListener() {
@@ -249,10 +261,11 @@ public class MainActivity extends BaseActivity {
                         return true;
                 }
                 return false;
+
             }
+
         });
 
-        getUserInfo();
     }
 
     String key;
@@ -276,8 +289,10 @@ public class MainActivity extends BaseActivity {
                                 AppController.getInstance().referral = json.getString("referral");
                                 AppController.getInstance().teamList = json.getString("teamList");
                                 JSONObject tab = json.getJSONObject("tab");
+                                AppController.getInstance().homeUrl = json.getJSONArray("homeUrl");
                                 Iterator<String> keys = tab.keys();
                                 titleList.clear();
+                                gamingAdapter = new ViewPagerAdapter(getSupportFragmentManager());
                                 while (keys.hasNext()) {
                                     String key = keys.next();
                                     String value = tab.getString(key);
@@ -380,9 +395,9 @@ public class MainActivity extends BaseActivity {
     }
 
     private void showWebView(String Url) {
-        WebView browser  = inflated.findViewById(R.id.webview);
+        WebView browser = inflated.findViewById(R.id.webview);
         browser.loadUrl(Url);
-        Log.e("AppConstant","http://y-ral-gaming.com/admin/api/reward/rewards.php?u="+ new AppConstant(this).getId());
+        Log.e("AppConstant", "http://y-ral-gaming.com/admin/api/reward/rewards.php?u=" + new AppConstant(this).getId());
         browser.getSettings().setLoadsImagesAutomatically(true);
         browser.getSettings().setJavaScriptEnabled(true);
         browser.setWebViewClient(new MyBrowser());
@@ -393,15 +408,27 @@ public class MainActivity extends BaseActivity {
         inflated.findViewById(R.id.rewards).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showWebView(Url);
+                try {
+                    view.setBackgroundResource(R.drawable.outline_black);
+                    inflated.findViewById(R.id.store).setBackgroundColor(Color.parseColor("#ffffff"));
+                    showWebView(AppController.getInstance().homeUrl.get(0) + "?u=" + new AppConstant(MainActivity.this).getId());
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
         inflated.findViewById(R.id.store).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        showWebView("http://y-ral-gaming.com/admin/api/match/coming_soon.php");
-                    }
-                });
+            @Override
+            public void onClick(View view) {
+                try {
+                    view.setBackgroundResource(R.drawable.outline_black);
+                    inflated.findViewById(R.id.rewards).setBackgroundColor(Color.parseColor("#ffffff"));
+                    showWebView(AppController.getInstance().homeUrl.get(1) + "?u=" + new AppConstant(MainActivity.this).getId());
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
         browser.setWebChromeClient(new WebChromeClient() {
             public void onProgressChanged(WebView view, int progress) {
                 inflated.findViewById(R.id.pBar3).setVisibility(View.VISIBLE);
@@ -409,12 +436,13 @@ public class MainActivity extends BaseActivity {
                     inflated.findViewById(R.id.pBar3).setVisibility(View.GONE);
             }
         });
-       // browser.loadUrl("http://y-ral-gaming.com/admin/api/reward/rewards.php");
+        // browser.loadUrl("http://y-ral-gaming.com/admin/api/reward/rewards.php");
     }
+
     public class MyBrowser extends WebViewClient {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            Log.d("shouldLoading: ",url);
+            Log.d("shouldLoading: ", url);
             if (url.startsWith("!http://redirect_to_app")) {
                 view.loadUrl(url);
             } else {
@@ -422,9 +450,11 @@ public class MainActivity extends BaseActivity {
                     String[] urlSplit = url.split("/");
                     if (urlSplit[3].equals("redeem")) {
                         Intent intent = new Intent(MainActivity.this, PaymentWithdraw.class);
-                        intent.putExtra("coins",urlSplit[4]);
-                        intent.putExtra("reward_id",urlSplit[3]);
+                        intent.putExtra("coins", urlSplit[4]);
+                        intent.putExtra("reward_id", urlSplit[3]);
                         startActivity(intent);
+                    } else if (urlSplit[3].equals("other")) {
+                        getCommonApi(urlSplit[4]);
                     }
                 }
 
@@ -437,6 +467,52 @@ public class MainActivity extends BaseActivity {
         public void onLoadResource(WebView view, String url) {
 
         }
+    }
+
+    private void getCommonApi(String url) {
+        Log.e("AppConstant.AppUrl4", "start");
+        RequestQueue queue = Volley.newRequestQueue(this);
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url + "?u=" + new AppConstant(MainActivity.this),
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.e("AppConstant.AppUrl3", response);
+                        try {
+                            JSONObject json = new JSONObject(response);
+                            if (json.getBoolean("success")) {
+                                Toast.makeText(MainActivity.this, json.getString("msg"), Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(MainActivity.this, "Something went wrong", Toast.LENGTH_LONG).show();
+                            }
+                        } catch (Exception e) {
+                            Toast.makeText(MainActivity.this, "Something went wrong", Toast.LENGTH_LONG).show();
+
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("AppConstant.AppUrl1", error.getMessage());
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("user_id", new AppConstant(MainActivity.this).getId());
+                int versionCode = BuildConfig.VERSION_CODE;
+                params.put("version", versionCode + "");
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Content-Type", "application/x-www-form-urlencoded");
+                return params;
+            }
+        };
+
+        queue.add(stringRequest);
     }
 
     public void showRankChat() {
@@ -639,7 +715,10 @@ public class MainActivity extends BaseActivity {
     }
 
     private void showCoins() {
-        startActivity(new Intent(MainActivity.this, PaymentWithdraw.class));
+        Intent intent = new Intent(MainActivity.this, PaymentWithdraw.class);
+        intent.putExtra("coins", "25");
+        intent.putExtra("reward_id", "0");
+        startActivity(intent);
     }
 
     TeamDisplayList teamAdapter;
@@ -735,9 +814,10 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        getUserInfo();
         inflateView(R.layout.game_slot);
         setFirstView();
-        Log.e("setFirstView","yes");
+        Log.e("setFirstView", "yes");
         if (appConstant.checkLogin() && imgProfile != null) {
             Glide.with(MainActivity.this).load(AppConstant.AppUrl + "images/" + appConstant.getId() + ".png?u=" + sharedPreferences.getString(AppConstant.profile, "Player")).placeholder(R.drawable.game_avatar).apply(new RequestOptions().circleCrop()).into(imgProfile);
             playerName = findViewById(R.id.playerName);
@@ -1016,12 +1096,7 @@ public class MainActivity extends BaseActivity {
         gameViewpager = inflated.findViewById(R.id.gameViewpager);
         tabLayout = inflated.findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(gameViewpager);
-        if (gamingAdapter == null) {
-            gamingAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-        } else {
-            inflated.findViewById(R.id.lin).setVisibility(View.GONE);
-            gameViewpager.setAdapter(gamingAdapter);
-        }
+
 
         Intent intent = new Intent("custom-event-name");
         if (titleList.size() > 1) intent.putExtra(AppConstant.title, titleList.get(0));
@@ -1137,6 +1212,7 @@ public class MainActivity extends BaseActivity {
 
         }
     };
+
     public static String withSuffix(long count) {
         if (count < 1000) return "" + count;
         int exp = (int) (Math.log(count) / Math.log(1000));

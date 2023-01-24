@@ -87,6 +87,7 @@ public class AppController extends Application implements Application.ActivityLi
     public DataSnapshot dataSnapshot;
     public AlertDialog.Builder builder;
     public int amount = 0;
+    public JSONArray homeUrl;
     public int rank = 0;
     public String referral = "0";
     public String teamList = "";

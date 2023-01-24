@@ -25,7 +25,8 @@ public class PaymentWithdraw extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = PaymentWithdrawBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
+        SectionsPagerAdapter sectionsPagerAdapter =
+                new SectionsPagerAdapter(this, getSupportFragmentManager(),coins,reward_id);
         ViewPager viewPager = binding.viewPager;
         viewPager.setAdapter(sectionsPagerAdapter);
         TabLayout tabs = binding.tabs;

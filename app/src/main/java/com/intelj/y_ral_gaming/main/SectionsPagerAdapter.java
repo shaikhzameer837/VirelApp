@@ -17,14 +17,17 @@ import com.intelj.y_ral_gaming.R;
  * one of the sections/tabs/pages.
  */
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
-
+    String coins = "";
+    String reward_id = "";
     @StringRes
     private static final int[] TAB_TITLES = new int[]{R.string.tab_text_1, R.string.tab_text_2, R.string.tab_text_3};
     private final Context mContext;
 
-    public SectionsPagerAdapter(Context context, FragmentManager fm) {
+    public SectionsPagerAdapter(Context context, FragmentManager fm,String coins,String reward_id) {
         super(fm);
         mContext = context;
+        this.coins = coins;
+        this.reward_id = reward_id;
     }
 
     @Override
@@ -38,7 +41,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
             case 1 :
                 return  PaymentHistory.newInstance(position + 1);
             default:
-                return   PlaceholderFragment.newInstance(position + 1);
+                return   PlaceholderFragment.newInstance(position + 1,coins,reward_id);
         }
     }
 

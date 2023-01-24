@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
@@ -26,6 +27,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -57,16 +59,19 @@ public class PlaceholderFragment extends Fragment implements View.OnClickListene
     LinearLayout moneyList;
     LinearLayout payOptionList;
     String wAmount = "25";
+    String reward_id = "25";
     String gameplay = "";
     String paymentType = "Google Pay";
     private PageViewModel pageViewModel;
     private FragmentMainBinding binding;
     AppConstant appConstant;
 
-    public static PlaceholderFragment newInstance(int index) {
+    public static PlaceholderFragment newInstance(int index, String wAmount, String reward_id) {
         PlaceholderFragment fragment = new PlaceholderFragment();
         Bundle bundle = new Bundle();
         bundle.putInt(ARG_SECTION_NUMBER, index);
+        bundle.putString("wAmount", wAmount);
+        bundle.putString("reward_id", reward_id);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -78,7 +83,10 @@ public class PlaceholderFragment extends Fragment implements View.OnClickListene
         int index = 1;
         if (getArguments() != null) {
             index = getArguments().getInt(ARG_SECTION_NUMBER);
+            wAmount = getArguments().getString("wAmount");
+            reward_id = getArguments().getString("reward_id");
         }
+
         pageViewModel.setIndex(index);
     }
 
@@ -144,6 +152,20 @@ public class PlaceholderFragment extends Fragment implements View.OnClickListene
             }
         });
         moneyList = binding.moneyList;
+        Log.e( "onCreateView: ", reward_id);
+        if(reward_id.equals("0")) {
+            TextView textView = new TextView(getActivity());
+            textView.setText(wAmount);
+            textView.setBackgroundResource(R.drawable.outline);
+            textView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            textView.setPadding(18, 18, 18, 18);
+            textView.setTag(24);
+            textView.setContentDescription(wAmount);
+            textView.setText(wAmount);
+            textView.setTextColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary));
+            textView.setTypeface(null, Typeface.BOLD);
+            moneyList.addView(textView);
+        }
         for (int i = 0; i < moneyList.getChildCount(); i++) {
             moneyList.getChildAt(i).setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -175,7 +197,7 @@ public class PlaceholderFragment extends Fragment implements View.OnClickListene
                         SharedPreferences prefs = getActivity().getSharedPreferences(AppConstant.AppName, MODE_PRIVATE);
                         long currentTime = (System.currentTimeMillis() / 1000);
                         long lastRequest = prefs.getLong(AppConstant.payment, currentTime);//"No name defined" is the default value.
-                        if(sharedPreferences.getString(AppConstant.name, "").equals("")){
+                        if (sharedPreferences.getString(AppConstant.name, "").equals("")) {
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             editor.putString(AppConstant.name, user_name.getText().toString());
                             editor.apply();
@@ -210,7 +232,7 @@ public class PlaceholderFragment extends Fragment implements View.OnClickListene
         binding.addMoney.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              //  new AppConstant(getActivity()).addMoney(getActivity());
+                //  new AppConstant(getActivity()).addMoney(getActivity());
             }
         });
 
@@ -228,7 +250,7 @@ public class PlaceholderFragment extends Fragment implements View.OnClickListene
 
     public void WidthDrawAmount(View view) {
         TextView selected = ((TextView) view);
-        Log.e("selected.getTag",selected.getTag()+"");
+        Log.e("selected.getTag", selected.getTag() + "");
         if (Integer.parseInt(selected.getTag() + "") < AppController.getInstance().amount) {
             selected.setBackgroundResource(R.drawable.outline);
             selected.setTextColor(Color.parseColor("#ffffff"));
@@ -285,7 +307,7 @@ public class PlaceholderFragment extends Fragment implements View.OnClickListene
                             editor.putLong(AppConstant.payment, (System.currentTimeMillis() / 1000) + 86400);
                             editor.apply();
                             Intent intent = new Intent("payment");
-                            intent.putExtra("ticked_id",obj.getString("ticked_id"));
+                            intent.putExtra("ticked_id", obj.getString("ticked_id"));
                             LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
 
                         } catch (Exception e) {
