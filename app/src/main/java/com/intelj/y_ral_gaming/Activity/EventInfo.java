@@ -52,7 +52,7 @@ import com.intelj.y_ral_gaming.RoundedBottomSheetDialog;
 import com.intelj.y_ral_gaming.SigninActivity;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 import com.intelj.y_ral_gaming.Utils.RecyclerTouchListener;
-import com.intelj.y_ral_gaming.model.MyListData;
+import com.intelj.y_ral_gaming.model.TeamListPOJO;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -77,6 +77,8 @@ public class EventInfo extends AppCompatActivity {
     AppConstant appConstant;
     int teamCount = 0;
     ImageView img;
+    int minTeam = 0;
+    String group = "";
     boolean isRegistered = false;
 
     @Override
@@ -165,7 +167,7 @@ public class EventInfo extends AppCompatActivity {
     LinearLayout lin;
     BottomSheetDialog bottomCreateTeam;
 
-    ArrayList<MyListData> myListData = new ArrayList<>();
+    ArrayList<TeamListPOJO> teamListData = new ArrayList<>();
     TeamDisplayList teamAdapter;
 
     public void showTeamList() {
@@ -182,7 +184,7 @@ public class EventInfo extends AppCompatActivity {
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         teamRecyclerView.setLayoutManager(mLayoutManager);
         teamRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        teamAdapter = new TeamDisplayList(myListData);
+        teamAdapter = new TeamDisplayList(teamListData);
         teamRecyclerView.setAdapter(teamAdapter);
         ShimmerFrameLayout shimmerFrameLayout = inflated.findViewById(R.id.shimmer_layout);
         shimmerFrameLayout.startShimmer();
@@ -190,7 +192,11 @@ public class EventInfo extends AppCompatActivity {
         teamRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), teamRecyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
-                addTeamLists(position);
+                if (minTeam == teamListData.get(position).getPlaying_status().split(",").length || minTeam < teamListData.get(position).getPlaying_status().split(",").length) {
+                    addTeamLists(position);
+                } else {
+                    Toast.makeText(EventInfo.this, "Minimum " + minTeam + " players are required in the group", Toast.LENGTH_LONG).show();
+                }
             }
 
             @Override
@@ -214,19 +220,25 @@ public class EventInfo extends AppCompatActivity {
                 Log.e("tokenResponse", response);
                 try {
                     JSONObject json = new JSONObject(response);
-                    JSONObject tab = json.getJSONObject("tab");
-                    Iterator<String> keys = tab.keys();
-                    AppController.getInstance().tab.clear();
-                    while (keys.hasNext()) {
-                        String key = keys.next();
-                        String value = tab.getString(key);
-                        System.out.println(key + ": " + value);
-                        AppController.getInstance().tab.put(key, value);
-                        tabLayout.addTab(tabLayout.newTab().setText(key));
-                    }
-                    MyEventAdapter adapter = new MyEventAdapter(EventInfo.this, getSupportFragmentManager(), tabLayout.getTabCount());
-                    viewPager.setAdapter(adapter);
+                    if(json.getBoolean("success")) {
+                        JSONObject tab = json.getJSONObject("tab");
+                        minTeam = json.getInt("min");
+                        group = json.getString("group");
+                        Iterator<String> keys = tab.keys();
+                        AppController.getInstance().tab.clear();
+                        tabLayout.removeAllTabs();
+                        while (keys.hasNext()) {
+                            String key = keys.next();
+                            String value = tab.getString(key);
+                            System.out.println(key + ": " + value);
+                            AppController.getInstance().tab.put(key, value);
+                            tabLayout.addTab(tabLayout.newTab().setText(key));
+                        }
+                        MyEventAdapter adapter = new MyEventAdapter(EventInfo.this, getSupportFragmentManager(), tabLayout.getTabCount());
+                        viewPager.setAdapter(adapter);
+                    }else{
 
+                    }
                 } catch (Exception e) {
                     Log.e("error Rec", e.getMessage());
                 }
@@ -262,27 +274,35 @@ public class EventInfo extends AppCompatActivity {
         lin = view.findViewById(R.id.lin);
         shd = getSharedPreferences(AppConstant.id, MODE_PRIVATE);
         appConstant = new AppConstant(this);
-        String[] userPlayer = myListData.get(position).getPlaying_status().split(",");
+        String[] userPlayer = teamListData.get(position).getPlaying_status().split(",");
+        String[] userNameList = teamListData.get(position).getPlayername().split(",");
         ArrayList<String> arrayList = new ArrayList<>(Arrays.asList(userPlayer));
         arrayList.remove(new AppConstant(this).getId());
-        addEditText(new AppConstant(this).getId());
+        addEditText(new AppConstant(this).getId(),"Me");
         for (int x = 0; x < arrayList.size(); x++) {
-            addEditText(arrayList.get(x));
+            addEditText(arrayList.get(x),userNameList[x]);
         }
         view.findViewById(R.id.submit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                EditText showError = null;
                 if (editTextList.size() < 1) {
                     Toast.makeText(EventInfo.this, "Minimum 1 players are required", Toast.LENGTH_LONG).show();
                     return;
                 }
+                int minT = 0;
                 for (int x = 0; x < editTextList.size(); x++) {
                     if (editTextList.get(x).getText().toString().trim().equals("")) {
-                        editTextList.get(x).setError("Player Name cannot be empty");
-                        editTextList.get(x).requestFocus();
-                        return;
+                        showError = editTextList.get(x);
+                    }else{
+                        minT = minT +1;
                     }
+                }
+                Log.e("minTeam",minTeam + "--" +minT );
+                if (minT < minTeam && showError != null) {
+                    showError.setError("Please Add " + minTeam + " player's inGame name");
+                    showError.requestFocus();
+                    return;
                 }
                 joinEvent(position);
                 bottomCreateTeam.cancel();
@@ -293,7 +313,7 @@ public class EventInfo extends AppCompatActivity {
         dialogBottom.show();
     }
 
-    public void addEditText(String userId) {
+    public void addEditText(String userId,String name) {
         EditText editText = new EditText(EventInfo.this);
         editText.setTextSize(12);
         editText.setSingleLine(true);
@@ -310,7 +330,7 @@ public class EventInfo extends AppCompatActivity {
                 LinearLayout.LayoutParams.WRAP_CONTENT);
         textInputLayout.setLayoutParams(textInputLayoutParams);
         textInputLayout.addView(editText, editTextParams);
-        textInputLayout.setHint(userId.equals(new AppConstant(this).getId()) ? "Enter your in-game name (IGL)" : "Enter player " + editTextList.size() + "'s in-game name");
+        textInputLayout.setHint(userId.equals(new AppConstant(this).getId()) ? "Enter your in-game name (IGL)" : "Enter " + name + "'s in-game name");
         editTextList.add(editText);
         lin.addView(textInputLayout);
         textInputLayouts.add(textInputLayout);
@@ -330,11 +350,11 @@ public class EventInfo extends AppCompatActivity {
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             if (jsonObject.getBoolean("success")) {
-                                myListData.clear();
+                                teamListData.clear();
                                 JSONArray jsonArray = new JSONArray(jsonObject.getString("teamList"));
                                 for (int i = 0; i < jsonArray.length(); i++) {
                                     JSONObject jsonObject2 = (JSONObject) jsonArray.get(i);
-                                    myListData.add(new MyListData(jsonObject2.getString("teamName"), jsonObject2.getString("teamId"), jsonObject2.getString("teamMember")));
+                                    teamListData.add(new TeamListPOJO(jsonObject2.getString("teamName"), jsonObject2.getString("teamId"), jsonObject2.getString("teamMember"), jsonObject2.getString("names")));
                                 }
                                 if (teamAdapter != null) {
                                     teamAdapter.notifyDataSetChanged();
@@ -419,21 +439,20 @@ public class EventInfo extends AppCompatActivity {
         JSONObject jsonRootObject3 = new JSONObject();
         try {
             for (int x = 0; x < editTextList.size(); x++) {
-                JSONObject jsonRootObject4 = new JSONObject();
-                jsonRootObject4.put("ingName", editTextList.get(x).getText().toString());
-                jsonRootObject3.put(editTextList.get(x).getTag().toString(), jsonRootObject4);
+                if(!editTextList.get(x).getText().toString().trim().equals("")) {
+                    JSONObject jsonRootObject4 = new JSONObject();
+                    jsonRootObject4.put("ingName", editTextList.get(x).getText().toString());
+                    jsonRootObject3.put(editTextList.get(x).getTag().toString(), jsonRootObject4);
+                }
             }
-            byte[] data = android.util.Base64.encode(myListData.get(position).getName().getBytes(), android.util.Base64.DEFAULT);
+            byte[] data = android.util.Base64.encode(teamListData.get(position).getName().getBytes(), android.util.Base64.DEFAULT);
             String text = new String(data, StandardCharsets.UTF_8);
             System.out.println("Encoded String: " + text);
             jsonRootObject2.put("teams", jsonRootObject3);
-            jsonRootObject2.put("name", myListData.get(position).getName());
-            jsonRootObject2.put("teamId", myListData.get(position).getUserId());
-            String[] array = {"A", "B", "C", "D"};
-            Random rand = new Random();
-            char randomLetter = (char) (rand.nextInt(26) + 'a');
-            jsonRootObject2.put("group", randomLetter);
-            jsonRootObject.put(myListData.get(position).getUserId(), jsonRootObject2);
+            jsonRootObject2.put("name", teamListData.get(position).getName());
+            jsonRootObject2.put("teamId", teamListData.get(position).getUserId());
+            jsonRootObject2.put("group", group);
+            jsonRootObject.put(teamListData.get(position).getUserId(), jsonRootObject2);
             Log.e("jsonRootObject", jsonRootObject.toString());
             Log.e("jsonRootObject", jsonRootObject.toString());
         } catch (Exception e) {
@@ -450,7 +469,7 @@ public class EventInfo extends AppCompatActivity {
                             tv_date.setText((Integer.parseInt(getIntent().getStringExtra("gameName")) + 1) + " / " + getIntent().getStringExtra("max"));
                             SharedPreferences sharedPreferences = getSharedPreferences(AppConstant.AppName, MODE_PRIVATE);
                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
-                            myEdit.putString(AppConstant.event + getIntent().getStringExtra("eId"), myListData.get(position).getUserId());
+                            myEdit.putString(AppConstant.event + getIntent().getStringExtra("eId"), teamListData.get(position).getUserId());
                             myEdit.apply();
                             getEventDetails();
                             isRegistered = true;
@@ -462,6 +481,7 @@ public class EventInfo extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                Log.e("lcat_response", error.getMessage());
 /*                shimmer_container.hideShimmer();
                 shimmer_container.setVisibility(View.GONE);*/
                 error.printStackTrace();
@@ -473,6 +493,7 @@ public class EventInfo extends AppCompatActivity {
                 Map<String, String> params = new HashMap<>();
                 params.put("userJson", jsonRootObject.toString());
                 params.put("tid", getIntent().getStringExtra("eId"));
+                Log.e("getParams: ", params.toString());
                 return params;
             }
 

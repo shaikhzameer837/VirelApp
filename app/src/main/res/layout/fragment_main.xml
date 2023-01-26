@@ -4,195 +4,216 @@
     android:layout_height="match_parent"
     android:background="#f0f6f9"
     android:orientation="vertical">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="horizontal"
         android:padding="10dp">
+
         <TextView
             android:id="@+id/amount"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="Total Coins"
             android:textColor="#000"
             android:textStyle="bold" />
+
         <TextView
             android:id="@+id/coins"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="coins"
             android:drawableLeft="@drawable/ic_coin"
-            android:textSize="12sp"
-            android:textColor="#000" />
+            android:text="coins"
+            android:textColor="#000"
+            android:textSize="12sp" />
     </LinearLayout>
+
     <soup.neumorphism.NeumorphCardView
-         style="@style/Widget.Neumorph.Button"
+        style="@style/Widget.Neumorph.Button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="20dp"
         android:background="@color/color_dialog_gray"
+        android:padding="20dp"
         app:neumorph_shapeType="basin">
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        app:cardCornerRadius="20dp"
-        app:cardElevation="10dp"
-        app:cardMaxElevation="12dp"
-        app:cardPreventCornerOverlap="true">
 
-        <LinearLayout
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/grad"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:padding="10dp"
-            app:cardBackgroundColor="@drawable/grad">
-
-<!--            <LinearLayout-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:gravity="center"-->
-<!--                android:orientation="horizontal">-->
-
-<!--                <TextView android:id="@+id/user_name"-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_weight="1"-->
-<!--                    android:shadowColor = "#000"-->
-<!--                    android:shadowDx = "-2"-->
-<!--                    android:shadowDy = "-2"-->
-<!--                    android:ellipsize="end"-->
-<!--                    android:shadowRadius = "1"-->
-<!--                    android:textColor="@color/colorPrimary"-->
-<!--                    android:textStyle="bold" />-->
-
-<!--            </LinearLayout>-->
+            android:layout_height="200dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="10dp"
+            app:cardMaxElevation="12dp"
+            app:cardPreventCornerOverlap="true">
 
             <LinearLayout
-                android:id="@+id/moneyList"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:background="@drawable/grad"
                 android:gravity="center"
-                android:orientation="horizontal">
+                android:orientation="vertical"
+                android:padding="10dp"
+                app:cardBackgroundColor="@drawable/grad">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/outline"
-                    android:padding="18dp"
-                    android:tag="24"
-                    android:contentDescription="25"
-                    android:text="25"
-                    android:textColor="@color/colorPrimary"
-                    android:textStyle="bold" />
+                <!--            <LinearLayout-->
+                <!--                android:layout_width="match_parent"-->
+                <!--                android:layout_height="wrap_content"-->
+                <!--                android:gravity="center"-->
+                <!--                android:orientation="horizontal">-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="18dp"
-                    android:tag="499"
-                    android:contentDescription="500"
-                    android:text="50"
-                    android:textColor="@color/colorPrimary"
-                    android:textStyle="bold" />
+                <!--                <TextView android:id="@+id/user_name"-->
+                <!--                    android:layout_width="0dp"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:layout_weight="1"-->
+                <!--                    android:shadowColor = "#000"-->
+                <!--                    android:shadowDx = "-2"-->
+                <!--                    android:shadowDy = "-2"-->
+                <!--                    android:ellipsize="end"-->
+                <!--                    android:shadowRadius = "1"-->
+                <!--                    android:textColor="@color/colorPrimary"-->
+                <!--                    android:textStyle="bold" />-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="18dp"
-                    android:tag="999"
-                    android:contentDescription="1000"
-                    android:text="100"
-                    android:textColor="@color/colorPrimary"
-                    android:textStyle="bold" />
+                <!--            </LinearLayout>-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="18dp"
-                    android:tag="1499"
-                    android:text="150"
-                    android:contentDescription="1500"
-                    android:textColor="@color/colorPrimary"
-                    android:textStyle="bold" />
+                <LinearLayout
+                    android:id="@+id/moneyList"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="18dp"
-                    android:tag="1999"
-                    android:text="200"
-                    android:contentDescription="2000"
-                    android:textColor="@color/colorPrimary"
-                    android:textStyle="bold" />
-            </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/outline"
+                        android:contentDescription="25"
+                        android:padding="17dp"
+                        android:tag="24"
+                        android:text="25"
+                        android:textColor="@color/colorPrimary"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="500"
+                        android:padding="17dp"
+                        android:tag="499"
+                        android:text="50"
+                        android:textColor="@color/colorPrimary"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="1000"
+                        android:padding="17dp"
+                        android:tag="999"
+                        android:text="100"
+                        android:textColor="@color/colorPrimary"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="1500"
+                        android:padding="17dp"
+                        android:tag="1499"
+                        android:text="150"
+                        android:textColor="@color/colorPrimary"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="2000"
+                        android:padding="17dp"
+                        android:tag="1999"
+                        android:text="200"
+                        android:textColor="@color/colorPrimary"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/extra"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="2000"
+                        android:padding="18dp"
+                        android:tag="1999"
+                        android:text="200"
+                        android:textColor="@color/colorPrimary"
+                        android:textStyle="bold"
+                        android:visibility="gone" />
+                </LinearLayout>
 
 
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/TextInputLayoutStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginBottom="10dp"
-                android:background="@null"
-                android:theme="@style/Theme.MaterialComponents.Light"
-                android:textAppearance="@style/EditTextHintStyle"
-                android:textColorHint="@color/colorPrimary"
-                app:boxStrokeColor="@color/colorPrimary">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/upi"
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/TextInputLayoutStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/edittext_bottom_line"
-                    android:hint="Enter paytm number/ upi id"
-                    android:padding="10dp"
-                    android:textColor="@color/colorPrimary"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@null"
+                    android:textAppearance="@style/EditTextHintStyle"
                     android:textColorHint="@color/colorPrimary"
-                    android:textSize="14sp"
-                    app:boxStrokeColor="@color/colorPrimary" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:theme="@style/Theme.MaterialComponents.Light"
+                    app:boxStrokeColor="@color/colorPrimary">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/upi"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/edittext_bottom_line"
+                        android:hint="Enter paytm number/ upi id"
+                        android:padding="10dp"
+                        android:textColor="@color/colorPrimary"
+                        android:textColorHint="@color/colorPrimary"
+                        android:textSize="14sp"
+                        app:boxStrokeColor="@color/colorPrimary" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="25dp"
-                    android:src="@drawable/sim" />
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:gravity="right"
-                    android:text="*payment will be settled within 2 hours"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="11sp" />
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="25dp"
+                        android:src="@drawable/sim" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        android:text="*payment will be settled within 2 hours"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="11sp" />
+                </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
+        </androidx.cardview.widget.CardView>
     </soup.neumorphism.NeumorphCardView>
-    <TextView android:id="@+id/textname"
+
+    <TextView
+        android:id="@+id/textname"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
         android:layout_marginTop="8dp"
         android:text="Hey Player What should we call you"
         android:textColor="@color/black" />
+
     <soup.neumorphism.NeumorphCardView
+        android:id="@+id/nameEdit"
         style="@style/Widget.Neumorph.Button"
         android:layout_width="match_parent"
         android:layout_height="65dp"
-        android:id="@+id/nameEdit"
         app:neumorph_shapeType="pressed"
         app:neumorph_strokeColor="@color/darkgrey"
         app:neumorph_strokeWidth="1dp">
@@ -203,12 +224,12 @@
             android:layout_height="match_parent"
             android:background="#00000000"
             android:digits="abcdefghijklmnopqrstuvwxyz_.1234567890"
-            android:paddingRight="10dp"
-            android:hint=" Your Full Name"
-            android:drawablePadding="5dip"
             android:drawableLeft="@drawable/card_account_details_outline"
-            android:paddingLeft="15dp"
+            android:drawablePadding="5dip"
+            android:hint=" Your Full Name"
             android:inputType="text|textEmailAddress"
+            android:paddingLeft="15dp"
+            android:paddingRight="10dp"
             android:singleLine="true"
             android:textColor="@color/black"
             android:textSize="14sp" />
@@ -225,48 +246,52 @@
     <LinearLayout
         android:id="@+id/payOptionList"
         android:layout_width="match_parent"
-        android:layout_marginLeft="10dp"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
         android:orientation="horizontal">
 
 
-        <TextView android:id="@+id/gpay"
+        <TextView
+            android:id="@+id/gpay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/outline_black"
             android:drawableTop="@drawable/gpay"
             android:padding="15dp"
             android:tag="Google Pay"
             android:text="Gpay"
-            android:textSize="11sp"
-            android:background="@drawable/outline_black"
-            android:textColor="@color/black" />
+            android:textColor="@color/black"
+            android:textSize="11sp" />
 
-        <TextView android:id="@+id/phonepay"
+        <TextView
+            android:id="@+id/phonepay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableTop="@drawable/phonepay"
             android:padding="15dp"
             android:tag="PhonePe"
-            android:textSize="11sp"
             android:text="phonepe"
-            android:textColor="@color/black" />
+            android:textColor="@color/black"
+            android:textSize="11sp" />
 
-        <TextView android:id="@+id/paytm"
+        <TextView
+            android:id="@+id/paytm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableTop="@drawable/paytm"
             android:gravity="center"
-            android:textSize="11sp"
             android:padding="15dp"
             android:tag="paytm"
             android:text="paytm"
-            android:textColor="@color/black" />
+            android:textColor="@color/black"
+            android:textSize="11sp" />
     </LinearLayout>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
         android:layout_marginLeft="15dp"
+        android:layout_marginTop="5dp"
         android:text="Gamer"
         android:textColor="@color/black" />
 
@@ -281,8 +306,9 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_weight="1"
-        android:layout_height="0dp"/>
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -302,30 +328,32 @@
             android:text="Add money"
             android:textColor="#000000"
             android:visibility="gone" />
+
         <soup.neumorphism.NeumorphCardView
+            android:id="@+id/btnNext"
             style="@style/Widget.Neumorph.Button"
             android:layout_width="wrap_content"
-            android:id="@+id/btnNext"
             android:layout_height="75dp"
+            android:layout_gravity="center"
+            android:onClick="sendNumber"
             android:padding="20dp"
             app:neumorph_backgroundColor="@color/black"
-            android:layout_gravity="center"
-            app:neumorph_strokeWidth="1dp"
-            android:onClick="sendNumber"
+            app:neumorph_shapeType="flat"
             app:neumorph_strokeColor="@color/darkgrey"
-            app:neumorph_shapeType="flat">
+            app:neumorph_strokeWidth="1dp">
+
             <TextView
                 android:layout_width="wrap_content"
-                android:text=" Withraw Amount "
+                android:layout_height="match_parent"
                 android:layout_gravity="center"
+                android:drawableLeft="@drawable/withdraw"
+                android:drawableRight="@drawable/arrow_white"
                 android:gravity="center"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
-                android:drawableRight="@drawable/arrow_white"
+                android:text=" Withraw Amount "
                 android:textColor="@color/white"
-                android:drawableLeft="@drawable/withdraw"
-                android:textStyle="bold"
-                android:layout_height="match_parent"/>
+                android:textStyle="bold" />
         </soup.neumorphism.NeumorphCardView>
     </LinearLayout>
 </LinearLayout>

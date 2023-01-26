@@ -86,7 +86,7 @@ import com.intelj.y_ral_gaming.SigninActivity;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 import com.intelj.y_ral_gaming.Utils.RecyclerTouchListener;
 import com.intelj.y_ral_gaming.main.PaymentWithdraw;
-import com.intelj.y_ral_gaming.model.MyListData;
+import com.intelj.y_ral_gaming.model.TeamListPOJO;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -196,12 +196,7 @@ public class MainActivity extends BaseActivity {
                     LoginSheet();
             }
         });
-        findViewById(R.id.team).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showTeamList();
-            }
-        });
+
         bottomNavigation = findViewById(R.id.bottom_navigation);
         final ViewStub stub = findViewById(R.id.layout_stub);
         stub.setLayoutResource(R.layout.game_slot);
@@ -450,8 +445,8 @@ public class MainActivity extends BaseActivity {
                     String[] urlSplit = url.split("/");
                     if (urlSplit[3].equals("redeem")) {
                         Intent intent = new Intent(MainActivity.this, PaymentWithdraw.class);
-                        intent.putExtra("coins", urlSplit[4]);
-                        intent.putExtra("reward_id", urlSplit[3]);
+                        intent.putExtra("coins", urlSplit[5]);
+                        intent.putExtra("reward_id", urlSplit[4]);
                         startActivity(intent);
                     } else if (urlSplit[3].equals("other")) {
                         getCommonApi(urlSplit[4]);
@@ -525,7 +520,7 @@ public class MainActivity extends BaseActivity {
     HashMap<String, String> jsonAnimationList = new HashMap<>();
     TextView refer, referral;
     RecyclerView invite_recyclerView;
-    ArrayList<MyListData> myListData = new ArrayList<>();
+    ArrayList<TeamListPOJO> myListData = new ArrayList<>();
 
     public void showInvite() {
         View view = getLayoutInflater().inflate(R.layout.referral_activity, null);
@@ -574,7 +569,7 @@ public class MainActivity extends BaseActivity {
                                 JSONObject jsonObject = (JSONObject) json.get(i);
                                 if (!jsonObject.getString("playing_status").equals("0"))
                                     totalSuccessInvite = totalSuccessInvite + Integer.parseInt(jsonObject.getString("playing_status"));
-                                myListData.add(new MyListData(jsonObject.getString("name"), jsonObject.getString("userId"), jsonObject.getString("playing_status")));
+                                myListData.add(new TeamListPOJO(jsonObject.getString("name"), jsonObject.getString("userId"), jsonObject.getString("playing_status")));
                                 Log.e("responses", jsonObject.getString("name"));
                             }
                             totalAmount.setText("+" + totalSuccessInvite);
@@ -722,95 +717,6 @@ public class MainActivity extends BaseActivity {
     }
 
     TeamDisplayList teamAdapter;
-
-    public void showTeamList() {
-        myListData.clear();
-        //  startActivity(new Intent(ProFileActivity.this,CreateTeam.class));
-        View inflated = getLayoutInflater().inflate(R.layout.team_list, null);
-        final BottomSheetDialog dialogBottom = new RoundedBottomSheetDialog(MainActivity.this);
-        RecyclerView teamRecyclerView = inflated.findViewById(R.id.rv_teamlist);
-        inflated.findViewById(R.id.createTeam).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, CreateTeam.class));
-            }
-        });
-        ShimmerFrameLayout shimmerFrameLayout = inflated.findViewById(R.id.shimmer_layout);
-        shimmerFrameLayout.startShimmer();
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String url = AppConstant.AppUrl + "get_team_list.php";
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.e("responseT", response);
-                        shimmerFrameLayout.hideShimmer();
-                        shimmerFrameLayout.setVisibility(View.GONE);
-                        try {
-                            JSONObject jsonObject = new JSONObject(response);
-                            if (jsonObject.getBoolean("success")) {
-                                JSONArray jsonArray = new JSONArray(jsonObject.getString("teamList"));
-                                for (int i = 0; i < jsonArray.length(); i++) {
-                                    JSONObject jsonObject2 = (JSONObject) jsonArray.get(i);
-                                    myListData.add(new MyListData(jsonObject2.getString("teamName"), jsonObject2.getString("teamId"), jsonObject2.getString("teamMember").split(",").length + " Member"));
-                                }
-                                teamAdapter = new TeamDisplayList(myListData);
-                                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-                                teamRecyclerView.setLayoutManager(mLayoutManager);
-                                teamRecyclerView.setItemAnimator(new DefaultItemAnimator());
-                                teamRecyclerView.setAdapter(teamAdapter);
-                            } else {
-                                Toast.makeText(MainActivity.this, "No Team Found", Toast.LENGTH_LONG).show();
-                            }
-
-                        } catch (Exception e) {
-                            Log.e("error Rec", e.getMessage());
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                shimmerFrameLayout.hideShimmer();
-                shimmerFrameLayout.setVisibility(View.GONE);
-                error.printStackTrace();
-                FirebaseCrashlytics.getInstance().recordException(error);
-            }
-        }) {
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                Log.e("teamIdList", AppController.getInstance().teamList);
-                params.put("teamIdList", AppController.getInstance().teamList);
-                return params;
-            }
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-
-                params.put("Content-Type", "application/x-www-form-urlencoded");
-                return params;
-            }
-        };
-
-        queue.add(stringRequest);
-
-
-        teamRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), teamRecyclerView, new RecyclerTouchListener.ClickListener() {
-            @Override
-            public void onClick(View view, int position) {
-
-            }
-
-            @Override
-            public void onLongClick(View view, int position) {
-
-            }
-        }));
-        dialogBottom.setContentView(inflated);
-        dialogBottom.show();
-    }
-
     @Override
     protected void onResume() {
         super.onResume();

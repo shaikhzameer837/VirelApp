@@ -30,7 +30,7 @@ import com.android.volley.toolbox.Volley;
 import com.intelj.y_ral_gaming.Adapter.MyListAdapter;
 import com.intelj.y_ral_gaming.R;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
-import com.intelj.y_ral_gaming.model.MyListData;
+import com.intelj.y_ral_gaming.model.TeamListPOJO;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,7 +44,7 @@ public class ReferralActivity extends AppCompatActivity {
     HashMap<String, String> jsonAnimationList = new HashMap<>();
     TextView refer, referral;
     RecyclerView invite_recyclerView;
-    ArrayList<MyListData> myListData = new ArrayList<>();
+    ArrayList<TeamListPOJO> myListData = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,7 +107,7 @@ public class ReferralActivity extends AppCompatActivity {
                                 JSONObject jsonObject = (JSONObject) json.get(i);
                                 if(!jsonObject.getString("playing_status").equals("0"))
                                     totalSuccessInvite = totalSuccessInvite + Integer.parseInt(jsonObject.getString("playing_status"));
-                                myListData.add(new MyListData(jsonObject.getString("name"), jsonObject.getString("userId"), jsonObject.getString("playing_status")));
+                                myListData.add(new TeamListPOJO(jsonObject.getString("name"), jsonObject.getString("userId"), jsonObject.getString("playing_status")));
                                 Log.e("responses", jsonObject.getString("name"));
                             }
                             totalAmount.setText("+" + totalSuccessInvite);

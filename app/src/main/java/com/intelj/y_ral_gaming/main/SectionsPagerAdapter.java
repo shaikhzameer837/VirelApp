@@ -1,6 +1,7 @@
 package com.intelj.y_ral_gaming.main;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
@@ -23,11 +24,11 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     private static final int[] TAB_TITLES = new int[]{R.string.tab_text_1, R.string.tab_text_2, R.string.tab_text_3};
     private final Context mContext;
 
-    public SectionsPagerAdapter(Context context, FragmentManager fm,String coins,String reward_id) {
+    public SectionsPagerAdapter(Context context, FragmentManager fm,String coin,String rewardId) {
         super(fm);
         mContext = context;
-        this.coins = coins;
-        this.reward_id = reward_id;
+        coins = coin;
+        reward_id = rewardId;
     }
 
     @Override
@@ -41,6 +42,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
             case 1 :
                 return  PaymentHistory.newInstance(position + 1);
             default:
+                Log.d("shouldLoading2: ", reward_id);
                 return   PlaceholderFragment.newInstance(position + 1,coins,reward_id);
         }
     }

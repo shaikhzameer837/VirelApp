@@ -5,9 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,15 +13,15 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.intelj.y_ral_gaming.R;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
-import com.intelj.y_ral_gaming.model.MyListData;
+import com.intelj.y_ral_gaming.model.TeamListPOJO;
 
 import java.util.ArrayList;
 
 public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder>{
-    private ArrayList<MyListData> listdata;
+    private ArrayList<TeamListPOJO> listdata;
 
     // RecyclerView recyclerView;
-    public MyListAdapter(ArrayList<MyListData> listdata) {
+    public MyListAdapter(ArrayList<TeamListPOJO> listdata) {
         this.listdata = listdata;
     }
     @Override

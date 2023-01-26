@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,6 +26,11 @@ public class PaymentWithdraw extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = PaymentWithdrawBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        if (getIntent() != null) {
+            coins = getIntent().getStringExtra("coins");
+            reward_id = getIntent().getStringExtra("reward_id");
+            Log.d("shouldLoading1: ", reward_id);
+        }
         SectionsPagerAdapter sectionsPagerAdapter =
                 new SectionsPagerAdapter(this, getSupportFragmentManager(),coins,reward_id);
         ViewPager viewPager = binding.viewPager;
@@ -33,10 +39,7 @@ public class PaymentWithdraw extends AppCompatActivity {
         tabs.setupWithViewPager(viewPager);
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
                 new IntentFilter("payment"));
-        if (getIntent() != null) {
-            coins = getIntent().getStringExtra("coins");
-            reward_id = getIntent().getStringExtra("reward_id");
-        }
+
     }
 
     // Our handler for received Intents. This will be called whenever an Intent

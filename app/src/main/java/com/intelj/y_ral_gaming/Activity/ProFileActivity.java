@@ -6,18 +6,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Html;
 import android.transition.Fade;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,7 +42,6 @@ import com.bumptech.glide.request.RequestOptions;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -55,7 +49,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.intelj.y_ral_gaming.Adapter.MyListAdapter;
 import com.intelj.y_ral_gaming.Adapter.TeamDisplayList;
 import com.intelj.y_ral_gaming.AppController;
 import com.intelj.y_ral_gaming.ChatActivity;
@@ -66,16 +59,13 @@ import com.intelj.y_ral_gaming.RoundedBottomSheetDialog;
 import com.intelj.y_ral_gaming.SigninActivity;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 import com.intelj.y_ral_gaming.Utils.RecyclerTouchListener;
-import com.intelj.y_ral_gaming.model.MyListData;
-import com.intelj.y_ral_gaming.model.TournamentModel;
+import com.intelj.y_ral_gaming.model.TeamListPOJO;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class ProFileActivity extends AppCompatActivity {
@@ -93,6 +83,7 @@ public class ProFileActivity extends AppCompatActivity {
     ProgressBar progress;
     String teamIdList = "";
     private ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -146,8 +137,8 @@ public class ProFileActivity extends AppCompatActivity {
             findViewById(R.id.rel_button).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                   // editProfile();
-                    startActivity(new Intent(ProFileActivity.this,EditProfile.class));
+                    // editProfile();
+                    startActivity(new Intent(ProFileActivity.this, EditProfile.class));
                 }
             });
             if (userid.equals(appConstant.getId())) {
@@ -191,7 +182,6 @@ public class ProFileActivity extends AppCompatActivity {
             popular.setVisibility(View.VISIBLE);
             popular.setText("Popularity #" + (AppController.getInstance().popularList.get(userid)));
         }
-
 
 
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference(AppConstant.users).child(userid);
@@ -241,8 +231,8 @@ public class ProFileActivity extends AppCompatActivity {
                                 hashMap.put(AppConstant.name, appConstant.getName());
                                 FirebaseFirestore.getInstance().collection(AppConstant.realTime)
                                         .document(userid).collection(AppConstant.noti)
-                                                .document((System.currentTimeMillis() / 1000)+"").set(hashMap);
-                                                  FirebaseDatabase.getInstance().getReference(AppConstant.users).child(userid).child(AppConstant.profile).child(AppConstant.follower).child(appConstant.getId()).setValue((System.currentTimeMillis() / 1000));
+                                        .document((System.currentTimeMillis() / 1000) + "").set(hashMap);
+                                FirebaseDatabase.getInstance().getReference(AppConstant.users).child(userid).child(AppConstant.profile).child(AppConstant.follower).child(appConstant.getId()).setValue((System.currentTimeMillis() / 1000));
                                 FirebaseDatabase.getInstance().getReference(AppConstant.users).child(appConstant.getId()).child(AppConstant.profile).child(AppConstant.following).child(userid).setValue((System.currentTimeMillis() / 1000));
 
                                 FirebaseDatabase.getInstance().getReference(AppConstant.users).child(userid).child(AppConstant.realTime).child(AppConstant.noti).child((System.currentTimeMillis() / 1000) + "").setValue(hashMap);
@@ -317,6 +307,7 @@ public class ProFileActivity extends AppCompatActivity {
         });
         getProfileInfo();
     }
+
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -324,12 +315,13 @@ public class ProFileActivity extends AppCompatActivity {
             String teamName = intent.getStringExtra("name");
             String teamId = intent.getStringExtra("id");
             String teamMember = intent.getStringExtra("teamMember");
-            myListData.add(0,new MyListData(teamName,teamId, teamMember.split(",").length +" Member"));
+            teamListData.add(0, new TeamListPOJO(teamName, teamId, teamMember.split(",").length + " Member"));
             teamAdapter.notifyDataSetChanged();
 
             Log.d("receiver", "Got message: " + teamName);
         }
     };
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -384,10 +376,12 @@ public class ProFileActivity extends AppCompatActivity {
 
         queue.add(stringRequest);
     }
-    ArrayList<MyListData> myListData = new ArrayList<>();
+
+    ArrayList<TeamListPOJO> teamListData = new ArrayList<>();
     TeamDisplayList teamAdapter;
+
     public void showTeamList() {
-        myListData.clear();
+        teamListData.clear();
         //  startActivity(new Intent(ProFileActivity.this,CreateTeam.class));
         View inflated = getLayoutInflater().inflate(R.layout.team_list, null);
         final BottomSheetDialog dialogBottom = new RoundedBottomSheetDialog(ProFileActivity.this);
@@ -395,7 +389,7 @@ public class ProFileActivity extends AppCompatActivity {
         inflated.findViewById(R.id.createTeam).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(ProFileActivity.this,CreateTeam.class));
+                startActivity(new Intent(ProFileActivity.this, CreateTeam.class));
             }
         });
         ShimmerFrameLayout shimmerFrameLayout = inflated.findViewById(R.id.shimmer_layout);
@@ -415,9 +409,9 @@ public class ProFileActivity extends AppCompatActivity {
                                 JSONArray jsonArray = new JSONArray(jsonObject.getString("teamList"));
                                 for (int i = 0; i < jsonArray.length(); i++) {
                                     JSONObject jsonObject2 = (JSONObject) jsonArray.get(i);
-                                    myListData.add(new MyListData(jsonObject2.getString("teamName"), jsonObject2.getString("teamId"), jsonObject2.getString("teamMember").split(",").length +" Member"));
+                                    teamListData.add(new TeamListPOJO(jsonObject2.getString("teamName"), jsonObject2.getString("teamId"), jsonObject2.getString("teamMember"), jsonObject2.getString("names")));
                                 }
-                                 teamAdapter = new TeamDisplayList(myListData);
+                                teamAdapter = new TeamDisplayList(teamListData);
                                 RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
                                 teamRecyclerView.setLayoutManager(mLayoutManager);
                                 teamRecyclerView.setItemAnimator(new DefaultItemAnimator());

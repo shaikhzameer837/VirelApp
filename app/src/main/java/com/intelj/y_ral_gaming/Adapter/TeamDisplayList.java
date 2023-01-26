@@ -1,6 +1,5 @@
 package com.intelj.y_ral_gaming.Adapter;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,15 +12,15 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.intelj.y_ral_gaming.R;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
-import com.intelj.y_ral_gaming.model.MyListData;
+import com.intelj.y_ral_gaming.model.TeamListPOJO;
 
 import java.util.ArrayList;
 
 public class TeamDisplayList extends RecyclerView.Adapter<TeamDisplayList.ViewHolder>{
-    private ArrayList<MyListData> listdata;
+    private ArrayList<TeamListPOJO> listdata;
 
     // RecyclerView recyclerView;
-    public TeamDisplayList(ArrayList<MyListData> listdata) {
+    public TeamDisplayList(ArrayList<TeamListPOJO> listdata) {
         this.listdata = listdata;
     }
     @Override
@@ -37,7 +36,7 @@ public class TeamDisplayList extends RecyclerView.Adapter<TeamDisplayList.ViewHo
         holder.name.setText(listdata.get(position).getName());
         holder.amount.setVisibility(listdata.get(position).getPlaying_status().equals("1") ? View.VISIBLE : View.GONE);
         // holder.amount.setText(listdata.get(position).getPlaying_status());
-        holder.status.setText(listdata.get(position).getPlaying_status().split(",").length +" Member");
+        holder.status.setText(listdata.get(position).getPlayername() == null ? "" : listdata.get(position).getPlayername());
         Glide.with(holder.imgs.getContext()).load(AppConstant.AppUrl + "images/"+listdata.get(position).getUserId()+".png?u=" + AppConstant.imageExt()).apply(new RequestOptions().circleCrop()).placeholder(R.drawable.game_avatar).into(holder.imgs);
     }
 

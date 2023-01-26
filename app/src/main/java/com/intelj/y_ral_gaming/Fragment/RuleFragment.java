@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -22,15 +21,12 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.amazonaws.mobileconnectors.s3.transfermanager.Copy;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.intelj.y_ral_gaming.Activity.EventInfo;
 import com.intelj.y_ral_gaming.Adapter.TeamDisplayList;
 import com.intelj.y_ral_gaming.R;
 import com.intelj.y_ral_gaming.RoundedBottomSheetDialog;
-import com.intelj.y_ral_gaming.model.MyListData;
+import com.intelj.y_ral_gaming.model.TeamListPOJO;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.nio.charset.StandardCharsets;
@@ -75,7 +71,7 @@ public class RuleFragment extends Fragment {
         return rootView;
     }
 
-    ArrayList<MyListData> myListData = new ArrayList<>();
+    ArrayList<TeamListPOJO> myListData = new ArrayList<>();
 
     public class MyBrowser extends WebViewClient {
         @Override
@@ -88,6 +84,7 @@ public class RuleFragment extends Fragment {
                 String[] urlSplit = url.split("/");
                 if (urlSplit[3].equals("team")) {
                     String base64 = urlSplit[5];
+                    String[] nameList = urlSplit[6].split(",");
                     byte[] data = Base64.decode(base64, Base64.DEFAULT);
                     String text = new String(data, StandardCharsets.UTF_8);
                     Log.e("textWeb", text);
@@ -104,16 +101,18 @@ public class RuleFragment extends Fragment {
                         JSONObject jsonObject = new JSONObject(text);
                         myListData.clear();
                         Iterator<String> keys = jsonObject.keys();
+                        int x = 0;
                         while (keys.hasNext()) {
                             String key = keys.next();
                             Object value = jsonObject.get(key);
                             if(value instanceof JSONObject){
                                 JSONObject nestedJsonObject = jsonObject.getJSONObject(key);
                                 Log.e("error Rec key", nestedJsonObject.getString("ingName"));
-                                myListData.add(new MyListData(nestedJsonObject.getString("ingName"), key, nestedJsonObject.getString("ingName")));
+                                myListData.add(new TeamListPOJO(nestedJsonObject.getString("ingName"), key, nestedJsonObject.getString("ingName"),nameList[x]));
                             }else{
                                 Log.e("error Rec key", "errors");
                             }
+                            x = x + 1;
                         }
                         teamAdapter.notifyDataSetChanged();
                     } catch (Exception e) {

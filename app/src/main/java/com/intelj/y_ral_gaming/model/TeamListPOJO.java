@@ -1,12 +1,26 @@
 package com.intelj.y_ral_gaming.model;
 
-public class MyListData {
-    String name,userId,playing_status;
+public class TeamListPOJO {
+    String name,userId,playing_status,playername;
 
-    public MyListData(String name, String userId, String playing_status) {
+    public TeamListPOJO(String name, String userId, String playing_status) {
         this.name = name;
         this.userId = userId;
         this.playing_status = playing_status;
+    }
+  public TeamListPOJO(String name, String userId, String playing_status, String playername) {
+        this.name = name;
+        this.userId = userId;
+        this.playing_status = playing_status;
+        this.playername = playername;
+    }
+
+    public String getPlayername() {
+        return playername;
+    }
+
+    public void setPlayername(String playername) {
+        this.playername = playername;
     }
 
     public String getName() {

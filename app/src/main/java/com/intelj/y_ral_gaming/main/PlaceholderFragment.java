@@ -71,6 +71,7 @@ public class PlaceholderFragment extends Fragment implements View.OnClickListene
         Bundle bundle = new Bundle();
         bundle.putInt(ARG_SECTION_NUMBER, index);
         bundle.putString("wAmount", wAmount);
+        Log.d("shouldLoading3: ", reward_id);
         bundle.putString("reward_id", reward_id);
         fragment.setArguments(bundle);
         return fragment;
@@ -85,6 +86,7 @@ public class PlaceholderFragment extends Fragment implements View.OnClickListene
             index = getArguments().getInt(ARG_SECTION_NUMBER);
             wAmount = getArguments().getString("wAmount");
             reward_id = getArguments().getString("reward_id");
+            Log.d("shouldLoading4: ", reward_id);
         }
 
         pageViewModel.setIndex(index);
@@ -152,27 +154,27 @@ public class PlaceholderFragment extends Fragment implements View.OnClickListene
             }
         });
         moneyList = binding.moneyList;
-        Log.e( "onCreateView: ", reward_id);
-        if(reward_id.equals("0")) {
-            TextView textView = new TextView(getActivity());
-            textView.setText(wAmount);
-            textView.setBackgroundResource(R.drawable.outline);
-            textView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            textView.setPadding(18, 18, 18, 18);
-            textView.setTag(24);
-            textView.setContentDescription(wAmount);
-            textView.setText(wAmount);
-            textView.setTextColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary));
-            textView.setTypeface(null, Typeface.BOLD);
-            moneyList.addView(textView);
-        }
-        for (int i = 0; i < moneyList.getChildCount(); i++) {
-            moneyList.getChildAt(i).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    WidthDrawAmount((TextView) v);
-                }
-            });
+        Log.d("shouldLoading5: ", reward_id);
+        if(!reward_id.equals("0")) {
+            for (int i = 0; i < moneyList.getChildCount(); i++) {
+                moneyList.getChildAt(i).setVisibility(View.GONE);
+            }
+            binding.extra.setVisibility(View.VISIBLE);
+            binding.extra.setContentDescription(wAmount);
+            binding.extra.setTag(wAmount);
+            binding.extra.setText("Reward Money : " + wAmount);
+           // moneyList.getChildAt(0).setBackgroundResource(0);
+            Log.d("shouldLoading6: ", reward_id);
+
+        }else {
+            for (int i = 0; i < moneyList.getChildCount(); i++) {
+                moneyList.getChildAt(i).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        WidthDrawAmount((TextView) v);
+                    }
+                });
+            }
         }
         payOptionList = binding.payOptionList;
         binding.btnNext.setOnClickListener(new View.OnClickListener() {
@@ -328,7 +330,8 @@ public class PlaceholderFragment extends Fragment implements View.OnClickListene
                 params.put("userid", new AppConstant(getActivity()).getUserName());
                 params.put("id", new AppConstant(getActivity()).getId());
                 params.put("amount", wAmount);
-                params.put("type", "Redeem Money");
+                params.put("type", reward_id.equals("0") ? "Redeem Money" : "Redeem Reward");
+                params.put("reward_id", reward_id);
                 params.put("paymentType", paymentType);
                 params.put("gameplay", gameplay);
                 params.put("time", (System.currentTimeMillis()) + "");

@@ -116,8 +116,8 @@ public class CreateTeam extends AppCompatActivity {
             Toast.makeText(CreateTeam.this, "Please select member for Your team", Toast.LENGTH_LONG).show();
             return;
         }
-        if (createTeamAdapter.getSelectedList().size() > 5) {
-            Toast.makeText(CreateTeam.this, "Only 6 members are allowed including You", Toast.LENGTH_LONG).show();
+        if (createTeamAdapter.getSelectedList().size() > 7) {
+            Toast.makeText(CreateTeam.this, "Only 8 members are allowed including You", Toast.LENGTH_LONG).show();
             return;
         }
         postTeam();
