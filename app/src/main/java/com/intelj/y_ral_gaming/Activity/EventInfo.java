@@ -63,7 +63,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Random;
 
 
 public class EventInfo extends AppCompatActivity {
@@ -441,7 +440,7 @@ public class EventInfo extends AppCompatActivity {
             for (int x = 0; x < editTextList.size(); x++) {
                 if(!editTextList.get(x).getText().toString().trim().equals("")) {
                     JSONObject jsonRootObject4 = new JSONObject();
-                    jsonRootObject4.put("ingName", editTextList.get(x).getText().toString());
+                    jsonRootObject4.put("ingName", android.util.Base64.encode(editTextList.get(x).getText().toString().getBytes(), android.util.Base64.DEFAULT));
                     jsonRootObject3.put(editTextList.get(x).getTag().toString(), jsonRootObject4);
                 }
             }

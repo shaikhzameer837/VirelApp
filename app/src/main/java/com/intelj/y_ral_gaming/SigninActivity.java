@@ -52,6 +52,8 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.intelj.y_ral_gaming.Activity.GameInfo;
 import com.intelj.y_ral_gaming.Activity.MainActivity;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
+import com.otpless.views.OtplessManager;
+import com.otpless.views.WhatsappLoginButton;
 import com.rilixtech.widget.countrycodepicker.Country;
 import com.rilixtech.widget.countrycodepicker.CountryCodePicker;
 
@@ -134,6 +136,16 @@ public class SigninActivity extends AppCompatActivity {
                 handler.postDelayed(this, 2000); //now is every 2 minutes
             }
         }, 2000);
+        OtplessManager.getInstance().init(this);
+        WhatsappLoginButton whatsapp_login = findViewById(R.id.whatsapp_login);
+        whatsapp_login.setResultCallback((data) -> {
+            Log.e( "waid: ", "waid//");
+            if (data != null) {
+                String waid = data.getWaId();
+                Log.e( "waid: ", waid);
+            }
+        });
+
     }
 
     public class CustomPagerAdapter extends PagerAdapter {

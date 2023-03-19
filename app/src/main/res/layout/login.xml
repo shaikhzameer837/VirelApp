@@ -50,10 +50,12 @@
                 android:textSize="13sp" />
         </soup.neumorphism.NeumorphCardView>
    </LinearLayout>
+
         <soup.neumorphism.NeumorphCardView
             style="@style/Widget.Neumorph.Button"
             android:layout_width="match_parent"
             android:layout_height="65dp"
+            android:visibility="gone"
             app:neumorph_shapeType="pressed"
             app:neumorph_strokeColor="@color/darkgrey"
             app:neumorph_strokeWidth="1dp">
