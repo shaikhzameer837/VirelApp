@@ -26,7 +26,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
@@ -49,11 +48,9 @@ import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.intelj.y_ral_gaming.Activity.GameInfo;
 import com.intelj.y_ral_gaming.Activity.MainActivity;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 import com.otpless.views.OtplessManager;
-import com.otpless.views.WhatsappLoginButton;
 import com.rilixtech.widget.countrycodepicker.Country;
 import com.rilixtech.widget.countrycodepicker.CountryCodePicker;
 
@@ -83,11 +80,13 @@ public class SigninActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private PhoneAuthProvider.ForceResendingToken mResendToken;
     String skey = "9911";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         setContentView(R.layout.signin);
+        Log.e("onCreate", "on create call");
         contentList.put("phone.json", "Enter just phone number");
         contentList.put("login.json", "Register & play Game");
         contentList.put("cash.json", "You earn coins as joining bonus");
@@ -136,16 +135,46 @@ public class SigninActivity extends AppCompatActivity {
                 handler.postDelayed(this, 2000); //now is every 2 minutes
             }
         }, 2000);
-        OtplessManager.getInstance().init(this);
-        WhatsappLoginButton whatsapp_login = findViewById(R.id.whatsapp_login);
-        whatsapp_login.setResultCallback((data) -> {
-            Log.e( "waid: ", "waid//");
-            if (data != null) {
-                String waid = data.getWaId();
-                Log.e( "waid: ", waid);
-            }
-        });
 
+//OTPLess
+        OtplessManager.getInstance().init(this);
+
+        //    OtplessManager.getInstance().init(this);
+//        WhatsappLoginButton whatsapp_login = findViewById(R.id.whatsapp_login);
+//        whatsapp_login.setResultCallback((data) -> {rfr4f
+//            Log.e( "waid: ", "waid//");
+//            if (data != null) {
+//                String waid = data.getWaId();
+//                Log.e( "waid: ", waid);
+//            }
+//        });
+
+    }
+    public void openWhatsapp(View view) {
+        final JSONObject obj = new JSONObject();
+        try {
+            obj.put("method", "get");
+            final JSONObject params = new JSONObject();
+            params.put("login_uri", "com.intelj.yralgaming");
+            obj.put("params", params);
+        } catch (Exception e) {
+            e.getMessage();
+        }
+        OtplessManager.getInstance().start(data -> {
+            if (data.getData() == null) {
+                Log.e("OTP-less", data.getErrorMessage());
+            } else {
+                final JSONObject otplessUser = data.getData();
+                Log.e("otplessUser", otplessUser.toString());
+                final String token = otplessUser.optString("token");
+                _phoneNumber = otplessUser.optString("waNumber");
+                registerdOnServer();
+                if (!token.isEmpty()) {
+                    Log.d("OTP-less", String.format("token: %s", token));
+                    // todo send this token to your backend service to validate otplessUser details received in the callback with OTPless backend service
+                }
+            }
+        }, obj);
     }
 
     public class CustomPagerAdapter extends PagerAdapter {
@@ -160,7 +189,7 @@ public class SigninActivity extends AppCompatActivity {
         public Object instantiateItem(ViewGroup collection, int position) {
             LayoutInflater inflater = LayoutInflater.from(mContext);
             ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.image_view, collection, false);
-            TextView textView  = layout.findViewById(R.id.title);
+            TextView textView = layout.findViewById(R.id.title);
             LottieAnimationView lottieAnimationView = layout.findViewById(R.id.animationView);
             String firstKey = contentList.keySet().toArray()[position].toString();
             lottieAnimationView.setAnimation(firstKey);
@@ -190,6 +219,7 @@ public class SigninActivity extends AppCompatActivity {
         }
 
     }
+
     private int getItem(int i) {
         return viewPagerLogin.getCurrentItem() + i;
     }
@@ -278,7 +308,7 @@ public class SigninActivity extends AppCompatActivity {
                     });
                     countdown_timer();
                 }
-            }  else if (viewPagerLogin.getCurrentItem() == 1) {
+            } else if (viewPagerLogin.getCurrentItem() == 1) {
                 otp = layout_view.get(1).findViewById(R.id.otp);
                 _otp = otp.getText().toString();
                 if (_otp.trim().length() != 0) {
@@ -360,8 +390,9 @@ public class SigninActivity extends AppCompatActivity {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
+
                     public void onResponse(String response) {
-                        Log.e( "onResponse: ", response);
+                        Log.e("onResponse:Api ", response);
                         try {
                             JSONObject obj = new JSONObject(response);
                             if (obj.getBoolean("success")) {
@@ -402,7 +433,7 @@ public class SigninActivity extends AppCompatActivity {
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
                             } else {
-                                Toast.makeText(SigninActivity.this,"Something Went Wrong",Toast.LENGTH_LONG).show();
+                                Toast.makeText(SigninActivity.this, "Something Went Wrong", Toast.LENGTH_LONG).show();
                             }
                         } catch (Exception e) {
                             if (dialog.isShowing()) {
@@ -503,6 +534,7 @@ public class SigninActivity extends AppCompatActivity {
         //signing the user
         signInWithPhoneAuthCredential(credential);
     }
+
     private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(SigninActivity.this, new OnCompleteListener<AuthResult>() {

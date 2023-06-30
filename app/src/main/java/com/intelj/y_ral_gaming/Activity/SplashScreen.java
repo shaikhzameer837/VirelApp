@@ -55,9 +55,8 @@ public class SplashScreen extends AppCompatActivity {
             @Override
             public void run() {
                 String versionCode = BuildConfig.VERSION_CODE + "a";
-                Intent intent = new Intent(SplashScreen.this,
-                        AppController.getInstance().videoDataBase.videosDao().getAllVideo().size() == 0 ? MainActivity.class
-                                : ViralWeb.class);
+ //               Intent intent = new Intent(SplashScreen.this,
+                Intent intent = new Intent(SplashScreen.this,MainActivity.class);
                 if (new AppConstant(SplashScreen.this).getDataFromShared(versionCode, "0").equals("0")) {
                     intent = new Intent(SplashScreen.this, WhatsNew.class);
                 }

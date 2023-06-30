@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.transition.Fade;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -440,15 +441,17 @@ public class EventInfo extends AppCompatActivity {
             for (int x = 0; x < editTextList.size(); x++) {
                 if(!editTextList.get(x).getText().toString().trim().equals("")) {
                     JSONObject jsonRootObject4 = new JSONObject();
-                    jsonRootObject4.put("ingName", android.util.Base64.encode(editTextList.get(x).getText().toString().getBytes(), android.util.Base64.DEFAULT));
+                    byte[] data = editTextList.get(x).getText().toString().getBytes("UTF-8");
+                    String ingName = Base64.encodeToString(data, Base64.DEFAULT);
+                    jsonRootObject4.put("ingName", ingName.replaceAll("\n", ""));
                     jsonRootObject3.put(editTextList.get(x).getTag().toString(), jsonRootObject4);
                 }
             }
-            byte[] data = android.util.Base64.encode(teamListData.get(position).getName().getBytes(), android.util.Base64.DEFAULT);
-            String text = new String(data, StandardCharsets.UTF_8);
-            System.out.println("Encoded String: " + text);
+            byte[] data = teamListData.get(position).getName().getBytes("UTF-8");
+            String teamName = Base64.encodeToString(data, Base64.DEFAULT);
+            System.out.println("Encoded String: " + teamName);
             jsonRootObject2.put("teams", jsonRootObject3);
-            jsonRootObject2.put("name", teamListData.get(position).getName());
+            jsonRootObject2.put("name", teamName.replaceAll("\n", ""));
             jsonRootObject2.put("teamId", teamListData.get(position).getUserId());
             jsonRootObject2.put("group", group);
             jsonRootObject.put(teamListData.get(position).getUserId(), jsonRootObject2);

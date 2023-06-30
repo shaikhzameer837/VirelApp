@@ -94,7 +94,9 @@ import org.json.JSONObject;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -1141,45 +1143,50 @@ public class MainActivity extends BaseActivity {
     }
 
     public void LoginSheet() {
-        View view = getLayoutInflater().inflate(R.layout.login_sheet, null);
-        final BottomSheetDialog dialogBottom = new RoundedBottomSheetDialog(MainActivity.this);
-        dialogBottom.setContentView(view);
-        dialogBottom.show();
-        TextView btn_ok = view.findViewById(R.id.loginBtn);
-        btn_ok.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                    if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) && dialog == null) {
-                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
+        wayToLogin();
+//        View view = getLayoutInflater().inflate(R.layout.login_sheet, null);
+//        final BottomSheetDialog dialogBottom = new RoundedBottomSheetDialog(MainActivity.this);
+//        dialogBottom.setContentView(view);
+//        dialogBottom.show();
+//        TextView btn_ok = view.findViewById(R.id.loginBtn);
+//        btn_ok.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//              wayToLogin();
+//            }
+//        });
 
-                        alertDialogBuilder.setTitle("Permission needed");
-                        alertDialogBuilder.setMessage("Storage permission needed for accessing Storage");
-                        alertDialogBuilder.setPositiveButton("Open Setting", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                Intent intent = new Intent();
-                                intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                                Uri uri = Uri.fromParts("package", MainActivity.this.getPackageName(), null);
-                                intent.setData(uri);
-                                MainActivity.this.startActivity(intent);
-                            }
-                        });
-                        alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                            }
-                        });
+    }
 
-                        dialog = alertDialogBuilder.create();
-                        dialog.show();
-                    } else {
-                        // No explanation needed; request the permission
-                        ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 100);
-                    }
-                } else startActivity(new Intent(MainActivity.this, SigninActivity.class));
-            }
-        });
-
+    private void wayToLogin() {
+        startActivity(new Intent(MainActivity.this, SigninActivity.class));
+//        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//            if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) && dialog == null) {
+//                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
+//                alertDialogBuilder.setTitle("Permission needed");
+//                alertDialogBuilder.setMessage("Storage permission needed for accessing Storage");
+//                alertDialogBuilder.setPositiveButton("Open Setting", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int i) {
+//                        Intent intent = new Intent();
+//                        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+//                        Uri uri = Uri.fromParts("package", MainActivity.this.getPackageName(), null);
+//                        intent.setData(uri);
+//                        MainActivity.this.startActivity(intent);
+//                    }
+//                });
+//                alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int i) {
+//                    }
+//                });
+//
+//                dialog = alertDialogBuilder.create();
+//                dialog.show();
+//            } else {
+//                // No explanation needed; request the permission
+//                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 100);
+//            }
+//        } else startActivity(new Intent(MainActivity.this, SigninActivity.class));
     }
 }

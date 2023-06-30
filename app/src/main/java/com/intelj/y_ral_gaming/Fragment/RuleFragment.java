@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.intelj.y_ral_gaming.Adapter.TeamDisplayList;
+import com.intelj.y_ral_gaming.Base64Util;
 import com.intelj.y_ral_gaming.R;
 import com.intelj.y_ral_gaming.RoundedBottomSheetDialog;
 import com.intelj.y_ral_gaming.model.TeamListPOJO;
@@ -108,7 +109,12 @@ public class RuleFragment extends Fragment {
                             if(value instanceof JSONObject){
                                 JSONObject nestedJsonObject = jsonObject.getJSONObject(key);
                                 Log.e("error Rec key", nestedJsonObject.getString("ingName"));
-                                myListData.add(new TeamListPOJO(nestedJsonObject.getString("ingName"), key, nestedJsonObject.getString("ingName"),nameList[x]));
+                                String userNames =  nestedJsonObject.getString("ingName");
+                                if(Base64Util.isBase64(userNames)){
+                                    byte[] decodedBytes = Base64.decode(userNames, Base64.DEFAULT);
+                                    userNames = new String(decodedBytes, StandardCharsets.UTF_8);
+                                }
+                                myListData.add(new TeamListPOJO(userNames , key, nestedJsonObject.getString("ingName"),nameList[x]));
                             }else{
                                 Log.e("error Rec key", "errors");
                             }

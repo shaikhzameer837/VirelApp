@@ -37,6 +37,18 @@
         android:theme="@style/AppTheme.NoActionBar"
         tools:replace="android:allowBackup">
         <activity
+            android:name="com.otpless.main.OtplessWebActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="otpless"
+                    android:scheme= "com.intelj.yralgaming.otpless"/>
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".Activity.AnnouncementActivity"
             android:screenOrientation="portrait"
             android:exported="true" />
@@ -89,7 +101,23 @@
         <activity
             android:name=".SigninActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppThemes" />
+            android:theme="@style/AppThemes"
+            android:exported="true">
+            <intent-filter>
+
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="y-ral-gaming"
+                    android:scheme="otpless" />
+
+            </intent-filter>
+
+        </activity>
         <activity
             android:name=".Activity.ProFileActivity"
             android:theme="@style/AppThemes"
