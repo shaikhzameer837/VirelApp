@@ -10,15 +10,18 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.gson.Gson;
 import com.intelj.y_ral_gaming.Activity.ProFileActivity;
 import com.intelj.y_ral_gaming.PopularModel;
 import com.intelj.y_ral_gaming.R;
+import com.intelj.y_ral_gaming.Utils.AmazonUrlOpener;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 
 import java.util.List;
@@ -29,15 +32,16 @@ public class PopularAdapter extends RecyclerView.Adapter<PopularAdapter.MyViewHo
     Context mContext;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView title, genre,count;
+        public TextView title, byNow,count;
         ImageView imgs;
-
+        CardView cardView;
         public MyViewHolder(View view) {
             super(view);
             title = view.findViewById(R.id.title);
-            genre = view.findViewById(R.id.genre);
+            byNow = view.findViewById(R.id.byNow);
             imgs = view.findViewById(R.id.imgs);
             count = view.findViewById(R.id.count);
+            cardView = view.findViewById(R.id.cardView);
         }
     }
 
@@ -57,25 +61,29 @@ public class PopularAdapter extends RecyclerView.Adapter<PopularAdapter.MyViewHo
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
+        Gson gson = new Gson();
         PopularModel movie = moviesList.get(position);
+        String jsonString = gson.toJson(movie);
+        Log.e("jsonString",jsonString);
         holder.title.setText(movie.getImg_name());
-        holder.genre.setText(movie.getTotal_coins() + "");
-        holder.count.setText(" #"+(position + 1)+ "");
+ //       holder.byNow.setText(movie.getTotal_coins() + "");
         holder.imgs.setTag(position);
-        holder.imgs.setOnClickListener(new View.OnClickListener() {
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mContext, ProFileActivity.class);
-                String transitionName = "fade";
-                View transitionView = holder.imgs;
-                ViewCompat.setTransitionName(transitionView, transitionName);
-                ActivityOptionsCompat options = ActivityOptionsCompat.
-                        makeSceneTransitionAnimation((Activity) mContext, transitionView, transitionName);
-                intent.putExtra("userid", moviesList.get(position).getUser_id());
-                mContext.startActivity(intent, options.toBundle());
+                String url = movie.getTotal_coins();
+                AmazonUrlOpener.openAmazonUrl(holder.cardView.getContext(), url);
+//                Intent intent = new Intent(mContext, ProFileActivity.class);
+//                String transitionName = "fade";
+//                View transitionView = holder.imgs;
+//                ViewCompat.setTransitionName(transitionView, transitionName);
+//                ActivityOptionsCompat options = ActivityOptionsCompat.
+//                        makeSceneTransitionAnimation((Activity) mContext, transitionView, transitionName);
+//                intent.putExtra("userid", moviesList.get(position).getUser_id());
+//                mContext.startActivity(intent, options.toBundle());
             }
         });
-        Glide.with(mContext).load(AppConstant.AppUrl + "images/"+movie.getUser_id()+".png?u=" + AppConstant.imageExt()).apply(new RequestOptions().circleCrop()).placeholder(R.drawable.game_avatar).into(holder.imgs);
+        Glide.with(mContext).load(movie.getUser_id()).placeholder(R.drawable.game_avatar).into(holder.imgs);
     }
 
     @Override

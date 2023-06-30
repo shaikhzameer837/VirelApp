@@ -654,7 +654,7 @@ public class MainActivity extends BaseActivity {
     private void getPopularFace() {
         AppController.getInstance().popularList.clear();
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = AppConstant.AppUrl + "popular.php";
+        String url = AppConstant.AppUrl + "web/getaffilated.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -662,22 +662,13 @@ public class MainActivity extends BaseActivity {
                 shimmerFrameLayout.hideShimmer();
                 shimmerFrameLayout.setVisibility(View.GONE);
                 try {
-                    JSONObject json = new JSONObject(response);
-                    JSONArray ja_data = json.getJSONArray("info");
-                    for (int i = 0; i < ja_data.length(); i++) {
-                        JSONObject jObj = ja_data.getJSONObject(i);
-                        appConstant.saveUserInfo("", jObj.getString("userid"), AppConstant.AppUrl + "images/" + jObj.getString("userid") + ".png?u=" + AppConstant.imageExt(), jObj.getString("name"), "", null, jObj.getString("userid"));
-                        popularModels.add(new PopularModel(jObj.getString("name"), jObj.getString("amount"), jObj.getString("userid")));
+                    JSONArray jsonArray = new JSONArray(response);
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jObj = jsonArray.getJSONObject(i);
+                       // appConstant.saveUserInfo("", jObj.getString("id"), jObj.getString("imageURL"), jObj.getString("name"), "", null, jObj.getString("id"));
+                        popularModels.add(new PopularModel(jObj.getString("name"), jObj.getString("url"), jObj.getString("imageURL")));
                     }
-                    Collections.sort(popularModels, new Comparator<PopularModel>() {
-                        @Override
-                        public int compare(PopularModel o1, PopularModel o2) {
-                            return Integer.compare(Integer.parseInt(o2.getTotal_coins()), Integer.parseInt(o1.getTotal_coins()));
-                        }
-                    });
-                    for (PopularModel popularModel : popularModels) {
-                        AppController.getInstance().popularList.put(popularModel.getUser_id(), AppController.getInstance().popularList.size() + 1);
-                    }
+
                     popularAdapter = new PopularAdapter(MainActivity.this, popularModels);
                     GridLayoutManager mLayoutManager = new GridLayoutManager(MainActivity.this, 1, GridLayoutManager.HORIZONTAL, false);
                     rv_popular.setLayoutManager(mLayoutManager);
@@ -685,9 +676,8 @@ public class MainActivity extends BaseActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
-
             }
+
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {

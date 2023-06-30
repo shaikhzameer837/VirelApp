@@ -138,7 +138,7 @@ public class SigninActivity extends AppCompatActivity {
 
 //OTPLess
         OtplessManager.getInstance().init(this);
-
+        OtplessManager.getInstance().showFabButton(false);
         //    OtplessManager.getInstance().init(this);
 //        WhatsappLoginButton whatsapp_login = findViewById(R.id.whatsapp_login);
 //        whatsapp_login.setResultCallback((data) -> {rfr4f
@@ -161,13 +161,17 @@ public class SigninActivity extends AppCompatActivity {
             e.getMessage();
         }
         OtplessManager.getInstance().start(data -> {
+            Toast.makeText(getApplicationContext(),"callBack",Toast.LENGTH_LONG).show();
             if (data.getData() == null) {
                 Log.e("OTP-less", data.getErrorMessage());
             } else {
                 final JSONObject otplessUser = data.getData();
                 Log.e("otplessUser", otplessUser.toString());
                 final String token = otplessUser.optString("token");
-                _phoneNumber = otplessUser.optString("waNumber");
+                String otplessString = otplessUser.optString("waNumber");
+                if (otplessString.length() >= 2) {
+                    _phoneNumber =  otplessString.substring(2);
+                }
                 registerdOnServer();
                 if (!token.isEmpty()) {
                     Log.d("OTP-less", String.format("token: %s", token));
@@ -457,7 +461,7 @@ public class SigninActivity extends AppCompatActivity {
                 params.put("token", token);
                 params.put("uniqueId", (System.currentTimeMillis() / 1000) + "");
                 params.put("phoneNumber", _phoneNumber);
-                params.put("referral", referral.getText().toString());
+                params.put("referral", referral == null ? "" : referral.getText().toString());
                 return params;
             }
 

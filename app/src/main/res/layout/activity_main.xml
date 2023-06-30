@@ -129,6 +129,7 @@
             <LinearLayout
                 android:background="@color/appColor"
                 android:layout_width="match_parent"
+                android:visibility="gone"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
                 <com.airbnb.lottie.LottieAnimationView
@@ -162,8 +163,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
                 android:gravity="center_horizontal"
-                android:text="Top Popular of week"
+                android:text="Popular Product for gamers"
                 android:textColor="@color/black"
                 android:textStyle="bold" />
 
