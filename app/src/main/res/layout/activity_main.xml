@@ -164,15 +164,23 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
+                android:textSize="16sp"
                 android:gravity="center_horizontal"
-                android:text="Popular Product for gamers"
+                android:text="The Pro Gamers Choice"
                 android:textColor="@color/black"
                 android:textStyle="bold" />
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/viewpager"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="140dp"/>
 
 
             <com.facebook.shimmer.ShimmerFrameLayout
                 android:id="@+id/shimmer_layout"
                 android:layout_width="match_parent"
+                android:visibility="gone"
                 android:layout_height="wrap_content"
                 app:shimmer_duration="1000">
 
@@ -197,6 +205,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
+                android:visibility="gone"
                 android:scrollbars="vertical" />
 
         </LinearLayout>

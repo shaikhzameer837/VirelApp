@@ -5,13 +5,13 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdk 33
+    compileSdk 34
     defaultConfig {
         applicationId "com.intelj.y_ral_gaming"
         minSdk 21
-        targetSdk 33
-        versionCode 20
-        versionName "2.5.1"
+        targetSdk 34
+        versionCode 21
+        versionName "2.5.2"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         javaCompileOptions {
             annotationProcessorOptions {

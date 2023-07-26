@@ -213,7 +213,7 @@ public class EventInfo extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences(AppConstant.AppName, MODE_PRIVATE);
         String teamID = sharedPreferences.getString(AppConstant.event + getIntent().getStringExtra("eId"), "");
         String url = AppConstant.AppUrl + "events/get_events_tab.php?u=" + new AppConstant(this).getId() + "&&id=" + getIntent().getStringExtra("eId") + "&&t=" + teamID;
-        Log.e("teamID", url);
+        Log.e("AppConstant.AppUrl", url);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -462,11 +462,12 @@ public class EventInfo extends AppCompatActivity {
         }
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = AppConstant.AppUrl + "join_event.php";
+        Log.e("virelApp-Api",url);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.e("lcat_response", url + "\n" + response);
+                        Log.e("virelApp-response",response);
                         if (response.equals("success")) {
                             tv_date.setText((Integer.parseInt(getIntent().getStringExtra("gameName")) + 1) + " / " + getIntent().getStringExtra("max"));
                             SharedPreferences sharedPreferences = getSharedPreferences(AppConstant.AppName, MODE_PRIVATE);
@@ -495,6 +496,7 @@ public class EventInfo extends AppCompatActivity {
                 Map<String, String> params = new HashMap<>();
                 params.put("userJson", jsonRootObject.toString());
                 params.put("tid", getIntent().getStringExtra("eId"));
+                params.put("userId", new AppConstant(EventInfo.this).getId());
                 Log.e("getParams: ", params.toString());
                 return params;
             }

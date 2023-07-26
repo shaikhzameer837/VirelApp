@@ -40,6 +40,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.content.ContextCompat;
@@ -83,6 +84,7 @@ import com.intelj.y_ral_gaming.PopularModel;
 import com.intelj.y_ral_gaming.R;
 import com.intelj.y_ral_gaming.RoundedBottomSheetDialog;
 import com.intelj.y_ral_gaming.SigninActivity;
+import com.intelj.y_ral_gaming.Utils.AmazonUrlOpener;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 import com.intelj.y_ral_gaming.Utils.RecyclerTouchListener;
 import com.intelj.y_ral_gaming.main.PaymentWithdraw;
@@ -126,6 +128,14 @@ public class MainActivity extends BaseActivity {
     PopularAdapter popularAdapter;
     private ShimmerFrameLayout shimmerFrameLayout;
     SharedPreferences sharedPreferences;
+    private ViewPager viewPager;
+    private int[] imageResources = {
+            R.drawable.account, R.drawable.account, R.drawable.account // Add your image resources here
+    };
+
+    private int currentPage = 0;
+    private final long delayTime = 2000; // 2 seconds
+    private Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -263,6 +273,70 @@ public class MainActivity extends BaseActivity {
 
         });
 
+
+    }
+
+    public class AutoSliderAdapter extends PagerAdapter {
+
+        private Context context;
+
+        public AutoSliderAdapter(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        public int getCount() {
+            return popularModels.size();
+        }
+
+        @NonNull
+        @Override
+        public Object instantiateItem(@NonNull ViewGroup container, int position) {
+            View view = LayoutInflater.from(context).inflate(R.layout.item_slider, container, false);
+            ImageView imageView = view.findViewById(R.id.imageView);
+            CardView cardView = view.findViewById(R.id.cardView);
+            TextView title = view.findViewById(R.id.title);
+            title.setText(popularModels.get(position).getImg_name());
+            Glide.with(MainActivity.this).load(popularModels.get(position).getUser_id()).placeholder(R.drawable.game_avatar).into(imageView);
+            cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String url = popularModels.get(position).getTotal_coins();
+                    AmazonUrlOpener.openAmazonUrl(MainActivity.this, url);
+                }
+            });
+            container.addView(view);
+            return view;
+        }
+
+        @Override
+        public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
+            container.removeView((View) object);
+        }
+
+        @Override
+        public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
+            return view == object;
+        }
+    }
+
+    private void startAutoSlider() {
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                int nextPage = (currentPage + 1) % imageResources.length;
+                viewPager.setCurrentItem(nextPage);
+                currentPage = nextPage;
+                startAutoSlider();
+            }
+        }, delayTime);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+        handler.removeCallbacksAndMessages(null);
     }
 
     String key;
@@ -394,7 +468,7 @@ public class MainActivity extends BaseActivity {
     private void showWebView(String Url) {
         WebView browser = inflated.findViewById(R.id.webview);
         browser.loadUrl(Url);
-        Log.e("AppConstant", "http://y-ral-gaming.com/admin/api/reward/rewards.php?u=" + new AppConstant(this).getId());
+        Log.e("AppConstant", Url);
         browser.getSettings().setLoadsImagesAutomatically(true);
         browser.getSettings().setJavaScriptEnabled(true);
         browser.setWebViewClient(new MyBrowser());
@@ -659,20 +733,25 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onResponse(String response) {
                 Log.e("onClicks3", response);
-                shimmerFrameLayout.hideShimmer();
-                shimmerFrameLayout.setVisibility(View.GONE);
+//                shimmerFrameLayout.hideShimmer();
+//                shimmerFrameLayout.setVisibility(View.GONE);
                 try {
                     JSONArray jsonArray = new JSONArray(response);
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jObj = jsonArray.getJSONObject(i);
-                       // appConstant.saveUserInfo("", jObj.getString("id"), jObj.getString("imageURL"), jObj.getString("name"), "", null, jObj.getString("id"));
+                        // appConstant.saveUserInfo("", jObj.getString("id"), jObj.getString("imageURL"), jObj.getString("name"), "", null, jObj.getString("id"));
                         popularModels.add(new PopularModel(jObj.getString("name"), jObj.getString("url"), jObj.getString("imageURL")));
                     }
 
-                    popularAdapter = new PopularAdapter(MainActivity.this, popularModels);
-                    GridLayoutManager mLayoutManager = new GridLayoutManager(MainActivity.this, 1, GridLayoutManager.HORIZONTAL, false);
-                    rv_popular.setLayoutManager(mLayoutManager);
-                    rv_popular.setAdapter(popularAdapter);
+//                    popularAdapter = new PopularAdapter(MainActivity.this, popularModels);
+//                    GridLayoutManager mLayoutManager = new GridLayoutManager(MainActivity.this, 1, GridLayoutManager.HORIZONTAL, false);
+//                    rv_popular.setLayoutManager(mLayoutManager);
+//                    rv_popular.setAdapter(popularAdapter);
+                    viewPager = findViewById(R.id.viewpager);
+                    AutoSliderAdapter adapter = new AutoSliderAdapter(MainActivity.this);
+                    viewPager.setAdapter(adapter);
+                    handler = new Handler();
+                    startAutoSlider();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -709,6 +788,7 @@ public class MainActivity extends BaseActivity {
     }
 
     TeamDisplayList teamAdapter;
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -1125,12 +1205,6 @@ public class MainActivity extends BaseActivity {
         startActivity(startMain);
     }
 
-    @Override
-    public void onDestroy() {
-        // Unregister since the activity is about to be closed.
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
-        super.onDestroy();
-    }
 
     public void LoginSheet() {
         wayToLogin();

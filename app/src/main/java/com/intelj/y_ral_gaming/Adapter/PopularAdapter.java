@@ -73,14 +73,6 @@ public class PopularAdapter extends RecyclerView.Adapter<PopularAdapter.MyViewHo
             public void onClick(View v) {
                 String url = movie.getTotal_coins();
                 AmazonUrlOpener.openAmazonUrl(holder.cardView.getContext(), url);
-//                Intent intent = new Intent(mContext, ProFileActivity.class);
-//                String transitionName = "fade";
-//                View transitionView = holder.imgs;
-//                ViewCompat.setTransitionName(transitionView, transitionName);
-//                ActivityOptionsCompat options = ActivityOptionsCompat.
-//                        makeSceneTransitionAnimation((Activity) mContext, transitionView, transitionName);
-//                intent.putExtra("userid", moviesList.get(position).getUser_id());
-//                mContext.startActivity(intent, options.toBundle());
             }
         });
         Glide.with(mContext).load(movie.getUser_id()).placeholder(R.drawable.game_avatar).into(holder.imgs);

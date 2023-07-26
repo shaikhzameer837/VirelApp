@@ -56,6 +56,7 @@ public class RuleFragment extends Fragment {
                 new IntentFilter("refreshWeb"));
         rootView = inflater.inflate(R.layout.rules, container, false);
         browser = rootView.findViewById(R.id.webview);
+        Log.e("webviewUrl",url);
         browser.loadUrl(url);
         browser.getSettings().setLoadsImagesAutomatically(true);
         browser.getSettings().setJavaScriptEnabled(true);
