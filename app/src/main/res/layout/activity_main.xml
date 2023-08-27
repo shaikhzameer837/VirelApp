@@ -166,7 +166,7 @@
                 android:layout_marginBottom="5dp"
                 android:textSize="16sp"
                 android:gravity="center_horizontal"
-                android:text="The Pro Gamers Choice"
+                android:text="The Pro Gamer's Choice"
                 android:textColor="@color/black"
                 android:textStyle="bold" />
             <androidx.viewpager.widget.ViewPager
@@ -177,36 +177,36 @@
                 android:layout_height="140dp"/>
 
 
-            <com.facebook.shimmer.ShimmerFrameLayout
-                android:id="@+id/shimmer_layout"
-                android:layout_width="match_parent"
-                android:visibility="gone"
-                android:layout_height="wrap_content"
-                app:shimmer_duration="1000">
+<!--            <com.facebook.shimmer.ShimmerFrameLayout-->
+<!--                android:id="@+id/shimmer_layout"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:visibility="gone"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                app:shimmer_duration="1000">-->
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+<!--                <LinearLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:orientation="horizontal">-->
 
-                    <include layout="@layout/popular_list" />
+<!--                    <include layout="@layout/popular_list" />-->
 
-                    <include layout="@layout/popular_list" />
+<!--                    <include layout="@layout/popular_list" />-->
 
-                    <include layout="@layout/popular_list" />
+<!--                    <include layout="@layout/popular_list" />-->
 
-                    <include layout="@layout/popular_list" />
-                </LinearLayout>
+<!--                    <include layout="@layout/popular_list" />-->
+<!--                </LinearLayout>-->
 
-            </com.facebook.shimmer.ShimmerFrameLayout>
+<!--            </com.facebook.shimmer.ShimmerFrameLayout>-->
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_popular"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:visibility="gone"
-                android:scrollbars="vertical" />
+<!--            <androidx.recyclerview.widget.RecyclerView-->
+<!--                android:id="@+id/rv_popular"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginRight="10dp"-->
+<!--                android:visibility="gone"-->
+<!--                android:scrollbars="vertical" />-->
 
         </LinearLayout>
 

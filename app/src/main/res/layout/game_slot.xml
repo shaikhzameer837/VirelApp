@@ -23,9 +23,10 @@
             app:lottie_autoPlay="true"
             app:lottie_fileName="hold.json"
             app:lottie_loop="true" />
-        <TextView android:text="We Are setting up matches for you"
+        <TextView android:text="Setting up Give-Away for you"
             android:layout_width="wrap_content"
             android:layout_margin="10dp"
+            android:textColor="@color/black"
             android:layout_gravity="center_horizontal"
             android:layout_height="wrap_content"/>
     </LinearLayout>
@@ -47,6 +48,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:background="#f6f7f8"
         android:layout_marginBottom="30dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 </LinearLayout>

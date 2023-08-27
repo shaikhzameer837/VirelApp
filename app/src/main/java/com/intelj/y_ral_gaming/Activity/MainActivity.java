@@ -72,6 +72,10 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.intelj.y_ral_gaming.Adapter.MyListAdapter;
 import com.intelj.y_ral_gaming.Adapter.PopularAdapter;
 import com.intelj.y_ral_gaming.Adapter.TeamDisplayList;
@@ -80,6 +84,7 @@ import com.intelj.y_ral_gaming.BaseActivity;
 import com.intelj.y_ral_gaming.BuildConfig;
 import com.intelj.y_ral_gaming.Fragment.BottomSheetDilogFragment;
 import com.intelj.y_ral_gaming.Fragment.HomeFragment;
+import com.intelj.y_ral_gaming.Fragment.OneFragment;
 import com.intelj.y_ral_gaming.PopularModel;
 import com.intelj.y_ral_gaming.R;
 import com.intelj.y_ral_gaming.RoundedBottomSheetDialog;
@@ -110,10 +115,10 @@ import java.util.Set;
 public class MainActivity extends BaseActivity {
     AppConstant appConstant;
     private ViewPager gameViewpager;
+    private ViewPager giveAwayViewpager;
     BottomNavigationView bottomNavigation;
     private TabLayout tabLayout;
     TextView coins;
-    private RecyclerView rv_popular;
     View inflated;
     int RESULT_LOAD_IMAGE = 9;
     int PROFILE_IMAGE = 11;
@@ -125,13 +130,10 @@ public class MainActivity extends BaseActivity {
     int oldId;
     ImageView imageView;
     List<PopularModel> popularModels = new ArrayList<>();
-    PopularAdapter popularAdapter;
-    private ShimmerFrameLayout shimmerFrameLayout;
+//    PopularAdapter popularAdapter;
+//    private ShimmerFrameLayout shimmerFrameLayout;
     SharedPreferences sharedPreferences;
     private ViewPager viewPager;
-    private int[] imageResources = {
-            R.drawable.account, R.drawable.account, R.drawable.account // Add your image resources here
-    };
 
     private int currentPage = 0;
     private final long delayTime = 2000; // 2 seconds
@@ -167,8 +169,8 @@ public class MainActivity extends BaseActivity {
         if (savedInstanceState == null) {
             invalidateOptionsMenu();
         }
-        rv_popular = findViewById(R.id.rv_popular);
-        shimmerFrameLayout = findViewById(R.id.shimmer_layout);
+//        rv_popular = findViewById(R.id.rv_popular);
+        //shimmerFrameLayout = findViewById(R.id.shimmer_layout);
         getPopularFace();
         findViewById(R.id.notification).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -226,6 +228,10 @@ public class MainActivity extends BaseActivity {
                         inflateView(R.layout.game_slot);
                         setFirstView();
                         return true;
+                   case R.id.giveAway:
+                        inflateView(R.layout.game_slot);
+                        setSecondView();
+                        return true;
                     case R.id.store:
                         inflateView(R.layout.store);
                         try {
@@ -235,15 +241,15 @@ public class MainActivity extends BaseActivity {
                         }
                         inflated.findViewById(R.id.lin).setVisibility(View.VISIBLE);
                         return true;
-                    case R.id.challenge:
-                        inflateView(R.layout.store);
-                        try {
-                            showWebView(AppController.getInstance().homeUrl.get(2) + "?u=" + new AppConstant(MainActivity.this).getId());
-                        } catch (Exception e) {
-
-                        }
-                        inflated.findViewById(R.id.lin).setVisibility(View.GONE);
-                        return true;
+//                    case R.id.challenge:
+//                        inflateView(R.layout.store);
+//                        try {
+//                            showWebView(AppController.getInstance().homeUrl.get(2) + "?u=" + new AppConstant(MainActivity.this).getId());
+//                        } catch (Exception e) {
+//
+//                        }
+//                        inflated.findViewById(R.id.lin).setVisibility(View.GONE);
+//                        return true;
                     case R.id.chat:
                         inflateView(R.layout.store);
                         try {
@@ -296,7 +302,9 @@ public class MainActivity extends BaseActivity {
             ImageView imageView = view.findViewById(R.id.imageView);
             CardView cardView = view.findViewById(R.id.cardView);
             TextView title = view.findViewById(R.id.title);
+            TextView desc = view.findViewById(R.id.desc);
             title.setText(popularModels.get(position).getImg_name());
+            desc.setText(popularModels.get(position).getDescription());
             Glide.with(MainActivity.this).load(popularModels.get(position).getUser_id()).placeholder(R.drawable.game_avatar).into(imageView);
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -324,7 +332,7 @@ public class MainActivity extends BaseActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                int nextPage = (currentPage + 1) % imageResources.length;
+                int nextPage = (currentPage + 1) % popularModels.size();
                 viewPager.setCurrentItem(nextPage);
                 currentPage = nextPage;
                 startAutoSlider();
@@ -606,7 +614,7 @@ public class MainActivity extends BaseActivity {
         invite_recyclerView = view.findViewById(R.id.recyclerView);
         ViewPager viewPager = view.findViewById(R.id.viewpager);
         jsonAnimationList.put("referral.json", "Refer a friend");
-        jsonAnimationList.put("login.json", "Register & play Game");
+        jsonAnimationList.put("login.json", "getReferralList & play Game");
         jsonAnimationList.put("cash.json", "You earn 10rs after game played");
         refer = view.findViewById(R.id.refer);
         referral = view.findViewById(R.id.referal);
@@ -740,7 +748,7 @@ public class MainActivity extends BaseActivity {
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jObj = jsonArray.getJSONObject(i);
                         // appConstant.saveUserInfo("", jObj.getString("id"), jObj.getString("imageURL"), jObj.getString("name"), "", null, jObj.getString("id"));
-                        popularModels.add(new PopularModel(jObj.getString("name"), jObj.getString("url"), jObj.getString("imageURL")));
+                        popularModels.add(new PopularModel(jObj.getString("name"), jObj.getString("url"), jObj.getString("imageURL"), jObj.getString("description")));
                     }
 
 //                    popularAdapter = new PopularAdapter(MainActivity.this, popularModels);
@@ -761,8 +769,8 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 //  progressDialog.cancel();
-                shimmerFrameLayout.hideShimmer();
-                shimmerFrameLayout.setVisibility(View.GONE);
+                //shimmerFrameLayout.hideShimmer();
+               // shimmerFrameLayout.setVisibility(View.GONE);
             }
         }) {
             @Override
@@ -792,9 +800,14 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        getUserInfo();
+       //
         inflateView(R.layout.game_slot);
-        setFirstView();
+        if(bottomNavigation.getSelectedItemId() == R.id.game_slot){
+            setFirstView();
+            getUserInfo();
+        }else if(bottomNavigation.getSelectedItemId() == R.id.giveAway) {
+            setSecondView();
+        }
         Log.e("setFirstView", "yes");
         if (appConstant.checkLogin() && imgProfile != null) {
             Glide.with(MainActivity.this).load(AppConstant.AppUrl + "images/" + appConstant.getId() + ".png?u=" + sharedPreferences.getString(AppConstant.profile, "Player")).placeholder(R.drawable.game_avatar).apply(new RequestOptions().circleCrop()).into(imgProfile);
@@ -1093,6 +1106,37 @@ public class MainActivity extends BaseActivity {
                 LocalBroadcastManager.getInstance(MainActivity.this).sendBroadcast(intent);
             }
         });
+    }
+   public void setSecondView() {
+        gameViewpager = inflated.findViewById(R.id.gameViewpager);
+        tabLayout = inflated.findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(gameViewpager);
+
+       ArrayList<String> titleList = new ArrayList<>();
+       ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+       FirebaseDatabase.getInstance().getReference("masters").child("gameList").addValueEventListener(new ValueEventListener() {
+           @Override
+           public void onDataChange(DataSnapshot dataSnapshot) {
+               FirebaseDatabase.getInstance().getReference("masters").keepSynced(true);
+               inflated.findViewById(R.id.lin).setVisibility(View.GONE);
+               for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                   Log.e("index", (long) snapshot.getValue() + " " + snapshot.getKey());
+                   titleList.add(snapshot.getKey());
+                   adapter.addFragment(new OneFragment(snapshot.getKey(), (long) snapshot.getValue()), snapshot.getKey());
+                   // adapter.addFragment(new PaidScrims(snapshot.getKey(), (boolean) snapshot.getValue()), snapshot.getKey());
+               }
+               gameViewpager.setAdapter(adapter);
+//               Intent intent = new Intent("custom-event-name");
+//               if (titleList.size() > 1)
+//                   intent.putExtra(AppConstant.title, titleList.get(0));
+//               LocalBroadcastManager.getInstance(MainActivity.this).sendBroadcast(intent);
+           }
+
+           @Override
+           public void onCancelled(DatabaseError error) {
+
+           }
+       });
     }
 
     public void editProfile(View view) {

@@ -497,6 +497,7 @@ public class EventInfo extends AppCompatActivity {
                 params.put("userJson", jsonRootObject.toString());
                 params.put("tid", getIntent().getStringExtra("eId"));
                 params.put("userId", new AppConstant(EventInfo.this).getId());
+                params.put("number", new AppConstant(EventInfo.this).getPhoneNumber());
                 Log.e("getParams: ", params.toString());
                 return params;
             }

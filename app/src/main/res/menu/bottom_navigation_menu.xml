@@ -2,29 +2,37 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/giveAway"
+        android:icon="@drawable/giveaway"
+        app:showAsAction="always|withText"
+        android:title="GiveAway" />
+    <item
         android:id="@+id/game_slot"
         android:icon="@drawable/home"
         app:showAsAction="always|withText"
         android:title="Home" />
+
 <!--&lt;!&ndash;    <item&ndash;&gt;-->
 <!--        android:id="@+id/team"-->
 <!--        android:icon="@drawable/ic_team"-->
 <!--        android:title="My Team" />-->
 
-    <item
-        android:id="@+id/store"
-        android:icon="@drawable/gift"
-        app:showAsAction="always|withText"
-        android:title="Rewards" />
+
     <item
         android:id="@+id/abc"
         app:showAsAction="always|withText"
         android:title=" " />
     <item
-        android:id="@+id/challenge"
+        android:id="@+id/store"
+        android:icon="@drawable/gift"
         app:showAsAction="always|withText"
-        android:icon="@drawable/flag_triangle"
-        android:title="Challenges" />
+        android:title="Rewards" />
+<!--    <item-->
+<!--        android:id="@+id/challenge"-->
+<!--        app:showAsAction="always|withText"-->
+<!--        android:visible="false"-->
+<!--        android:icon="@drawable/flag_triangle"-->
+<!--        android:title="Challenges" />-->
     <item
         android:id="@+id/chat"
         app:showAsAction="always|withText"
