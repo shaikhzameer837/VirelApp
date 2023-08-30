@@ -130,7 +130,7 @@ public class MainActivity extends BaseActivity {
     int oldId;
     ImageView imageView;
     List<PopularModel> popularModels = new ArrayList<>();
-//    PopularAdapter popularAdapter;
+    //    PopularAdapter popularAdapter;
 //    private ShimmerFrameLayout shimmerFrameLayout;
     SharedPreferences sharedPreferences;
     private ViewPager viewPager;
@@ -169,6 +169,7 @@ public class MainActivity extends BaseActivity {
         if (savedInstanceState == null) {
             invalidateOptionsMenu();
         }
+        getUserInfo();
 //        rv_popular = findViewById(R.id.rv_popular);
         //shimmerFrameLayout = findViewById(R.id.shimmer_layout);
         getPopularFace();
@@ -224,20 +225,44 @@ public class MainActivity extends BaseActivity {
                 oldId = item.getItemId();
                 switch (item.getItemId()) {
                     case R.id.game_slot:
-                        getUserInfo();
+                        Log.e("getString",tab.length()+"");
                         inflateView(R.layout.game_slot);
                         setFirstView();
+                        titleList.clear();
+                        gamingAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+                        Iterator<String> keys =  tab.keys();
+                        while (keys.hasNext()) {
+                            String key = keys.next();
+                            Log.e("getString",key);
+                            String value = "";
+                            try {
+                                value = tab.getString(key);
+
+                                titleList.add(key);
+                                Log.e("valueHolder", value);
+                                gamingAdapter.addFragment(new HomeFragment(key, value), key);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        inflated.findViewById(R.id.lin).setVisibility(View.GONE);
+                        gameViewpager.setAdapter(gamingAdapter);
                         return true;
-                   case R.id.giveAway:
+                    case R.id.giveAway:
                         inflateView(R.layout.game_slot);
                         setSecondView();
+                        return true;
+                    case R.id.challenge:
+                        inflateView(R.layout.store);
+                        showWebView(AppConstant.AppUrl + "web/challenges.php");
+                        inflated.findViewById(R.id.lin).setVisibility(View.GONE);
                         return true;
                     case R.id.store:
                         inflateView(R.layout.store);
                         try {
                             showWebView(AppController.getInstance().homeUrl.get(0) + "?u=" + new AppConstant(MainActivity.this).getId());
-                        } catch (Exception e) {
-
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
                         inflated.findViewById(R.id.lin).setVisibility(View.VISIBLE);
                         return true;
@@ -250,15 +275,15 @@ public class MainActivity extends BaseActivity {
 //                        }
 //                        inflated.findViewById(R.id.lin).setVisibility(View.GONE);
 //                        return true;
-                    case R.id.chat:
-                        inflateView(R.layout.store);
-                        try {
-                            showWebView(AppController.getInstance().homeUrl.get(3) + "?u=" + new AppConstant(MainActivity.this).getId());
-                        } catch (Exception e) {
-
-                        }
-                        inflated.findViewById(R.id.lin).setVisibility(View.GONE);
-                        //inflateView(R.layout.contacts);
+//                    case R.id.chat:
+//                        inflateView(R.layout.store);
+//                        try {
+//                            showWebView(AppController.getInstance().homeUrl.get(3) + "?u=" + new AppConstant(MainActivity.this).getId());
+//                        } catch (Exception e) {
+//
+//                        }
+//                        inflated.findViewById(R.id.lin).setVisibility(View.GONE);
+                    //inflateView(R.layout.contacts);
 //                        inflated.findViewById(R.id.fMessage).setOnClickListener(new View.OnClickListener() {
 //                            @Override
 //                            public void onClick(View view) {
@@ -271,7 +296,7 @@ public class MainActivity extends BaseActivity {
 //                                startActivity(new Intent(MainActivity.this,ChatList.class));
 //                            }
 //                        });
-                        return true;
+//                        return true;
                 }
                 return false;
 
@@ -348,16 +373,17 @@ public class MainActivity extends BaseActivity {
     }
 
     String key;
+    JSONObject tab;
 
     private void getUserInfo() {
-        Log.e("AppConstant.AppUrl4", "start");
+        Log.e("AppConstant-AppUrl4", "start");
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = AppConstant.AppUrl + "user_info.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.e("AppConstant.AppUrl3", response);
+                        Log.e("AppConstant-AppUrl3", response);
                         // progressDialog.cancel();
 
                         try {
@@ -367,20 +393,8 @@ public class MainActivity extends BaseActivity {
                                 AppController.getInstance().rank = Integer.parseInt(json.getString("rank"));
                                 AppController.getInstance().referral = json.getString("referral");
                                 AppController.getInstance().teamList = json.getString("teamList");
-                                JSONObject tab = json.getJSONObject("tab");
+                                tab = json.getJSONObject("tab");
                                 AppController.getInstance().homeUrl = json.getJSONArray("homeUrl");
-                                Iterator<String> keys = tab.keys();
-                                titleList.clear();
-                                gamingAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-                                while (keys.hasNext()) {
-                                    String key = keys.next();
-                                    String value = tab.getString(key);
-                                    titleList.add(key);
-                                    Log.e("valueHolder", value);
-                                    gamingAdapter.addFragment(new HomeFragment(key, value), key);
-                                }
-                                inflated.findViewById(R.id.lin).setVisibility(View.GONE);
-                                gameViewpager.setAdapter(gamingAdapter);
                                 coins.setText(withSuffix(AppController.getInstance().amount));
                                 try {
                                     kill.setText(Html.fromHtml("<img src='" + AppConstant.getRank(AppController.getInstance().rank) + "'/> " + AppController.getInstance().rank + " points", new Html.ImageGetter() {
@@ -770,7 +784,7 @@ public class MainActivity extends BaseActivity {
             public void onErrorResponse(VolleyError error) {
                 //  progressDialog.cancel();
                 //shimmerFrameLayout.hideShimmer();
-               // shimmerFrameLayout.setVisibility(View.GONE);
+                // shimmerFrameLayout.setVisibility(View.GONE);
             }
         }) {
             @Override
@@ -800,12 +814,11 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-       //
+        //
         inflateView(R.layout.game_slot);
-        if(bottomNavigation.getSelectedItemId() == R.id.game_slot){
+        if (bottomNavigation.getSelectedItemId() == R.id.game_slot) {
             setFirstView();
-            getUserInfo();
-        }else if(bottomNavigation.getSelectedItemId() == R.id.giveAway) {
+        } else if (bottomNavigation.getSelectedItemId() == R.id.giveAway) {
             setSecondView();
         }
         Log.e("setFirstView", "yes");
@@ -1107,36 +1120,37 @@ public class MainActivity extends BaseActivity {
             }
         });
     }
-   public void setSecondView() {
+
+    public void setSecondView() {
         gameViewpager = inflated.findViewById(R.id.gameViewpager);
         tabLayout = inflated.findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(gameViewpager);
 
-       ArrayList<String> titleList = new ArrayList<>();
-       ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-       FirebaseDatabase.getInstance().getReference("masters").child("gameList").addValueEventListener(new ValueEventListener() {
-           @Override
-           public void onDataChange(DataSnapshot dataSnapshot) {
-               FirebaseDatabase.getInstance().getReference("masters").keepSynced(true);
-               inflated.findViewById(R.id.lin).setVisibility(View.GONE);
-               for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                   Log.e("index", (long) snapshot.getValue() + " " + snapshot.getKey());
-                   titleList.add(snapshot.getKey());
-                   adapter.addFragment(new OneFragment(snapshot.getKey(), (long) snapshot.getValue()), snapshot.getKey());
-                   // adapter.addFragment(new PaidScrims(snapshot.getKey(), (boolean) snapshot.getValue()), snapshot.getKey());
-               }
-               gameViewpager.setAdapter(adapter);
+        ArrayList<String> titleList = new ArrayList<>();
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        FirebaseDatabase.getInstance().getReference("masters").child("gameList").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                FirebaseDatabase.getInstance().getReference("masters").keepSynced(true);
+                inflated.findViewById(R.id.lin).setVisibility(View.GONE);
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Log.e("index", (long) snapshot.getValue() + " " + snapshot.getKey());
+                    titleList.add(snapshot.getKey());
+                    adapter.addFragment(new OneFragment(snapshot.getKey(), (long) snapshot.getValue()), snapshot.getKey());
+                    // adapter.addFragment(new PaidScrims(snapshot.getKey(), (boolean) snapshot.getValue()), snapshot.getKey());
+                }
+                gameViewpager.setAdapter(adapter);
 //               Intent intent = new Intent("custom-event-name");
 //               if (titleList.size() > 1)
 //                   intent.putExtra(AppConstant.title, titleList.get(0));
 //               LocalBroadcastManager.getInstance(MainActivity.this).sendBroadcast(intent);
-           }
+            }
 
-           @Override
-           public void onCancelled(DatabaseError error) {
+            @Override
+            public void onCancelled(DatabaseError error) {
 
-           }
-       });
+            }
+        });
     }
 
     public void editProfile(View view) {

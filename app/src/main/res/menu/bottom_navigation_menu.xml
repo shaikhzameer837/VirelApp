@@ -8,9 +8,9 @@
         android:title="GiveAway" />
     <item
         android:id="@+id/game_slot"
-        android:icon="@drawable/home"
+        android:icon="@drawable/trophy_outline"
         app:showAsAction="always|withText"
-        android:title="Home" />
+        android:title="Tourni" />
 
 <!--&lt;!&ndash;    <item&ndash;&gt;-->
 <!--        android:id="@+id/team"-->
@@ -23,21 +23,22 @@
         app:showAsAction="always|withText"
         android:title=" " />
     <item
+        android:id="@+id/challenge"
+        app:showAsAction="always|withText"
+        android:icon="@drawable/flag_triangle"
+        android:title="Kick" />
+    <item
         android:id="@+id/store"
         android:icon="@drawable/gift"
         app:showAsAction="always|withText"
         android:title="Rewards" />
+
 <!--    <item-->
-<!--        android:id="@+id/challenge"-->
-<!--        app:showAsAction="always|withText"-->
+<!--        android:id="@+id/chat"-->
 <!--        android:visible="false"-->
-<!--        android:icon="@drawable/flag_triangle"-->
-<!--        android:title="Challenges" />-->
-    <item
-        android:id="@+id/chat"
-        app:showAsAction="always|withText"
-        android:icon="@drawable/chat"
-        android:title="Chat" />
+<!--        app:showAsAction="always|withText"-->
+<!--        android:icon="@drawable/chat"-->
+<!--        android:title="Chat" />-->
 
 <!--    <item-->
 <!--        android:id="@+id/chat"-->
