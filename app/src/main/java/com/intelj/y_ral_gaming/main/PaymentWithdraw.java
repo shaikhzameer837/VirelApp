@@ -50,7 +50,7 @@ public class PaymentWithdraw extends AppCompatActivity {
             String ticked_id = intent.getStringExtra("ticked_id");
             new AlertDialog.Builder(PaymentWithdraw.this)
                     .setTitle("success")
-                    .setMessage("Payment requested you will recieve payment in 24hrs \n Your Ticked id is " + ticked_id + "\n click on status to check your payment request status")
+                    .setMessage("Payment requested you will receive payment in 24hrs \n Your Ticked id is " + ticked_id + "\n click on status to check your payment request status")
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             // Continue with delete operation

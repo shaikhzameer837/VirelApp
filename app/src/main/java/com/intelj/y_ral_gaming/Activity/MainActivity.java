@@ -92,6 +92,7 @@ import com.intelj.y_ral_gaming.SigninActivity;
 import com.intelj.y_ral_gaming.Utils.AmazonUrlOpener;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 import com.intelj.y_ral_gaming.Utils.RecyclerTouchListener;
+import com.intelj.y_ral_gaming.bottomSheet.RulesBottomSheet;
 import com.intelj.y_ral_gaming.main.PaymentWithdraw;
 import com.intelj.y_ral_gaming.model.TeamListPOJO;
 
@@ -254,14 +255,14 @@ public class MainActivity extends BaseActivity {
                         return true;
                     case R.id.challenge:
                         inflateView(R.layout.store);
-                        showWebView(AppConstant.AppUrl + "web/challenges.php");
+                        showWebView(AppConstant.AppUrl + "web/give_away.php?u=" + new AppConstant(MainActivity.this).getId());
                         inflated.findViewById(R.id.lin).setVisibility(View.GONE);
                         return true;
                     case R.id.store:
                         inflateView(R.layout.store);
                         try {
                             showWebView(AppController.getInstance().homeUrl.get(0) + "?u=" + new AppConstant(MainActivity.this).getId());
-                        } catch (JSONException e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                         inflated.findViewById(R.id.lin).setVisibility(View.VISIBLE);
@@ -546,7 +547,10 @@ public class MainActivity extends BaseActivity {
                         intent.putExtra("coins", urlSplit[5]);
                         intent.putExtra("reward_id", urlSplit[4]);
                         startActivity(intent);
-                    } else if (urlSplit[3].equals("other")) {
+                    } else if (urlSplit[3].equals("challenge")) {
+                        RulesBottomSheet bottomSheet = RulesBottomSheet.newInstance(urlSplit[4],urlSplit[5]);
+                        bottomSheet.show(getSupportFragmentManager(), bottomSheet.getTag());
+                    }else if (urlSplit[3].equals("other")) {
                         getCommonApi(urlSplit[4]);
                     }
                 }
