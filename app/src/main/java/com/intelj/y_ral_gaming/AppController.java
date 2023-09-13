@@ -93,7 +93,7 @@ public class AppController extends Application implements Application.ActivityLi
     public String referral = "0";
     public String teamList = "";
     public Map<String, String> tab = new HashMap<>();
-    public HashMap<String, Integer> popularList = new HashMap<>();
+  //  public HashMap<String, Integer> popularList = new HashMap<>();
     public AppDataBase videoDataBase;
     @Override
     public void onCreate() {

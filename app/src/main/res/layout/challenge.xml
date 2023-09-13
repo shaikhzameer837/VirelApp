@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginBottom="10dp"
-    android:background="@drawable/red_round_corner"
+    android:background="@drawable/white_round_corner"
     android:elevation="8dp"
     android:orientation="vertical"
     android:theme="@style/Theme.MaterialComponents.DayNight.DarkActionBar"

@@ -1,12 +1,53 @@
 package com.intelj.y_ral_gaming;
 
 public class PopularModel {
-    String user_name,total_coins,user_id,description;
-    public PopularModel(String user_name,String total_coins,String user_id,String description) {
+    String user_name, total_coins, description;
+    String url, name, amount, userid;
+
+    public PopularModel(String user_name, String total_coins, String userid, String description) {
         this.user_name = user_name;
         this.total_coins = total_coins;
-        this.user_id = user_id;
+        this.userid = userid;
         this.description = description;
+    }
+
+    public PopularModel(String url, String name, String amount, String userid, String extra) {
+        this.url = url;
+        this.name = name;
+        this.amount = amount;
+        this.userid = userid;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getAmount() {
+        return amount;
+    }
+
+    public void setAmount(String amount) {
+        this.amount = amount;
+    }
+
+    public String getUserid() {
+        return userid;
+    }
+
+    public void setUserid(String userid) {
+        this.userid = userid;
     }
 
     public String getUser_name() {
@@ -26,11 +67,11 @@ public class PopularModel {
     }
 
     public String getUser_id() {
-        return user_id;
+        return userid;
     }
 
     public void setUser_id(String user_id) {
-        this.user_id = user_id;
+        this.userid = user_id;
     }
 
 

@@ -9,12 +9,14 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/gray"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:layout_marginLeft="10dp"
+            android:background="@color/white"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:padding="4dp">
@@ -72,7 +74,6 @@
                 android:visibility="gone" />
 
 
-
             <TextView
                 android:id="@+id/search"
                 android:layout_width="wrap_content"
@@ -123,99 +124,142 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/gray"
-            android:orientation="vertical"
-            android:paddingBottom="5dp">
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:background="@color/appColor"
-                android:layout_width="match_parent"
-                android:visibility="gone"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <com.airbnb.lottie.LottieAnimationView
-                    android:id="@+id/anim"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    app:lottie_autoPlay="true"
-                    app:lottie_fileName="money_gift.json"
-                    app:lottie_loop="true" />
-                <TextView
-                    android:id="@+id/complete"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="marquee"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true"
-                    android:freezesText="true"
-                    android:layout_gravity="center_vertical"
-                    android:gravity="center_vertical"
-                    android:onClick="editProfile"
-                    android:scrollHorizontally="true"
-                    android:singleLine="true"
-                    android:text=" Complete Your Profile"
-                    android:textColor="@color/white"
-                    tools:ignore="TouchTargetSizeCheck" />
-            </LinearLayout>
+            <!--            <LinearLayout-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:background="@color/appColor"-->
+            <!--                android:orientation="horizontal"-->
+            <!--                android:visibility="gone">-->
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                android:textSize="16sp"
-                android:gravity="center_horizontal"
-                android:text="The Pro Gamer's Choice"
-                android:textColor="@color/black"
-                android:textStyle="bold" />
+            <!--                <com.airbnb.lottie.LottieAnimationView-->
+            <!--                    android:id="@+id/anim"-->
+            <!--                    android:layout_width="50dp"-->
+            <!--                    android:layout_height="50dp"-->
+            <!--                    app:lottie_autoPlay="true"-->
+            <!--                    app:lottie_fileName="money_gift.json"-->
+            <!--                    app:lottie_loop="true" />-->
+
+            <!--                <TextView-->
+            <!--                    android:id="@+id/complete"-->
+            <!--                    android:layout_width="0dp"-->
+            <!--                    android:layout_height="wrap_content"-->
+            <!--                    android:layout_gravity="center_vertical"-->
+            <!--                    android:layout_weight="1"-->
+            <!--                    android:ellipsize="marquee"-->
+            <!--                    android:focusable="true"-->
+            <!--                    android:focusableInTouchMode="true"-->
+            <!--                    android:freezesText="true"-->
+            <!--                    android:gravity="center_vertical"-->
+            <!--                    android:onClick="editProfile"-->
+            <!--                    android:scrollHorizontally="true"-->
+            <!--                    android:singleLine="true"-->
+            <!--                    android:text=" Complete Your Profile"-->
+            <!--                    android:textColor="@color/white"-->
+            <!--                    tools:ignore="TouchTargetSizeCheck" />-->
+            <!--            </LinearLayout>-->
+
+            <!--            <TextView-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_gravity="center_horizontal"-->
+            <!--                android:layout_marginTop="5dp"-->
+            <!--                android:layout_marginBottom="5dp"-->
+            <!--                android:gravity="center_horizontal"-->
+            <!--                android:text="The Pro Gamer's Choice"-->
+            <!--                android:textColor="@color/black"-->
+            <!--                android:textSize="16sp"-->
+            <!--                android:textStyle="bold" />-->
+
             <androidx.viewpager.widget.ViewPager
                 android:id="@+id/viewpager"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
                 android:layout_width="match_parent"
-                android:layout_height="140dp"/>
-
-
-<!--            <com.facebook.shimmer.ShimmerFrameLayout-->
-<!--                android:id="@+id/shimmer_layout"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:visibility="gone"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                app:shimmer_duration="1000">-->
-
-<!--                <LinearLayout-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:orientation="horizontal">-->
-
-<!--                    <include layout="@layout/popular_list" />-->
-
-<!--                    <include layout="@layout/popular_list" />-->
-
-<!--                    <include layout="@layout/popular_list" />-->
-
-<!--                    <include layout="@layout/popular_list" />-->
-<!--                </LinearLayout>-->
-
-<!--            </com.facebook.shimmer.ShimmerFrameLayout>-->
-
-<!--            <androidx.recyclerview.widget.RecyclerView-->
-<!--                android:id="@+id/rv_popular"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginRight="10dp"-->
-<!--                android:visibility="gone"-->
-<!--                android:scrollbars="vertical" />-->
-
+                android:layout_height="140dp"
+                android:layout_margin="5dp" />
         </LinearLayout>
 
-        <include
-            android:id="@+id/bottom"
-            layout="@layout/bottom_sheet"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_marginTop="5dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <View
+                    android:layout_width="0dp"
+                    android:background="@color/black"
+                    android:layout_height="1dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="5dp"
+                    android:drawableLeft="@drawable/star"
+                    android:gravity="center_horizontal"
+                    android:text="Top Popular of the week"
+                    android:textColor="@color/black"
+                    android:textSize="14dp"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:background="@color/black"
+                    android:layout_height="1dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/shimmer_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:shimmer_duration="1000">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <include layout="@layout/popular_list" />
+
+                    <include layout="@layout/popular_list" />
+
+                    <include layout="@layout/popular_list" />
+
+                    <include layout="@layout/popular_list" />
+                </LinearLayout>
+
+            </com.facebook.shimmer.ShimmerFrameLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_popular"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/gray"
+                android:paddingTop="5dp"
+                android:scrollbars="vertical" />
+
+            <include
+                android:id="@+id/bottom"
+                layout="@layout/bottom_sheet"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
     </LinearLayout>
 
     <com.google.android.material.bottomappbar.BottomAppBar

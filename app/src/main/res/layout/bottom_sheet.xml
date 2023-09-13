@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingBottom="56dp"
-    android:background="@drawable/gray"
+    android:background="@drawable/background_with_shadow"
     app:behavior_hideable="false"
     app:layout_behavior="@string/bottom_sheet_behavior">
 

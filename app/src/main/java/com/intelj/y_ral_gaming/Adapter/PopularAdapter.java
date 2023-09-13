@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
@@ -26,19 +27,23 @@ import com.intelj.y_ral_gaming.Utils.AppConstant;
 
 import java.util.List;
 
+import soup.neumorphism.NeumorphCardView;
+
 public class PopularAdapter extends RecyclerView.Adapter<PopularAdapter.MyViewHolder> {
 
     private List<PopularModel> moviesList;
     Context mContext;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView title, byNow,count;
+        public TextView title, count, genre;
         ImageView imgs;
         CardView cardView;
+
         public MyViewHolder(View view) {
             super(view);
             title = view.findViewById(R.id.title);
-            byNow = view.findViewById(R.id.byNow);
+            genre = view.findViewById(R.id.genre);
+            // byNow = view.findViewById(R.id.byNow);
             imgs = view.findViewById(R.id.imgs);
             count = view.findViewById(R.id.count);
             cardView = view.findViewById(R.id.cardView);
@@ -64,18 +69,31 @@ public class PopularAdapter extends RecyclerView.Adapter<PopularAdapter.MyViewHo
         Gson gson = new Gson();
         PopularModel movie = moviesList.get(position);
         String jsonString = gson.toJson(movie);
-        Log.e("jsonString",jsonString);
-        holder.title.setText(movie.getImg_name());
- //       holder.byNow.setText(movie.getTotal_coins() + "");
+        Log.e("jsonString", jsonString);
+        holder.title.setText(movie.getName());
+        holder.count.setText("" + (position + 1));
+//        holder.rating.setMax(5 - position);
+//        holder.rating.setRating(5 - position);
+        //   holder.count.setText(""+(position+1)+"");
+        holder.genre.setText(movie.getAmount());
+        //       holder.byNow.setText(movie.getTotal_coins() + "");
         holder.imgs.setTag(position);
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String url = movie.getTotal_coins();
-                AmazonUrlOpener.openAmazonUrl(holder.cardView.getContext(), url);
+                Log.e("jsonString-userid", moviesList.get(position).getUser_id()+"");
+                Intent intent = new Intent(mContext, ProFileActivity.class);
+                String transitionName = "fade";
+                View transitionView = holder.imgs;
+                ViewCompat.setTransitionName(transitionView, transitionName);
+                ActivityOptionsCompat options = ActivityOptionsCompat.
+                        makeSceneTransitionAnimation((Activity) mContext, transitionView, transitionName);
+                intent.putExtra("userid", moviesList.get(position).getUser_id());
+                mContext.startActivity(intent, options.toBundle());
+
             }
         });
-        Glide.with(mContext).load(movie.getUser_id()).placeholder(R.drawable.game_avatar).into(holder.imgs);
+        Glide.with(mContext).load(movie.getUrl()+ ".png?u=" + AppConstant.imageExt()).apply(new RequestOptions().circleCrop()).placeholder(R.drawable.game_avatar).into(holder.imgs);
     }
 
     @Override

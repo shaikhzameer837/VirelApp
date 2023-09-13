@@ -177,11 +177,11 @@ public class ProFileActivity extends AppCompatActivity {
                 startActivity(intent, options.toBundle());
             }
         });
-        if (AppController.getInstance().popularList.get(userid) != null) {
-            TextView popular = findViewById(R.id.popular);
-            popular.setVisibility(View.VISIBLE);
-            popular.setText("Popularity #" + (AppController.getInstance().popularList.get(userid)));
-        }
+//        if (AppController.getInstance().popularList.get(userid) != null) {
+//            TextView popular = findViewById(R.id.popular);
+//            popular.setVisibility(View.VISIBLE);
+//            popular.setText("Popularity #" + (AppController.getInstance().popularList.get(userid)));
+//        }
 
 
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference(AppConstant.users).child(userid);

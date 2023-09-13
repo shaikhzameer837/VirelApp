@@ -1,5 +1,6 @@
 package com.intelj.y_ral_gaming.bottomSheet;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,17 +31,32 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RulesBottomSheet extends BottomSheetDialogFragment {
+    private ChallengeAcceptedListener mListener;
+    public interface ChallengeAcceptedListener {
+        void onChallengeAccepted();
+    }
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            mListener = (ChallengeAcceptedListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement ChallengeAcceptedListener");
+        }
+    }
 
-    public static RulesBottomSheet newInstance(String id,String count) {
+    public static RulesBottomSheet newInstance(String id,String count,String type) {
         RulesBottomSheet fragment = new RulesBottomSheet();
         Bundle args = new Bundle();
         args.putString("id", id);
         args.putString("count", count);
+        args.putString("type", type);
         fragment.setArguments(args);
         return fragment;
     }
     String cid = "";
     String count = "";
+    String type = "";
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +64,7 @@ public class RulesBottomSheet extends BottomSheetDialogFragment {
         if (getArguments() != null) {
             cid = getArguments().getString("id");
             count = getArguments().getString("count");
+            type = getArguments().getString("type");
             // Do something with the id
         }
     }
@@ -72,11 +89,14 @@ public class RulesBottomSheet extends BottomSheetDialogFragment {
         Log.e("AppConstant.AppUrl4", "start");
         String time = ""+((System.currentTimeMillis()/1000)  + (24 * 60 * 60));
         RequestQueue queue = Volley.newRequestQueue(getActivity());
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url + "?userid=" + new AppConstant(getActivity()).getId()+"&&stime="+time+"&&cid="+cid+"&&count="+count,
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url + "?userid=" + new AppConstant(getActivity()).getId()+"&&stime="+time+"&&cid="+cid+"&&target="+count+"&&type="+type,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         Log.e("AppConstant.AppUrl3", response);
+                        if (mListener != null) {
+                            mListener.onChallengeAccepted();
+                        }
 //                        try {
 //                            JSONObject json = new JSONObject(response);
 //                            if (json.getBoolean("success")) {

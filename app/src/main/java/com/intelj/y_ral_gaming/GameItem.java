@@ -1,9 +1,10 @@
 package com.intelj.y_ral_gaming;
 
 public class GameItem {
-    private String title, PrizePool, perKill, entryFees, map, type,time,id,password,isexist,count="0",result_url,yt_url,gameId;
+    private String gamePassword, title, PrizePool, perKill, entryFees, map, type, time, InGameid, password, isexist, count = "0", yt_url, gameId;
     private boolean isActive = false;
-    private  int max;
+    private int max;
+
     public GameItem() {
     }
 
@@ -14,8 +15,8 @@ public class GameItem {
     public GameItem(String title, String PrizePool, String perKill,
                     String entryFees, String type, String map,
                     String time, String isexist,
-                    String count, String id, String password,
-                    String result_url,int max,String yt_url,String gameId) {
+                    String count, String InGameid, String password,
+                    int max, String yt_url, String gameId, String gamePassword) {
         this.title = title;
         this.PrizePool = PrizePool;
         this.perKill = perKill;
@@ -25,12 +26,20 @@ public class GameItem {
         this.time = time;
         this.count = count;
         this.isexist = isexist;
-        this.id = id;
+        this.InGameid = InGameid;
         this.password = password;
-        this.result_url = result_url;
         this.max = max;
         this.yt_url = yt_url;
         this.gameId = gameId;
+        this.gamePassword = gamePassword;
+    }
+
+    public String getGamePassword() {
+        return gamePassword;
+    }
+
+    public void setGamePassword(String gamePassword) {
+        this.gamePassword = gamePassword;
     }
 
     public String getYt_url() {
@@ -49,20 +58,13 @@ public class GameItem {
         this.max = max;
     }
 
-    public String getResult_url() {
-        return result_url;
+
+    public String getInGameid() {
+        return InGameid;
     }
 
-    public void setResult_url(String result_url) {
-        this.result_url = result_url;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
+    public void setInGameid(String inGameid) {
+        InGameid = inGameid;
     }
 
     public String getPassword() {

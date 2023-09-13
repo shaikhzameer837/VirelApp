@@ -1,6 +1,5 @@
 package com.intelj.y_ral_gaming.Activity;
 
-import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -19,7 +18,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.text.Html;
 import android.transition.Fade;
 import android.util.Log;
@@ -41,15 +39,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
-import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityOptionsCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -91,7 +86,6 @@ import com.intelj.y_ral_gaming.RoundedBottomSheetDialog;
 import com.intelj.y_ral_gaming.SigninActivity;
 import com.intelj.y_ral_gaming.Utils.AmazonUrlOpener;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
-import com.intelj.y_ral_gaming.Utils.RecyclerTouchListener;
 import com.intelj.y_ral_gaming.bottomSheet.RulesBottomSheet;
 import com.intelj.y_ral_gaming.main.PaymentWithdraw;
 import com.intelj.y_ral_gaming.model.TeamListPOJO;
@@ -102,9 +96,7 @@ import org.json.JSONObject;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -113,10 +105,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class MainActivity extends BaseActivity {
+import soup.neumorphism.NeumorphCardView;
+
+public class MainActivity extends BaseActivity implements RulesBottomSheet.ChallengeAcceptedListener {
     AppConstant appConstant;
     private ViewPager gameViewpager;
-    private ViewPager giveAwayViewpager;
     BottomNavigationView bottomNavigation;
     private TabLayout tabLayout;
     TextView coins;
@@ -130,7 +123,7 @@ public class MainActivity extends BaseActivity {
     TextView kill;
     int oldId;
     ImageView imageView;
-    List<PopularModel> popularModels = new ArrayList<>();
+    List<PopularModel> affiliateModel = new ArrayList<>();
     //    PopularAdapter popularAdapter;
 //    private ShimmerFrameLayout shimmerFrameLayout;
     SharedPreferences sharedPreferences;
@@ -139,6 +132,8 @@ public class MainActivity extends BaseActivity {
     private int currentPage = 0;
     private final long delayTime = 2000; // 2 seconds
     private Handler handler;
+    RecyclerView rv_popular;
+    ShimmerFrameLayout shimmerFrameLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -173,6 +168,9 @@ public class MainActivity extends BaseActivity {
         getUserInfo();
 //        rv_popular = findViewById(R.id.rv_popular);
         //shimmerFrameLayout = findViewById(R.id.shimmer_layout);
+        getAffiliate();
+        rv_popular = findViewById(R.id.rv_popular);
+        shimmerFrameLayout = findViewById(R.id.shimmer_layout);
         getPopularFace();
         findViewById(R.id.notification).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -226,15 +224,15 @@ public class MainActivity extends BaseActivity {
                 oldId = item.getItemId();
                 switch (item.getItemId()) {
                     case R.id.game_slot:
-                        Log.e("getString",tab.length()+"");
+                        Log.e("getString", tab.length() + "");
                         inflateView(R.layout.game_slot);
                         setFirstView();
                         titleList.clear();
                         gamingAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-                        Iterator<String> keys =  tab.keys();
+                        Iterator<String> keys = tab.keys();
                         while (keys.hasNext()) {
                             String key = keys.next();
-                            Log.e("getString",key);
+                            Log.e("getString", key);
                             String value = "";
                             try {
                                 value = tab.getString(key);
@@ -255,17 +253,19 @@ public class MainActivity extends BaseActivity {
                         return true;
                     case R.id.challenge:
                         inflateView(R.layout.store);
-                        showWebView(AppConstant.AppUrl + "web/give_away.php?u=" + new AppConstant(MainActivity.this).getId());
-                        inflated.findViewById(R.id.lin).setVisibility(View.GONE);
+                        TextView titleText = inflated.findViewById(R.id.titleText);
+                        titleText.setText("Challenges");
+                        showWebView(AppConstant.AppUrl + "web/delete_me.php?u=" + new AppConstant(MainActivity.this).getId());
+ //                       showWebView(AppConstant.AppUrl + "web/give_away.php?u=" + new AppConstant(MainActivity.this).getId());
                         return true;
                     case R.id.store:
                         inflateView(R.layout.store);
-                        try {
-                            showWebView(AppController.getInstance().homeUrl.get(0) + "?u=" + new AppConstant(MainActivity.this).getId());
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        inflated.findViewById(R.id.lin).setVisibility(View.VISIBLE);
+                         titleText = inflated.findViewById(R.id.titleText);
+                        titleText.setText("Rewards");
+                        showWebView(AppConstant.AppUrl + "web/delete_me.php?u=" + new AppConstant(MainActivity.this).getId());
+//                        showWebView(AppConstant.AppUrl + "web/reward.php?u=" + new AppConstant(MainActivity.this).getId());
+                      //  showWebView(AppConstant.AppUrl + "reward/rewards.php?u=9");
+//                        inflated.findViewById(R.id.lin).setVisibility(View.VISIBLE);
                         return true;
 //                    case R.id.challenge:
 //                        inflateView(R.layout.store);
@@ -318,7 +318,7 @@ public class MainActivity extends BaseActivity {
 
         @Override
         public int getCount() {
-            return popularModels.size();
+            return affiliateModel.size();
         }
 
         @NonNull
@@ -327,15 +327,15 @@ public class MainActivity extends BaseActivity {
             View view = LayoutInflater.from(context).inflate(R.layout.item_slider, container, false);
             ImageView imageView = view.findViewById(R.id.imageView);
             CardView cardView = view.findViewById(R.id.cardView);
-            TextView title = view.findViewById(R.id.title);
-            TextView desc = view.findViewById(R.id.desc);
-            title.setText(popularModels.get(position).getImg_name());
-            desc.setText(popularModels.get(position).getDescription());
-            Glide.with(MainActivity.this).load(popularModels.get(position).getUser_id()).placeholder(R.drawable.game_avatar).into(imageView);
+//            TextView title = view.findViewById(R.id.title);
+//            TextView desc = view.findViewById(R.id.desc);
+//            title.setText(affiliateModel.get(position).getImg_name());
+//            desc.setText(affiliateModel.get(position).getDescription());
+            Glide.with(MainActivity.this).load(affiliateModel.get(position).getUser_id()).placeholder(R.drawable.game_avatar).into(imageView);
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String url = popularModels.get(position).getTotal_coins();
+                    String url = affiliateModel.get(position).getTotal_coins();
                     AmazonUrlOpener.openAmazonUrl(MainActivity.this, url);
                 }
             });
@@ -358,7 +358,7 @@ public class MainActivity extends BaseActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                int nextPage = (currentPage + 1) % popularModels.size();
+                int nextPage = (currentPage + 1) % affiliateModel.size();
                 viewPager.setCurrentItem(nextPage);
                 currentPage = nextPage;
                 startAutoSlider();
@@ -411,7 +411,7 @@ public class MainActivity extends BaseActivity {
                                     Log.e("onReceive: ", AppConstant.getRank(AppController.getInstance().rank));
                                 }
                                 if (appConstant.checkLogin() && !sharedPreferences.getString(AppConstant.name, "").equals("")) {
-                                    ((TextView) findViewById(R.id.complete)).setText(" Refer a Friend & earn " + AppController.getInstance().referral + " rs per invite");
+                                    //   ((TextView) findViewById(R.id.complete)).setText(" Refer a Friend & earn " + AppController.getInstance().referral + " rs per invite");
                                 }
 
                             } else {
@@ -488,8 +488,10 @@ public class MainActivity extends BaseActivity {
 
     }
 
+    WebView browser;
+
     private void showWebView(String Url) {
-        WebView browser = inflated.findViewById(R.id.webview);
+        browser = inflated.findViewById(R.id.webview);
         browser.loadUrl(Url);
         Log.e("AppConstant", Url);
         browser.getSettings().setLoadsImagesAutomatically(true);
@@ -499,30 +501,30 @@ public class MainActivity extends BaseActivity {
         browser.setVerticalScrollBarEnabled(false);
         browser.setHorizontalScrollBarEnabled(false);
         browser.setScrollbarFadingEnabled(false);
-        inflated.findViewById(R.id.rewards).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    view.setBackgroundResource(R.drawable.outline_black);
-                    inflated.findViewById(R.id.store).setBackgroundColor(Color.parseColor("#ffffff"));
-                    showWebView(AppController.getInstance().homeUrl.get(0) + "?u=" + new AppConstant(MainActivity.this).getId());
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
-        inflated.findViewById(R.id.store).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    view.setBackgroundResource(R.drawable.outline_black);
-                    inflated.findViewById(R.id.rewards).setBackgroundColor(Color.parseColor("#ffffff"));
-                    showWebView(AppController.getInstance().homeUrl.get(1) + "?u=" + new AppConstant(MainActivity.this).getId());
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
+//        inflated.findViewById(R.id.rewards).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                try {
+//                    view.setBackgroundResource(R.drawable.outline_black);
+//                    inflated.findViewById(R.id.store).setBackgroundColor(Color.parseColor("#ffffff"));
+//                    showWebView(AppController.getInstance().homeUrl.get(0) + "?u=" + new AppConstant(MainActivity.this).getId());
+//                } catch (JSONException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            }
+//        });
+//        inflated.findViewById(R.id.store).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                try {
+//                    view.setBackgroundResource(R.drawable.outline_black);
+//                    inflated.findViewById(R.id.rewards).setBackgroundColor(Color.parseColor("#ffffff"));
+//                    showWebView(AppController.getInstance().homeUrl.get(1) + "?u=" + new AppConstant(MainActivity.this).getId());
+//                } catch (JSONException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            }
+//        });
         browser.setWebChromeClient(new WebChromeClient() {
             public void onProgressChanged(WebView view, int progress) {
                 inflated.findViewById(R.id.pBar3).setVisibility(View.VISIBLE);
@@ -548,9 +550,9 @@ public class MainActivity extends BaseActivity {
                         intent.putExtra("reward_id", urlSplit[4]);
                         startActivity(intent);
                     } else if (urlSplit[3].equals("challenge")) {
-                        RulesBottomSheet bottomSheet = RulesBottomSheet.newInstance(urlSplit[4],urlSplit[5]);
+                        RulesBottomSheet bottomSheet = RulesBottomSheet.newInstance(urlSplit[4], urlSplit[5], urlSplit[6]);
                         bottomSheet.show(getSupportFragmentManager(), bottomSheet.getTag());
-                    }else if (urlSplit[3].equals("other")) {
+                    } else if (urlSplit[3].equals("other")) {
                         getCommonApi(urlSplit[4]);
                     }
                 }
@@ -563,6 +565,13 @@ public class MainActivity extends BaseActivity {
         @Override
         public void onLoadResource(WebView view, String url) {
 
+        }
+    }
+
+    @Override
+    public void onChallengeAccepted() {
+        if (browser != null) {
+            browser.reload();
         }
     }
 
@@ -751,28 +760,20 @@ public class MainActivity extends BaseActivity {
 
     }
 
-    private void getPopularFace() {
-        AppController.getInstance().popularList.clear();
+    private void getAffiliate() {
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = AppConstant.AppUrl + "web/getaffilated.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.e("onClicks3", response);
-//                shimmerFrameLayout.hideShimmer();
-//                shimmerFrameLayout.setVisibility(View.GONE);
                 try {
                     JSONArray jsonArray = new JSONArray(response);
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jObj = jsonArray.getJSONObject(i);
                         // appConstant.saveUserInfo("", jObj.getString("id"), jObj.getString("imageURL"), jObj.getString("name"), "", null, jObj.getString("id"));
-                        popularModels.add(new PopularModel(jObj.getString("name"), jObj.getString("url"), jObj.getString("imageURL"), jObj.getString("description")));
+                        affiliateModel.add(new PopularModel(jObj.getString("name"), jObj.getString("url"), jObj.getString("banner_url"), jObj.getString("description")));
                     }
-
-//                    popularAdapter = new PopularAdapter(MainActivity.this, popularModels);
-//                    GridLayoutManager mLayoutManager = new GridLayoutManager(MainActivity.this, 1, GridLayoutManager.HORIZONTAL, false);
-//                    rv_popular.setLayoutManager(mLayoutManager);
-//                    rv_popular.setAdapter(popularAdapter);
                     viewPager = findViewById(R.id.viewpager);
                     AutoSliderAdapter adapter = new AutoSliderAdapter(MainActivity.this);
                     viewPager.setAdapter(adapter);
@@ -786,9 +787,67 @@ public class MainActivity extends BaseActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                //  progressDialog.cancel();
-                //shimmerFrameLayout.hideShimmer();
-                // shimmerFrameLayout.setVisibility(View.GONE);
+
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                return new HashMap<>();
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Content-Type", "application/x-www-form-urlencoded");
+                return params;
+            }
+        };
+        queue.add(stringRequest);
+    }
+
+    ArrayList<PopularModel> popularModels = new ArrayList<>();
+
+    private void getPopularFace() {
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = AppConstant.AppUrl + "popular.php";
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.e("onClicks-popular", response);
+                popularModels.clear();
+                shimmerFrameLayout.hideShimmer();
+                shimmerFrameLayout.setVisibility(View.GONE);
+                try {
+                    JSONObject json = new JSONObject(response);
+                    JSONArray ja_data = json.getJSONArray("info");
+                    for (int i = 0; i < ja_data.length(); i++) {
+                        JSONObject jObj = ja_data.getJSONObject(i);
+                        appConstant.saveUserInfo("", jObj.getString("userid"), "http://y-ral-gaming.com/admin/api/images/" + jObj.getString("userid") + ".png?u=" + AppConstant.imageExt(), jObj.getString("name"), "", null, jObj.getString("userid"));
+                        popularModels.add(new PopularModel(AppConstant.AppUrl + "images/" + jObj.getString("userid") , jObj.getString("name"), jObj.getString("amount"), jObj.getString("userid"), ""));
+                        // recyclerDataArrayList.add(new RecyclerData(jObj.getString("userid"),"http://y-ral-gaming.com/admin/api/images/" + jObj.getString("userid") + ".png?u=" + (System.currentTimeMillis() / 1000),jObj.getString("name")));
+//                                recyclerDataArrayList.add(new RecyclerData(jObj.getString("url"), jObj.getString("name"), jObj.getString("amount"), jObj.getString("userid")));
+                    }
+//                    Collections.sort(popularModels, new Comparator<PopularModel>() {
+//                        @Override
+//                        public int compare(PopularModel o1, PopularModel o2) {
+//                            return Integer.compare(Integer.parseInt(o2.getTotal_coins()), Integer.parseInt(o1.getTotal_coins()));
+//                        }
+//                    });
+                    Log.e("onClicks-popular", popularModels.size() + "");
+                    PopularAdapter popularAdapter = new PopularAdapter(MainActivity.this, popularModels);
+                    GridLayoutManager mLayoutManager = new GridLayoutManager(MainActivity.this, 1, GridLayoutManager.HORIZONTAL, false);
+                    rv_popular.setLayoutManager(mLayoutManager);
+                    rv_popular.setAdapter(popularAdapter);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                shimmerFrameLayout.hideShimmer();
+                shimmerFrameLayout.setVisibility(View.GONE);
             }
         }) {
             @Override
@@ -850,7 +909,7 @@ public class MainActivity extends BaseActivity {
                 showGameSelection();
         }
         if (!appConstant.checkLogin()) {
-            ((TextView) findViewById(R.id.complete)).setText(" Register now and get 10Rs Instantly ");
+            //  ((TextView) findViewById(R.id.complete)).setText(" Register now and get 10Rs Instantly ");
         }
     }
 
@@ -1247,7 +1306,7 @@ public class MainActivity extends BaseActivity {
                 Set<String> myList = (Set<String>) getIntent().getSerializableExtra("teammember");
                 BottomSheetDilogFragment bottomSheetFragment = new BottomSheetDilogFragment(myList);
                 bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
-                return;
+
             }
 
         }

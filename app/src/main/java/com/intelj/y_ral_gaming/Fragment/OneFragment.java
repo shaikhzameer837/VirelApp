@@ -124,12 +124,12 @@ public class OneFragment extends Fragment {
     private void reloadData() {
         String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         RequestQueue queue = Volley.newRequestQueue(getActivity());
-        String url = AppConstant.AppUrl + "load_free_matches.php";
+        String url = AppConstant.AppUrl + "free_give_away.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.e("onClick3", response);
+                        Log.e("onClick3-free_give_away", response);
                         // progressDialog.cancel();
                         shimmerFrameLayout.hideShimmer();
                         shimmerFrameLayout.setVisibility(View.GONE);
@@ -144,15 +144,15 @@ public class OneFragment extends Fragment {
                                 JSONArray ja_data = json.getJSONArray("match_info");
                                 GameItem.clear();
                                 for (int i = 0; i < ja_data.length(); i++) {
-                                    JSONObject jObj = ja_data.getJSONObject(i);
+                                    JSONObject JdataObject = ja_data.getJSONObject(i);
+                                    JSONObject jObj = JdataObject.getJSONObject("row_result");
                                     GameItem.add(new GameItem("BGMI match " + (1 + i),
                                             jObj.getString("status"), jObj.getString("perKill"), jObj.getString("entryFees"),
                                             jObj.getString("type"), jObj.getString("map"),
-                                            jObj.getString("time"), jObj.getString("isExist")
-                                            , jObj.getString("total"),
-                                            jObj.getString("id").equals("") ? "****" : jObj.getString("id")
-                                            , jObj.getString("password").equals("") ? "****" : jObj.getString("password"),
-                                            jObj.getString("result_url"), jObj.getInt("max"), jObj.getString("yt_url"), jObj.getString("gId")));
+                                            jObj.getString("time"), JdataObject.getString("isExist")
+                                            , jObj.getString("player_count"),
+                                            jObj.getString("g_id")
+                                            , jObj.getString("g_password"), jObj.getInt("max"), jObj.getString("yt_url"), jObj.getString("id"), jObj.getString("g_password")));
                                 }
                                 Log.e("titlessss", GameItem.size() + " " + title);
                                 Intent intent = new Intent("custom-event-name");

@@ -52,43 +52,43 @@ repositories {
 }
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation 'androidx.core:core-ktx:1.7.0'
-    implementation("com.amazonaws:aws-android-sdk-s3:2.17.1")
-    implementation 'androidx.appcompat:appcompat:1.5.1'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.5.2'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.5.2'
+    implementation 'androidx.core:core-ktx:1.12.0'
+    implementation("com.amazonaws:aws-android-sdk-s3:2.23.0")
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.7.2'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.7.2'
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
-    implementation 'com.google.firebase:firebase-messaging:23.1.0'
-    implementation 'com.google.firebase:firebase-database:20.1.0'
-    implementation 'androidx.recyclerview:recyclerview:1.2.1'
+    implementation 'com.google.firebase:firebase-messaging:23.2.1'
+    implementation 'com.google.firebase:firebase-database:20.2.2'
+    implementation 'androidx.recyclerview:recyclerview:1.3.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.android.volley:volley:1.2.1'
-    implementation 'com.google.firebase:firebase-auth:21.1.0'
+    implementation 'com.google.firebase:firebase-auth:22.1.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'com.google.firebase:firebase-firestore:24.4.0'
-    implementation 'com.google.firebase:firebase-analytics:21.2.0'
+    implementation 'com.google.firebase:firebase-firestore:24.7.1'
+    implementation 'com.google.firebase:firebase-analytics:21.3.0'
     implementation 'com.github.andyxialm:ColorDialog:1.0.0'
     testImplementation 'junit:junit:4.13.2'
-    implementation 'com.google.code.gson:gson:2.8.7'
+    implementation 'com.google.code.gson:gson:2.10'
     implementation 'com.github.Deishelon:RoundedBottomSheet:1.0.1'
-    implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.41"
+    implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.20"
     implementation 'com.github.fornewid:neumorphism:0.2.1'
     implementation 'com.github.Borutsky:neumorphism-android:1.0.0-alpha01'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     implementation 'com.github.bumptech.glide:glide:4.13.0'
     implementation 'com.roughike:swipe-selector:1.0.6'
     implementation 'com.danikula:videocache:2.7.1'
     implementation 'com.github.Yalantis:Context-Menu.Android:1.1.4'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.13.0'
-    implementation 'com.google.firebase:firebase-storage:20.1.0'
-    implementation 'androidx.browser:browser:1.4.0'
+    implementation 'com.google.firebase:firebase-storage:20.2.1'
+    implementation 'androidx.browser:browser:1.6.0'
     implementation 'com.google.android.play:core:1.10.3'
-    implementation "com.google.android.material:material:1.7.0"
+    implementation "com.google.android.material:material:1.9.0"
     implementation 'net.alhazmy13.MediaPicker:libary:2.4.4'
-    implementation 'com.google.firebase:firebase-crashlytics:18.3.2'
+    implementation 'com.google.firebase:firebase-crashlytics:18.4.1'
     implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
-    implementation "com.airbnb.android:lottie:3.4.0"
+    implementation "com.airbnb.android:lottie:6.0.0"
     implementation 'com.github.joielechong:countrycodepicker:2.4.2'
     implementation 'commons-net:commons-net:3.3'
     implementation 'com.sdsmdg.harjot:rotatingtext:1.0.2'
@@ -96,14 +96,15 @@ dependencies {
     implementation 'androidx.room:room-common:2.5.0-alpha02'
     implementation 'androidx.room:room-ktx:2.5.0-alpha01'
     implementation "com.github.skydoves:androidribbon:1.0.4"
-    implementation "com.google.dagger:hilt-android:2.38.1"
-    implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
-    implementation 'io.reactivex.rxjava2:rxjava:2.1.10'
+    implementation "com.google.dagger:hilt-android:2.46.1"
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.19'
     //implementation files('libs\\YouTubeAndroidPlayerApi.jar')
     implementation "android.arch.persistence.room:runtime:1.1.1"
     kapt "android.arch.persistence.room:compiler:1.1.1"
     implementation "androidx.viewpager2:viewpager2:1.0.0"
-    annotationProcessor 'androidx.lifecycle:lifecycle-compiler:2.5.1'
+    //noinspection LifecycleAnnotationProcessorWithJava8
+    annotationProcessor 'androidx.lifecycle:lifecycle-compiler:2.6.2'
     implementation 'com.google.dagger:dagger-android:2.35.1'
     //dependancy for exoplayer
     implementation 'com.google.android.exoplayer:exoplayer:r2.4.0'

@@ -3,6 +3,8 @@ package com.intelj.y_ral_gaming.Adapter;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -37,6 +39,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.intelj.y_ral_gaming.Activity.GameInfo;
 import com.intelj.y_ral_gaming.AppController;
 import com.intelj.y_ral_gaming.Fragment.OneFragment;
@@ -64,8 +67,9 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
     SharedPreferences sharedPreferences;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView title, info, type, count, prizepool,pp;
+        public TextView title, info, type, count, prizepool,pp,gid,gpassword;
         ImageView imgs;
+        LinearLayout passLin;
 
         public MyViewHolder(View view) {
             super(view);
@@ -76,6 +80,9 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
             imgs = view.findViewById(R.id.imgs);
             info = view.findViewById(R.id.info);
             type = view.findViewById(R.id.type);
+            gid = view.findViewById(R.id.gid);
+            passLin = view.findViewById(R.id.passLin);
+            gpassword = view.findViewById(R.id.password);
         }
     }
 
@@ -140,8 +147,34 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
         }
         holder.count.setText(gameItem.get(position).getCount() + "/" + gameItem.get(position).getMax());
         holder.info.setText(gameItem.get(position).getIsexist().equals("0") ? " Join now \uD83D\uDC49" : " Already Joined \uD83E\uDD1E");
+        holder.gid.setText("id: " + gameItem.get(position).getInGameid());
+        holder.gpassword.setText("pass: "+gameItem.get(position).getGamePassword());
         holder.info.setTextColor(gameItem.get(position).getIsexist().equals("0") ? Color.parseColor("#7e241c") : Color.parseColor("#097969"));
         holder.info.setTag(position);
+        holder.gpassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(v.getContext(),"Password Copied",Toast.LENGTH_LONG).show();
+                ClipboardManager clipboard = (ClipboardManager) v.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("label",gameItem.get(position).getGamePassword());
+                clipboard.setPrimaryClip(clip);
+            }
+        });
+        holder.gid.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(v.getContext(),"Id Copied",Toast.LENGTH_LONG).show();
+                ClipboardManager clipboard = (ClipboardManager) v.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("label",gameItem.get(position).getGameId());
+                clipboard.setPrimaryClip(clip);
+            }
+        });
+
+        if(!gameItem.get(position).getInGameid().equals("")){
+           holder.passLin.setVisibility(View.VISIBLE);
+        }else{
+            holder.passLin.setVisibility(View.GONE);
+        }
         holder.info.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -257,6 +290,15 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
                         try {
                             JSONObject json = new JSONObject(response);
                             if (json.getBoolean("success")) {
+                                FirebaseMessaging.getInstance().subscribeToTopic("give_away_"+ gameItem.get(position).getGameId())
+                                        .addOnCompleteListener(task -> {
+                                            String msg = "Subscribed";
+                                            if (!task.isSuccessful()) {
+                                                msg = "Subscribe failed";
+                                            }
+                                            Log.d("FCM", msg);
+                                            // You can also show a toast or UI element to indicate success or failure
+                                        });
                                 appConstant.savePackage(appConstant.getId(),"");
                                 int player_count = json.getInt("player_count");
                                 AppController.getInstance().amount = AppController.getInstance().amount - json.getInt("entryFees");
