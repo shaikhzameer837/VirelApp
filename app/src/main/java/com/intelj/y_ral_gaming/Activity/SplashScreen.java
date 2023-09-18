@@ -2,6 +2,9 @@ package com.intelj.y_ral_gaming.Activity;
 
 
 import android.content.Intent;
+import android.content.res.AssetFileDescriptor;
+import android.content.res.AssetManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -12,38 +15,46 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.google.android.exoplayer2.ExoPlaybackException;
+import com.google.android.exoplayer2.ExoPlayer;
+import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.PlaybackParameters;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.Timeline;
+import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
+import com.google.android.exoplayer2.extractor.ExtractorsFactory;
+import com.google.android.exoplayer2.source.ExtractorMediaSource;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.source.TrackGroupArray;
+import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
+import com.google.android.exoplayer2.trackselection.TrackSelector;
+import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
+import com.google.android.exoplayer2.upstream.BandwidthMeter;
+import com.google.android.exoplayer2.upstream.DataSource;
+import com.google.android.exoplayer2.upstream.DataSpec;
+import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
+import com.google.android.exoplayer2.upstream.FileDataSource;
+import com.google.android.exoplayer2.util.Util;
 import com.intelj.y_ral_gaming.AppController;
 import com.intelj.y_ral_gaming.BuildConfig;
 import com.intelj.y_ral_gaming.R;
 import com.intelj.y_ral_gaming.Utils.AppConstant;
 
-public class SplashScreen extends AppCompatActivity {
-    ImageView img,img1;
+import java.io.IOException;
 
+public class SplashScreen extends AppCompatActivity {
+    SimpleExoPlayerView idExoPlayerVIew;
+    SimpleExoPlayer exoPlayer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splashscreen);
-        img = findViewById(R.id.img);
-        img1 = findViewById(R.id.img1);
-        Glide.with(this).load(R.drawable.intro)
-                .circleCrop()
-                .placeholder(R.mipmap.ic_launcher).into(img);
-        Glide.with(this).load(R.drawable.banner)
-                .into(img1);
-        Log.e("useriD", new AppConstant(this).getId());
-//        new Splashy(this).setLogo(R.mipmap.app_logo)
-//                .setAnimation(Splashy.Animation.GLOW_LOGO_TITLE,2000)
-//                .setBackgroundResource(R.color.white)
-//                .setTitleColor(R.color.white)
-//                .setProgressColor(R.color.black)
-//                .setTitle(R.string.splashy)
-//                .setSubTitle("Welcome to Y-ral Gaming")
-//                .setFullScreen(true)
-//                .setSubTitleFontStyle("font/matterland.ttf")
-//                .setClickToHide(true)
-//                .setDuration(5000)
-//                .show();
+        ImageView img = findViewById(R.id.img);
+        Glide.with(this).load(R.mipmap.ic_launcher).into(img);
     }
 
 
@@ -64,6 +75,6 @@ public class SplashScreen extends AppCompatActivity {
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent);
             }
-        }, 4000);
+        }, 3000);
     }
 }

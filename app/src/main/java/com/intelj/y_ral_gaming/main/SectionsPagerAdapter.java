@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
+import com.intelj.y_ral_gaming.AppController;
 import com.intelj.y_ral_gaming.Fragment.PaymentHistory;
 import com.intelj.y_ral_gaming.Fragment.PaymentStatus;
 import com.intelj.y_ral_gaming.R;
@@ -33,6 +34,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
+        Log.e("AppController-amount-1", AppController.getInstance().amount+"");
         // getItem is called to instantiate the fragment for the given page.
         // Return a PlaceholderFragment (defined as a static inner class below).
         switch (position){

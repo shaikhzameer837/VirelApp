@@ -104,6 +104,7 @@ public class PlaceholderFragment extends Fragment implements View.OnClickListene
 
         TextView user_name = binding.userName;
         TextView coins = binding.coins;
+        Log.e("AppController-amount",AppController.getInstance().amount+"");
 //        TextView ranks = binding.ranks;
         coins.setText(AppController.getInstance().amount + "");
 //        ranks.setText(Html.fromHtml("<img src='"+AppConstant.getRank(AppController.getInstance().rank) + "'/> " , new Html.ImageGetter() {

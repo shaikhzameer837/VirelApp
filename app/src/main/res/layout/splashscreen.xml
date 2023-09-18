@@ -3,7 +3,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
+<!--    <com.google.android.exoplayer2.ui.SimpleExoPlayerView-->
+<!--        android:id="@+id/idExoPlayerVIew"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        app:resize_mode="fit"-->
+<!--        app:use_controller="false" />-->
 
     <ImageView
         android:id="@+id/img"
@@ -19,11 +24,7 @@
 <!--        app:lottie_autoPlay="true"-->
 <!--        app:lottie_fileName="splash.json"-->
 <!--        app:lottie_loop="true" />-->
-    <ImageView
-        android:id="@+id/img1"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_above="@+id/footext"/>
+
 
     <TextView
         android:id="@+id/footext"
@@ -33,7 +34,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="20dp"
         android:gravity="center_horizontal"
-        android:text="The house of Gamer"
+        android:text="Welcome to VirelApp"
         android:textColor="@color/appColor"
         android:textStyle="bold" />
 

@@ -256,7 +256,7 @@ public class MainActivity extends BaseActivity implements RulesBottomSheet.Chall
                         TextView titleText = inflated.findViewById(R.id.titleText);
                         titleText.setText("Challenges");
                         showWebView(AppConstant.AppUrl + "web/delete_me.php?u=" + new AppConstant(MainActivity.this).getId());
- //                       showWebView(AppConstant.AppUrl + "web/give_away.php?u=" + new AppConstant(MainActivity.this).getId());
+//                       showWebView(AppConstant.AppUrl + "web/give_away.php?u=" + new AppConstant(MainActivity.this).getId());
                         return true;
                     case R.id.store:
                         inflateView(R.layout.store);
@@ -375,7 +375,7 @@ public class MainActivity extends BaseActivity implements RulesBottomSheet.Chall
 
     String key;
     JSONObject tab;
-
+    Integer MyCoins = 0;
     private void getUserInfo() {
         Log.e("AppConstant-AppUrl4", "start");
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -396,7 +396,9 @@ public class MainActivity extends BaseActivity implements RulesBottomSheet.Chall
                                 AppController.getInstance().teamList = json.getString("teamList");
                                 tab = json.getJSONObject("tab");
                                 AppController.getInstance().homeUrl = json.getJSONArray("homeUrl");
-                                coins.setText(withSuffix(AppController.getInstance().amount));
+                                MyCoins = Integer.parseInt(json.getString("amount"));
+                                Log.e("AppController-amount-9", AppController.getInstance().amount+"");
+                                coins.setText(withSuffix(Integer.parseInt(json.getString("amount"))));
                                 try {
                                     kill.setText(Html.fromHtml("<img src='" + AppConstant.getRank(AppController.getInstance().rank) + "'/> " + AppController.getInstance().rank + " points", new Html.ImageGetter() {
                                         @Override
@@ -448,7 +450,7 @@ public class MainActivity extends BaseActivity implements RulesBottomSheet.Chall
                                         })
                                         .setIcon(android.R.drawable.ic_dialog_alert)
                                         .show();
-                                AppController.getInstance().amount = 0;
+                               // AppController.getInstance().amount = 0;
                                 Intent intent = new Intent("custom-event-name");
                                 intent.putExtra(AppConstant.amount, true);
                                 LocalBroadcastManager.getInstance(MainActivity.this).sendBroadcast(intent);
@@ -545,6 +547,7 @@ public class MainActivity extends BaseActivity implements RulesBottomSheet.Chall
                 if (appConstant.checkLogin()) {
                     String[] urlSplit = url.split("/");
                     if (urlSplit[3].equals("redeem")) {
+                        AppController.getInstance().amount = MyCoins;
                         Intent intent = new Intent(MainActivity.this, PaymentWithdraw.class);
                         intent.putExtra("coins", urlSplit[5]);
                         intent.putExtra("reward_id", urlSplit[4]);
@@ -866,6 +869,7 @@ public class MainActivity extends BaseActivity implements RulesBottomSheet.Chall
     }
 
     private void showCoins() {
+        AppController.getInstance().amount = MyCoins;
         Intent intent = new Intent(MainActivity.this, PaymentWithdraw.class);
         intent.putExtra("coins", "25");
         intent.putExtra("reward_id", "0");
