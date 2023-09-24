@@ -255,15 +255,15 @@ public class MainActivity extends BaseActivity implements RulesBottomSheet.Chall
                         inflateView(R.layout.store);
                         TextView titleText = inflated.findViewById(R.id.titleText);
                         titleText.setText("Challenges");
-                        showWebView(AppConstant.AppUrl + "web/delete_me.php?u=" + new AppConstant(MainActivity.this).getId());
-//                       showWebView(AppConstant.AppUrl + "web/give_away.php?u=" + new AppConstant(MainActivity.this).getId());
+//                        showWebView(AppConstant.AppUrl + "web/delete_me.php?u=" + new AppConstant(MainActivity.this).getId());
+                       showWebView(AppConstant.AppUrl + "web/give_away.php?u=" + new AppConstant(MainActivity.this).getId());
                         return true;
                     case R.id.store:
                         inflateView(R.layout.store);
                          titleText = inflated.findViewById(R.id.titleText);
                         titleText.setText("Rewards");
-                        showWebView(AppConstant.AppUrl + "web/delete_me.php?u=" + new AppConstant(MainActivity.this).getId());
-//                        showWebView(AppConstant.AppUrl + "web/reward.php?u=" + new AppConstant(MainActivity.this).getId());
+ //                       showWebView(AppConstant.AppUrl + "web/delete_me.php?u=" + new AppConstant(MainActivity.this).getId());
+                        showWebView(AppConstant.AppUrl + "web/reward.php?u=" + new AppConstant(MainActivity.this).getId());
                       //  showWebView(AppConstant.AppUrl + "reward/rewards.php?u=9");
 //                        inflated.findViewById(R.id.lin).setVisibility(View.VISIBLE);
                         return true;

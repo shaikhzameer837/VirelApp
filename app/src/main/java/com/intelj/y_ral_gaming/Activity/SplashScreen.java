@@ -47,8 +47,6 @@ import com.intelj.y_ral_gaming.Utils.AppConstant;
 import java.io.IOException;
 
 public class SplashScreen extends AppCompatActivity {
-    SimpleExoPlayerView idExoPlayerVIew;
-    SimpleExoPlayer exoPlayer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

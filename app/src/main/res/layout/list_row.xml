@@ -79,7 +79,11 @@
         android:text="......"
         android:textColor="@color/black"
         android:textSize="11sp" />
-
+    <ImageView android:id="@+id/poll"
+        android:layout_width="wrap_content"
+        android:src="@drawable/poll"
+        android:layout_alignParentRight="true"
+        android:layout_height="wrap_content"/>
     <TextView
         android:id="@+id/prizepool"
         android:layout_width="wrap_content"
@@ -109,7 +113,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
+        android:layout_alignParentBottom="true"
         android:layout_gravity="center"
         android:gravity="center"
         android:text=" Join Now "
@@ -161,7 +165,7 @@
             android:layout_marginRight="10dp"
             android:background="@drawable/gray"
             android:gravity="center"
-            android:text=" Join Now "
+            android:text="   "
             android:textColor="@color/black"
             android:textSize="11dp" />
     </LinearLayout>

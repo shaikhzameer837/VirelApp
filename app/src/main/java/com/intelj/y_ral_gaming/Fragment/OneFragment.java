@@ -93,7 +93,6 @@ public class OneFragment extends Fragment {
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(mLayoutManager);
         initializedata();
-        // Glide.with(this).load(R.drawable.coming_soon).diskCacheStrategy(DiskCacheStrategy.ALL).centerCrop().into(imageView);
         Log.e("show_listview", show_listview + "--" + title);
         if (show_listview != 0) {
             shimmerFrameLayout.startShimmer();
@@ -107,18 +106,7 @@ public class OneFragment extends Fragment {
             recyclerView.setVisibility(View.GONE);
             tv_coming_soon.setVisibility(View.VISIBLE);
             rootView.findViewById(R.id.coming_soon).setVisibility(View.VISIBLE);
-            //    rootView.findViewById(R.id.entry).setVisibility(View.GONE);
         }
-//        for (String s : AppController.getInstance().timeArray) {
-//            if (AppController.getInstance().userId != null) {
-//                UserModel userModel = new UserModel()
-//                        .setRegisterd(false)
-//                        .setTotalCount(0)
-//                        .setTime(s).setuniqueDate(date + "/" + title + "/" + s).userModelBuilder();
-//                allData.add(userModel);
-//            }
-//            mAdapter.notifyDataSetChanged();
-        // }
     }
 
     private void reloadData() {
