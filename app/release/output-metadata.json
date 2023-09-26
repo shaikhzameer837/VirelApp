@@ -4,15 +4,15 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "com.shreyash.shopscanpay",
+  "applicationId": "com.intelj.y_ral_gaming",
   "variantName": "release",
   "elements": [
     {
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 23,
-      "versionName": "2.5.4",
+      "versionCode": 26,
+      "versionName": "2.5.7",
       "outputFile": "app-release.apk"
     }
   ],

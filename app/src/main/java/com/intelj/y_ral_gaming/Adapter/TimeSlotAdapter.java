@@ -315,7 +315,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
                                 gameItem.get(position).setCount(player_count + "");
                                 notifyDataSetChanged();
                                 bottomSheetDialog.dismiss();
-                                GameInfo BottomSheetFragment = new GameInfo();
+                                GameInfo BottomSheetFragment = new GameInfo(gameItem.get(position).getGameId());
                                 BottomSheetFragment.show(((AppCompatActivity) mContext).getSupportFragmentManager(), "");
                             } else
                                 Toast.makeText(mContext, json.getString("msg"), Toast.LENGTH_LONG).show();

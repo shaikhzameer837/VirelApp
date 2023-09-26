@@ -79,11 +79,14 @@
         android:text="......"
         android:textColor="@color/black"
         android:textSize="11sp" />
-    <ImageView android:id="@+id/poll"
+
+    <ImageView
+        android:id="@+id/poll"
         android:layout_width="wrap_content"
-        android:src="@drawable/poll"
+        android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_height="wrap_content"/>
+        android:src="@drawable/poll" />
+
     <TextView
         android:id="@+id/prizepool"
         android:layout_width="wrap_content"
@@ -112,9 +115,10 @@
         android:id="@+id/info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/poll"
         android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
         android:layout_gravity="center"
+        android:layout_marginTop="10dp"
         android:gravity="center"
         android:text=" Join Now "
         android:textColor="@color/appColor"
@@ -133,40 +137,49 @@
     <!--        android:textColor="@color/textcolor" />-->
 
 
-    <LinearLayout android:id="@+id/passLin"
+    <LinearLayout
+        android:id="@+id/passLin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/card"
-        android:padding="5dp"
+        android:layout_below="@+id/info"
         android:layout_alignParentBottom="true"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:padding="5dp">
+
         <View
             android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
         <TextView
             android:id="@+id/gid"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:gravity="center"
-            android:padding="4dp"
             android:layout_marginRight="10dp"
             android:background="@drawable/gray"
+            android:gravity="center"
+            android:padding="4dp"
             android:textColor="@color/black"
-            android:textSize="11dp"/>
+            android:textSize="11dp" />
 
         <TextView
             android:id="@+id/password"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:padding="4dp"
             android:layout_marginRight="10dp"
             android:background="@drawable/gray"
             android:gravity="center"
+            android:padding="4dp"
             android:text="   "
             android:textColor="@color/black"
             android:textSize="11dp" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
     </LinearLayout>
 </RelativeLayout>

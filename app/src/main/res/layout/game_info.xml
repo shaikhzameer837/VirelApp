@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="10dp"
     android:orientation="vertical"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
     <TextView
         android:layout_width="match_parent"
         android:text="Congrats! registration done"
@@ -24,28 +25,10 @@
         app:lottie_fileName="success.json"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"/>
-    <TextView
-        android:id="@+id/title"
-        android:text="trergergergerg"
-        android:layout_marginTop="10dp"
-        android:layout_gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-    <com.airbnb.lottie.LottieAnimationView
-        android:layout_width="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_height="80dp"
-        android:id="@+id/yt"
-        android:layout_gravity="center"
-        app:lottie_fileName="youtube.json"
-        app:lottie_autoPlay="true"
-        app:lottie_loop="true"/>
-    <TextView android:id="@+id/link"
-        android:layout_marginTop="10dp"
-        android:layout_gravity="center"
-        android:textColor="@color/black"
-        android:textSize="14sp"
-        android:text="Remember to Support us on Youtube"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+
+    <WebView
+        android:id="@+id/webview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:ignore="WebViewLayout" />
 </LinearLayout>

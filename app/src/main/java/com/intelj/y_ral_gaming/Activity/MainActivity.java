@@ -1,5 +1,6 @@
 package com.intelj.y_ral_gaming.Activity;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -14,6 +15,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ParcelFileDescriptor;
@@ -35,11 +37,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -104,8 +110,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import soup.neumorphism.NeumorphCardView;
 
 public class MainActivity extends BaseActivity implements RulesBottomSheet.ChallengeAcceptedListener {
     AppConstant appConstant;
@@ -194,6 +198,14 @@ public class MainActivity extends BaseActivity implements RulesBottomSheet.Chall
                 startActivity(intent);
             }
         });
+        if (Build.VERSION.SDK_INT >= 33) {
+            if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.POST_NOTIFICATIONS},101);
+            }
+            else {
+
+            }
+        }
         findViewById(R.id.help).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -769,7 +781,7 @@ public class MainActivity extends BaseActivity implements RulesBottomSheet.Chall
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.e("onClicks3", response);
+                Log.e("popular-onClicks3", response);
                 try {
                     JSONArray jsonArray = new JSONArray(response);
                     for (int i = 0; i < jsonArray.length(); i++) {
@@ -830,12 +842,12 @@ public class MainActivity extends BaseActivity implements RulesBottomSheet.Chall
                         // recyclerDataArrayList.add(new RecyclerData(jObj.getString("userid"),"http://y-ral-gaming.com/admin/api/images/" + jObj.getString("userid") + ".png?u=" + (System.currentTimeMillis() / 1000),jObj.getString("name")));
 //                                recyclerDataArrayList.add(new RecyclerData(jObj.getString("url"), jObj.getString("name"), jObj.getString("amount"), jObj.getString("userid")));
                     }
-//                    Collections.sort(popularModels, new Comparator<PopularModel>() {
-//                        @Override
-//                        public int compare(PopularModel o1, PopularModel o2) {
-//                            return Integer.compare(Integer.parseInt(o2.getTotal_coins()), Integer.parseInt(o1.getTotal_coins()));
-//                        }
-//                    });
+                    Collections.sort(popularModels, new Comparator<PopularModel>() {
+                        @Override
+                        public int compare(PopularModel o1, PopularModel o2) {
+                            return Integer.compare(Integer.parseInt(o2.getAmount()), Integer.parseInt(o1.getAmount()));
+                        }
+                    });
                     Log.e("onClicks-popular", popularModels.size() + "");
                     PopularAdapter popularAdapter = new PopularAdapter(MainActivity.this, popularModels);
                     GridLayoutManager mLayoutManager = new GridLayoutManager(MainActivity.this, 1, GridLayoutManager.HORIZONTAL, false);
