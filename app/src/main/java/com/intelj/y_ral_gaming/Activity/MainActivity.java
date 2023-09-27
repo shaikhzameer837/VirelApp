@@ -77,6 +77,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.intelj.y_ral_gaming.Adapter.MyListAdapter;
 import com.intelj.y_ral_gaming.Adapter.PopularAdapter;
 import com.intelj.y_ral_gaming.Adapter.TeamDisplayList;
@@ -184,6 +185,7 @@ public class MainActivity extends BaseActivity implements RulesBottomSheet.Chall
                 else LoginSheet();
             }
         });
+
         findViewById(R.id.fab).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

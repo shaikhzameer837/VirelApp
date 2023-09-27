@@ -176,7 +176,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
                 clipboard.setPrimaryClip(clip);
             }
         });
-
+        Log.e("give_away","give_away_"+ gameItem.get(position).getGameId());
         if(!gameItem.get(position).getInGameid().equals("")){
            holder.passLin.setVisibility(View.VISIBLE);
         }else{
@@ -189,7 +189,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
                     registerTeam(position);
                 else {
                     Toast.makeText(v.getContext(), "You have already registered", Toast.LENGTH_LONG).show();
-                    GameInfo BottomSheetFragment = new GameInfo();
+                    GameInfo BottomSheetFragment = new GameInfo(gameItem.get(position).getGameId());
                     BottomSheetFragment.show(((AppCompatActivity) mContext).getSupportFragmentManager(), "");
                 }
             }

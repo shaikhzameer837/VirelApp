@@ -51,7 +51,7 @@ public class FirebaseFCMServices extends FirebaseMessagingService {
     String subject;
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        // Log.e("dataRecived","yes");
+         Log.e("dataReceived","yes");
         if (remoteMessage.getData().size() > 0) {
             // db = new DatabaseHelper(this, "notifications");
             try {
