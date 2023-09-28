@@ -202,9 +202,8 @@ public class MainActivity extends BaseActivity implements RulesBottomSheet.Chall
         });
         if (Build.VERSION.SDK_INT >= 33) {
             if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.POST_NOTIFICATIONS},101);
-            }
-            else {
+                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, 101);
+            } else {
 
             }
         }
@@ -267,19 +266,12 @@ public class MainActivity extends BaseActivity implements RulesBottomSheet.Chall
                         return true;
                     case R.id.challenge:
                         inflateView(R.layout.store);
-                        TextView titleText = inflated.findViewById(R.id.titleText);
-                        titleText.setText("Challenges");
 //                        showWebView(AppConstant.AppUrl + "web/delete_me.php?u=" + new AppConstant(MainActivity.this).getId());
-                       showWebView(AppConstant.AppUrl + "web/give_away.php?u=" + new AppConstant(MainActivity.this).getId());
+                        showWebView(AppConstant.AppUrl + "web/give_away.php?u=" + new AppConstant(MainActivity.this).getId());
                         return true;
                     case R.id.store:
                         inflateView(R.layout.store);
-                         titleText = inflated.findViewById(R.id.titleText);
-                        titleText.setText("Rewards");
- //                       showWebView(AppConstant.AppUrl + "web/delete_me.php?u=" + new AppConstant(MainActivity.this).getId());
-                        showWebView(AppConstant.AppUrl + "web/reward.php?u=" + new AppConstant(MainActivity.this).getId());
-                      //  showWebView(AppConstant.AppUrl + "reward/rewards.php?u=9");
-//                        inflated.findViewById(R.id.lin).setVisibility(View.VISIBLE);
+                        showWebView(AppConstant.AppUrl + "reward/rewards.php?u=9");
                         return true;
 //                    case R.id.challenge:
 //                        inflateView(R.layout.store);
@@ -390,6 +382,7 @@ public class MainActivity extends BaseActivity implements RulesBottomSheet.Chall
     String key;
     JSONObject tab;
     Integer MyCoins = 0;
+
     private void getUserInfo() {
         Log.e("AppConstant-AppUrl4", "start");
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -411,7 +404,7 @@ public class MainActivity extends BaseActivity implements RulesBottomSheet.Chall
                                 tab = json.getJSONObject("tab");
                                 AppController.getInstance().homeUrl = json.getJSONArray("homeUrl");
                                 MyCoins = Integer.parseInt(json.getString("amount"));
-                                Log.e("AppController-amount-9", AppController.getInstance().amount+"");
+                                Log.e("AppController-amount-9", AppController.getInstance().amount + "");
                                 coins.setText(withSuffix(Integer.parseInt(json.getString("amount"))));
                                 try {
                                     kill.setText(Html.fromHtml("<img src='" + AppConstant.getRank(AppController.getInstance().rank) + "'/> " + AppController.getInstance().rank + " points", new Html.ImageGetter() {
@@ -464,7 +457,7 @@ public class MainActivity extends BaseActivity implements RulesBottomSheet.Chall
                                         })
                                         .setIcon(android.R.drawable.ic_dialog_alert)
                                         .show();
-                               // AppController.getInstance().amount = 0;
+                                // AppController.getInstance().amount = 0;
                                 Intent intent = new Intent("custom-event-name");
                                 intent.putExtra(AppConstant.amount, true);
                                 LocalBroadcastManager.getInstance(MainActivity.this).sendBroadcast(intent);
@@ -840,7 +833,7 @@ public class MainActivity extends BaseActivity implements RulesBottomSheet.Chall
                     for (int i = 0; i < ja_data.length(); i++) {
                         JSONObject jObj = ja_data.getJSONObject(i);
                         appConstant.saveUserInfo("", jObj.getString("userid"), "http://y-ral-gaming.com/admin/api/images/" + jObj.getString("userid") + ".png?u=" + AppConstant.imageExt(), jObj.getString("name"), "", null, jObj.getString("userid"));
-                        popularModels.add(new PopularModel(AppConstant.AppUrl + "images/" + jObj.getString("userid") , jObj.getString("name"), jObj.getString("amount"), jObj.getString("userid"), ""));
+                        popularModels.add(new PopularModel(AppConstant.AppUrl + "images/" + jObj.getString("userid"), jObj.getString("name"), jObj.getString("amount"), jObj.getString("userid"), ""));
                         // recyclerDataArrayList.add(new RecyclerData(jObj.getString("userid"),"http://y-ral-gaming.com/admin/api/images/" + jObj.getString("userid") + ".png?u=" + (System.currentTimeMillis() / 1000),jObj.getString("name")));
 //                                recyclerDataArrayList.add(new RecyclerData(jObj.getString("url"), jObj.getString("name"), jObj.getString("amount"), jObj.getString("userid")));
                     }
@@ -1213,7 +1206,8 @@ public class MainActivity extends BaseActivity implements RulesBottomSheet.Chall
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 FirebaseDatabase.getInstance().getReference("masters").keepSynced(true);
-                inflated.findViewById(R.id.lin).setVisibility(View.GONE);
+                if (inflated != null)
+                    inflated.findViewById(R.id.lin).setVisibility(View.GONE);
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Log.e("index", (long) snapshot.getValue() + " " + snapshot.getKey());
                     titleList.add(snapshot.getKey());

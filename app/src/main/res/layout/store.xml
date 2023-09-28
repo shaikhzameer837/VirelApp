@@ -4,13 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:elevation="8dp"
-    android:orientation="vertical"
-    android:paddingLeft="5dp"
-    android:paddingTop="10dp"
-    android:paddingRight="5dp"
-    android:theme="@style/Theme.MaterialComponents.DayNight.DarkActionBar"
-    app:behavior_hideable="false"
-    app:layout_behavior="@string/bottom_sheet_behavior">
+    android:orientation="vertical">
 
     <!--    <LinearLayout-->
     <!--        android:layout_width="match_parent"-->
@@ -41,19 +35,7 @@
     <!--            android:text="Store"-->
     <!--            android:textColor="@color/black" />-->
     <!--    </LinearLayout>-->
-    <TextView
-        android:id="@+id/titleText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:gravity="center"
-        android:textColor="@color/black" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="5dp"
-        android:background="@color/black" />
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/pBar3"
@@ -68,8 +50,9 @@
         android:id="@+id/webview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        android:background="@color/appColor"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@color/black"
         android:padding="10dp" />
 </LinearLayout>
