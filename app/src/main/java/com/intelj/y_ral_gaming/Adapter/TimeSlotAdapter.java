@@ -161,18 +161,18 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
         holder.gpassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(v.getContext(),"Password Copied",Toast.LENGTH_LONG).show();
+                Toast.makeText(v.getContext(),"Copied " + holder.gpassword.getText().toString(),Toast.LENGTH_LONG).show();
                 ClipboardManager clipboard = (ClipboardManager) v.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText("label",gameItem.get(position).getGamePassword());
+                ClipData clip = ClipData.newPlainText("label",holder.gpassword.getText().toString().replace("pass: ",""));
                 clipboard.setPrimaryClip(clip);
             }
         });
         holder.gid.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(v.getContext(),"Id Copied",Toast.LENGTH_LONG).show();
+                Toast.makeText(v.getContext(),"Copied " + holder.gid.getText().toString() ,Toast.LENGTH_LONG).show();
                 ClipboardManager clipboard = (ClipboardManager) v.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText("label",gameItem.get(position).getGameId());
+                ClipData clip = ClipData.newPlainText("label",holder.gid.getText().toString().replace("id: ",""));
                 clipboard.setPrimaryClip(clip);
             }
         });
@@ -297,6 +297,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.MyView
                         try {
                             JSONObject json = new JSONObject(response);
                             if (json.getBoolean("success")) {
+                                Toast.makeText(mContext,"Subscribed " + gameItem.get(position).getGameId(),Toast.LENGTH_LONG).show();
                                 FirebaseMessaging.getInstance().subscribeToTopic("give_away_"+ gameItem.get(position).getGameId())
                                         .addOnCompleteListener(task -> {
                                             String msg = "Subscribed";

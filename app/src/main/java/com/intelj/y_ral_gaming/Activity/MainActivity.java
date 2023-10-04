@@ -31,6 +31,7 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.ViewStub;
 import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
@@ -509,7 +510,8 @@ public class MainActivity extends BaseActivity implements RulesBottomSheet.Chall
         browser.setInitialScale(0);
         browser.setVerticalScrollBarEnabled(false);
         browser.setHorizontalScrollBarEnabled(false);
-        browser.setScrollbarFadingEnabled(false);
+        browser.setScrollbarFadingEnabled(false);// Enable cache
+        browser.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
 //        inflated.findViewById(R.id.rewards).setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
