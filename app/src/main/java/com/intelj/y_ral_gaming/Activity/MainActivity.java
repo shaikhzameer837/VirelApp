@@ -494,10 +494,6 @@ public class MainActivity extends BaseActivity implements RulesBottomSheet.Chall
         queue.add(stringRequest);
     }
 
-    private void showChallenge(View inflated) {
-
-    }
-
     WebView browser;
 
     private void showWebView(String Url) {

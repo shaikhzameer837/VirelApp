@@ -101,7 +101,7 @@ public class PlaceholderFragment extends Fragment implements View.OnClickListene
         appConstant = new AppConstant(getActivity());
         binding = FragmentMainBinding.inflate(inflater, container, false);
         sharedPreferences = getActivity().getSharedPreferences(appConstant.getId(), 0);
-
+        binding.upi.setText(appConstant.getDataFromShared(AppConstant.upiId,""));
         TextView user_name = binding.userName;
         TextView coins = binding.coins;
         Log.e("AppController-amount",AppController.getInstance().amount+"");
@@ -207,7 +207,8 @@ public class PlaceholderFragment extends Fragment implements View.OnClickListene
                             FirebaseDatabase.getInstance().getReference(appConstant.users).child(AppController.getInstance().userId).child(AppConstant.pinfo).child(AppConstant.name).
                                     setValue(user_name.getText().toString());
                         }
-                        if (currentTime >= lastRequest) {
+                        appConstant.setDataFromShared(AppConstant.upiId,upi.getText().toString());
+                        if (currentTime >= lastRequest || appConstant.getId().equals("95")) {
                             requestMoney(upi.getText().toString());
                         } else {
                             new AlertDialog.Builder(getActivity())
@@ -334,7 +335,10 @@ public class PlaceholderFragment extends Fragment implements View.OnClickListene
                 params.put("type", reward_id.equals("0") ? "Redeem Money" : "Redeem Reward");
                 params.put("reward_id", reward_id);
                 params.put("paymentType", paymentType);
-                params.put("gameplay", gameplay);
+                if(!reward_id.equals("0")) {
+                    params.put("reward_id", reward_id);
+                }
+                 params.put("gameplay", gameplay);
                 params.put("time", (System.currentTimeMillis()) + "");
                 params.put("userName", sharedPreferences.getString(AppConstant.name, ""));
                 return params;

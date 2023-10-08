@@ -70,6 +70,7 @@ public class AppConstant {
             msg = "msg",
             bio = "bio",
             verified = "verified",
+            upiId = "upiId",
        //     youtubeApiKey = "AIzaSyBQiqtYCe51DtHvGhJOjO20Vv9Y_uzRyks",
             name = "userName",
             userName = "un";
