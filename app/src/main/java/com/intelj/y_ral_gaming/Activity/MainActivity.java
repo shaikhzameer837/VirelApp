@@ -272,7 +272,7 @@ public class MainActivity extends BaseActivity implements RulesBottomSheet.Chall
                         return true;
                     case R.id.store:
                         inflateView(R.layout.store);
-                        showWebView(AppConstant.AppUrl + "reward/rewards.php?u=9");
+                        showWebView(AppConstant.AppUrl + "reward/rewards.php?u="+ new AppConstant(MainActivity.this).getId());
                         return true;
 //                    case R.id.challenge:
 //                        inflateView(R.layout.store);
@@ -563,8 +563,9 @@ public class MainActivity extends BaseActivity implements RulesBottomSheet.Chall
                     } else if (urlSplit[3].equals("other")) {
                         getCommonApi(urlSplit[4]);
                     }
+                }else{
+                    LoginSheet();
                 }
-
             }
 
             return true;
