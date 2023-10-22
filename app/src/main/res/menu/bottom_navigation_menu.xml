@@ -23,15 +23,16 @@
         app:showAsAction="always|withText"
         android:title=" " />
     <item
-        android:id="@+id/challenge"
-        app:showAsAction="always|withText"
-        android:icon="@drawable/flag_triangle"
-        android:title="Kick" />
-    <item
         android:id="@+id/store"
         android:icon="@drawable/gift"
         app:showAsAction="always|withText"
         android:title="Rewards" />
+    <item
+        android:id="@+id/challenge"
+        app:showAsAction="always|withText"
+        android:icon="@drawable/flag_triangle"
+        android:title="Kick" />
+
 
 <!--    <item-->
 <!--        android:id="@+id/chat"-->

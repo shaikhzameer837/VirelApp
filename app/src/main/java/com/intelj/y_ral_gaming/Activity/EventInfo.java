@@ -62,8 +62,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 
 public class EventInfo extends AppCompatActivity {
@@ -142,12 +144,6 @@ public class EventInfo extends AppCompatActivity {
             }
         });
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        if (!appConstant.checkLogin()) {
-            setButton(" Login ", R.drawable.curved_white, Color.RED);
-        } else if (getIntent().getStringExtra("status").equals("0"))
-            setButton(" Closed ", R.drawable.curved_white, Color.BLACK);
-        else
-            setButton(!isRegistered ? " Join " : " Already joined ", !isRegistered ? R.drawable.curved_red : R.drawable.curved_white, !isRegistered ? Color.WHITE : Color.RED);
         join.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -192,8 +188,17 @@ public class EventInfo extends AppCompatActivity {
         teamRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), teamRecyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
-                if (minTeam == teamListData.get(position).getPlaying_status().split(",").length || minTeam < teamListData.get(position).getPlaying_status().split(",").length) {
-                    addTeamLists(position);
+                String playingStaus = teamListData.get(position).getPlaying_status();
+                if (minTeam >= playingStaus.split(",").length) {
+                    Set<String> playingStatusSet = new HashSet<>(Arrays.asList(playingStaus.split(",")));
+                    boolean containsAny = memberSet.stream().anyMatch(playingStatusSet::contains);
+                    Log.e("containsAny",memberSet.toString());
+                    Log.e("containsAny-1",playingStatusSet.toString());
+                    if (!containsAny) {
+                        addTeamLists(position);
+                    } else {
+                        Toast.makeText(EventInfo.this, "OOps one of the member is already registered", Toast.LENGTH_LONG).show();
+                    }
                 } else {
                     Toast.makeText(EventInfo.this, "Minimum " + minTeam + " players are required in the group", Toast.LENGTH_LONG).show();
                 }
@@ -208,11 +213,13 @@ public class EventInfo extends AppCompatActivity {
         bottomCreateTeam.show();
     }
 
+    Set<String> memberSet = new HashSet<>();
+
     private void getEventDetails() {
         RequestQueue queue = Volley.newRequestQueue(this);
         SharedPreferences sharedPreferences = getSharedPreferences(AppConstant.AppName, MODE_PRIVATE);
         String teamID = sharedPreferences.getString(AppConstant.event + getIntent().getStringExtra("eId"), "");
-        String url = AppConstant.AppUrl + "events/get_events_tab.php?u=" + new AppConstant(this).getId() + "&&id=" + getIntent().getStringExtra("eId") + "&&t=" + teamID;
+        String url = AppConstant.AppUrl + "events/get_events_tab2.php?u=" + new AppConstant(this).getId() + "&&id=" + getIntent().getStringExtra("eId") + "&&t=" + teamID;
         Log.e("AppConstant.AppUrl", url);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
@@ -220,23 +227,35 @@ public class EventInfo extends AppCompatActivity {
                 Log.e("tokenResponse", response);
                 try {
                     JSONObject json = new JSONObject(response);
-                    if(json.getBoolean("success")) {
+                    if (json.getBoolean("success")) {
                         JSONObject tab = json.getJSONObject("tab");
                         minTeam = json.getInt("min");
+                        String url = json.getString("url");
                         group = json.getString("group");
+                        JSONArray memberArray = json.getJSONArray("member");
+                        for (int i = 0; i < memberArray.length(); i++) {
+                            int memberId = memberArray.getInt(i);
+                            memberSet.add(memberId + "");
+                        }
+                        if (!appConstant.checkLogin()) {
+                            setButton(" Login ", R.drawable.curved_white, Color.RED);
+                        } else if (getIntent().getStringExtra("status").equals("0"))
+                            setButton(" Closed ", R.drawable.curved_white, Color.BLACK);
+                        else
+                            setButton(!isRegistered ? " Join " : " Already joined ", !isRegistered ? R.drawable.curved_red : R.drawable.curved_white, !isRegistered ? Color.WHITE : Color.RED);
                         Iterator<String> keys = tab.keys();
                         AppController.getInstance().tab.clear();
                         tabLayout.removeAllTabs();
                         while (keys.hasNext()) {
                             String key = keys.next();
-                            String value = tab.getString(key);
+                            String value = url + tab.getString(key) + "u=" + new AppConstant(EventInfo.this).getId() + "&i=" + getIntent().getStringExtra("eId");
                             System.out.println(key + ": " + value);
                             AppController.getInstance().tab.put(key, value);
                             tabLayout.addTab(tabLayout.newTab().setText(key));
                         }
                         MyEventAdapter adapter = new MyEventAdapter(EventInfo.this, getSupportFragmentManager(), tabLayout.getTabCount());
                         viewPager.setAdapter(adapter);
-                    }else{
+                    } else {
 
                     }
                 } catch (Exception e) {
@@ -278,9 +297,9 @@ public class EventInfo extends AppCompatActivity {
         String[] userNameList = teamListData.get(position).getPlayername().split(",");
         ArrayList<String> arrayList = new ArrayList<>(Arrays.asList(userPlayer));
         arrayList.remove(new AppConstant(this).getId());
-        addEditText(new AppConstant(this).getId(),"Me");
+        addEditText(new AppConstant(this).getId(), "Me");
         for (int x = 0; x < arrayList.size(); x++) {
-            addEditText(arrayList.get(x),userNameList[x]);
+            addEditText(arrayList.get(x), userNameList[x]);
         }
         view.findViewById(R.id.submit).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -294,11 +313,11 @@ public class EventInfo extends AppCompatActivity {
                 for (int x = 0; x < editTextList.size(); x++) {
                     if (editTextList.get(x).getText().toString().trim().equals("")) {
                         showError = editTextList.get(x);
-                    }else{
-                        minT = minT +1;
+                    } else {
+                        minT = minT + 1;
                     }
                 }
-                Log.e("minTeam",minTeam + "--" +minT );
+                Log.e("minTeam", minTeam + "--" + minT);
                 if (minT < minTeam && showError != null) {
                     showError.setError("Please Add " + minTeam + " player's inGame name");
                     showError.requestFocus();
@@ -313,7 +332,7 @@ public class EventInfo extends AppCompatActivity {
         dialogBottom.show();
     }
 
-    public void addEditText(String userId,String name) {
+    public void addEditText(String userId, String name) {
         EditText editText = new EditText(EventInfo.this);
         editText.setTextSize(12);
         editText.setSingleLine(true);
@@ -378,8 +397,8 @@ public class EventInfo extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                Log.e("teamIdList", AppController.getInstance().teamList);
-                params.put("teamIdList", AppController.getInstance().teamList);
+                Log.e("teamIdList-data1", appConstant.getDataFromShared(AppConstant.teamList, ""));
+                params.put("teamIdList", appConstant.getDataFromShared(AppConstant.teamList, ""));
                 return params;
             }
 
@@ -431,6 +450,7 @@ public class EventInfo extends AppCompatActivity {
         join.setText(btnName);
         join.setBackgroundResource(drawables);
         join.setTextColor(color);
+        join.setVisibility(View.VISIBLE);
     }
 
     private void joinEvent(int position) {
@@ -439,7 +459,7 @@ public class EventInfo extends AppCompatActivity {
         JSONObject jsonRootObject3 = new JSONObject();
         try {
             for (int x = 0; x < editTextList.size(); x++) {
-                if(!editTextList.get(x).getText().toString().trim().equals("")) {
+                if (!editTextList.get(x).getText().toString().trim().equals("")) {
                     JSONObject jsonRootObject4 = new JSONObject();
                     byte[] data = editTextList.get(x).getText().toString().getBytes("UTF-8");
                     String ingName = Base64.encodeToString(data, Base64.DEFAULT);
@@ -462,12 +482,12 @@ public class EventInfo extends AppCompatActivity {
         }
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = AppConstant.AppUrl + "join_event.php";
-        Log.e("virelApp-Api",url);
+        Log.e("virelApp-Api", url);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.e("virelApp-response",response);
+                        Log.e("virelApp-response", response);
                         if (response.equals("success")) {
                             tv_date.setText((Integer.parseInt(getIntent().getStringExtra("gameName")) + 1) + " / " + getIntent().getStringExtra("max"));
                             SharedPreferences sharedPreferences = getSharedPreferences(AppConstant.AppName, MODE_PRIVATE);

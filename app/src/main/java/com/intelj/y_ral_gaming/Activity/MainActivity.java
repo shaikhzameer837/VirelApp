@@ -401,7 +401,8 @@ public class MainActivity extends BaseActivity implements RulesBottomSheet.Chall
                                 AppController.getInstance().amount = Integer.parseInt(json.getString("amount"));
                                 AppController.getInstance().rank = Integer.parseInt(json.getString("rank"));
                                 AppController.getInstance().referral = json.getString("referral");
-                                AppController.getInstance().teamList = json.getString("teamList");
+                                appConstant.setDataFromShared(AppConstant.teamList,json.getString("teamList"));
+                                Log.e("teamIdList-data", appConstant.getDataFromShared(AppConstant.teamList,""));
                                 tab = json.getJSONObject("tab");
                                 AppController.getInstance().homeUrl = json.getJSONArray("homeUrl");
                                 MyCoins = Integer.parseInt(json.getString("amount"));

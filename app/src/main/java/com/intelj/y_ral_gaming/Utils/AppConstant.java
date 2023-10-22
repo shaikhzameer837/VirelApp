@@ -56,6 +56,7 @@ public class AppConstant {
             search = "search",
             teamMember = "teamMember",
             team = "team",
+            teamList = "teamList",
             token = "token",
             countryCode = "countryCode",
             coin = "coin",

@@ -124,6 +124,7 @@ public class CreateTeam extends AppCompatActivity {
     }
 
     String joined = "";
+
     private void postTeam() {
         ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Creating Team...");
@@ -140,10 +141,9 @@ public class CreateTeam extends AppCompatActivity {
                             JSONObject jsonObject = new JSONObject(response);
                             if (jsonObject.getBoolean("success")) {
                                 Toast.makeText(CreateTeam.this, "Team Created", Toast.LENGTH_LONG).show();
-                                Intent intent = new Intent("team-event-name");
+                                // Intent intent = new Intent("team-event-name");
                                 // You can also include some extra data.
-                                AppController.getInstance().teamList = AppController.getInstance().teamList + jsonObject.getString("id") + ",";
-
+                                appConstant.setDataFromShared(AppConstant.teamList, appConstant.getDataFromShared(AppConstant.teamList, "") + jsonObject.getString("id") + ",");
                                 finish();
                             } else
                                 Toast.makeText(CreateTeam.this, jsonObject.getString("msg"), Toast.LENGTH_LONG).show();
